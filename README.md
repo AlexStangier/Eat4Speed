@@ -1,4 +1,4 @@
-[![<ORG_NAME>](https://circleci.com/github/AlexStangier/Eat4Speed.svg?style=svg)](<https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed>)
+[![<AlexStangier>](https://circleci.com/github/AlexStangier/Eat4Speed.svg?style=svg)](<https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed>)
 
 # eat4speed project
 
