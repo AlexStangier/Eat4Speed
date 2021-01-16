@@ -1,3 +1,5 @@
+[![<ORG_NAME>](https://circleci.com/github/AlexStangier/Eat4Speed.svg?style=svg)](<https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed>)
+
 # eat4speed project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
