@@ -3,9 +3,6 @@
   
 [![Eat4Speed](https://circleci.com/gh/AlexStangier/Eat4Speed.svg?style=shield)](https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed)
 
-# Example:
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/circleci/circleci-docs)
-
 # eat4speed project
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
