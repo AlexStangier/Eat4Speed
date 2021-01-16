@@ -1,6 +1,5 @@
 # Status
-[![<Eat4Speed>](https://circleci.com/github/AlexStangier/Eat4Speed.svg?style=shield)](https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed)
-  
+
 [![Eat4Speed](https://circleci.com/gh/AlexStangier/Eat4Speed.svg?style=shield)](https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed)
 
 # eat4speed project
