@@ -1,8 +1,8 @@
 # Status
-[![<AlexStangier>](https://circleci.com/github/AlexStangier/Eat4Speed.svg?style=svg)](https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed)
+[![<Eat4Speed>](https://circleci.com/github/AlexStangier/Eat4Speed.svg?style=shield)](https://app.circleci.com/pipelines/github/AlexStangier/Eat4Speed)
 
 # Example:
-[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=svg)](https://circleci.com/gh/circleci/circleci-docs)
+[![CircleCI](https://circleci.com/gh/circleci/circleci-docs.svg?style=shield)](https://circleci.com/gh/circleci/circleci-docs)
 
 # eat4speed project
 
