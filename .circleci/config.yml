@@ -50,7 +50,7 @@ jobs:
           command: |
               if [ "${CIRCLE_BRANCH}" == "master" ]; then
                   echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
-                  docker push quarkus/hello-quarkus:${VERSION}
+                  docker push alexst94/eat4speed-staging:${VERSION}
               fi
       # Install GraalVM and native-image, needed for a native Quarkus build
       # ########################
