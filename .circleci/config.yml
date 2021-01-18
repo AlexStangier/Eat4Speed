@@ -89,5 +89,5 @@ jobs:
           name: Docker Push (Native)
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                docker push iainporter/sms-service:${VERSION}-native
+                docker push alexst94/eat4speed-staging:${VERSION}-native
             fi
