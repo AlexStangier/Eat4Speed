@@ -50,6 +50,7 @@ jobs:
           command: |
               if [ "${CIRCLE_BRANCH}" == "master" ]; then
                   echo "$DOCKER_PASS" | docker login --username $DOCKER_USER --password-stdin
+                  docker build -f src/main/docker/Dockerfile.native -t alexst94/eat4speed-staging:${VERSION} . 
                   docker push alexst94/eat4speed-staging:${VERSION}
               fi
       # Install GraalVM and native-image, needed for a native Quarkus build
@@ -89,5 +90,6 @@ jobs:
           name: Docker Push (Native)
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                docker push alexst94/eat4speed-staging:${VERSION}-native
+              docker build -f src/main/docker/Dockerfile.native -t alexst94/eat4speed-staging:${VERSION}-native . 
+                  docker push alexst94/eat4speed-staging:${VERSION}-native
             fi
