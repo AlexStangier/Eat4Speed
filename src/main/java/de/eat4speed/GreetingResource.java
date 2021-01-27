@@ -1,11 +1,7 @@
 package de.eat4speed;
 
 import Database.Entites.Benutzer;
-import Database.Entites.Dtos.BenutzerDto;
-import Database.Manager.DatabaseUserService;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
-
-import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
