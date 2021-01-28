@@ -1,16 +1,20 @@
 package de.eat4speed;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import Database.Entites.Benutzer;
+import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
-@Path("/hello-resteasy")
+
+@Path("/Benutzer")
 public class GreetingResource {
 
     @GET
+    @Path("get/{id}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        return "Hello trAceaBiliTY";
+    public String getBenutzer(@PathParam("id") long id) {
+        Benutzer ben = Benutzer.findById(id);
+        return ("Name: "+ ben.getBenutzername());
     }
 }
+
