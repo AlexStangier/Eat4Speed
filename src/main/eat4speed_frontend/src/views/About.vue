@@ -49,8 +49,7 @@ export default {
     deleteAlbum(id) {
       this.$http.delete(`https://jsonplaceholder.typicode.com/albums/${id}`)
           .then((result) => {
-            console.log(result.data);
-            console.log(result.statusText);
+            console.log(JSON.stringify(result));
           });
     },
   },
