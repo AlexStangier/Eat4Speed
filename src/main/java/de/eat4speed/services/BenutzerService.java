@@ -1,11 +1,12 @@
 package de.eat4speed.services;
 
-import de.eat4speed.entities.BenutzerEntity;
+import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @ApplicationScoped
 public class BenutzerService {
@@ -17,7 +18,4 @@ public class BenutzerService {
         this._benutzer = benutzer;
     }
 
-    public BenutzerEntity getById(int id){
-        return _benutzer.findById((long) id);
-    }
 }

@@ -1,4 +1,3 @@
-import de.eat4speed.entities.BenutzerEntity;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
