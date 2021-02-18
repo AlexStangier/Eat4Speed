@@ -132,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Rechnung`
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Status`
 (
     `Status_Name`  VARCHAR(10) NOT NULL,
-    `Rechnungs_ID` INT         NOT NULL,
+    `Rechnungs_ID` INT         ,
     PRIMARY KEY (`Status_Name`),
     INDEX `fk_Status_Rechnungs_ID` (`Rechnungs_ID` ASC),
     CONSTRAINT `fk_Status_Rechnungs_ID`
