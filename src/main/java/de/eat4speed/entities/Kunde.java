@@ -1,32 +1,23 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Kunde", schema = "eatforspeed")
-public class KundeEntity extends PanacheEntityBase implements Serializable {
-    private Long id;
-    private int kundennummer;
-    private String name;
-    private String vorname;
-    private String bestellhistorie;
+public class Kunde extends PanacheEntityBase implements Serializable {
 
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
-    }
+    private int kundennummer;
+    private String benutzername;
+    private String name;
+    private String vorname;
+    private String bestellhistorie;
+    private int anschrift;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    @Id
-    @Column(name = "Kundennummer")
     public int getKundennummer() {
         return kundennummer;
     }
@@ -35,8 +26,6 @@ public class KundeEntity extends PanacheEntityBase implements Serializable {
         this.kundennummer = kundennummer;
     }
 
-    @Basic
-    @Column(name = "Name")
     public String getName() {
         return name;
     }
@@ -45,8 +34,6 @@ public class KundeEntity extends PanacheEntityBase implements Serializable {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "Vorname")
     public String getVorname() {
         return vorname;
     }
@@ -55,8 +42,6 @@ public class KundeEntity extends PanacheEntityBase implements Serializable {
         this.vorname = vorname;
     }
 
-    @Basic
-    @Column(name = "Bestellhistorie")
     public String getBestellhistorie() {
         return bestellhistorie;
     }
@@ -65,12 +50,28 @@ public class KundeEntity extends PanacheEntityBase implements Serializable {
         this.bestellhistorie = bestellhistorie;
     }
 
+    public String getBenutzername() {
+        return benutzername;
+    }
+
+    public void setBenutzername(String benutzername) {
+        this.benutzername = benutzername;
+    }
+
+    public int getAnschrift() {
+        return anschrift;
+    }
+
+    public void setAnschrift(int anschrift) {
+        this.anschrift = anschrift;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        KundeEntity that = (KundeEntity) o;
+        Kunde that = (Kunde) o;
 
         if (kundennummer != that.kundennummer) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
@@ -88,5 +89,17 @@ public class KundeEntity extends PanacheEntityBase implements Serializable {
         result = 31 * result + (vorname != null ? vorname.hashCode() : 0);
         result = 31 * result + (bestellhistorie != null ? bestellhistorie.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Kunde{" +
+                "kundennummer=" + kundennummer +
+                ", benutzername='" + benutzername + '\'' +
+                ", name='" + name + '\'' +
+                ", vorname='" + vorname + '\'' +
+                ", bestellhistorie='" + bestellhistorie + '\'' +
+                ", anschrift=" + anschrift +
+                '}';
     }
 }

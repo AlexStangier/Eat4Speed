@@ -1,53 +1,39 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Einnahmen", schema = "eatforspeed")
-public class EinnahmenEntity extends PanacheEntityBase implements Serializable {
-    private Long id;
-    private int einnahmenId;
-    private int restaurantId;
+public class Einnahmen extends PanacheEntityBase implements Serializable {
+
+    @Id
+    @GeneratedValue
+    private int einnahmen_Id;
+    private int restaurant_Id;
     private double umsatz;
     private int monat;
     private int jahr;
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
+    public int getEinnahmen_Id() {
+        return einnahmen_Id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setEinnahmen_Id(int einnahmenId) {
+        this.einnahmen_Id = einnahmenId;
     }
 
-    @Id
-    @Column(name = "Einnahmen_ID")
-    public int getEinnahmenId() {
-        return einnahmenId;
+
+    public int getRestaurant_Id() {
+        return restaurant_Id;
     }
 
-    public void setEinnahmenId(int einnahmenId) {
-        this.einnahmenId = einnahmenId;
+    public void setRestaurant_Id(int restaurantId) {
+        this.restaurant_Id = restaurantId;
     }
 
-    @Basic
-    @Column(name = "Restaurant_ID")
-    public int getRestaurantId() {
-        return restaurantId;
-    }
 
-    public void setRestaurantId(int restaurantId) {
-        this.restaurantId = restaurantId;
-    }
-
-    @Basic
-    @Column(name = "Umsatz")
     public double getUmsatz() {
         return umsatz;
     }
@@ -56,8 +42,7 @@ public class EinnahmenEntity extends PanacheEntityBase implements Serializable {
         this.umsatz = umsatz;
     }
 
-    @Basic
-    @Column(name = "Monat")
+
     public int getMonat() {
         return monat;
     }
@@ -66,8 +51,7 @@ public class EinnahmenEntity extends PanacheEntityBase implements Serializable {
         this.monat = monat;
     }
 
-    @Basic
-    @Column(name = "Jahr")
+
     public int getJahr() {
         return jahr;
     }
@@ -81,10 +65,10 @@ public class EinnahmenEntity extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        EinnahmenEntity that = (EinnahmenEntity) o;
+        Einnahmen that = (Einnahmen) o;
 
-        if (einnahmenId != that.einnahmenId) return false;
-        if (restaurantId != that.restaurantId) return false;
+        if (einnahmen_Id != that.einnahmen_Id) return false;
+        if (restaurant_Id != that.restaurant_Id) return false;
         if (Double.compare(that.umsatz, umsatz) != 0) return false;
         if (monat != that.monat) return false;
         if (jahr != that.jahr) return false;
@@ -96,12 +80,23 @@ public class EinnahmenEntity extends PanacheEntityBase implements Serializable {
     public int hashCode() {
         int result;
         long temp;
-        result = einnahmenId;
-        result = 31 * result + restaurantId;
+        result = einnahmen_Id;
+        result = 31 * result + restaurant_Id;
         temp = Double.doubleToLongBits(umsatz);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + monat;
         result = 31 * result + jahr;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Einnahmen{" +
+                "einnahmen_Id=" + einnahmen_Id +
+                ", restaurant_Id=" + restaurant_Id +
+                ", umsatz=" + umsatz +
+                ", monat=" + monat +
+                ", jahr=" + jahr +
+                '}';
     }
 }

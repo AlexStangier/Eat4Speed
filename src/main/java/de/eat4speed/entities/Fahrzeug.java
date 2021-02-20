@@ -1,40 +1,27 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Fahrzeug", schema = "eatforspeed")
-public class FahrzeugEntity extends PanacheEntityBase implements Serializable {
-    private Long id;
-    private int fahrzeugId;
-    private String fahrzeugtyp;
+public class Fahrzeug extends PanacheEntityBase implements Serializable {
 
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
+    private int fahrzeug_Id;
+    private String fahrzeugtyp;
+
+    public int getFahrzeug_Id() {
+        return fahrzeug_Id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Id
-    @Column(name = "Fahrzeug_ID")
-    public int getFahrzeugId() {
-        return fahrzeugId;
-    }
-
-    public void setFahrzeugId(int fahrzeugId) {
-        this.fahrzeugId = fahrzeugId;
+    public void setFahrzeug_Id(int fahrzeugId) {
+        this.fahrzeug_Id = fahrzeugId;
     }
 
     @Basic
-    @Column(name = "Fahrzeugtyp")
     public String getFahrzeugtyp() {
         return fahrzeugtyp;
     }
@@ -48,9 +35,9 @@ public class FahrzeugEntity extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FahrzeugEntity that = (FahrzeugEntity) o;
+        Fahrzeug that = (Fahrzeug) o;
 
-        if (fahrzeugId != that.fahrzeugId) return false;
+        if (fahrzeug_Id != that.fahrzeug_Id) return false;
         if (fahrzeugtyp != null ? !fahrzeugtyp.equals(that.fahrzeugtyp) : that.fahrzeugtyp != null) return false;
 
         return true;
@@ -58,8 +45,16 @@ public class FahrzeugEntity extends PanacheEntityBase implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = fahrzeugId;
+        int result = fahrzeug_Id;
         result = 31 * result + (fahrzeugtyp != null ? fahrzeugtyp.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FahrzeugEntity{" +
+                "fahrzeugId=" + fahrzeug_Id +
+                ", fahrzeugtyp='" + fahrzeugtyp + '\'' +
+                '}';
     }
 }
