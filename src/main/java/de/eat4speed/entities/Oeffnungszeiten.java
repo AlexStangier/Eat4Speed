@@ -1,6 +1,5 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -8,60 +7,39 @@ import java.io.Serializable;
 import java.sql.Time;
 
 @Entity
-@Table(name = "Oeffnungszeiten", schema = "eatforspeed")
-public class OeffnungszeitenEntity extends PanacheEntityBase implements Serializable {
-    private Long id;
-    private int oeffnungszeitenId;
+public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
+    @Id
+    @GeneratedValue
+    private int oeffnungszeiten_id;
     private Time anfang;
     private Time ende;
     private String wochentag;
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
+    public int getOeffnungszeiten_id() {
+        return oeffnungszeiten_id;
+    }
+    public void setOeffnungszeiten_id(int oeffnungszeitenId) {
+        this.oeffnungszeiten_id = oeffnungszeitenId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    @Id
-    @Column(name = "Oeffnungszeiten_ID")
-    public int getOeffnungszeitenId() {
-        return oeffnungszeitenId;
-    }
-
-    public void setOeffnungszeitenId(int oeffnungszeitenId) {
-        this.oeffnungszeitenId = oeffnungszeitenId;
-    }
-
-    @Basic
-    @Column(name = "Anfang")
     public Time getAnfang() {
         return anfang;
     }
-
     public void setAnfang(Time anfang) {
         this.anfang = anfang;
     }
 
-    @Basic
-    @Column(name = "Ende")
     public Time getEnde() {
         return ende;
     }
-
     public void setEnde(Time ende) {
         this.ende = ende;
     }
 
-    @Basic
-    @Column(name = "Wochentag")
     public String getWochentag() {
         return wochentag;
     }
-
     public void setWochentag(String wochentag) {
         this.wochentag = wochentag;
     }
@@ -71,9 +49,9 @@ public class OeffnungszeitenEntity extends PanacheEntityBase implements Serializ
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        OeffnungszeitenEntity that = (OeffnungszeitenEntity) o;
+        Oeffnungszeiten that = (Oeffnungszeiten) o;
 
-        if (oeffnungszeitenId != that.oeffnungszeitenId) return false;
+        if (oeffnungszeiten_id != that.oeffnungszeiten_id) return false;
         if (anfang != null ? !anfang.equals(that.anfang) : that.anfang != null) return false;
         if (ende != null ? !ende.equals(that.ende) : that.ende != null) return false;
         if (wochentag != null ? !wochentag.equals(that.wochentag) : that.wochentag != null) return false;
@@ -83,10 +61,20 @@ public class OeffnungszeitenEntity extends PanacheEntityBase implements Serializ
 
     @Override
     public int hashCode() {
-        int result = oeffnungszeitenId;
+        int result = oeffnungszeiten_id;
         result = 31 * result + (anfang != null ? anfang.hashCode() : 0);
         result = 31 * result + (ende != null ? ende.hashCode() : 0);
         result = 31 * result + (wochentag != null ? wochentag.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "OeffnungszeitenEntity{" +
+                "oeffnungszeiten_id=" + oeffnungszeiten_id +
+                ", anfang=" + anfang +
+                ", ende=" + ende +
+                ", wochentag='" + wochentag + '\'' +
+                '}';
     }
 }

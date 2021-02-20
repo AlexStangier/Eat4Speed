@@ -1,56 +1,36 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Gericht_Inhaltsstoffe", schema = "eatforspeed")
-@IdClass(GerichtInhaltsstoffeEntityPK.class)
-public class GerichtInhaltsstoffeEntity extends PanacheEntityBase implements Serializable {
-    private Long id;
-    private int gerichtId;
+public class Gericht_Inhaltsstoffe extends PanacheEntityBase implements Serializable {
+    @Id
+    private int gericht_id;
     private String inhaltsstoff;
     private Integer menge;
 
-    @Id
-    @GeneratedValue
-    public Long getId() {
-        return id;
+    public int getGericht_id() {
+        return gericht_id;
+    }
+    public void setGericht_id(int gericht_id) {
+        this.gericht_id = gericht_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    @Id
-    @Column(name = "Gericht_ID")
-    public int getGerichtId() {
-        return gerichtId;
-    }
-
-    public void setGerichtId(int gerichtId) {
-        this.gerichtId = gerichtId;
-    }
-
-    @Id
-    @Column(name = "Inhaltsstoff")
     public String getInhaltsstoff() {
         return inhaltsstoff;
     }
-
     public void setInhaltsstoff(String inhaltsstoff) {
         this.inhaltsstoff = inhaltsstoff;
     }
 
-    @Basic
-    @Column(name = "Menge")
+
     public Integer getMenge() {
         return menge;
     }
-
     public void setMenge(Integer menge) {
         this.menge = menge;
     }
@@ -60,9 +40,9 @@ public class GerichtInhaltsstoffeEntity extends PanacheEntityBase implements Ser
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GerichtInhaltsstoffeEntity that = (GerichtInhaltsstoffeEntity) o;
+        Gericht_Inhaltsstoffe that = (Gericht_Inhaltsstoffe) o;
 
-        if (gerichtId != that.gerichtId) return false;
+        if (gericht_id != that.gericht_id) return false;
         if (inhaltsstoff != null ? !inhaltsstoff.equals(that.inhaltsstoff) : that.inhaltsstoff != null) return false;
         if (menge != null ? !menge.equals(that.menge) : that.menge != null) return false;
 
@@ -71,9 +51,18 @@ public class GerichtInhaltsstoffeEntity extends PanacheEntityBase implements Ser
 
     @Override
     public int hashCode() {
-        int result = gerichtId;
+        int result = gericht_id;
         result = 31 * result + (inhaltsstoff != null ? inhaltsstoff.hashCode() : 0);
         result = 31 * result + (menge != null ? menge.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "GerichtInhaltsstoffeEntity{" +
+                "gericht_id=" + gericht_id +
+                ", inhaltsstoff='" + inhaltsstoff + '\'' +
+                ", menge=" + menge +
+                '}';
     }
 }

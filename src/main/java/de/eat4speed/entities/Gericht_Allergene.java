@@ -1,32 +1,27 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
-public class GerichtAllergeneEntityPK extends PanacheEntityBase implements Serializable {
-    private int gerichtId;
+@Entity
+public class Gericht_Allergene extends PanacheEntityBase implements Serializable {
+    @Id
+    private int gericht_id;
     private String allergen;
 
-    @Column(name = "Gericht_ID")
-    @Id
-    public int getGerichtId() {
-        return gerichtId;
+
+    public int getGericht_id() {
+        return gericht_id;
+    }
+    public void setGericht_id(int gericht_id) {
+        this.gericht_id = gericht_id;
     }
 
-    public void setGerichtId(int gerichtId) {
-        this.gerichtId = gerichtId;
-    }
-
-    @Column(name = "Allergen")
-    @Id
     public String getAllergen() {
         return allergen;
     }
-
     public void setAllergen(String allergen) {
         this.allergen = allergen;
     }
@@ -36,9 +31,9 @@ public class GerichtAllergeneEntityPK extends PanacheEntityBase implements Seria
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        GerichtAllergeneEntityPK that = (GerichtAllergeneEntityPK) o;
+        Gericht_Allergene that = (Gericht_Allergene) o;
 
-        if (gerichtId != that.gerichtId) return false;
+        if (gericht_id != that.gericht_id) return false;
         if (allergen != null ? !allergen.equals(that.allergen) : that.allergen != null) return false;
 
         return true;
@@ -46,8 +41,16 @@ public class GerichtAllergeneEntityPK extends PanacheEntityBase implements Seria
 
     @Override
     public int hashCode() {
-        int result = gerichtId;
+        int result = gericht_id;
         result = 31 * result + (allergen != null ? allergen.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "GerichtAllergeneEntity{" +
+                "gericht_id=" + gericht_id +
+                ", allergen='" + allergen + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,5 @@
 package de.eat4speed.entities;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
@@ -8,49 +7,34 @@ import java.io.Serializable;
 import java.sql.Date;
 
 @Entity
-@Table(name = "Urlaub", schema = "eatforspeed")
-public class UrlaubEntity extends PanacheEntityBase implements Serializable {
-    private Long id;
-    private int urlaubsId;
-    private Date anfang;
-    private Date ende;
-
+public class Urlaub extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
-    public Long getId() {
-        return id;
+    private int urlaubs_id;
+    private Date anfang;
+    private Date ende;
+    private int fahrernummer;
+
+    public long getUrlaubs_id() {
+        return urlaubs_id;
+    }
+    public void setUrlaubs_id(int urlaubs_id) {
+        this.urlaubs_id = urlaubs_id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public int getFahrernummer() { return fahrernummer; }
+    public void setFahrernummer(int fahrernummer) { this.fahrernummer = fahrernummer; }
 
-    @Id
-    @Column(name = "Urlaubs_ID")
-    public int getUrlaubsId() {
-        return urlaubsId;
-    }
-
-    public void setUrlaubsId(int urlaubsId) {
-        this.urlaubsId = urlaubsId;
-    }
-
-    @Basic
-    @Column(name = "Anfang")
     public Date getAnfang() {
         return anfang;
     }
-
     public void setAnfang(Date anfang) {
         this.anfang = anfang;
     }
 
-    @Basic
-    @Column(name = "Ende")
     public Date getEnde() {
         return ende;
     }
-
     public void setEnde(Date ende) {
         this.ende = ende;
     }
@@ -60,9 +44,9 @@ public class UrlaubEntity extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        UrlaubEntity that = (UrlaubEntity) o;
+        Urlaub that = (Urlaub) o;
 
-        if (urlaubsId != that.urlaubsId) return false;
+        if (urlaubs_id != that.urlaubs_id) return false;
         if (anfang != null ? !anfang.equals(that.anfang) : that.anfang != null) return false;
         if (ende != null ? !ende.equals(that.ende) : that.ende != null) return false;
 
@@ -71,9 +55,19 @@ public class UrlaubEntity extends PanacheEntityBase implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = urlaubsId;
+        int result = urlaubs_id;
         result = 31 * result + (anfang != null ? anfang.hashCode() : 0);
         result = 31 * result + (ende != null ? ende.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "UrlaubEntity{" +
+                ", urlaubs_id=" + urlaubs_id +
+                ", anfang=" + anfang +
+                ", ende=" + ende +
+                ", fahrernummer=" + fahrernummer +
+                '}';
     }
 }
