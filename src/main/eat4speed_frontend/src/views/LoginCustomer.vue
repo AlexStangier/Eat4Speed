@@ -3,7 +3,7 @@
     <v-main>
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
-          <v-flex md4 sm8 xs12>
+          <v-flex md3 sm6 xs12>
             <v-card>
               <v-tabs v-model="tab" background-color="red" dark grow icons-and-text show-arrows>
                 <v-tabs-slider color="red"></v-tabs-slider>
