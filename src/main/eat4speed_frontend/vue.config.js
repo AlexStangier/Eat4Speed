@@ -2,5 +2,6 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
-  outputDir: '../resources/META-INF/resources'
+  outputDir: '../resources/META-INF/resources',
+  publicPath: ''
 }
