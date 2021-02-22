@@ -32,7 +32,7 @@ public class BenutzerController {
     public String get(@PathParam("benutzerName") String benutzername) {
 
         Benutzer benutzer = new Benutzer();
-        benutzer.setBenutzername("test6");
+        benutzer.setBenutzername("testBenutzer9");
         benutzer.setE_Mail_Addresse("test@4.com");
         benutzer.setRolle("test");
         benutzer.setPasswort("testPW");
@@ -40,7 +40,6 @@ public class BenutzerController {
 
         benutzerRepository.addBenutzer(benutzer);
 
-        benutzerRepository.persist(benutzer);
         return benutzerRepository.findByBenutzerName(benutzername).toString();
     }
 
