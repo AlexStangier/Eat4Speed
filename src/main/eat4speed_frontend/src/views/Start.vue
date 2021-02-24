@@ -3,33 +3,36 @@
     <v-main>
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
-          <v-flex md3 sm6 xs12>
-                  <v-card class="px-4">
-                    <v-card-text>
-                      <v-form ref="loginForm" v-model="valid" lazy-validation>
+          <v-flex md6 sm6 xs12>
                         <v-row>
-                          <v-col cols="30">
-                            <v-text-field  label="Suche..."
+                          <v-col>
+                            <v-text-field  label="Suche nach Gericht"
+                                           ref="Suchfeld"
                                            required
                                            v-model="search"
                                            append-icon="mdi-magnify"
-                                           single-line
+                                            single-line
                                            hide-details
                             >
                             </v-text-field>
                           </v-col>
-                          <v-btn :disabled="!valid" color="red" dark rounded elevation="15"
+                          <v-btn :disabled="!valid" to="/Customer" color="red" dark rounded elevation="15" align="bottom"
                                  @click="validate">Los</v-btn>
                         </v-row>
-                        <v-row>
-                          <v-btn :disabled="!valid" color="red" dark rounded elevation="15"
-                                 @click="validate">Gericht</v-btn>
-                          <v-btn :disabled="!valid" color="red" dark rounded elevation="15"
-                                 @click="validate">Umgebung</v-btn>
+                        <v-row
+                            :align="align"
+                            style="height: 300px;"
+                        >
+                          <v-col>
+                            <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200"
+                                 @click="gerichtFarbe">Gericht</v-btn>
+                            <v-btn :disabled="!valid" ref="UmgebungButton" color="red" dark rounded elevation="15" width="200"
+                                 @click="umbegungFarbe">Umgebung</v-btn>
+                          </v-col>
+
                         </v-row>
-                      </v-form>
-                    </v-card-text>
-                  </v-card>
+            <v-btn :disabled="!valid" color="red" dark rounded elevation="15" to="/login-customer">Anmeldung</v-btn>
+
           </v-flex>
         </v-layout>
       </v-container>
@@ -39,13 +42,19 @@
 
 <script>
 export default {
-  name: "LoginCustomer",
-  computed: {
-    passwordMatch() {
-      return () => this.password === this.verify || "Passwort muss übereinstimmen.";
-    }
-  },
+  name: 'Start',
+
   methods: {
+    gerichtFarbe(){
+      this.$refs.GerichtButton.color = "blue"
+      this.$refs.UmgebungButton.color = "red"
+      this.$refs.Suchfeld.label = "Suche nach Gericht"
+    },
+    umbegungFarbe(){
+      this.$refs.UmgebungButton.color = "blue"
+      this.$refs.GerichtButton.color = "red"
+      this.$refs.Suchfeld.label = "Suche nach Umgebung"
+    },
     validate() {
       if (this.$refs.loginForm.validate()) {
         // submit form to server/API here...
