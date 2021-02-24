@@ -34,6 +34,11 @@ const routes = [
     path: '/Start',
     name: 'Start',
     component: () => import('../views/Start.vue')
+  },
+  {
+    path: '/restaurant-controlpanel',
+    name: 'restaurant-controlpanel',
+    component: () => import('../views/Restaurant-ControlPanel.vue')
   }
 ]
 
