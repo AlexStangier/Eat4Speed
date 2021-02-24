@@ -6,11 +6,9 @@ import de.eat4speed.services.BenutzerService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/Benutzer")
@@ -21,6 +19,17 @@ public class BenutzerController {
 
     @Inject
     BenutzerRepository benutzerRepository;
+
+    @POST
+    @Transactional
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response add(Benutzer benutzer)
+    {
+        benutzerRepository.persist(benutzer);
+
+        return Response.status(Response.Status.CREATED).entity(benutzer).build();
+    }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
