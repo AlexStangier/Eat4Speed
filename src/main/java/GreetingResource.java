@@ -1,4 +1,3 @@
-package de.eat4speed;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
