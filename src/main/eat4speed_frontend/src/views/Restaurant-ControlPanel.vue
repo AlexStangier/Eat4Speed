@@ -3,7 +3,7 @@
     <v-main>
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
-          <v-flex md3 sm6 xs12>
+          <v-flex md6 sm6 xs12>
             <v-card
                 class="mx-auto overflow-hidden"
                 height="800"
@@ -36,24 +36,24 @@
                       </v-list-item-icon>
                       <v-list-item-title>ControlPanel</v-list-item-title>
                     </v-list-item>
-
+                    <router-link  to="/restaurant-speisekarte-gerichte">
                     <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-silverware</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Speise Karte bearbeiten</v-list-item-title>
                     </v-list-item>
-
+                    </router-link>
                     <v-list-item>
                       <v-list-item-icon>
-                        <v-icon>mdi-silverware</v-icon>
+                        <v-icon>mdi-view-headline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Offene Bestellungen</v-list-item-title>
                     </v-list-item>
 
                     <v-list-item>
                       <v-list-item-icon>
-                        <v-icon>mdi-silverware</v-icon>
+                        <v-icon>mdi-watch</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Schichtplan</v-list-item-title>
                     </v-list-item>
@@ -67,16 +67,18 @@
 
                     <v-list-item>
                       <v-list-item-icon>
-                        <v-icon>mdi-silverware</v-icon>
+                        <v-icon>mdi-margin</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Umsatzstatistik</v-list-item-title>
                     </v-list-item>
 
                     <v-list-item>
                       <v-list-item-icon>
-                        <v-icon>mdi-silverware</v-icon>
+                        <v-icon>mdi-exclamation </v-icon>
                       </v-list-item-icon>
+
                       <v-list-item-title>Neue Bestellungen</v-list-item-title>
+
                     </v-list-item>
 
                   </v-list-item-group>
