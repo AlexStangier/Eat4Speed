@@ -44,7 +44,12 @@ const routes = [
     path: '/restaurant-speisekarte-gerichte',
     name: 'restaurant-speisekarte-gerichte',
     component: () => import('../views/Restaurant_Speisekarte_Gerichte.vue')
-  }
+  },
+  {
+    path: '/login-admin',
+    name: 'LoginAdmin',
+    component: () => import('../views/LoginAdmin.vue')
+  },
 ]
 
 const router = new VueRouter({
