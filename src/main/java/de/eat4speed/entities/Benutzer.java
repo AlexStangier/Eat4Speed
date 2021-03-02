@@ -10,7 +10,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
 
     @Id
     private String benutzername;
-    private String E_Mail_Addresse;
+    private String emailAdresse;
     private String passwort;
     private String rolle;
     private String paypal_Account;
@@ -23,12 +23,12 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.benutzername = benutzername;
     }
 
-    public String getE_Mail_Addresse() {
-        return E_Mail_Addresse;
+    public String getEmailAddresse() {
+        return emailAdresse;
     }
 
-    public void setE_Mail_Addresse(String e_Mail_Addresse) {
-        this.E_Mail_Addresse = e_Mail_Addresse;
+    public void setEmailAddresse(String emailAddresse) {
+        this.emailAdresse = emailAddresse;
     }
 
     public String getPasswort() {
@@ -63,7 +63,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         Benutzer that = (Benutzer) o;
 
         if (benutzername != null ? !benutzername.equals(that.benutzername) : that.benutzername != null) return false;
-        if (E_Mail_Addresse != null ? !E_Mail_Addresse.equals(that.E_Mail_Addresse) : that.E_Mail_Addresse != null)
+        if (emailAdresse != null ? !emailAdresse.equals(that.emailAdresse) : that.emailAdresse != null)
             return false;
         if (passwort != null ? !passwort.equals(that.passwort) : that.passwort != null) return false;
         if (rolle != null ? !rolle.equals(that.rolle) : that.rolle != null) return false;
@@ -76,7 +76,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     @Override
     public int hashCode() {
         int result = benutzername != null ? benutzername.hashCode() : 0;
-        result = 31 * result + (E_Mail_Addresse != null ? E_Mail_Addresse.hashCode() : 0);
+        result = 31 * result + (emailAdresse != null ? emailAdresse.hashCode() : 0);
         result = 31 * result + (passwort != null ? passwort.hashCode() : 0);
         result = 31 * result + (rolle != null ? rolle.hashCode() : 0);
         result = 31 * result + (paypal_Account != null ? paypal_Account.hashCode() : 0);
@@ -87,7 +87,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     public String toString() {
         return "Benutzer{" +
                 "benutzername='" + benutzername + '\'' +
-                ", E_Mail_Addresse='" + E_Mail_Addresse + '\'' +
+                ", emailAdresse='" + emailAdresse + '\'' +
                 ", passwort='" + passwort + '\'' +
                 ", rolle='" + rolle + '\'' +
                 ", paypal_Account='" + paypal_Account + '\'' +

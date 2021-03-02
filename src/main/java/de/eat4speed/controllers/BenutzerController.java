@@ -5,13 +5,14 @@ import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.services.BenutzerService;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/Benutzer")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class BenutzerController {
 
     @Inject
@@ -21,12 +22,10 @@ public class BenutzerController {
     BenutzerRepository benutzerRepository;
 
     @POST
-    @Transactional
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
     public Response add(Benutzer benutzer)
     {
-        benutzerRepository.persist(benutzer);
+
+        benutzerRepository.addBenutzer(benutzer);
 
         return Response.status(Response.Status.CREATED).entity(benutzer).build();
     }
@@ -42,7 +41,7 @@ public class BenutzerController {
 
         Benutzer benutzer = new Benutzer();
         benutzer.setBenutzername("testBenutzer9");
-        benutzer.setE_Mail_Addresse("test@4.com");
+        benutzer.setEmailAddresse("test@4.com");
         benutzer.setRolle("test");
         benutzer.setPasswort("testPW");
         benutzer.setPaypal_Account("ppAcc");
