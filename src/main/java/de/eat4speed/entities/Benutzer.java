@@ -23,12 +23,12 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.benutzername = benutzername;
     }
 
-    public String getEmailAddresse() {
+    public String getEmailAdresse() {
         return emailAdresse;
     }
 
-    public void setEmailAddresse(String emailAddresse) {
-        this.emailAdresse = emailAddresse;
+    public void setEmailAdresse(String emailAdresse) {
+        this.emailAdresse = emailAdresse;
     }
 
     public String getPasswort() {

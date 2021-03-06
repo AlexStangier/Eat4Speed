@@ -93,7 +93,7 @@
                           </v-col>
                           <v-spacer></v-spacer>
                           <v-col class="text-right">
-                            <v-btn color="red" dark rounded @click="createCustomer">Registers</v-btn>
+                            <v-btn color="red" dark rounded @click="validate">Register</v-btn>
                           </v-col>
                         </v-row>
                       </v-form>
@@ -121,43 +121,70 @@ export default {
   },
   methods: {
 
-    createCustomer : function ()
-    {
-      let currentObj;
+    validate() {
+
+      let createdBenutzer;
       var benutzer = {
         benutzername: this.firstName,
         emailAdresse: this.email,
         passwort: this.password,
         rolle: "kunde",
-        paypal_Account: "this.email"
+        paypal_Account: "paypalDummy"
       };
 
       axios.post("/Benutzer", benutzer)
           .then(function (response) {
-            currentObj.output = response.data;
+            createdBenutzer.output = response.data;
           })
           .catch(function (error) {
-            currentObj.output = error;
+            createdBenutzer.output = error;
           });
-    },
 
-    validate() {
 
-      let currentObj;
-      this.axios.post('http://localhost:8080/Benutzer', {
+      let createdAdressen;
+      var adressen = {
+        strasse: this.street,
+        hausnummer: this.houseNumber,
+        ort: this.place,
+        postleitzahl: this.postCode
+      };
 
-        benutzername: this.firstName,
-        emailAdresse: this.email,
-        passwort: this.password,
-        rolle: "kunde",
-        paypal_Account: this.email
+      var returnedAdress = {
+        adress_Id:0,
+        strasse:"",
+        hausnummer:"",
+        ort:"",
+        postleitzahl:""
+      }
 
-      })
+      axios.post("/Adressen", adressen)
           .then(function (response) {
-            currentObj.output = response.data;
+            createdAdressen.output = response.data;
+            returnedAdress = JSON.parse(createdAdressen.output);
+            console.log(response.data);
+
           })
           .catch(function (error) {
-            currentObj.output = error;
+            createdAdressen.output = error;
+          });
+
+      //this.adress_ID = returnedAdress.adress_Id;
+      this.adress_ID = returnedAdress.adress_Id;
+
+      let createdKunde;
+      var kunde = {
+        benutzername: this.firstName,
+        name: this.lastName,
+        vorname: this.firstName,
+        anschrift: this.adress_ID
+      };
+
+      axios.post("/Kunde", kunde)
+          .then(function (response) {
+            createdKunde.output = response.data;
+          })
+          .catch(function (error) {
+            createdKunde.output = error;
           });
 
       if (this.$refs.loginForm.validate()) {
@@ -181,6 +208,7 @@ export default {
       ],
       valid: true,
       salutation: "",
+      adress_ID: "",
       firstName: "",
       lastName: "",
       street: "",

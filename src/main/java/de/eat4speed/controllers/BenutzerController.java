@@ -24,7 +24,6 @@ public class BenutzerController {
     @POST
     public Response add(Benutzer benutzer)
     {
-
         benutzerRepository.addBenutzer(benutzer);
 
         return Response.status(Response.Status.CREATED).entity(benutzer).build();
@@ -41,7 +40,7 @@ public class BenutzerController {
 
         Benutzer benutzer = new Benutzer();
         benutzer.setBenutzername("testBenutzer9");
-        benutzer.setEmailAddresse("test@4.com");
+        //benutzer.setEmailAddresse("test@4.com");
         benutzer.setRolle("test");
         benutzer.setPasswort("testPW");
         benutzer.setPaypal_Account("ppAcc");
