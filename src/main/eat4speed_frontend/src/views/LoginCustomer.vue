@@ -57,7 +57,8 @@
                                           required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="4" sm="4">
-                            <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer" maxlength="20"
+                            <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer"
+                                          maxlength="20"
                                           required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="8" sm="8">
@@ -65,14 +66,16 @@
                                           required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="4" sm="4">
-                            <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="20"
+                            <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl"
+                                          maxlength="20"
                                           required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="8" sm="8">
                             <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="4" sm="4">
-                            <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
+                            <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
+                                          maxlength="20"
                                           required></v-text-field>
                           </v-col>
                           <v-col cols="12">
@@ -82,14 +85,15 @@
                                           @click:append="show1 = !show1"></v-text-field>
                           </v-col>
                           <v-col cols="12">
-                            <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, passwordMatch]"
+                            <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                          :rules="[rules.required, passwordMatch]"
                                           :type="show1 ? 'text' : 'Passwort'" block
                                           counter label="Passwort bestätigen" name="input-10-1"
                                           @click:append="show1 = !show1"></v-text-field>
                           </v-col>
                           <v-spacer></v-spacer>
                           <v-col class="text-right">
-                            <v-btn :disabled="!valid" color="red" dark rounded @click="validate">Register</v-btn>
+                            <v-btn color="red" dark rounded @click="validate">Register</v-btn>
                           </v-col>
                         </v-row>
                       </v-form>
@@ -106,6 +110,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "LoginCustomer",
   computed: {
@@ -114,9 +120,76 @@ export default {
     }
   },
   methods: {
+
     validate() {
+
+      let createdBenutzer;
+      var benutzer = {
+        benutzername: this.firstName,
+        emailAdresse: this.email,
+        passwort: this.password,
+        rolle: "kunde",
+        paypal_Account: "paypalDummy"
+      };
+
+      axios.post("/Benutzer", benutzer)
+          .then(function (response) {
+            createdBenutzer.output = response.data;
+          })
+          .catch(function (error) {
+            createdBenutzer.output = error;
+          });
+
+
+      let createdAdressen;
+      var adressen = {
+        strasse: this.street,
+        hausnummer: this.houseNumber,
+        ort: this.place,
+        postleitzahl: this.postCode
+      };
+
+      var returnedAdress = {
+        adress_Id:0,
+        strasse:"",
+        hausnummer:"",
+        ort:"",
+        postleitzahl:""
+      }
+
+      axios.post("/Adressen", adressen)
+          .then(function (response) {
+            createdAdressen.output = response.data;
+            returnedAdress = JSON.parse(createdAdressen.output);
+            console.log(response.data);
+
+          })
+          .catch(function (error) {
+            createdAdressen.output = error;
+          });
+
+      //this.adress_ID = returnedAdress.adress_Id;
+      this.adress_ID = returnedAdress.adress_Id;
+
+      let createdKunde;
+      var kunde = {
+        benutzername: this.firstName,
+        name: this.lastName,
+        vorname: this.firstName,
+        anschrift: this.adress_ID
+      };
+
+      axios.post("/Kunde", kunde)
+          .then(function (response) {
+            createdKunde.output = response.data;
+          })
+          .catch(function (error) {
+            createdKunde.output = error;
+          });
+
       if (this.$refs.loginForm.validate()) {
-        // submit form to server/API here...
+        // submit form to server/
+
       }
     },
     reset() {
@@ -135,6 +208,7 @@ export default {
       ],
       valid: true,
       salutation: "",
+      adress_ID: "",
       firstName: "",
       lastName: "",
       street: "",

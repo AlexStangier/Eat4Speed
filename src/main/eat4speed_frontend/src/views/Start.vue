@@ -2,10 +2,18 @@
   <v-app>
     <v-main>
       <v-container fill-height fluid>
-        <v-layout align-center justify-center>
+        <v-layout justify-center>
           <v-flex md6 sm6 xs12>
+
+            <v-img
+                class="justify-center"
+                lazy-src="https://i.imgur.com/onX9Kvo.png"
+                src="https://i.imgur.com/onX9Kvo.png"
+            ></v-img>
                         <v-row>
+
                           <v-col>
+
                             <v-text-field  label="Suche nach Gericht"
                                            ref="Suchfeld"
                                            required
@@ -20,8 +28,7 @@
                                  @click="validate">Los</v-btn>
                         </v-row>
                         <v-row
-                            :align="align"
-                            style="height: 300px;"
+                            style="height: 200px;"
                         >
                           <v-col>
                             <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200"
@@ -31,8 +38,37 @@
                           </v-col>
 
                         </v-row>
-            <v-btn :disabled="!valid" color="red" dark rounded elevation="15" to="/login-customer">Anmeldung</v-btn>
+            <!--Anmelde Dialog-->
+            <v-dialog
+                v-model="dialog"
+                width="500"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="red"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                  Anmelden
+                </v-btn>
+              </template>
 
+              <v-card class="pa-10">
+                <v-card-title class="d-flex justify-center">
+                  Anmeldung
+                </v-card-title>
+                <v-spacer class="pb-10"></v-spacer>
+                <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/login-customer"
+                       @click="gerichtFarbe">Kunde</v-btn>
+                <v-spacer class="pb-10"></v-spacer>
+                <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/login-restaurant"
+                       @click="gerichtFarbe">Restaurant</v-btn>
+                <v-spacer class="pb-10"></v-spacer>
+                <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/login-driver"
+                       @click="gerichtFarbe">Fahrer</v-btn>
+              </v-card>
+            </v-dialog>
           </v-flex>
         </v-layout>
       </v-container>
@@ -45,6 +81,9 @@ export default {
   name: 'Start',
 
   methods: {
+    openLogin(){
+      this.$refs.Anmeldung.class="px-4 d-flex"
+    },
     gerichtFarbe(){
       this.$refs.GerichtButton.color = "blue"
       this.$refs.UmgebungButton.color = "red"
