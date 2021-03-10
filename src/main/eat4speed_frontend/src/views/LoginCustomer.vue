@@ -121,7 +121,9 @@ export default {
   },
   methods: {
 
-    validate() {
+    async validate() {
+
+      console.log("test");
 
       let createdBenutzer;
       var benutzer = {
@@ -136,12 +138,7 @@ export default {
           .then(function (response) {
             createdBenutzer.output = response.data;
           })
-          .catch(function (error) {
-            createdBenutzer.output = error;
-          });
 
-
-      let createdAdressen;
       var adressen = {
         strasse: this.street,
         hausnummer: this.houseNumber,
@@ -149,43 +146,26 @@ export default {
         postleitzahl: this.postCode
       };
 
-      var returnedAdress = {
-        adress_Id:0,
-        strasse:"",
-        hausnummer:"",
-        ort:"",
-        postleitzahl:""
-      }
+      const responseA = await axios.post("/Adressen", adressen);
 
-      axios.post("/Adressen", adressen)
-          .then(function (response) {
-            createdAdressen.output = response.data;
-            returnedAdress = JSON.parse(createdAdressen.output);
-            console.log(response.data);
+      console.log(responseA);
+      console.log(responseA.data);
+      console.log(responseA.data.adress_Id);
 
-          })
-          .catch(function (error) {
-            createdAdressen.output = error;
-          });
-
-      //this.adress_ID = returnedAdress.adress_Id;
-      this.adress_ID = returnedAdress.adress_Id;
+      this.adress_ID = responseA.data.adress_Id;
 
       let createdKunde;
       var kunde = {
         benutzername: this.firstName,
         name: this.lastName,
         vorname: this.firstName,
-        anschrift: this.adress_ID
+        anschrift: parseInt(this.adress_ID, 10)
       };
 
       axios.post("/Kunde", kunde)
           .then(function (response) {
             createdKunde.output = response.data;
           })
-          .catch(function (error) {
-            createdKunde.output = error;
-          });
 
       if (this.$refs.loginForm.validate()) {
         // submit form to server/
