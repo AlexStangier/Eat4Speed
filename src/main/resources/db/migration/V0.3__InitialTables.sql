@@ -7,6 +7,7 @@ SET @OLD_UNIQUE_CHECKS = @@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
 SET @OLD_FOREIGN_KEY_CHECKS = @@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
 SET @OLD_SQL_MODE = @@SQL_MODE, SQL_MODE = 'TRADITIONAL,ALLOW_INVALID_DATES';
 
+
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
@@ -68,10 +69,11 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Allergene`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Benutzer`
 -- -----------------------------------------------------
-DROP TABLE Benutzer;
+-- DROP TABLE Benutzer;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Benutzer`
 (
     `Benutzer_ID`     INT         NOT NULL AUTO_INCREMENT,
+    `Benutzername`    VARCHAR(50) NULL DEFAULT NULL,
     `Vorname`         VARCHAR(50) NOT NULL,
     `Nachname`        VARCHAR(50) NOT NULL,
     `EmailAdresse`    VARCHAR(50) NOT NULL,
@@ -88,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Benutzer`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Kunde`
 -- -----------------------------------------------------
-DROP TABLE Kunde;
+-- DROP TABLE Kunde;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Kunde`
 (
     `Kundennummer`    INT         NOT NULL AUTO_INCREMENT,
@@ -152,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Status`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Auftrag`
 -- -----------------------------------------------------
-DROP TABLE Auftrag;
+-- DROP TABLE Auftrag;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Auftrag`
 (
     `Auftrags_ID`   INT           NOT NULL AUTO_INCREMENT,
@@ -202,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrzeug`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Fahrer`
 -- -----------------------------------------------------
-DROP TABLE Fahrer;
+-- DROP TABLE Fahrer;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
 (
     `Fahrernummer`       INT         NOT NULL AUTO_INCREMENT,
@@ -230,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Restaurant`
 -- -----------------------------------------------------
-DROP TABLE Restaurant;
+-- DROP TABLE Restaurant;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Restaurant`
 (
     `Restaurant_ID`           INT          NOT NULL AUTO_INCREMENT,
@@ -328,7 +330,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Benachrichtigung_Kunde`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Bestellhistorie`
 -- -----------------------------------------------------
-DROP TABLE Bestellhistorie;
+-- DROP TABLE Bestellhistorie;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Bestellhistorie`
 (
     `Bestellhistorien_ID` INT NOT NULL AUTO_INCREMENT,
@@ -341,7 +343,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Bestellhistorie`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Restaurant_Bestellhistorie`
 -- -----------------------------------------------------
-DROP TABLE Restaurant_Bestellhistorie;
+-- DROP TABLE Restaurant_Bestellhistorie;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Restaurant_Bestellhistorie`
 (
     `Bestellhistorien_ID`   INT NOT NULL,
@@ -361,7 +363,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Restaurant_Bestellhistorie`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Bestellung`
 -- -----------------------------------------------------
-DROP TABLE Bestellung;
+-- DROP TABLE Bestellung;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Bestellung`
 (
     `Bestell_ID`          INT      NOT NULL AUTO_INCREMENT,
@@ -446,12 +448,12 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Bestellzuordnung`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Einnahmen`
 -- -----------------------------------------------------
-DROP TABLE Einnahmen;
+-- DROP TABLE Einnahmen;
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Einnahmen`
 (
     `Einnahmen_ID`  INT           NOT NULL AUTO_INCREMENT,
     `Restaurant_ID` INT           NOT NULL,
-    `Umsatz`        DOUBLE(50, 4) NOT NULL,
+    `Umsatz`        INT NOT NULL,
     `Monat`         INT           NOT NULL,
     `Jahr`          INT           NOT NULL,
     PRIMARY KEY (`Einnahmen_ID`),
@@ -575,14 +577,14 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Oeffnungszeiten`
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Fahrtenplan`
 -- -----------------------------------------------------
-DROP TABLE Fahrtenplan;
-CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrtenplan`
+-- DROP TABLE `eatforspeed`.`Fahrtenplan`;
+CREATE TABLE IF NOT EXISTS  Fahrtenplan
 (
     `Fahrtenplan_ID`       INT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `Auftrag_ID`           INT       NOT NULL,
     `Fahrernummer`         INT       NOT NULL,
     `Liefer_Abholadresse`  INT       NOT NULL,
-    `Vorherige_Station`    INT,
+    `Vorherige_Station`    INT       NOT NULL,
     `Fahrzeit_A_B`         INT,
     `Distanz_zu_naechster_Station` INT,
     `Geschaetzte_Fahrtzeit` INT,
