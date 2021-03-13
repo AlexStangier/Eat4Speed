@@ -4,16 +4,29 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Benutzer extends PanacheEntityBase implements Serializable {
 
     @Id
+    @GeneratedValue
+    private int benutzer_ID;
     private String benutzername;
+    private String vorname;
+    private String nachname;
     private String emailAdresse;
     private String passwort;
-    private String rolle;
+    private int rolle;
     private String paypal_Account;
+
+    public int getBenutzer_ID() {
+        return benutzer_ID;
+    }
+
+    public void setBenutzer_ID(int benutzer_ID) {
+        this.benutzer_ID = benutzer_ID;
+    }
 
     public String getBenutzername() {
         return benutzername;
@@ -21,6 +34,22 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
 
     public void setBenutzername(String benutzername) {
         this.benutzername = benutzername;
+    }
+
+    public String getVorname() {
+        return vorname;
+    }
+
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
+
+    public String getNachname() {
+        return nachname;
+    }
+
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
     }
 
     public String getEmailAdresse() {
@@ -39,11 +68,11 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.passwort = passwort;
     }
 
-    public String getRolle() {
+    public int getRolle() {
         return rolle;
     }
 
-    public void setRolle(String rolle) {
+    public void setRolle(int rolle) {
         this.rolle = rolle;
     }
 
@@ -59,37 +88,25 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Benutzer that = (Benutzer) o;
-
-        if (benutzername != null ? !benutzername.equals(that.benutzername) : that.benutzername != null) return false;
-        if (emailAdresse != null ? !emailAdresse.equals(that.emailAdresse) : that.emailAdresse != null)
-            return false;
-        if (passwort != null ? !passwort.equals(that.passwort) : that.passwort != null) return false;
-        if (rolle != null ? !rolle.equals(that.rolle) : that.rolle != null) return false;
-        if (paypal_Account != null ? !paypal_Account.equals(that.paypal_Account) : that.paypal_Account != null)
-            return false;
-
-        return true;
+        Benutzer benutzer = (Benutzer) o;
+        return benutzer_ID == benutzer.benutzer_ID && rolle == benutzer.rolle && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(paypal_Account, benutzer.paypal_Account);
     }
 
     @Override
     public int hashCode() {
-        int result = benutzername != null ? benutzername.hashCode() : 0;
-        result = 31 * result + (emailAdresse != null ? emailAdresse.hashCode() : 0);
-        result = 31 * result + (passwort != null ? passwort.hashCode() : 0);
-        result = 31 * result + (rolle != null ? rolle.hashCode() : 0);
-        result = 31 * result + (paypal_Account != null ? paypal_Account.hashCode() : 0);
-        return result;
+        return Objects.hash(benutzer_ID, benutzername, vorname, nachname, emailAdresse, passwort, rolle, paypal_Account);
     }
 
     @Override
     public String toString() {
         return "Benutzer{" +
-                "benutzername='" + benutzername + '\'' +
+                "benutzer_ID=" + benutzer_ID +
+                ", benutzername='" + benutzername + '\'' +
+                ", vorname='" + vorname + '\'' +
+                ", nachname='" + nachname + '\'' +
                 ", emailAdresse='" + emailAdresse + '\'' +
                 ", passwort='" + passwort + '\'' +
-                ", rolle='" + rolle + '\'' +
+                ", rolle=" + rolle +
                 ", paypal_Account='" + paypal_Account + '\'' +
                 '}';
     }

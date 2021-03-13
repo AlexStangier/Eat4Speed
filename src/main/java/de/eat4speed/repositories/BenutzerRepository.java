@@ -10,10 +10,6 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class BenutzerRepository implements PanacheRepository<Benutzer> {
 
-    public Benutzer findByBenutzerName(String benutzername)
-    {
-        return find("benutzername", benutzername).firstResult();
-    }
 
     @Transactional
     public void addBenutzer(Benutzer benutzer)

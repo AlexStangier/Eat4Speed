@@ -129,23 +129,28 @@ export default {
   },
   methods: {
 
+    async login() {
+
+
+
+    },
     async validate() {
 
       console.log("test");
 
-      let createdBenutzer;
       var benutzer = {
-        benutzername: this.firstName,
+        vorname: this.firstName,
+        nachname: this.lastName,
+        benutzername: this.username,
         emailAdresse: this.email,
         passwort: this.password,
-        rolle: "kunde",
-        paypal_Account: "paypalDummy"
+        rolle: 1,
+        paypal_Account: this.paypal
       };
 
-      axios.post("/Benutzer", benutzer)
-          .then(function (response) {
-            createdBenutzer.output = response.data;
-          })
+      const responseBenutzer = await axios.post("/Benutzer", benutzer);
+
+      this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
       var adressen = {
         strasse: this.street,
@@ -154,20 +159,21 @@ export default {
         postleitzahl: this.postCode
       };
 
-      const responseA = await axios.post("/Adressen", adressen);
+      const responseAdressen = await axios.post("/Adressen", adressen);
 
-      console.log(responseA);
-      console.log(responseA.data);
-      console.log(responseA.data.adress_Id);
+      console.log(responseAdressen);
+      console.log(responseAdressen.data);
+      console.log(responseAdressen.data.adress_Id);
 
-      this.adress_ID = responseA.data.adress_Id;
+      this.adress_ID = responseAdressen.data.adress_Id;
 
       let createdKunde;
       var kunde = {
-        benutzername: this.firstName,
+        benutzer_ID: this.benutzer_ID,
+        anrede: this.salutation,
         name: this.lastName,
         vorname: this.firstName,
-        anschrift: parseInt(this.adress_ID, 10)
+        anschrift: this.adress_ID
       };
 
       axios.post("/Kunde", kunde)
@@ -197,6 +203,7 @@ export default {
       valid: true,
       salutation: "",
       adress_ID: "",
+      benutzer_ID: "",
       firstName: "",
       lastName: "",
       street: "",
