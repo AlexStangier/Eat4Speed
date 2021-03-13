@@ -16,6 +16,8 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
     private int geleistete_Fahrten;
     private byte ist_In_Pause;
     private int fahrzeug;
+    private int aktueller_Standort;
+    private int anzahl_aktuelle_Auftraege;
 
     public int getFahrernummer() {
         return fahrernummer;
@@ -75,27 +77,45 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.fahrzeug = fahrzeug;
     }
 
+    public int getAktueller_Standort() {
+        return aktueller_Standort;
+    }
+
+    public void setAktueller_Standort(int aktueller_Standort) {
+        this.aktueller_Standort = aktueller_Standort;
+    }
+
+    public int getAnzahl_aktuelle_Auftraege() {
+        return anzahl_aktuelle_Auftraege;
+    }
+
+    public void setAnzahl_aktuelle_Auftraege(int anzahl_aktuelle_Auftraege) {
+        this.anzahl_aktuelle_Auftraege = anzahl_aktuelle_Auftraege;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Fahrer that = (Fahrer) o;
-        return fahrernummer == that.fahrernummer && geleistete_Fahrten == that.geleistete_Fahrten && ist_In_Pause == that.ist_In_Pause && fahrzeug == that.fahrzeug && Objects.equals(benutzername, that.benutzername);
+        Fahrer fahrer = (Fahrer) o;
+        return fahrernummer == fahrer.fahrernummer && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && benutzername.equals(fahrer.benutzername);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fahrernummer, benutzername, geleistete_Fahrten, ist_In_Pause, fahrzeug);
+        return Objects.hash(fahrernummer, benutzername, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege);
     }
 
     @Override
     public String toString() {
-        return "FahrerEntity{" +
+        return "Fahrer{" +
                 "fahrernummer=" + fahrernummer +
                 ", benutzername='" + benutzername + '\'' +
                 ", geleistete_Fahrten=" + geleistete_Fahrten +
                 ", ist_In_Pause=" + ist_In_Pause +
                 ", fahrzeug=" + fahrzeug +
+                ", aktueller_Standort=" + aktueller_Standort +
+                ", anzahl_aktuelle_Auftraege=" + anzahl_aktuelle_Auftraege +
                 '}';
     }
 }
