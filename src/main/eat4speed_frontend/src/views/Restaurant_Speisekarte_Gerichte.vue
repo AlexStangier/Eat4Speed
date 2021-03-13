@@ -40,8 +40,99 @@
                 <v-divider></v-divider>
               </template>
             </v-virtual-scroll>
-            <v-btn>Artikel hinzufügen</v-btn>
-            <v-form v-model="myForm" hidden></v-form>
+
+            <!------------  Artikel hinzufügen + ------------->
+
+            <v-dialog
+                v-model="dialog"
+                width="500"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="red"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                  Artikel beartbeiten
+                </v-btn>
+              </template>
+
+            <v-card>
+              <v-col>
+              <v-text-field
+                  v-model="firstname"
+                  :rules="nameRules"
+                  :counter="10"
+                  label="Artikelname"
+                  required
+              ></v-text-field>
+                <v-text-field
+                    v-model="firstname"
+                    :rules="nameRules"
+                    :counter="10"
+                    label="Artikelbeschreibung"
+                    required
+                ></v-text-field>
+                <v-file-input
+                label="Bild auswählen">
+
+                </v-file-input>
+                <v-text-field label="Preis" type="number" append-icon="currency-eur">
+                </v-text-field>
+
+                <v-dialog
+                    v-model="dialog"
+                    max-width="200"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        color="red"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                     Allergene auswählen
+                    </v-btn>
+                  </template>
+                    <v-card>
+                      <v-col>
+                      <v-btn>
+                        bruh
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn>
+                        bruh
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn>
+                        bruh
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn>
+                        bruh
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn>
+                        bruh
+                      </v-btn>
+
+                      </v-col>
+                    </v-card>
+                  </v-dialog>
+
+
+                <v-spacer class="ma-2"></v-spacer>
+                <v-btn
+                    color="red"
+                    dark
+                >
+                  Fertig
+                </v-btn>
+              </v-col>
+            </v-card>
+            </v-dialog>
+            <!------------  Artikel hinzufügen - ------------->
           </v-flex>
         </v-layout>
       </v-container>
