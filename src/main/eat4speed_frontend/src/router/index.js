@@ -50,6 +50,11 @@ const routes = [
     name: 'LoginAdmin',
     component: () => import('../views/LoginAdmin.vue')
   },
+  {
+    path: '/admin-verification',
+    name: 'AdminVerification',
+    component: () => import('../views/AdminVerification.vue')
+  },
 ]
 
 const router = new VueRouter({
