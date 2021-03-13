@@ -52,6 +52,10 @@
                             <v-text-field v-model="lastName" :rules="[rules.required]" label="Nachname" maxlength="20"
                                           required></v-text-field>
                           </v-col>
+                          <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
+                                          maxlength="20" required></v-text-field>
+                          </v-col>
                           <v-col cols="12" md="8" sm="8">
                             <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="40"
                                           required></v-text-field>
@@ -77,6 +81,10 @@
                             <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
                                           maxlength="20"
                                           required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="paypal" :rules="emailRules" label="Paypal Email"
+                                          maxlength="20" required></v-text-field>
                           </v-col>
                           <v-col cols="12">
                             <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -165,7 +173,7 @@ export default {
       axios.post("/Kunde", kunde)
           .then(function (response) {
             createdKunde.output = response.data;
-          })
+          }.bind(this))
 
       if (this.$refs.loginForm.validate()) {
         // submit form to server/
@@ -201,6 +209,8 @@ export default {
       verify: "",
       loginPassword: "",
       loginEmail: "",
+      username: "",
+      paypal: "",
       loginEmailRules: [
         v => !!v || "Required",
         v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
