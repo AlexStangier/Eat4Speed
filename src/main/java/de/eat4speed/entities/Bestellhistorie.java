@@ -12,8 +12,6 @@ public class Bestellhistorie extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
     private int bestellhistorienId;
-    private int restaurant;
-
 
     public int getBestellhistorienId() {
         return bestellhistorienId;
@@ -23,32 +21,23 @@ public class Bestellhistorie extends PanacheEntityBase implements Serializable {
         this.bestellhistorienId = bestellhistorienId;
     }
 
-    public int getRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(int restaurant) {
-        this.restaurant = restaurant;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bestellhistorie that = (Bestellhistorie) o;
-        return bestellhistorienId == that.bestellhistorienId && restaurant == that.restaurant;
+        return bestellhistorienId == that.bestellhistorienId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bestellhistorienId, restaurant);
+        return Objects.hash(bestellhistorienId);
     }
 
     @Override
     public String toString() {
         return "Bestellhistorie{" +
                 "bestellhistorienId=" + bestellhistorienId +
-                ", restaurant=" + restaurant +
                 '}';
     }
 }

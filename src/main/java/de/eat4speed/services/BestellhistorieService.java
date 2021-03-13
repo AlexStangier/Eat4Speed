@@ -1,6 +1,5 @@
 package de.eat4speed.services;
 
-import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.repositories.BestellhistorieRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,5 +14,4 @@ public class BestellhistorieService {
     public BestellhistorieService(BestellhistorieRepository bestellhistorieRepository) {
         this.bestellhistorieRepository = bestellhistorieRepository;
     }
-
 }
