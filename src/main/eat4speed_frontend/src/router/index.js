@@ -55,6 +55,11 @@ const routes = [
     name: 'AdminVerification',
     component: () => import('../views/AdminVerification.vue')
   },
+  {
+    path:'/dish',
+    name: 'Dish',
+    component: () => import('../views/Dish')
+  },
 ]
 
 const router = new VueRouter({

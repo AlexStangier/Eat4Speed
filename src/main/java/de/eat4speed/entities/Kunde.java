@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Kunde extends PanacheEntityBase implements Serializable {
@@ -11,10 +12,11 @@ public class Kunde extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
     private int kundennummer;
-    private String benutzername;
+    private int benutzer_ID;
     private String name;
     private String vorname;
     private String bestellhistorie;
+    private String anrede;
     private int anschrift;
 
 
@@ -50,12 +52,12 @@ public class Kunde extends PanacheEntityBase implements Serializable {
         this.bestellhistorie = bestellhistorie;
     }
 
-    public String getBenutzername() {
-        return benutzername;
+    public int getBenutzer_ID() {
+        return benutzer_ID;
     }
 
-    public void setBenutzername(String benutzername) {
-        this.benutzername = benutzername;
+    public void setBenutzer_ID(int benutzer_ID) {
+        this.benutzer_ID = benutzer_ID;
     }
 
     public int getAnschrift() {
@@ -66,39 +68,36 @@ public class Kunde extends PanacheEntityBase implements Serializable {
         this.anschrift = anschrift;
     }
 
+    public String getAnrede() {
+        return anrede;
+    }
+
+    public void setAnrede(String anrede) {
+        this.anrede = anrede;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Kunde that = (Kunde) o;
-
-        if (kundennummer != that.kundennummer) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (vorname != null ? !vorname.equals(that.vorname) : that.vorname != null) return false;
-        if (bestellhistorie != null ? !bestellhistorie.equals(that.bestellhistorie) : that.bestellhistorie != null)
-            return false;
-
-        return true;
+        Kunde kunde = (Kunde) o;
+        return kundennummer == kunde.kundennummer && benutzer_ID == kunde.benutzer_ID && anschrift == kunde.anschrift && Objects.equals(name, kunde.name) && Objects.equals(vorname, kunde.vorname) && Objects.equals(bestellhistorie, kunde.bestellhistorie) && Objects.equals(anrede, kunde.anrede);
     }
 
     @Override
     public int hashCode() {
-        int result = kundennummer;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (vorname != null ? vorname.hashCode() : 0);
-        result = 31 * result + (bestellhistorie != null ? bestellhistorie.hashCode() : 0);
-        return result;
+        return Objects.hash(kundennummer, benutzer_ID, name, vorname, bestellhistorie, anrede, anschrift);
     }
 
     @Override
     public String toString() {
         return "Kunde{" +
                 "kundennummer=" + kundennummer +
-                ", benutzername='" + benutzername + '\'' +
+                ", benutzer_ID=" + benutzer_ID +
                 ", name='" + name + '\'' +
                 ", vorname='" + vorname + '\'' +
                 ", bestellhistorie='" + bestellhistorie + '\'' +
+                ", anrede='" + anrede + '\'' +
                 ", anschrift=" + anschrift +
                 '}';
     }

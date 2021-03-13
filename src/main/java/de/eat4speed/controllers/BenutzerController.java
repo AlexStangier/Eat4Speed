@@ -33,21 +33,5 @@ public class BenutzerController {
     @Produces(MediaType.TEXT_PLAIN)
     public String get(){ return benutzerRepository.listAll().toString(); }
 
-    @GET
-    @Path("{benutzerName}")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(@PathParam("benutzerName") String benutzername) {
-
-        Benutzer benutzer = new Benutzer();
-        benutzer.setBenutzername("testBenutzer9");
-        //benutzer.setEmailAddresse("test@4.com");
-        benutzer.setRolle("test");
-        benutzer.setPasswort("testPW");
-        benutzer.setPaypal_Account("ppAcc");
-
-        benutzerRepository.addBenutzer(benutzer);
-
-        return benutzerRepository.findByBenutzerName(benutzername).toString();
-    }
 
 }
