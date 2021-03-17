@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class Gericht_Allergene extends PanacheEntityBase implements Serializable {
     @Id
     private int gericht_id;
+    @Id
     private String allergen;
 
 

@@ -18,6 +18,7 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
     private int fahrzeug;
     private int aktueller_Standort;
     private int anzahl_aktuelle_Auftraege;
+    private byte verifiziert;
 
     public int getFahrernummer() {
         return fahrernummer;
@@ -93,17 +94,25 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.anzahl_aktuelle_Auftraege = anzahl_aktuelle_Auftraege;
     }
 
+    public byte getVerifiziert() {
+        return verifiziert;
+    }
+
+    public void setVerifiziert(byte verifiziert) {
+        this.verifiziert = verifiziert;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrer fahrer = (Fahrer) o;
-        return fahrernummer == fahrer.fahrernummer && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && benutzername.equals(fahrer.benutzername);
+        return fahrernummer == fahrer.fahrernummer && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(benutzername, fahrer.benutzername);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fahrernummer, benutzername, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege);
+        return Objects.hash(fahrernummer, benutzername, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege, verifiziert);
     }
 
     @Override
@@ -116,6 +125,7 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
                 ", fahrzeug=" + fahrzeug +
                 ", aktueller_Standort=" + aktueller_Standort +
                 ", anzahl_aktuelle_Auftraege=" + anzahl_aktuelle_Auftraege +
+                ", verifiziert=" + verifiziert +
                 '}';
     }
 }
