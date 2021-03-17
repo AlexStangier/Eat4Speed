@@ -78,8 +78,14 @@
                 label="Bild auswählen">
 
                 </v-file-input>
-                <v-text-field label="Preis" type="number" append-icon="currency-eur">
+                <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
                 </v-text-field>
+
+                <v-textarea label="Beschreiben Sie das Gericht">
+                </v-textarea>
+
+                <v-checkbox label="Artikel verfügbar?">
+                </v-checkbox>
 
                 <v-dialog
                     v-model="dialog"
@@ -122,6 +128,7 @@
                       </v-col>
                     </v-card>
                   </v-dialog>
+
 
 
                 <v-spacer class="ma-2"></v-spacer>
