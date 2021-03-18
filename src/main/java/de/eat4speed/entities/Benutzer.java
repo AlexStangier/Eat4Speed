@@ -19,6 +19,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     private String passwort;
     private int rolle;
     private String paypal_Account;
+    private int telefonnummer;
 
     public int getBenutzer_ID() {
         return benutzer_ID;
@@ -84,17 +85,25 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.paypal_Account = paypal_Account;
     }
 
+    public int getTelefonnummer() {
+        return telefonnummer;
+    }
+
+    public void setTelefonnummer(int telefonnummer) {
+        this.telefonnummer = telefonnummer;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Benutzer benutzer = (Benutzer) o;
-        return benutzer_ID == benutzer.benutzer_ID && rolle == benutzer.rolle && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(paypal_Account, benutzer.paypal_Account);
+        return benutzer_ID == benutzer.benutzer_ID && rolle == benutzer.rolle && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(paypal_Account, benutzer.paypal_Account);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(benutzer_ID, benutzername, vorname, nachname, emailAdresse, passwort, rolle, paypal_Account);
+        return Objects.hash(benutzer_ID, benutzername, vorname, nachname, emailAdresse, passwort, rolle, paypal_Account, telefonnummer);
     }
 
     @Override
@@ -108,6 +117,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
                 ", passwort='" + passwort + '\'' +
                 ", rolle=" + rolle +
                 ", paypal_Account='" + paypal_Account + '\'' +
+                ", telefonnummer=" + telefonnummer +
                 '}';
     }
 }

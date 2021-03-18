@@ -8,8 +8,8 @@ import java.io.Serializable;
 @Entity
 public class Restaurant_Zeiten extends PanacheEntityBase implements Serializable {
     @Id
-    @GeneratedValue
     private int restaurant_id;
+    @Id
     private int oeffnungszeiten_id;
 
     public int getRestaurant_id() {
