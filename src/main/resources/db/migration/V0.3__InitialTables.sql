@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Benutzer`
     `Passwort`        VARCHAR(50) NOT NULL,
     `Rolle`           INT NOT NULL,
     `Paypal_Account`  VARCHAR(50) NOT NULL,
+    `Telefonnummer`   VARCHAR(50) NOT NULL,
     PRIMARY KEY (`Benutzer_ID`)
 )
     ENGINE = InnoDB
@@ -214,6 +215,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
     `Fahrzeug`           INT         NOT NULL,
     `aktueller_Standort` INT,
     `Anzahl_aktuelle_Auftraege` INT NOT NULL,
+    `verifiziert`             TINYINT(1) NOT NULL,
     PRIMARY KEY (`Fahrernummer`),
     INDEX `fk_Fahrer_Fahrzeug` (`Fahrzeug` ASC),
     INDEX `fk_Fahrer_Benutzer` (`Benutzer_ID` ASC),
@@ -240,6 +242,9 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Restaurant`
     `Name_des_Restaurants`    VARCHAR(50)  NOT NULL,
     `Allgemeine_Beschreibung` VARCHAR(200) NOT NULL,
     `Anschrift`               INT          NOT NULL,
+    `Mindestbestellwert`         DOUBLE    DEFAULT 0,
+    `Bestellradius`         DOUBLE    DEFAULT 0,
+    `verifiziert`             TINYINT(1) NOT NULL,
     PRIMARY KEY (`Restaurant_ID`),
     INDEX `fk_Restaurant_Benutzername` (`Benutzer_ID` ASC),
     INDEX `fk_Restaurant_Anschrift` (`Anschrift` ASC),
@@ -412,6 +417,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Bewertung`
     `Sterne`              INT NOT NULL,
     `Text`                VARCHAR(300)   NULL DEFAULT NULL,
     `Datum`               DATETIME      NULL DEFAULT NULL,
+    `wurde_gemeldet`      TINYINT(1) NOT NULL,
     PRIMARY KEY (`Bewertungs_ID`),
     CONSTRAINT `fk_Bewertung_Kundennummer`
         FOREIGN KEY (`Kundennummer`)
@@ -637,6 +643,65 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Urlaub`
     CONSTRAINT `fk_Urlaub_Fahrernummer`
         FOREIGN KEY (`Fahrernummer`)
             REFERENCES `eatforspeed`.`Fahrer` (`Fahrernummer`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `eatforspeed`.`Favoritenliste_Restaurant`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `eatforspeed`.`Favoritenliste_Restaurant`
+(
+    `Restaurant_ID`         INT  NOT NULL,
+    `Kundennummer`          INT  NOT NULL,
+    `Hinzufuege_Datum`      DATE NOT NULL,
+    `Anzahl_Bestellungen`   INT NOT NULL,
+    PRIMARY KEY (`Restaurant_ID`),
+    INDEX `fk_Favoritenliste_Restaurant_Restaurant_ID` (`Restaurant_ID` ASC),
+    CONSTRAINT `fk_Favoritenliste_Restaurant_Restaurant_ID`
+        FOREIGN KEY (`Restaurant_ID`)
+            REFERENCES `eatforspeed`.`Restaurant` (`Restaurant_ID`),
+    CONSTRAINT `fk_Favoritenliste_Restaurant_Kundennummer`
+        FOREIGN KEY (`Kundennummer`)
+            REFERENCES `eatforspeed`.`Kunde` (`Kundennummer`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
+-- Table `eatforspeed`.`Favoritenliste_Gericht`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `eatforspeed`.`Favoritenliste_Gericht`
+(
+    `Gericht_ID`            INT  NOT NULL,
+    `Kundennummer`          INT  NOT NULL,
+    `Hinzufuege_Datum`      DATE NOT NULL,
+    `Anzahl_Bestellungen`   INT NOT NULL,
+    PRIMARY KEY (`Gericht_ID`),
+    INDEX `fk_Favoritenliste_Gericht_Gericht_ID` (`Gericht_ID` ASC),
+    CONSTRAINT `fk_Favoritenliste_Gericht_Gericht_ID`
+        FOREIGN KEY (`Gericht_ID`)
+            REFERENCES `eatforspeed`.`Gericht` (`Gericht_ID`),
+    CONSTRAINT `fk_Favoritenliste_Gericht_Kundennummer`
+        FOREIGN KEY (`Kundennummer`)
+            REFERENCES `eatforspeed`.`Kunde` (`Kundennummer`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+-- -----------------------------------------------------
+-- Table `eatforspeed`.`Blacklist`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `eatforspeed`.`Blacklist`
+(
+    `Eintrag_ID`           INT  NOT NULL,
+    `EmailAdresse`         VARCHAR(50) NOT NULL,
+    `Loeschbegruendung`    VARCHAR(50) NOT NULL,
+    PRIMARY KEY (`Eintrag_ID`)
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
