@@ -40,8 +40,108 @@
                 <v-divider></v-divider>
               </template>
             </v-virtual-scroll>
-            <v-btn>Artikel hinzufügen</v-btn>
-            <v-form v-model="myForm" hidden></v-form>
+
+            <!------------  Artikel hinzufügen + ------------->
+
+            <v-dialog
+                v-model="dialog"
+                width="500"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="red"
+                    dark
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                  Artikel beartbeiten
+                </v-btn>
+              </template>
+
+            <v-card>
+              <v-col>
+              <v-text-field
+                  v-model="firstname"
+                  :rules="nameRules"
+                  :counter="10"
+                  label="Artikelname"
+                  required
+              ></v-text-field>
+                <v-text-field
+                    v-model="firstname"
+                    :rules="nameRules"
+                    :counter="10"
+                    label="Artikelbeschreibung"
+                    required
+                ></v-text-field>
+                <v-file-input
+                label="Bild auswählen">
+
+                </v-file-input>
+                <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
+                </v-text-field>
+
+                <v-textarea label="Beschreiben Sie das Gericht">
+                </v-textarea>
+
+                <v-checkbox label="Artikel verfügbar?">
+                </v-checkbox>
+
+                <v-dialog
+                    v-model="dialog"
+                    max-width="200"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        color="red"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                     Allergene auswählen
+                    </v-btn>
+                  </template>
+                    <v-card>
+                      <v-col>
+                      <v-btn ref="allergie1" color="red" dark rounded elevation="15"
+                             @click="allergie1Farbe">
+                        allergie 1
+                      </v-btn >
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn ref="allergie2" color="red" dark rounded elevation="15"
+                             @click="allergie2Farbe">
+                        allergie 2
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn color="red" dark rounded elevation="15">
+                        allergie 3
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn color="red" dark rounded elevation="15">
+                        allergie 4
+                      </v-btn>
+                        <v-spacer class="ma-2"></v-spacer>
+                      <v-btn color="red" dark rounded elevation="15">
+                        allergie 5
+                      </v-btn>
+
+                      </v-col>
+                    </v-card>
+                  </v-dialog>
+
+
+
+                <v-spacer class="ma-2"></v-spacer>
+                <v-btn
+                    color="red"
+                    dark
+                >
+                  Fertig
+                </v-btn>
+              </v-col>
+            </v-card>
+            </v-dialog>
+            <!------------  Artikel hinzufügen - ------------->
           </v-flex>
         </v-layout>
       </v-container>
@@ -52,13 +152,50 @@
 <script>
 export default {
   name: "customer",
+  methods: {
+    openLogin(){
+      this.$refs.Anmeldung.class="px-4 d-flex"
+    },
+    allergie1Farbe(){
+      if (this.allergyButton1.selected===1) {
+        this.$refs.allergie1.color = "red"
+        this.allergyButton1.selected=0
+      }
+      if (this.allergyButton1.selected===0) {
+        this.$refs.allergie1.color = "blue"
+        this.allergyButton1.selected=1
+      }
+    },
+    allergie2Farbe(){
+      if (this.allergyButton2.selected===1) {
+        this.$refs.allergie2.color = "red"
+        this.allergyButton2.selected=0
+      }
+      if (this.allergyButton2.selected===0) {
+        this.$refs.allergie2.color = "blue"
+        this.allergyButton2.selected=1
+      }
+    }
+  },
   data: () => ({
     names: ['Burger','Pizza','Sushi','McNuggets'],
     descriptions: ['Es ist ein Burger','Krosse Krabe Pizza','Fischig','Mit Szechuan Sauce'],
     prices: ['5,50 €', '100 €','4,99 €', '3,99 €'],
     imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg','https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg','https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg','https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
     restaurants:['Bobs Burgers','Krosse Krabbe','AsiaWok','MCDonalds'],
+
+    allergyButton1: {
+      selected: 0
+    },
+    allergyButton2: {
+      selected: 0
+    }
   }),
+  mounted() {
+    this.allergie1Farbe();
+    this.allergie2Farbe();
+
+  },
   computed: {
     items(){
       let i = 0
