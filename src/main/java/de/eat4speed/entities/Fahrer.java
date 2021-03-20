@@ -21,7 +21,7 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
     private int anzahl_aktuelle_Auftraege;
     private byte verifiziert;
     private String fuehrerschein;
-    private Timestamp geburtsdatum;
+    private String geburtsdatum;
 
     public int getFahrernummer() {
         return fahrernummer;
@@ -105,17 +105,20 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
 
     public void setFuehrerschein(String fuehrerschein) { this.fuehrerschein = fuehrerschein; }
 
-    public Timestamp getGeburtsdatum() { return geburtsdatum; }
+    public String getGeburtsdatum() {
+        return geburtsdatum;
+    }
 
-    public void setGeburtsdatum(Timestamp geburtsdatum) { this.geburtsdatum = geburtsdatum; }
-
+    public void setGeburtsdatum(String geburtsdatum) {
+        this.geburtsdatum = geburtsdatum;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrer fahrer = (Fahrer) o;
-        return fahrernummer == fahrer.fahrernummer && benutzer_Id == fahrer.benutzer_Id && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && geburtsdatum.equals(fahrer.geburtsdatum);
+        return fahrernummer == fahrer.fahrernummer && benutzer_Id == fahrer.benutzer_Id && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && Objects.equals(geburtsdatum, fahrer.geburtsdatum);
     }
 
     @Override
@@ -135,7 +138,7 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
                 ", anzahl_aktuelle_Auftraege=" + anzahl_aktuelle_Auftraege +
                 ", verifiziert=" + verifiziert +
                 ", fuehrerschein='" + fuehrerschein + '\'' +
-                ", geburtsdatum=" + geburtsdatum +
+                ", geburtsdatum='" + geburtsdatum + '\'' +
                 '}';
     }
 }
