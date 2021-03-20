@@ -210,9 +210,11 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
 (
     `Fahrernummer`       INT         NOT NULL AUTO_INCREMENT,
     `Benutzer_ID`        INT NOT NULL,
+    `Geburtsdatum`       DATETIME   NOT NULL,
+    `Fuehrerschein`      VARCHAR(50),
     `Geleistete_Fahrten` INT         NULL DEFAULT NULL,
     `Ist_in_Pause`       TINYINT(1)  NOT NULL,
-    `Fahrzeug`           INT         NOT NULL,
+    `Fahrzeug`           INT,
     `aktueller_Standort` INT,
     `Anzahl_aktuelle_Auftraege` INT NOT NULL,
     `verifiziert`             TINYINT(1) NOT NULL,

@@ -4,6 +4,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -12,13 +13,15 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
     private int fahrernummer;
-    private String benutzername;
+    private int benutzer_Id;
     private int geleistete_Fahrten;
     private byte ist_In_Pause;
     private int fahrzeug;
     private int aktueller_Standort;
     private int anzahl_aktuelle_Auftraege;
     private byte verifiziert;
+    private String fuehrerschein;
+    private Timestamp geburtsdatum;
 
     public int getFahrernummer() {
         return fahrernummer;
@@ -28,6 +31,9 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.fahrernummer = fahrernummer;
     }
 
+    public int getBenutzer_Id() { return benutzer_Id; }
+
+    public void setBenutzer_Id(int benutzer_Id) { this.benutzer_Id = benutzer_Id; }
 
     public Integer getGeleisteteFahrten() {
         return geleistete_Fahrten;
@@ -46,13 +52,6 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.ist_In_Pause = istInPause;
     }
 
-    public String getBenutzername() {
-        return benutzername;
-    }
-
-    public void setBenutzername(String benutzername) {
-        this.benutzername = benutzername;
-    }
 
     public int getGeleistete_Fahrten() {
         return geleistete_Fahrten;
@@ -102,30 +101,41 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.verifiziert = verifiziert;
     }
 
+    public String getFuehrerschein() { return fuehrerschein; }
+
+    public void setFuehrerschein(String fuehrerschein) { this.fuehrerschein = fuehrerschein; }
+
+    public Timestamp getGeburtsdatum() { return geburtsdatum; }
+
+    public void setGeburtsdatum(Timestamp geburtsdatum) { this.geburtsdatum = geburtsdatum; }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrer fahrer = (Fahrer) o;
-        return fahrernummer == fahrer.fahrernummer && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(benutzername, fahrer.benutzername);
+        return fahrernummer == fahrer.fahrernummer && benutzer_Id == fahrer.benutzer_Id && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && geburtsdatum.equals(fahrer.geburtsdatum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fahrernummer, benutzername, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege, verifiziert);
+        return Objects.hash(fahrernummer, benutzer_Id, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege, verifiziert, fuehrerschein, geburtsdatum);
     }
 
     @Override
     public String toString() {
         return "Fahrer{" +
                 "fahrernummer=" + fahrernummer +
-                ", benutzername='" + benutzername + '\'' +
+                ", benutzer_Id=" + benutzer_Id +
                 ", geleistete_Fahrten=" + geleistete_Fahrten +
                 ", ist_In_Pause=" + ist_In_Pause +
                 ", fahrzeug=" + fahrzeug +
                 ", aktueller_Standort=" + aktueller_Standort +
                 ", anzahl_aktuelle_Auftraege=" + anzahl_aktuelle_Auftraege +
                 ", verifiziert=" + verifiziert +
+                ", fuehrerschein='" + fuehrerschein + '\'' +
+                ", geburtsdatum=" + geburtsdatum +
                 '}';
     }
 }
