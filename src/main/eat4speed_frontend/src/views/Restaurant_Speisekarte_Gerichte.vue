@@ -151,7 +151,7 @@
 
 <script>
 export default {
-  name: "customer",
+  name: "restaurant",
   methods: {
     openLogin(){
       this.$refs.Anmeldung.class="px-4 d-flex"
