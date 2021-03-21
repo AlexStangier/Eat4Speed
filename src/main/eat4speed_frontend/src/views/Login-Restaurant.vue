@@ -41,8 +41,12 @@
                       <v-form ref="registerForm" v-model="valid" lazy-validation>
                         <v-row>
                           <v-col cols="12" md="12" sm="12">
-                            <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
-                                          maxlength="20" required></v-text-field>
+                            <v-text-field v-model="restaurant_name" :rules="[rules.required]" label="Restaurant-Name"
+                                          maxlength="50" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="descriptionShort" :rules="[rules.required]" label="Kurzbeschreibung"
+                                          maxlength="200" required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="6" sm="6">
                             <v-text-field v-model="firstName" :rules="[rules.required]" label="Vorname"
@@ -51,6 +55,10 @@
                           <v-col cols="12" md="6" sm="6">
                             <v-text-field v-model="lastName" :rules="[rules.required]" label="Nachname" maxlength="20"
                                           required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
+                                          maxlength="20" required></v-text-field>
                           </v-col>
                           <v-col cols="12" md="8" sm="8">
                             <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="40"
@@ -74,6 +82,10 @@
                           <v-col cols="12" md="4" sm="4">
                             <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
                                           required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="paypal" :rules="emailRules" label="Paypal Email"
+                                          maxlength="20" required></v-text-field>
                           </v-col>
                           <v-col cols="12">
                             <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -106,6 +118,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "LoginCustomer",
   computed: {
@@ -114,7 +128,51 @@ export default {
     }
   },
   methods: {
-    validate() {
+    async validate() {
+      var benutzer = {
+        vorname: this.firstName,
+        nachname: this.lastName,
+        benutzername: this.username,
+        emailAdresse: this.email,
+        passwort: this.password,
+        telefonnummer: this.phoneNumber,
+        rolle: 2,
+        paypal_Account: this.paypal
+      };
+
+      const responseBenutzer = await axios.post("/Benutzer", benutzer);
+
+      this.benutzer_ID = responseBenutzer.data.benutzer_ID;
+
+      var adressen = {
+        strasse: this.street,
+        hausnummer: this.houseNumber,
+        ort: this.place,
+        postleitzahl: this.postCode
+      };
+
+      const responseAdressen = await axios.post("/Adressen", adressen);
+
+      console.log(responseAdressen);
+      console.log(responseAdressen.data);
+      console.log(responseAdressen.data.adress_Id);
+
+      this.adress_ID = responseAdressen.data.adress_Id;
+
+      let createdRestaurant;
+      var restaurant = {
+        benutzer_Id: this.benutzer_ID,
+        name_Des_Restaurants: this.restaurant_name,
+        allgemeine_Beschreibung: this.descriptionShort,
+        anschrift: this.adress_ID,
+        verifiziert: 0
+      };
+
+      axios.post("/Restaurant", restaurant)
+          .then(function (response) {
+            createdRestaurant.output = response.data;
+          }.bind(this))
+
       if (this.$refs.loginForm.validate()) {
         // submit form to server/API here...
       }
@@ -134,9 +192,14 @@ export default {
         {name: "Registrieren", icon: "mdi-account-outline"}
       ],
       valid: true,
-      salutation: "",
+      paypal: "",
+      restaurant_name: "",
+      descriptionShort: "",
       firstName: "",
       lastName: "",
+      username: "",
+      benutzer_ID: "",
+      adress_ID: "",
       street: "",
       houseNumber: "",
       place: "",

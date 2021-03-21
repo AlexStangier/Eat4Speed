@@ -144,6 +144,7 @@ export default {
         benutzername: this.username,
         emailAdresse: this.email,
         passwort: this.password,
+        telefonnummer: this.phoneNumber,
         rolle: 1,
         paypal_Account: this.paypal
       };

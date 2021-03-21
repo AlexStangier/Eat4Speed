@@ -18,6 +18,7 @@ public class Bewertung {
     private int Sterne;
     private String Text;
     private Timestamp Datum;
+    private byte wurde_gemeldet;
 
     public int getBewertungs_ID() {
         return Bewertungs_ID;
@@ -67,19 +68,25 @@ public class Bewertung {
         Datum = datum;
     }
 
+    public byte getWurde_gemeldet() {
+        return wurde_gemeldet;
+    }
+
+    public void setWurde_gemeldet(byte wurde_gemeldet) {
+        this.wurde_gemeldet = wurde_gemeldet;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bewertung bewertung = (Bewertung) o;
-        return Bewertungs_ID == bewertung.Bewertungs_ID && Kundennummer == bewertung.Kundennummer
-                && Restaurant_ID == bewertung.Restaurant_ID && Sterne == bewertung.Sterne
-                && Objects.equals(Text, bewertung.Text) && Objects.equals(Datum, bewertung.Datum);
+        return Bewertungs_ID == bewertung.Bewertungs_ID && Kundennummer == bewertung.Kundennummer && Restaurant_ID == bewertung.Restaurant_ID && Sterne == bewertung.Sterne && wurde_gemeldet == bewertung.wurde_gemeldet && Objects.equals(Text, bewertung.Text) && Objects.equals(Datum, bewertung.Datum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Bewertungs_ID, Kundennummer, Restaurant_ID, Sterne, Text, Datum);
+        return Objects.hash(Bewertungs_ID, Kundennummer, Restaurant_ID, Sterne, Text, Datum, wurde_gemeldet);
     }
 
     @Override
@@ -91,6 +98,7 @@ public class Bewertung {
                 ", Sterne=" + Sterne +
                 ", Text='" + Text + '\'' +
                 ", Datum=" + Datum +
+                ", wurde_gemeldet=" + wurde_gemeldet +
                 '}';
     }
 }

@@ -1,20 +1,20 @@
 package de.eat4speed.repositories;
 
-import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Benutzer;
-import de.eat4speed.entities.Fahrzeug;
+import de.eat4speed.entities.Blacklist;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.transaction.Transactional;
 
 @ApplicationScoped
-public class FahrzeugRepository implements PanacheRepository<Fahrzeug> {
+public class BlacklistRepository implements PanacheRepository<Blacklist> {
+
 
     @Transactional
-    public void addFahrzeug(Fahrzeug fahrzeug)
+    public void addBlacklist(Blacklist blacklist)
     {
-        persist(fahrzeug);
+        persist(blacklist);
     }
 
 }
