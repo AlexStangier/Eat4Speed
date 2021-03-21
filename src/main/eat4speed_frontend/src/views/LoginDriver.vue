@@ -142,6 +142,14 @@
                           </v-col>
                           <v-col cols="12">
                             <v-text-field
+                                v-model="driverLicense"
+                                label="Führerschein"
+                                :rules="[rules.required]"
+                                required
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-text-field
                                 v-model="password"
                                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                 :rules="[rules.required, rules.min]"
@@ -174,7 +182,7 @@
                                 dark
                                 rounded
                                 @click="validateRegistration"
-                            >Weiter zur Verifikation
+                            >Weiter zur Fahrzeug-Auswahl
                             </v-btn
                             >
                           </v-col>
@@ -200,14 +208,6 @@
                                 :rules="[rules.required]"
                                 required
                             ></v-combobox>
-                          </v-col>
-                          <v-col cols="12">
-                            <v-text-field
-                                v-model="driverLicense"
-                                label="Führerschein"
-                                :rules="[rules.required]"
-                                required
-                            ></v-text-field>
                           </v-col>
                           <v-col cols="12">
                             <v-text-field
@@ -295,7 +295,8 @@ export default {
       let createdFahrer;
       var fahrer = {
         benutzer_Id: this.benutzer_ID,
-        geburtsdatum: this.date
+        geburtsdatum: this.date,
+        fuehrerschein: this.driverLicense
       };
 
       axios.post("/Fahrer", fahrer)
