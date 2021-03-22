@@ -5,19 +5,20 @@
         <v-layout align-center justify-center>
           <v-flex md6 sm6 xs12>
             <div class="text-h3 mb-10"> Restaurantname </div>
-          <v-col  class="d-flex justify-space-between mb-6">
-              <v-card-title class="text-h4"> Gerichte </v-card-title>
+            <v-col  class="d-flex justify-space-between mb-6">
+
               <v-btn
                   color="red"
                   dark
                   align="right"
-                  to="/restaurant-speisekarte-getränke"
+                  to="/restaurant-speisekarte-gerichte"
                   class="mt-5"
               >
-                Getränke
+                Gerichte
               </v-btn>
-          </v-col>
-              <v-divider></v-divider>
+              <v-card-title class="text-h4"> Getränke </v-card-title>
+            </v-col>
+            <v-divider></v-divider>
             <v-virtual-scroll
                 :items="items"
                 :item-height="200"
@@ -69,72 +70,72 @@
                 </v-btn>
               </template>
 
-            <v-card>
-              <v-col>
-              <v-text-field
-                  v-model="firstname"
-                  :rules="nameRules"
-                  :counter="10"
-                  label="Artikelname"
-                  required
-              ></v-text-field>
-                <v-text-field
-                    v-model="firstname"
-                    :rules="nameRules"
-                    :counter="10"
-                    label="Artikelbeschreibung"
-                    required
-                ></v-text-field>
-                <v-file-input
-                label="Bild auswählen">
+              <v-card>
+                <v-col>
+                  <v-text-field
+                      v-model="firstname"
+                      :rules="nameRules"
+                      :counter="10"
+                      label="Artikelname"
+                      required
+                  ></v-text-field>
+                  <v-text-field
+                      v-model="firstname"
+                      :rules="nameRules"
+                      :counter="10"
+                      label="Artikelbeschreibung"
+                      required
+                  ></v-text-field>
+                  <v-file-input
+                      label="Bild auswählen">
 
-                </v-file-input>
-                <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
-                </v-text-field>
+                  </v-file-input>
+                  <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
+                  </v-text-field>
 
-                <v-textarea label="Beschreiben Sie das Gericht">
-                </v-textarea>
+                  <v-textarea label="Beschreiben Sie das Gericht">
+                  </v-textarea>
 
-                <v-checkbox label="Artikel verfügbar?">
-                </v-checkbox>
+                  <v-checkbox label="Artikel verfügbar?">
+                  </v-checkbox>
 
-                <v-dialog
-                    v-model="dialog"
-                    max-width="200"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        color="red"
-                        dark
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                     Allergene auswählen
-                    </v-btn>
-                  </template>
+                  <v-dialog
+                      v-model="dialog"
+                      max-width="200"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          color="red"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        Allergene auswählen
+                      </v-btn>
+                    </template>
                     <v-card>
                       <v-col>
-                      <v-btn ref="allergie1" color="red" dark rounded elevation="15"
-                             @click="allergie1Farbe">
-                        allergie 1
-                      </v-btn >
+                        <v-btn ref="allergie1" color="red" dark rounded elevation="15"
+                               @click="allergie1Farbe">
+                          allergie 1
+                        </v-btn >
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn ref="allergie2" color="red" dark rounded elevation="15"
-                             @click="allergie2Farbe">
-                        allergie 2
-                      </v-btn>
+                        <v-btn ref="allergie2" color="red" dark rounded elevation="15"
+                               @click="allergie2Farbe">
+                          allergie 2
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn color="red" dark rounded elevation="15">
-                        allergie 3
-                      </v-btn>
+                        <v-btn color="red" dark rounded elevation="15">
+                          allergie 3
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn color="red" dark rounded elevation="15">
-                        allergie 4
-                      </v-btn>
+                        <v-btn color="red" dark rounded elevation="15">
+                          allergie 4
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn color="red" dark rounded elevation="15">
-                        allergie 5
-                      </v-btn>
+                        <v-btn color="red" dark rounded elevation="15">
+                          allergie 5
+                        </v-btn>
 
                       </v-col>
                     </v-card>
@@ -142,15 +143,15 @@
 
 
 
-                <v-spacer class="ma-2"></v-spacer>
-                <v-btn
-                    color="red"
-                    dark
-                >
-                  Fertig
-                </v-btn>
-              </v-col>
-            </v-card>
+                  <v-spacer class="ma-2"></v-spacer>
+                  <v-btn
+                      color="red"
+                      dark
+                  >
+                    Fertig
+                  </v-btn>
+                </v-col>
+              </v-card>
             </v-dialog>
             <!------------  Artikel hinzufügen - ------------->
           </v-flex>
@@ -189,11 +190,12 @@ export default {
     }
   },
   data: () => ({
-    names: ['Burger','Pizza','Sushi','McNuggets'],
-    descriptions: ['Es ist ein Burger','Krosse Krabe Pizza','Fischig','Mit Szechuan Sauce'],
-    prices: ['5,50 €', '100 €','4,99 €', '3,99 €'],
-    imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg','https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg','https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg','https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
-    restaurants:['Bobs Burgers','Krosse Krabbe','AsiaWok','MCDonalds'],
+    names: ['Cola','Fanta','Eistee'],
+    descriptions: ['Braun','Gelb','Abbildung kann abweichen!'],
+    prices: ['3,99 €', '3,99 €','4,99 €'],
+    imgs: ['https://www.fivestartrading-holland.eu/images/product_images/original_images/coco_cola_dosen_pfandfrei.png',
+      'https://images-na.ssl-images-amazon.com/images/I/71y12uT-UuL._SL1500_.jpg',
+      'https://ais.kochbar.de/kbrezept/445563_590001/1200x1200/selbstgemachter-eistee-rezept.jpg'],
 
     allergyButton1: {
       selected: 0
@@ -210,7 +212,7 @@ export default {
   computed: {
     items(){
       let i = 0
-      return Array.from({ length: 4}, () => {
+      return Array.from({ length: 3}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
         const cprice = this.prices[i]
