@@ -52,8 +52,10 @@
                 >
                   Anmelden
                 </v-btn>
+                <v-btn to="/restaurant-controlpanel">
+                  Debug link controlpanel
+                </v-btn>
               </template>
-
               <v-card class="pa-10">
                 <v-card-title class="d-flex justify-center">
                   Anmeldung
