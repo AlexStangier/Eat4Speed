@@ -44,13 +44,14 @@
                       <v-list-item-title>Speise Karte bearbeiten</v-list-item-title>
                     </v-list-item>
                     </router-link>
+                    <router-link  to="/restaurant-bestellungen">
                     <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-view-headline</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Offene Bestellungen</v-list-item-title>
                     </v-list-item>
-
+                    </router-link>
                     <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-watch</v-icon>

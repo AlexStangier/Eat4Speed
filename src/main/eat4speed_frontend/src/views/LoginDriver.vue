@@ -269,9 +269,9 @@ export default {
     async validateLogin() {
 
 
-      if (this.$refs.loginForm.validate()) {
+      //if (this.$refs.loginForm.validate()) {
 
-      }
+      //}
     }
     ,
     async validateRegistration() {

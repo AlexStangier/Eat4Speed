@@ -46,6 +46,11 @@ const routes = [
     component: () => import('../views/Restaurant_Speisekarte_Gerichte.vue')
   },
   {
+    path: '/restaurant-speisekarte-getränke',
+    name: 'restaurant-speisekarte-getränke',
+    component: () => import('../views/Restaurant_Speisekarte_Getränke.vue')
+  },
+  {
     path: '/login-admin',
     name: 'LoginAdmin',
     component: () => import('../views/LoginAdmin.vue')
@@ -64,6 +69,11 @@ const routes = [
     path: '/restaurant-bestellungen',
     name: 'RestaurantBestellungen',
     component: () => import('../views/Restaurant_Bestellungen.vue')
+  },
+  {
+    path: '/restaurant-bestelluebersicht',
+    name: 'RestaurantBestellübersicht',
+    component: () => import('../views/Restaurant_Bestellübersicht.vue')
   },
 ]
 
