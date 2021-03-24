@@ -214,7 +214,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
     `Fuehrerschein`      VARCHAR(50),
     `Geleistete_Fahrten` INT         NULL DEFAULT NULL,
     `Ist_in_Pause`       TINYINT(1)  NOT NULL,
-    `Fahrzeug`           INT,
+    `Fahrzeug`           INT DEFAULT 0,
     `aktueller_Standort` INT,
     `Anzahl_aktuelle_Auftraege` INT NOT NULL,
     `verifiziert`             TINYINT(1) NOT NULL,
@@ -223,10 +223,8 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
     INDEX `fk_Fahrer_Benutzer` (`Benutzer_ID` ASC),
     CONSTRAINT `fk_Fahrer_Benutzer`
         FOREIGN KEY (`Benutzer_ID`)
-            REFERENCES `eatforspeed`.`Benutzer` (`Benutzer_ID`),
-    CONSTRAINT `fk_Fahrer_Fahrzeug`
-        FOREIGN KEY (`Fahrzeug`)
-            REFERENCES `eatforspeed`.`Fahrzeug` (`Fahrzeug_ID`)
+            REFERENCES `eatforspeed`.`Benutzer` (`Benutzer_ID`)
+
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
