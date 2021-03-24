@@ -209,14 +209,6 @@
                                 required
                             ></v-combobox>
                           </v-col>
-                          <v-col cols="12">
-                            <v-text-field
-                                v-model="licensePlate"
-                                label="Fahrzeug(Modell / Schlüsselnummer)"
-                                :rules="[rules.required]"
-                                required
-                            ></v-text-field>
-                          </v-col>
                           <v-col>
                             <v-btn color="blue" dark rounded @click="linkPaypal"
                             >Paypal Konto verknüpfen
@@ -299,16 +291,31 @@ export default {
         fuehrerschein: this.driverLicense
       };
 
-      axios.post("/Fahrer", fahrer)
-          .then(function (response) {
-            createdFahrer.output = response.data;
-          }.bind(this))
+      const responseFahrer = await axios.post("/Fahrer", fahrer)
+
+      this.fahrer_ID = responseFahrer.data.fahrernummer;
       if (this.$refs.registrationForm.validate()) {
         this.tab = 2;
       }
     }
     ,
-    validateVerification() {
+    async validateVerification() {
+
+      var fahrzeug = {
+        fahrzeugtyp: this.vehicle
+      };
+
+      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
+
+      this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_Id;
+
+      var createdFahrzeug = {
+        fahrzeug_Id: this.fahrzeug_ID,
+        fahrzeugtyp: this.vehicle
+      };
+
+      const responseFahrer = await axios.put("/Fahrer/"+this.fahrer_ID, createdFahrzeug);
+
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
       }
@@ -338,6 +345,8 @@ export default {
       // TODO: retrieve valid vehicles from API
       vehicles: ["PKW", "Fahrrad", "Motorrad"],
       vehicle: "",
+      fahrzeug_ID: "",
+      fahrer_ID: "",
       driverLicense: "",
       licensePlate: "",
       agbAccepted: false,

@@ -17,4 +17,14 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         persist(fahrer);
     }
 
+    @Transactional
+    public void updateFahrer_Fahrzeug_id(int fahrernummer, int fahrzeug_Id)
+    {
+        update("fahrzeug = ?1 where fahrernummer = ?2", fahrzeug_Id, fahrernummer);
+    }
+
+    public Fahrer findByFahrernummer(int fahrernummer)
+    {
+        return find("fahrernummer", fahrernummer).firstResult();
+    }
 }
