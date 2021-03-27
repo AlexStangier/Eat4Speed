@@ -9,5 +9,9 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class GerichtRepository implements PanacheRepository<Gericht> {
 
+    public void addGericht(Gericht gericht)
+    {
+        persist(gericht);
+    }
 
 }

@@ -4,9 +4,9 @@
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
           <v-flex md6 sm6 xs12>
-            <div class="text-h3 mb-10"> Restaurantname </div>
-          <v-col  class="d-flex justify-space-between mb-6">
-              <v-card-title class="text-h4"> Gerichte </v-card-title>
+            <div class="text-h3 mb-10"> Restaurantname</div>
+            <v-col class="d-flex justify-space-between mb-6">
+              <v-card-title class="text-h4"> Gerichte</v-card-title>
               <v-btn
                   color="red"
                   dark
@@ -16,8 +16,8 @@
               >
                 Getränke
               </v-btn>
-          </v-col>
-              <v-divider></v-divider>
+            </v-col>
+            <v-divider></v-divider>
             <v-virtual-scroll
                 :items="items"
                 :item-height="200"
@@ -42,7 +42,7 @@
                   <v-list-item-content></v-list-item-content>
 
                   <v-list-item-group align="left">
-                    <v-list-item-content>{{ item.price}}</v-list-item-content>
+                    <v-list-item-content>{{ item.price }}</v-list-item-content>
                     <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
                   </v-list-item-group>
 
@@ -69,88 +69,81 @@
                 </v-btn>
               </template>
 
-            <v-card>
-              <v-col>
-              <v-text-field
-                  v-model="firstname"
-                  :rules="nameRules"
-                  :counter="10"
-                  label="Artikelname"
-                  required
-              ></v-text-field>
-                <v-text-field
-                    v-model="firstname"
-                    :rules="nameRules"
-                    :counter="10"
-                    label="Artikelbeschreibung"
-                    required
-                ></v-text-field>
-                <v-file-input
-                label="Bild auswählen">
+              <v-card>
+                <v-col>
+                  <v-text-field
+                      v-model="gerichtName"
+                      :counter="10"
+                      label="Artikelname"
+                      required
+                  ></v-text-field>
+                  <v-text-field
+                      v-model="gerichtBeschreibung"
+                      :counter="10"
+                      label="Artikelbeschreibung"
+                      required
+                  ></v-text-field>
+                  <v-file-input
+                      v-model="gerichtBild"
+                      label="Bild auswählen">
 
-                </v-file-input>
-                <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
-                </v-text-field>
+                  </v-file-input>
+                  <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
+                  </v-text-field>
 
-                <v-textarea label="Beschreiben Sie das Gericht">
-                </v-textarea>
+                  <v-textarea label="Beschreiben Sie das Gericht">
+                  </v-textarea>
 
-                <v-checkbox label="Artikel verfügbar?">
-                </v-checkbox>
+                  <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
+                  </v-checkbox>
 
-                <v-dialog
-                    v-model="dialog"
-                    max-width="200"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                        color="red"
-                        dark
-                        v-bind="attrs"
-                        v-on="on"
-                    >
-                     Allergene auswählen
-                    </v-btn>
-                  </template>
+                  <v-dialog
+                      v-model="dialog"
+                      max-width="200"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          color="red"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        Allergene auswählen
+                      </v-btn>
+                    </template>
                     <v-card>
                       <v-col>
-                      <v-btn ref="allergie1" color="red" dark rounded elevation="15"
-                             @click="allergie1Farbe">
-                        allergie 1
-                      </v-btn >
+                        <v-btn ref="allergie1" color="red" dark rounded elevation="15"
+                               @click="allergie1Farbe">
+                          allergie 1
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn ref="allergie2" color="red" dark rounded elevation="15"
-                             @click="allergie2Farbe">
-                        allergie 2
-                      </v-btn>
+                        <v-btn ref="allergie2" color="red" dark rounded elevation="15"
+                               @click="allergie2Farbe">
+                          allergie 2
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn color="red" dark rounded elevation="15">
-                        allergie 3
-                      </v-btn>
+                        <v-btn color="red" dark rounded elevation="15">
+                          allergie 3
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn color="red" dark rounded elevation="15">
-                        allergie 4
-                      </v-btn>
+                        <v-btn color="red" dark rounded elevation="15">
+                          allergie 4
+                        </v-btn>
                         <v-spacer class="ma-2"></v-spacer>
-                      <v-btn color="red" dark rounded elevation="15">
-                        allergie 5
-                      </v-btn>
+                        <v-btn color="red" dark rounded elevation="15">
+                          allergie 5
+                        </v-btn>
 
                       </v-col>
                     </v-card>
                   </v-dialog>
 
-
-
-                <v-spacer class="ma-2"></v-spacer>
-                <v-btn
-                    color="red"
-                    dark
-                >
-                  Fertig
-                </v-btn>
-              </v-col>
-            </v-card>
+                  <v-spacer class="ma-2"></v-spacer>
+                  <v-btn color="red" dark @click="addGericht">Fertig
+                  </v-btn>
+                </v-col>
+              </v-card>
             </v-dialog>
             <!------------  Artikel hinzufügen - ------------->
           </v-flex>
@@ -161,46 +154,73 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "restaurant",
   methods: {
-    openLogin(){
-      this.$refs.Anmeldung.class="px-4 d-flex"
+    openLogin() {
+      this.$refs.Anmeldung.class = "px-4 d-flex"
     },
-    allergie1Farbe(){
-      if (this.allergyButton1.selected===1) {
+    async addGericht(){
+
+      this.restaurantID = 22;
+
+      var gericht = {
+        abbildung:this.gerichtBild,
+        beschreibung:this.gerichtBeschreibung,
+        name:this.gerichtName,
+        restaurant_id:this.restaurantID,
+        verfuegbar:this.gerichtVerfuegbar,
+        preis:this.gerichtPreis
+      }
+
+      const responseGericht = await axios.post("/Gericht", gericht);
+
+      this.gericht_ID = responseGericht.data.gerichtID;
+
+    },
+    allergie1Farbe() {
+      if (this.allergyButton1.selected === 1) {
         this.$refs.allergie1.color = "red"
-        this.allergyButton1.selected=0
+        this.allergyButton1.selected = 0
       }
-      if (this.allergyButton1.selected===0) {
+      if (this.allergyButton1.selected === 0) {
         this.$refs.allergie1.color = "blue"
-        this.allergyButton1.selected=1
+        this.allergyButton1.selected = 1
       }
     },
-    allergie2Farbe(){
-      if (this.allergyButton2.selected===1) {
+    allergie2Farbe() {
+      if (this.allergyButton2.selected === 1) {
         this.$refs.allergie2.color = "red"
-        this.allergyButton2.selected=0
+        this.allergyButton2.selected = 0
       }
-      if (this.allergyButton2.selected===0) {
+      if (this.allergyButton2.selected === 0) {
         this.$refs.allergie2.color = "blue"
-        this.allergyButton2.selected=1
+        this.allergyButton2.selected = 1
       }
     }
   },
   data: () => ({
-    names: ['Burger','Pizza','Sushi','McNuggets'],
-    descriptions: ['Es ist ein Burger','Krosse Krabe Pizza','Fischig','Mit Szechuan Sauce'],
-    prices: ['5,50 €', '100 €','4,99 €', '3,99 €'],
-    imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg','https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg','https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg','https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
-    restaurants:['Bobs Burgers','Krosse Krabbe','AsiaWok','MCDonalds'],
+    names: ['Burger', 'Pizza', 'Sushi', 'McNuggets'],
+    descriptions: ['Es ist ein Burger', 'Krosse Krabe Pizza', 'Fischig', 'Mit Szechuan Sauce'],
+    prices: ['5,50 €', '100 €', '4,99 €', '3,99 €'],
+    imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg', 'https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg', 'https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg', 'https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
+    restaurants: ['Bobs Burgers', 'Krosse Krabbe', 'AsiaWok', 'MCDonalds'],
 
     allergyButton1: {
       selected: 0
     },
     allergyButton2: {
       selected: 0
-    }
+    },
+    gerichtName: "",
+    gerichtBeschreibung: "",
+    gerichtBild: "",
+    gerichtPreis: "",
+    gerichtVerfuegbar: "",
+    restaurantID:"",
+    gericht_ID:""
   }),
   mounted() {
     this.allergie1Farbe();
@@ -208,9 +228,9 @@ export default {
 
   },
   computed: {
-    items(){
+    items() {
       let i = 0
-      return Array.from({ length: 4}, () => {
+      return Array.from({length: 4}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
         const cprice = this.prices[i]
