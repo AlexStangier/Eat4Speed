@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class BenutzerRepository implements PanacheRepository<Benutzer> {
 
-
     @Transactional
     public void addBenutzer(Benutzer benutzer)
     {
