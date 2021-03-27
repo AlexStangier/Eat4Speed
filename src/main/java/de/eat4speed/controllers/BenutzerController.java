@@ -3,6 +3,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.services.BenutzerService;
+import de.eat4speed.services.interfaces.IBenutzerService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -16,22 +17,19 @@ import java.util.logging.Logger;
 public class BenutzerController {
 
     @Inject
-    BenutzerService _benutzer;
+    IBenutzerService _benutzer;
 
-    @Inject
-    BenutzerRepository benutzerRepository;
 
     @POST
-    public Response add(Benutzer benutzer)
-    {
-        benutzerRepository.addBenutzer(benutzer);
-
-        return Response.status(Response.Status.CREATED).entity(benutzer).build();
+    public Response add(Benutzer benutzer) {
+        return _benutzer.addBenutzer(benutzer);
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String get(){ return benutzerRepository.listAll().toString(); }
+    public String get() {
+        return _benutzer.listAll().toString();
+    }
 
 
 }
