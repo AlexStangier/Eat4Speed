@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface IBenutzerService {
 
-    //Todo change return to actual return type
     Response addBenutzer(Benutzer obj);
 
     String listAll();
