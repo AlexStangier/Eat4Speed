@@ -75,6 +75,11 @@ const routes = [
     name: 'RestaurantBestellübersicht',
     component: () => import('../views/Restaurant_Bestellübersicht.vue')
   },
+  {
+    path: '/restaurant-stammdaten',
+    name: 'RestaurantStammdaten',
+    component: () => import('../views/Restaurant_Stammdaten.vue')
+  },
 ]
 
 const router = new VueRouter({
