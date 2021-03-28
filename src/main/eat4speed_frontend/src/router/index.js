@@ -80,6 +80,11 @@ const routes = [
     name: 'FahrerFahrtenplan',
     component: () => import('../views/FahrerFahrtenplan.vue')
   },
+  {
+    path: '/restaurant-stammdaten',
+    name: 'RestaurantStammdaten',
+    component: () => import('../views/Restaurant_Stammdaten.vue')
+  },
 ]
 
 const router = new VueRouter({
