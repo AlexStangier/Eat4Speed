@@ -75,6 +75,11 @@ const routes = [
     name: 'RestaurantBestellübersicht',
     component: () => import('../views/Restaurant_Bestellübersicht.vue')
   },
+  {
+    path: '/fahrer-fahrtenplan',
+    name: 'FahrerFahrtenplan',
+    component: () => import('../views/FahrerFahrtenplan.vue')
+  },
 ]
 
 const router = new VueRouter({

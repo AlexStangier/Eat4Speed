@@ -264,8 +264,8 @@ export default {
       //if (this.$refs.loginForm.validate()) {
 
       //}
-    }
-    ,
+    },
+
     async validateRegistration() {
 
       var benutzer = {
@@ -283,8 +283,6 @@ export default {
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
-
-      let createdFahrer;
       var fahrer = {
         benutzer_Id: this.benutzer_ID,
         geburtsdatum: this.date,
@@ -297,8 +295,8 @@ export default {
       if (this.$refs.registrationForm.validate()) {
         this.tab = 2;
       }
-    }
-    ,
+    },
+
     async validateVerification() {
 
       var fahrzeug = {
@@ -314,7 +312,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      const responseFahrer = await axios.put("/Fahrer/"+this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/"+this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
