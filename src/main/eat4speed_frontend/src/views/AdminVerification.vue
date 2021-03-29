@@ -28,6 +28,7 @@
                         persistent-hint
                         return-object
                         single-line
+                        @change="reloadFahrer"
                     ></v-select>
                   </v-row>
                 </v-col>
@@ -130,9 +131,46 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "AdminVerification",
   methods: {
+    async reloadFahrer(){
+      const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
+
+      console.log(ResponseAllFahrer);
+      console.log(ResponseAllFahrer.data);
+      console.log(ResponseAllFahrer.data[0])
+
+      var test = ResponseAllFahrer.data[0];
+
+      console.log(test[0]);
+
+      this.allFahrer = ResponseAllFahrer;
+
+      var i;
+      var toDisplay = "["
+      for(i=0;i<ResponseAllFahrer.data.length;i++)
+      {
+        let entry = ResponseAllFahrer.data[i];
+
+        toDisplay += "{'fahrernummer':";
+        toDisplay += entry[0]+"}";
+
+        if(i<ResponseAllFahrer.data.length-1)
+        {
+          toDisplay += ",";
+        }
+
+      }
+
+      toDisplay += "]";
+
+      console.log(toDisplay);
+
+      this.data = toDisplay;
+    },
     deleteBewerbung(id) {
       id;
     },
@@ -141,26 +179,16 @@ export default {
     }
   },
   mounted() {
-    this.data = [
-      {
-        anrede: 'Herr',
-        vorname: "Daniel",
-        nachname: "asd",
-        fahrzeugart: "Auto"
-      },
-      {
-        anrede: 'Herr',
-        vorname: "Daniel2",
-        nachname: "asd2",
-        fahrzeugart: "Fahrrad"
-      }
-    ]
+
+    this.data = this.allFahrer;
   },
   data() {
     return {
       data: [],
       acceptDialog: false,
       deleteDialog: false,
+      allFahrer: "",
+      fahrerSelection: "",
       search: '',
       select: {text: 'Alle Bewerbungen', value: 1},
       items: [
@@ -175,6 +203,10 @@ export default {
           sortable: false,
           value: 'anrede',
           width: '100'
+        },
+        {
+          text: 'Fahrernummer',
+          value: 'fahrernummer'
         },
         {
           text: 'Vorname',
