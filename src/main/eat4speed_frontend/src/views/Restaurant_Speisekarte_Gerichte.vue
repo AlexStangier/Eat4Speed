@@ -178,26 +178,6 @@ export default {
 
       this.gericht_ID = responseGericht.data.gerichtID;
 
-    },
-    allergie1Farbe() {
-      if (this.allergyButton1.selected === 1) {
-        this.$refs.allergie1.color = "red"
-        this.allergyButton1.selected = 0
-      }
-      if (this.allergyButton1.selected === 0) {
-        this.$refs.allergie1.color = "blue"
-        this.allergyButton1.selected = 1
-      }
-    },
-    allergie2Farbe() {
-      if (this.allergyButton2.selected === 1) {
-        this.$refs.allergie2.color = "red"
-        this.allergyButton2.selected = 0
-      }
-      if (this.allergyButton2.selected === 0) {
-        this.$refs.allergie2.color = "blue"
-        this.allergyButton2.selected = 1
-      }
     }
   },
   data: () => ({
@@ -210,13 +190,10 @@ export default {
     kategorien: ['Vegan', 'Vegetarisch', 'Pizza', 'Burger', 'Sushi', 'Dessert', 'Frühstück', 'Fleischgericht', 'Nudelgericht', 'heiß',
       'kalt', 'asiatisch'],
     value: [],
+    allergen: ['Ei', 'Erdnüsse', 'Fisch', 'Gluten', 'Krustentiere', 'Lupinen', 'Kuhmilch', 'Schalenfrüchte', 'Schwefeldioxid',
+      'Sellerie', 'Senf', 'Sesam', 'Soja', 'Weichtiere'],
+    valueA: [],
 
-    allergyButton1: {
-      selected: 0
-    },
-    allergyButton2: {
-      selected: 0
-    },
     gerichtName: "",
     gerichtBeschreibung: "",
     gerichtBild: "",
@@ -225,11 +202,7 @@ export default {
     restaurantID:"",
     gericht_ID:""
   }),
-  mounted() {
-    this.allergie1Farbe();
-    this.allergie2Farbe();
 
-  },
   computed: {
     items() {
       let i = 0
