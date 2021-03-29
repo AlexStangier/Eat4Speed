@@ -55,8 +55,9 @@
             <!------------  Artikel hinzufügen + ------------->
 
             <v-dialog
-                v-model="dialog"
+                v-model="artDialog"
                 width="500"
+                persistent
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
@@ -73,16 +74,16 @@
                 <v-col>
                   <v-text-field
                       v-model="gerichtName"
-                      :counter="10"
+                      :counter="20"
                       label="Artikelname"
                       required
                   ></v-text-field>
-                  <v-text-field
+                  <v-textarea
                       v-model="gerichtBeschreibung"
-                      :counter="10"
+                      :counter="100"
                       label="Artikelbeschreibung"
                       required
-                  ></v-text-field>
+                  ></v-textarea>
                   <v-file-input
                       v-model="gerichtBild"
                       label="Bild auswählen">
@@ -91,57 +92,55 @@
                   <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
                   </v-text-field>
 
-                  <v-textarea label="Beschreiben Sie das Gericht">
-                  </v-textarea>
+
 
                   <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
                   </v-checkbox>
 
-                  <v-dialog
-                      v-model="dialog"
-                      max-width="200"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                          color="red"
-                          dark
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        Allergene auswählen
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-col>
-                        <v-btn ref="allergie1" color="red" dark rounded elevation="15"
-                               @click="allergie1Farbe">
-                          allergie 1
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn ref="allergie2" color="red" dark rounded elevation="15"
-                               @click="allergie2Farbe">
-                          allergie 2
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn color="red" dark rounded elevation="15">
-                          allergie 3
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn color="red" dark rounded elevation="15">
-                          allergie 4
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn color="red" dark rounded elevation="15">
-                          allergie 5
-                        </v-btn>
-
-                      </v-col>
-                    </v-card>
-                  </v-dialog>
+                  <v-select
+                      ref="KategorieSelect"
+                      v-model="value"
+                      :items="kategorien"
+                      chips
+                      label="Kategorien"
+                      multiple
+                      outlined
+                      block
+                  ></v-select>
+                  <v-spacer class="ma-2"></v-spacer>
+                  <v-select
+                      v-model="valueA"
+                      :items="allergen"
+                      chips
+                      label="Allergene"
+                      multiple
+                      outlined
+                      block
+                  ></v-select>
 
                   <v-spacer class="ma-2"></v-spacer>
-                  <v-btn color="red" dark @click="addGericht">Fertig
-                  </v-btn>
+                  <v-col>
+                    <v-row>
+                      <v-btn
+                          @click="print"
+                          color="red"
+                          dark
+                          class="justify-center"
+                      >
+                        Fertig
+                      </v-btn>
+                      <v-spacer class="mr-2"></v-spacer>
+                      <v-btn
+                          @click="artDialog = false"
+                          color="red"
+                          dark
+                          justify
+                      >
+                        Abbruch
+                      </v-btn>
+                    </v-row>
+                  </v-col>
+
                 </v-col>
               </v-card>
             </v-dialog>
@@ -202,11 +201,15 @@ export default {
     }
   },
   data: () => ({
+    artDialog: false,
     names: ['Burger', 'Pizza', 'Sushi', 'McNuggets'],
     descriptions: ['Es ist ein Burger', 'Krosse Krabe Pizza', 'Fischig', 'Mit Szechuan Sauce'],
     prices: ['5,50 €', '100 €', '4,99 €', '3,99 €'],
     imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg', 'https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg', 'https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg', 'https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
     restaurants: ['Bobs Burgers', 'Krosse Krabbe', 'AsiaWok', 'MCDonalds'],
+    kategorien: ['Vegan', 'Vegetarisch', 'Pizza', 'Burger', 'Sushi', 'Dessert', 'Frühstück', 'Fleischgericht', 'Nudelgericht', 'heiß',
+      'kalt', 'asiatisch'],
+    value: [],
 
     allergyButton1: {
       selected: 0
