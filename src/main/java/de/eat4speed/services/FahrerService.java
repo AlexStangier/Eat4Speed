@@ -37,15 +37,15 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
-    public String getNotVerifiedFahrer()
+    public List getNotVerifiedFahrer()
     {
-        return null;
+        return fahrerRepository.getNotVerifiedFahrer();
     }
 
     @Override
-    public String getVerifiedFahrer()
+    public List getVerifiedFahrer()
     {
-        return null;
+        return fahrerRepository.getVerifiedFahrer();
     }
 
     @Override
@@ -54,6 +54,22 @@ public class FahrerService implements IFahrerService {
         fahrerRepository.updateFahrer_Fahrzeug_id(id, fahrzeug.getFahrzeug_Id());
 
         return Response.status(Response.Status.OK).entity(fahrzeug).build();
+    }
+
+    @Override
+    public Response updateFahrer_Verifiziert(int id)
+    {
+        fahrerRepository.updateFahrer_Verifiziert(id);
+
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
+    public Response deleteFahrer(int id)
+    {
+        fahrerRepository.deleteFahrer(id);
+
+        return Response.status(Response.Status.OK).build();
     }
 
 }

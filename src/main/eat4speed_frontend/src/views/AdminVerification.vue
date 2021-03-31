@@ -62,6 +62,7 @@
                     v-on="on"
                     class="mr-2"
                     color="grey"
+                    @click="setCurrentRowItem(item)"
                 >
                   mdi-check-bold
                 </v-icon>
@@ -72,7 +73,7 @@
                     <v-row>
                       <v-col cols="12">
                         <v-btn color="green" dark rounded width="200"
-                               @click="acceptDialog = false; verifyBewerbung(item);">Verifizieren
+                               @click="acceptDialog = false; verifyBewerbung();">Verifizieren
                         </v-btn>
                       </v-col>
                       <v-col cols="12">
@@ -94,6 +95,7 @@
                     v-bind="attrs"
                     v-on="on"
                     color="red"
+                    @click="setCurrentRowItem(item)"
                 >
                   mdi-delete
                 </v-icon>
@@ -103,20 +105,20 @@
                   <v-container>
                     <v-row>
                       <v-col cols="12">
-                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung(item);">Unseriös</v-btn>
+                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
                       </v-col>
                       <v-col cols="12">
-                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung(item);">Spam</v-btn>
+                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
                       </v-col>
                       <v-col cols="12">
-                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung(item);">Unvollständig</v-btn>
+                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
                       </v-col>
                       <v-col cols="12">
-                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung(item);">Keine Angabe</v-btn>
+                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
                       </v-col>
                       <v-col cols="12"></v-col>
                       <v-col cols="12">
-                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung(item);">Abbrechen</v-btn>
+                        <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false;">Abbrechen</v-btn>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -137,50 +139,170 @@ export default {
   name: "AdminVerification",
   methods: {
     async reloadFahrer(){
-      const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
 
-      console.log(ResponseAllFahrer);
-      console.log(ResponseAllFahrer.data);
-      console.log(ResponseAllFahrer.data[0])
+      console.log(this.select);
+      console.log(this.select.value)
 
-      var test = ResponseAllFahrer.data[0];
+      if(this.select.value === 1) {
+        const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
 
-      console.log(test[0]);
+        console.log(ResponseAllFahrer);
+        console.log(ResponseAllFahrer.data);
+        console.log(ResponseAllFahrer.data[0])
 
-      this.allFahrer = ResponseAllFahrer;
+        var test = ResponseAllFahrer.data[0];
 
-      var i;
-      var toDisplay = "["
-      for(i=0;i<ResponseAllFahrer.data.length;i++)
-      {
-        let entry = ResponseAllFahrer.data[i];
+        console.log(test[0]);
 
-        toDisplay += "{'fahrernummer':";
-        toDisplay += entry[0]+"}";
+        this.allFahrer = ResponseAllFahrer;
 
-        if(i<ResponseAllFahrer.data.length-1)
-        {
-          toDisplay += ",";
+        var arrayAllFahrer = [];
+
+        let it;
+        for (it = 0; it < ResponseAllFahrer.data.length; it++) {
+          let fahrer = ResponseAllFahrer.data[it];
+
+          let entry = {
+            fahrernummer: fahrer[0],
+            vorname: fahrer[1],
+            nachname: fahrer[2],
+            fahrzeugart: fahrer[3],
+            verifiziert: fahrer[4]
+          };
+          arrayAllFahrer[it] = entry;
+
         }
+        /*
+      this.data = [
+        {
+          fahrernummer: test[0],
+          vorname: test[1],
+          nachname: test[2],
+          fahrzeugart: test[3],
+          verifiziert:test[4]
+        }
+      ]
+      */
 
+        this.data = arrayAllFahrer;
+
+        console.log(arrayAllFahrer);
       }
 
-      toDisplay += "]";
+      if(this.select.value === 2) {
+        const ResponseNotVerifiedFahrer = await axios.get("/Fahrer/NOT_VERIFIED");
 
-      console.log(toDisplay);
+        console.log(ResponseNotVerifiedFahrer);
+        console.log(ResponseNotVerifiedFahrer.data);
+        console.log(ResponseNotVerifiedFahrer.data[0])
 
-      this.data = toDisplay;
+        this.allFahrer = ResponseNotVerifiedFahrer;
+
+        var arrayNotVerifiedFahrer = [];
+
+        let it;
+        for (it = 0; it < ResponseNotVerifiedFahrer.data.length; it++) {
+          let fahrer = ResponseNotVerifiedFahrer.data[it];
+
+          let entry = {
+            fahrernummer: fahrer[0],
+            vorname: fahrer[1],
+            nachname: fahrer[2],
+            fahrzeugart: fahrer[3],
+            verifiziert: fahrer[4]
+          };
+          arrayNotVerifiedFahrer[it] = entry;
+
+        }
+        /*
+      this.data = [
+        {
+          fahrernummer: test[0],
+          vorname: test[1],
+          nachname: test[2],
+          fahrzeugart: test[3],
+          verifiziert:test[4]
+        }
+      ]
+      */
+
+        this.data = arrayNotVerifiedFahrer;
+
+        console.log(arrayNotVerifiedFahrer);
+      }
+
+      if(this.select.value === 3) {
+        const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED");
+
+        console.log(ResponseVerifiedFahrer);
+        console.log(ResponseVerifiedFahrer.data);
+        console.log(ResponseVerifiedFahrer.data[0])
+
+        this.allFahrer = ResponseVerifiedFahrer;
+
+        var arrayVerifiedFahrer = [];
+
+        let it;
+        for (it = 0; it < ResponseVerifiedFahrer.data.length; it++) {
+          let fahrer = ResponseVerifiedFahrer.data[it];
+
+          let entry = {
+            fahrernummer: fahrer[0],
+            vorname: fahrer[1],
+            nachname: fahrer[2],
+            fahrzeugart: fahrer[3],
+            verifiziert: fahrer[4]
+          };
+          arrayVerifiedFahrer[it] = entry;
+
+        }
+        /*
+      this.data = [
+        {
+          fahrernummer: test[0],
+          vorname: test[1],
+          nachname: test[2],
+          fahrzeugart: test[3],
+          verifiziert:test[4]
+        }
+      ]
+      */
+
+        this.data = arrayVerifiedFahrer;
+
+        console.log(arrayVerifiedFahrer);
+      }
+
     },
-    deleteBewerbung(id) {
-      id;
+    setCurrentRowItem(item)
+    {
+      this.currentRowItem = item;
+      console.log(item);
+      console.log(this.currentRowItem);
     },
-    verifyBewerbung(id) {
-      id;
+    async deleteBewerbung() {
+
+      const ResponseDeleteFahrer = await axios.delete("Fahrer/"+this.currentRowItem.fahrernummer);
+
+      this.reloadFahrer();
+    },
+    async verifyBewerbung() {
+
+      const ResponseVerifyFahrer = await axios.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer);
+
+      console.log(this.currentRowItem);
+      console.log(this.currentRowItem.fahrernummer);
+
+      this.reloadFahrer();
     }
   },
   mounted() {
-
-    this.data = this.allFahrer;
+    this.data = [
+      {
+        anrede: '',
+      }
+    ]
+    this.reloadFahrer();
   },
   data() {
     return {
@@ -188,6 +310,7 @@ export default {
       acceptDialog: false,
       deleteDialog: false,
       allFahrer: "",
+      currentRowItem: "",
       fahrerSelection: "",
       search: '',
       select: {text: 'Alle Bewerbungen', value: 1},
@@ -219,6 +342,10 @@ export default {
         {
           text: 'Fahrzeugart',
           value: 'fahrzeugart'
+        },
+        {
+          text: 'Verifiziert',
+          value: 'verifiziert'
         },
         {
           value: 'actions',

@@ -13,10 +13,13 @@ public interface IFahrerService {
 
     List<String> getAllFahrer();
 
-    String getNotVerifiedFahrer();
+    List<String> getNotVerifiedFahrer();
 
-    String getVerifiedFahrer();
+    List<String> getVerifiedFahrer();
 
     Response updateFahrer_Fahrzeug_Id(int id, Fahrzeug fahrzeug);
 
+    Response updateFahrer_Verifiziert(int id);
+
+    Response deleteFahrer(int id);
 }

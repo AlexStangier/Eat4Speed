@@ -28,10 +28,17 @@ public class FahrerController {
     }
 
     @PUT
-    @Path("{id}")
+    @Path("updateFahrzeugId/{id}")
     public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug)
     {
         return _fahrer.updateFahrer_Fahrzeug_Id(id, fahrzeug);
+    }
+
+    @PUT
+    @Path("updateVerifiziert/{id}")
+    public Response updateFahrer_Verifiziert(@PathParam("id") int id)
+    {
+        return _fahrer.updateFahrer_Verifiziert(id);
     }
 
     @GET
@@ -47,14 +54,22 @@ public class FahrerController {
                 System.out.println("Case All");
                 break;
             case "VERIFIED":
-                fahrerData = null;
+                fahrerData = _fahrer.getVerifiedFahrer();
                 break;
             case "NOT_VERIFIED":
-                fahrerData = null;
+                fahrerData = _fahrer.getNotVerifiedFahrer();
                 break;
         }
         return fahrerData;
     }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteFahrer(@PathParam("id") int id)
+    {
+        return _fahrer.deleteFahrer(id);
+    }
+
 
 
 

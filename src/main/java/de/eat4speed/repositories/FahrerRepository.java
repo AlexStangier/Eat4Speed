@@ -35,13 +35,16 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public void updateFahrer_Verifiziert(int fahrernummer)
+    {
+        update("verifiziert = 1 where fahrernummer = ?1", fahrernummer);
+    }
+
+    @Transactional
     public List getAllFahrer()
     {
         List allFahrerData;
 
-        //"SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert " +
-
-        //                "SELECT f.fahrernummer AS fahrernummer, b.vorname AS vorname, b.nachname AS nachname, fz.fahrzeugtyp AS fahrzeugtyp, f.verifiziert AS verifiziert" +
                 Query query = entityManager.createQuery(
                 "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
@@ -54,6 +57,49 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         return allFahrerData;
     }
 
+    @Transactional
+    public List getNotVerifiedFahrer()
+    {
+        List notVerifiedFahrerData;
+
+        Query query = entityManager.createQuery(
+                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert  " +
+                        "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
+                        "WHERE f.fahrzeug = fz.fahrzeug_Id " +
+                        "AND f.benutzer_Id = b.benutzer_ID " +
+                        "AND f.verifiziert = 0"
+
+        );
+        notVerifiedFahrerData = query.getResultList();
+
+        return notVerifiedFahrerData;
+    }
+
+    @Transactional
+    public List getVerifiedFahrer()
+    {
+        List verifiedFahrerData;
+
+        Query query = entityManager.createQuery(
+                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert  " +
+                        "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
+                        "WHERE f.fahrzeug = fz.fahrzeug_Id " +
+                        "AND f.benutzer_Id = b.benutzer_ID " +
+                        "AND f.verifiziert = 1"
+
+        );
+        verifiedFahrerData = query.getResultList();
+
+        return verifiedFahrerData;
+    }
+
+    @Transactional
+    public int deleteFahrer(int fahrernummer)
+    {
+        delete("fahrernummer", fahrernummer);
+
+        return fahrernummer;
+    }
 
 
     public Fahrer findByFahrernummer(int fahrernummer)

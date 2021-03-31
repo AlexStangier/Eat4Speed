@@ -314,7 +314,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      const responseFahrer = await axios.put("/Fahrer/"+this.fahrer_ID, createdFahrzeug);
+      const responseFahrer = await axios.put("/Fahrer/updateFahrzeugId/"+this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
