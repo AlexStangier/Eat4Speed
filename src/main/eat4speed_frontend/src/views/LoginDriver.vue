@@ -75,6 +75,10 @@
                       >
                         <v-row>
                           <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
+                                          maxlength="20" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12" sm="12">
                             <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
                                           maxlength="20" required></v-text-field>
                           </v-col>
@@ -264,8 +268,8 @@ export default {
       //if (this.$refs.loginForm.validate()) {
 
       //}
-    }
-    ,
+    },
+
     async validateRegistration() {
 
       var benutzer = {
@@ -283,10 +287,9 @@ export default {
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
-
-      let createdFahrer;
       var fahrer = {
         benutzer_Id: this.benutzer_ID,
+        anrede: this.salutation,
         geburtsdatum: this.date,
         fuehrerschein: this.driverLicense
       };
@@ -297,8 +300,8 @@ export default {
       if (this.$refs.registrationForm.validate()) {
         this.tab = 2;
       }
-    }
-    ,
+    },
+
     async validateVerification() {
 
       var fahrzeug = {
@@ -314,7 +317,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      const responseFahrer = await axios.put("/Fahrer/updateFahrzeugId/"+this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/updateFahrzeugId/"+this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
@@ -360,6 +363,7 @@ export default {
       email: "",
       phoneNumber: "",
       date: "",
+      salutation: "",
       password: "",
       verify: "",
       // Login Tab

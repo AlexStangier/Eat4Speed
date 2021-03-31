@@ -14,6 +14,7 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
     @GeneratedValue
     private int fahrernummer;
     private int benutzer_Id;
+    private String anrede;
     private int geleistete_Fahrten;
     private byte ist_In_Pause;
     private int fahrzeug;
@@ -52,6 +53,13 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.ist_In_Pause = istInPause;
     }
 
+    public String getAnrede() {
+        return anrede;
+    }
+
+    public void setAnrede(String anrede) {
+        this.anrede = anrede;
+    }
 
     public int getGeleistete_Fahrten() {
         return geleistete_Fahrten;
@@ -118,12 +126,12 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrer fahrer = (Fahrer) o;
-        return fahrernummer == fahrer.fahrernummer && benutzer_Id == fahrer.benutzer_Id && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && Objects.equals(geburtsdatum, fahrer.geburtsdatum);
+        return fahrernummer == fahrer.fahrernummer && benutzer_Id == fahrer.benutzer_Id && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(anrede, fahrer.anrede) && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && Objects.equals(geburtsdatum, fahrer.geburtsdatum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fahrernummer, benutzer_Id, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege, verifiziert, fuehrerschein, geburtsdatum);
+        return Objects.hash(fahrernummer, benutzer_Id, anrede, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege, verifiziert, fuehrerschein, geburtsdatum);
     }
 
     @Override
@@ -131,6 +139,7 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         return "Fahrer{" +
                 "fahrernummer=" + fahrernummer +
                 ", benutzer_Id=" + benutzer_Id +
+                ", anrede='" + anrede + '\'' +
                 ", geleistete_Fahrten=" + geleistete_Fahrten +
                 ", ist_In_Pause=" + ist_In_Pause +
                 ", fahrzeug=" + fahrzeug +

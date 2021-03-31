@@ -99,23 +99,25 @@
 
                   <v-select
                       ref="KategorieSelect"
-                      v-model="value"
+                      v-model="selectedKategorien"
                       :items="kategorien"
                       chips
                       label="Kategorien"
                       multiple
                       outlined
                       block
+                      @click="loadKategorien"
                   ></v-select>
                   <v-spacer class="ma-2"></v-spacer>
                   <v-select
-                      v-model="valueA"
+                      v-model="selectedAllergene"
                       :items="allergen"
                       chips
                       label="Allergene"
                       multiple
                       outlined
                       block
+                      @click="loadAllergene"
                   ></v-select>
 
                   <v-spacer class="ma-2"></v-spacer>
@@ -131,7 +133,7 @@
                       </v-btn>
                       <v-spacer class="mr-2"></v-spacer>
                       <v-btn
-                          @click="artDialog = false"
+                          @click="artDialog = false; test();"
                           color="red"
                           dark
                           justify
@@ -161,6 +163,42 @@ export default {
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
     },
+    async loadKategorien()
+    {
+      const ResponseAllKategorien = await axios.get("/Kategorie");
+
+      console.log(ResponseAllKategorien);
+      let arrayKategorien = [];
+      let it;
+      for (it = 0; it < ResponseAllKategorien.data.length; it++) {
+        let kategorie = ResponseAllKategorien.data[it];
+
+        arrayKategorien[it] = kategorie;
+
+      }
+      console.log(arrayKategorien);
+      this.kategorien = arrayKategorien;
+    },
+    async test(){
+      console.log(this.value);
+      console.log(this.valueA);
+    },
+    async loadAllergene(){
+      const ResponseAllAllegergene = await axios.get("/Allergene");
+
+      console.log(ResponseAllAllegergene);
+      let arrayAllergene = [];
+      let it;
+      for (it = 0; it < ResponseAllAllegergene.data.length; it++) {
+        let allergen = ResponseAllAllegergene.data[it];
+
+        arrayAllergene[it] = allergen;
+
+      }
+      console.log(arrayAllergene);
+      this.allergen = arrayAllergene;
+
+    },
     async addGericht(){
 
       this.restaurantID = 22;
@@ -187,12 +225,10 @@ export default {
     prices: ['5,50 €', '100 €', '4,99 €', '3,99 €'],
     imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg', 'https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg', 'https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg', 'https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
     restaurants: ['Bobs Burgers', 'Krosse Krabbe', 'AsiaWok', 'MCDonalds'],
-    kategorien: ['Vegan', 'Vegetarisch', 'Pizza', 'Burger', 'Sushi', 'Dessert', 'Frühstück', 'Fleischgericht', 'Nudelgericht', 'heiß',
-      'kalt', 'asiatisch'],
-    value: [],
-    allergen: ['Ei', 'Erdnüsse', 'Fisch', 'Gluten', 'Krustentiere', 'Lupinen', 'Kuhmilch', 'Schalenfrüchte', 'Schwefeldioxid',
-      'Sellerie', 'Senf', 'Sesam', 'Soja', 'Weichtiere'],
-    valueA: [],
+    kategorien: [],
+    selectedKategorien: [],
+    allergen: [],
+    selectedAllergene: [],
 
     gerichtName: "",
     gerichtBeschreibung: "",
