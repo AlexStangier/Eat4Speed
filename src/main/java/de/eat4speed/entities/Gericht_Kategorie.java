@@ -4,13 +4,14 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Gericht_Kategorie extends PanacheEntityBase implements Serializable {
     @Id
     private int gericht_id;
     @Id
-    private int kategorie_id;
+    private String kategorie_id;
 
 
     public int getGericht_id() {
@@ -21,38 +22,32 @@ public class Gericht_Kategorie extends PanacheEntityBase implements Serializable
     }
 
 
-    public int getKategorie_id() {
+    public String getKategorie_id() {
         return kategorie_id;
     }
-    public void setKategorie_id(int kategorieId) {
-        this.kategorie_id = kategorieId;
+
+    public void setKategorie_id(String kategorie_id) {
+        this.kategorie_id = kategorie_id;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Gericht_Kategorie that = (Gericht_Kategorie) o;
-
-        if (gericht_id != that.gericht_id) return false;
-        if (kategorie_id != that.kategorie_id) return false;
-
-        return true;
+        return gericht_id == that.gericht_id && Objects.equals(kategorie_id, that.kategorie_id);
     }
 
     @Override
     public int hashCode() {
-        int result = gericht_id;
-        result = 31 * result + kategorie_id;
-        return result;
+        return Objects.hash(gericht_id, kategorie_id);
     }
 
     @Override
     public String toString() {
-        return "GerichtKategorieEntity{" +
+        return "Gericht_Kategorie{" +
                 "gericht_id=" + gericht_id +
-                ", kategorie_id=" + kategorie_id +
+                ", kategorie_id='" + kategorie_id + '\'' +
                 '}';
     }
 }

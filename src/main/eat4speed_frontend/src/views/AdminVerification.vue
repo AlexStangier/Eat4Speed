@@ -167,7 +167,8 @@ export default {
             vorname: fahrer[1],
             nachname: fahrer[2],
             fahrzeugart: fahrer[3],
-            verifiziert: fahrer[4]
+            verifiziert: fahrer[4],
+            anrede: fahrer[5]
           };
           arrayAllFahrer[it] = entry;
 
@@ -209,7 +210,8 @@ export default {
             vorname: fahrer[1],
             nachname: fahrer[2],
             fahrzeugart: fahrer[3],
-            verifiziert: fahrer[4]
+            verifiziert: fahrer[4],
+            anrede: fahrer[5]
           };
           arrayNotVerifiedFahrer[it] = entry;
 
@@ -251,7 +253,8 @@ export default {
             vorname: fahrer[1],
             nachname: fahrer[2],
             fahrzeugart: fahrer[3],
-            verifiziert: fahrer[4]
+            verifiziert: fahrer[4],
+            anrede: fahrer[5]
           };
           arrayVerifiedFahrer[it] = entry;
 
@@ -316,8 +319,8 @@ export default {
       select: {text: 'Alle Bewerbungen', value: 1},
       items: [
         {text: 'Alle Bewerbungen', value: 1},
-        {text: 'Offene Bewerbungen', value: 2},
-        {text: 'Geschlossene Bewerbungen', value: 3},
+        {text: 'Nicht verifizierte Fahrer', value: 2},
+        {text: 'Verifizierte Fahrer', value: 3},
       ],
       headers: [
         {

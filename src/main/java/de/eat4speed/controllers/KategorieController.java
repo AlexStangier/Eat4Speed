@@ -3,26 +3,32 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Kategorie;
 import de.eat4speed.repositories.KategorieRepository;
+import de.eat4speed.services.interfaces.IKategorieService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Path("/Kategorie")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class KategorieController {
 
 
     @Inject
-    KategorieRepository kategorieRepository;
+    IKategorieService _kategorie;
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return kategorieRepository.listAll().toString();
+    public List get(){
+        return _kategorie.listAll();
     }
 
+    @POST
+    public Response add(Kategorie kategorie)
+    {
+        return _kategorie.addKategorie(kategorie);
+    }
 }

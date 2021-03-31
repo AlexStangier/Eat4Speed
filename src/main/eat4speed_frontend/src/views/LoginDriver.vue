@@ -75,6 +75,10 @@
                       >
                         <v-row>
                           <v-col cols="12" md="12" sm="12">
+                            <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
+                                          maxlength="20" required></v-text-field>
+                          </v-col>
+                          <v-col cols="12" md="12" sm="12">
                             <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
                                           maxlength="20" required></v-text-field>
                           </v-col>
@@ -285,6 +289,7 @@ export default {
 
       var fahrer = {
         benutzer_Id: this.benutzer_ID,
+        anrede: this.salutation,
         geburtsdatum: this.date,
         fuehrerschein: this.driverLicense
       };
@@ -312,7 +317,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      await axios.put("/Fahrer/"+this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/updateFahrzeugId/"+this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
@@ -358,6 +363,7 @@ export default {
       email: "",
       phoneNumber: "",
       date: "",
+      salutation: "",
       password: "",
       verify: "",
       // Login Tab
