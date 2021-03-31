@@ -218,6 +218,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrer`
     `aktueller_Standort` INT,
     `Anzahl_aktuelle_Auftraege` INT NOT NULL,
     `verifiziert`             TINYINT(1) NOT NULL,
+    `Anrede`          VARCHAR(10) NOT NULL,
     PRIMARY KEY (`Fahrernummer`),
     INDEX `fk_Fahrer_Fahrzeug` (`Fahrzeug` ASC),
     INDEX `fk_Fahrer_Benutzer` (`Benutzer_ID` ASC),
@@ -534,10 +535,9 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Gericht_Inhaltsstoffe`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Kategorie`
 (
-    `Kategorie_ID` INT          NOT NULL AUTO_INCREMENT,
-    `Name`         VARCHAR(20)  NOT NULL,
+    `Name` VARCHAR(20)  NOT NULL,
     `Beschreibung` VARCHAR(200) NULL DEFAULT NULL,
-    PRIMARY KEY (`Kategorie_ID`)
+    PRIMARY KEY (`Name`)
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
@@ -550,15 +550,15 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Kategorie`
 CREATE TABLE IF NOT EXISTS `eatforspeed`.`Gericht_Kategorie`
 (
     `Gericht_ID`   INT NOT NULL,
-    `Kategorie_ID` INT NOT NULL,
-    PRIMARY KEY (`Gericht_ID`, `Kategorie_ID`),
-    INDEX `fk_Kategorie_Gericht_Kategorie` (`Kategorie_ID` ASC),
+    `Name` VARCHAR(20)  NOT NULL,
+    PRIMARY KEY (`Gericht_ID`, `Name`),
+    INDEX `fk_Kategorie_Gericht_Kategorie` (`Name` ASC),
     CONSTRAINT `fk_Gericht_Gericht_Kategorie`
         FOREIGN KEY (`Gericht_ID`)
-            REFERENCES `eatforspeed`.`Gericht` (`Gericht_ID`),
+            REFERENCES `eatforspeed`.`Gericht` (`GerichtID`),
     CONSTRAINT `fk_Kategorie_Gericht_Kategorie`
-        FOREIGN KEY (`Kategorie_ID`)
-            REFERENCES `eatforspeed`.`Kategorie` (`Kategorie_ID`)
+        FOREIGN KEY (`Name`)
+            REFERENCES `eatforspeed`.`Kategorie` (`Name`)
 )
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
