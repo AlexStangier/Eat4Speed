@@ -3,13 +3,14 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrzeug;
-import de.eat4speed.repositories.FahrerRepository;
-import de.eat4speed.services.FahrerService;
+import de.eat4speed.services.interfaces.IFahrerService;
+import org.hibernate.annotations.Parameter;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/Fahrer")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -18,30 +19,58 @@ public class FahrerController {
 
 
     @Inject
-    FahrerRepository fahrerRepository;
+    IFahrerService _fahrer;
 
     @POST
     public Response add(Fahrer fahrer)
     {
-        fahrerRepository.addFahrer(fahrer);
-
-        return Response.status(Response.Status.CREATED).entity(fahrer).build();
+        return _fahrer.addFahrer(fahrer);
     }
 
     @PUT
-    @Path("{id}")
+    @Path("updateFahrzeugId/{id}")
     public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug)
     {
+        return _fahrer.updateFahrer_Fahrzeug_Id(id, fahrzeug);
+    }
 
-        fahrerRepository.updateFahrer_Fahrzeug_id(id, fahrzeug.getFahrzeug_Id());
-
-        return Response.status(Response.Status.OK).entity(fahrzeug).build();
+    @PUT
+    @Path("updateVerifiziert/{id}")
+    public Response updateFahrer_Verifiziert(@PathParam("id") int id)
+    {
+        return _fahrer.updateFahrer_Verifiziert(id);
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return fahrerRepository.listAll().toString();
+    @Path("{selection}")
+    public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung)
+    {
+        List fahrerData = null;
+
+        switch(fahrerSelectionVerifizierung)
+        {
+            case "ALL":
+                fahrerData = _fahrer.getAllFahrer();
+                System.out.println("Case All");
+                break;
+            case "VERIFIED":
+                fahrerData = _fahrer.getVerifiedFahrer();
+                break;
+            case "NOT_VERIFIED":
+                fahrerData = _fahrer.getNotVerifiedFahrer();
+                break;
+        }
+        return fahrerData;
     }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteFahrer(@PathParam("id") int id)
+    {
+        return _fahrer.deleteFahrer(id);
+    }
+
+
+
 
 }

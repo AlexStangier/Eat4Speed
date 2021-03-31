@@ -19,7 +19,6 @@ public class BenutzerController {
     @Inject
     IBenutzerService _benutzer;
 
-
     @POST
     public Response add(Benutzer benutzer) {
         return _benutzer.addBenutzer(benutzer);
