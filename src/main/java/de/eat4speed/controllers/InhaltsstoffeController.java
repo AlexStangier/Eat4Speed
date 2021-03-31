@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Path("/Inhaltsstoffe")
@@ -26,8 +27,8 @@ public class InhaltsstoffeController {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String get() {
-        return _inhaltsstoffe.listAll().toString();
+    public List get() {
+        return _inhaltsstoffe.listAll();
     }
 
 

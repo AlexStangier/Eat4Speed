@@ -31,7 +31,7 @@ public class InhaltsstoffeService implements IInhaltsstoffeService {
 
     @Override
     public List listAll() {
-        return _inhaltsstoffe.listAll();
+        return _inhaltsstoffe.listAllInhaltsstoffnamen();
     }
 
 
