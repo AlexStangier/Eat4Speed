@@ -1,164 +1,144 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container fill-height fluid>
-        <v-layout align-center justify-center>
-          <v-flex md6 sm6 xs12>
-            <div class="text-h3 mb-10"> Restaurantname </div>
-            <v-col  class="d-flex justify-space-between mb-6">
-
+  <v-main>
+    <v-container fill-height fluid>
+      <v-layout align-center justify-center>
+        <v-flex md6 sm6 xs12>
+          <div class="text-h3 mb-10"> Restaurantname </div>
+          <v-col  class="d-flex justify-space-between mb-6">
+            <v-btn
+                color="red"
+                dark
+                align="right"
+                to="/restaurant-speisekarte-gerichte"
+                class="mt-5"
+            >
+              Gerichte
+            </v-btn>
+            <v-card-title class="text-h4"> Getränke </v-card-title>
+          </v-col>
+          <v-divider></v-divider>
+          <v-virtual-scroll
+              :items="items"
+              :item-height="200"
+              max-height="500"
+          >
+            <template v-slot:default="{ item }">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
+                </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-group align="left">
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+                    <br>
+                    <br>
+                  </v-list-item-group>
+                </v-list-item-content>
+                <v-list-item-content></v-list-item-content>
+                <v-list-item-group align="left">
+                  <v-list-item-content>{{ item.price}}</v-list-item-content>
+                  <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
+                </v-list-item-group>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+          <!------------  Artikel hinzufügen + ------------->
+          <v-dialog
+              v-model="dialog"
+              width="500"
+          >
+            <template v-slot:activator="{ on, attrs }">
               <v-btn
                   color="red"
                   dark
-                  align="right"
-                  to="/restaurant-speisekarte-gerichte"
-                  class="mt-5"
+                  v-bind="attrs"
+                  v-on="on"
               >
-                Gerichte
+                Artikel hinzufügen
               </v-btn>
-              <v-card-title class="text-h4"> Getränke </v-card-title>
-            </v-col>
-            <v-divider></v-divider>
-            <v-virtual-scroll
-                :items="items"
-                :item-height="200"
-                max-height="500"
-            >
-              <template v-slot:default="{ item }">
-                <v-list-item>
-
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
-                  </v-list-item-content>
-
-                  <v-list-item-content>
-                    <v-list-item-group align="left">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <br>
-                    </v-list-item-group>
-                  </v-list-item-content>
-
-                  <v-list-item-content></v-list-item-content>
-
-                  <v-list-item-group align="left">
-                    <v-list-item-content>{{ item.price}}</v-list-item-content>
-                    <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
-                  </v-list-item-group>
-
-
-                </v-list-item>
-                <v-divider></v-divider>
-              </template>
-            </v-virtual-scroll>
-
-            <!------------  Artikel hinzufügen + ------------->
-
-            <v-dialog
-                v-model="dialog"
-                width="500"
-            >
-              <template v-slot:activator="{ on, attrs }">
+            </template>
+            <v-card>
+              <v-col>
+                <v-text-field
+                    v-model="firstname"
+                    :rules="nameRules"
+                    :counter="10"
+                    label="Artikelname"
+                    required
+                ></v-text-field>
+                <v-text-field
+                    v-model="firstname"
+                    :rules="nameRules"
+                    :counter="10"
+                    label="Artikelbeschreibung"
+                    required
+                ></v-text-field>
+                <v-file-input
+                    label="Bild auswählen">
+                </v-file-input>
+                <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
+                </v-text-field>
+                <v-textarea label="Beschreiben Sie das Gericht">
+                </v-textarea>
+                <v-checkbox label="Artikel verfügbar?">
+                </v-checkbox>
+                <v-dialog
+                    v-model="dialog"
+                    max-width="200"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        color="red"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      Allergene auswählen
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-col>
+                      <v-btn ref="allergie1" color="red" dark rounded elevation="15"
+                             @click="allergie1Farbe">
+                        allergie 1
+                      </v-btn >
+                      <v-spacer class="ma-2"></v-spacer>
+                      <v-btn ref="allergie2" color="red" dark rounded elevation="15"
+                             @click="allergie2Farbe">
+                        allergie 2
+                      </v-btn>
+                      <v-spacer class="ma-2"></v-spacer>
+                      <v-btn color="red" dark rounded elevation="15">
+                        allergie 3
+                      </v-btn>
+                      <v-spacer class="ma-2"></v-spacer>
+                      <v-btn color="red" dark rounded elevation="15">
+                        allergie 4
+                      </v-btn>
+                      <v-spacer class="ma-2"></v-spacer>
+                      <v-btn color="red" dark rounded elevation="15">
+                        allergie 5
+                      </v-btn>
+                    </v-col>
+                  </v-card>
+                </v-dialog>
+                <v-spacer class="ma-2"></v-spacer>
                 <v-btn
                     color="red"
                     dark
-                    v-bind="attrs"
-                    v-on="on"
                 >
-                  Artikel hinzufügen
+                  Fertig
                 </v-btn>
-              </template>
-
-              <v-card>
-                <v-col>
-                  <v-text-field
-                      v-model="firstname"
-                      :rules="nameRules"
-                      :counter="10"
-                      label="Artikelname"
-                      required
-                  ></v-text-field>
-                  <v-text-field
-                      v-model="firstname"
-                      :rules="nameRules"
-                      :counter="10"
-                      label="Artikelbeschreibung"
-                      required
-                  ></v-text-field>
-                  <v-file-input
-                      label="Bild auswählen">
-
-                  </v-file-input>
-                  <v-text-field label="Preis in €" type="number" append-icon="currency-eur">
-                  </v-text-field>
-
-                  <v-textarea label="Beschreiben Sie das Gericht">
-                  </v-textarea>
-
-                  <v-checkbox label="Artikel verfügbar?">
-                  </v-checkbox>
-
-                  <v-dialog
-                      v-model="dialog"
-                      max-width="200"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                          color="red"
-                          dark
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                        Allergene auswählen
-                      </v-btn>
-                    </template>
-                    <v-card>
-                      <v-col>
-                        <v-btn ref="allergie1" color="red" dark rounded elevation="15"
-                               @click="allergie1Farbe">
-                          allergie 1
-                        </v-btn >
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn ref="allergie2" color="red" dark rounded elevation="15"
-                               @click="allergie2Farbe">
-                          allergie 2
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn color="red" dark rounded elevation="15">
-                          allergie 3
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn color="red" dark rounded elevation="15">
-                          allergie 4
-                        </v-btn>
-                        <v-spacer class="ma-2"></v-spacer>
-                        <v-btn color="red" dark rounded elevation="15">
-                          allergie 5
-                        </v-btn>
-
-                      </v-col>
-                    </v-card>
-                  </v-dialog>
-
-
-
-                  <v-spacer class="ma-2"></v-spacer>
-                  <v-btn
-                      color="red"
-                      dark
-                  >
-                    Fertig
-                  </v-btn>
-                </v-col>
-              </v-card>
-            </v-dialog>
-            <!------------  Artikel hinzufügen - ------------->
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-main>
-  </v-app>
+              </v-col>
+            </v-card>
+          </v-dialog>
+          <!------------  Artikel hinzufügen - ------------->
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

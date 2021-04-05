@@ -1,157 +1,139 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container fill-height fluid>
-        <v-layout align-center justify-center>
-          <v-flex md6 sm6 xs12>
-            <div class="text-h3 mb-10"> Restaurantname</div>
-            <v-col class="d-flex justify-space-between mb-6">
-              <v-card-title class="text-h4"> Gerichte</v-card-title>
+  <v-main>
+    <v-container fill-height fluid>
+      <v-layout align-center justify-center>
+        <v-flex md6 sm6 xs12>
+          <div class="text-h3 mb-10"> Restaurantname</div>
+          <v-col class="d-flex justify-space-between mb-6">
+            <v-card-title class="text-h4"> Gerichte</v-card-title>
+            <v-btn
+                color="red"
+                dark
+                align="right"
+                to="/restaurant-speisekarte-getränke"
+                class="mt-5"
+            >
+              Getränke
+            </v-btn>
+          </v-col>
+          <v-divider></v-divider>
+          <v-virtual-scroll
+              :items="items"
+              :item-height="200"
+              max-height="500"
+          >
+            <template v-slot:default="{ item }">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
+                </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-group align="left">
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+                    <br>
+                    <br>
+                  </v-list-item-group>
+                </v-list-item-content>
+                <v-list-item-content></v-list-item-content>
+                <v-list-item-group align="left">
+                  <v-list-item-content>{{ item.price }}</v-list-item-content>
+                  <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
+                </v-list-item-group>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+          <!------------  Artikel hinzufügen + ------------->
+          <v-dialog
+              v-model="artDialog"
+              width="500"
+              persistent
+          >
+            <template v-slot:activator="{ on, attrs }">
               <v-btn
                   color="red"
                   dark
-                  align="right"
-                  to="/restaurant-speisekarte-getränke"
-                  class="mt-5"
+                  v-bind="attrs"
+                  v-on="on"
               >
-                Getränke
+                Artikel hinzufügen
               </v-btn>
-            </v-col>
-            <v-divider></v-divider>
-            <v-virtual-scroll
-                :items="items"
-                :item-height="200"
-                max-height="500"
-            >
-              <template v-slot:default="{ item }">
-                <v-list-item>
-
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
-                  </v-list-item-content>
-
-                  <v-list-item-content>
-                    <v-list-item-group align="left">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <br>
-                    </v-list-item-group>
-                  </v-list-item-content>
-
-                  <v-list-item-content></v-list-item-content>
-
-                  <v-list-item-group align="left">
-                    <v-list-item-content>{{ item.price }}</v-list-item-content>
-                    <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
-                  </v-list-item-group>
-
-
-                </v-list-item>
-                <v-divider></v-divider>
-              </template>
-            </v-virtual-scroll>
-
-            <!------------  Artikel hinzufügen + ------------->
-
-            <v-dialog
-                v-model="artDialog"
-                width="500"
-                persistent
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                    color="red"
-                    dark
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  Artikel hinzufügen
-                </v-btn>
-              </template>
-
-              <v-card>
+            </template>
+            <v-card>
+              <v-col>
+                <v-text-field
+                    v-model="gerichtName"
+                    :counter="20"
+                    label="Artikelname"
+                    required
+                ></v-text-field>
+                <v-textarea
+                    v-model="gerichtBeschreibung"
+                    :counter="100"
+                    label="Artikelbeschreibung"
+                    required
+                ></v-textarea>
+                <v-file-input
+                    v-model="gerichtBild"
+                    label="Bild auswählen">
+                </v-file-input>
+                <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
+                </v-text-field>
+                <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
+                </v-checkbox>
+                <v-select
+                    ref="KategorieSelect"
+                    v-model="selectedKategorien"
+                    :items="kategorien"
+                    chips
+                    label="Kategorien"
+                    multiple
+                    outlined
+                    block
+                    @click="loadKategorien"
+                ></v-select>
+                <v-spacer class="ma-2"></v-spacer>
+                <v-select
+                    v-model="selectedAllergene"
+                    :items="allergen"
+                    chips
+                    label="Allergene"
+                    multiple
+                    outlined
+                    block
+                    @click="loadAllergene"
+                ></v-select>
+                <v-spacer class="ma-2"></v-spacer>
                 <v-col>
-                  <v-text-field
-                      v-model="gerichtName"
-                      :counter="20"
-                      label="Artikelname"
-                      required
-                  ></v-text-field>
-                  <v-textarea
-                      v-model="gerichtBeschreibung"
-                      :counter="100"
-                      label="Artikelbeschreibung"
-                      required
-                  ></v-textarea>
-                  <v-file-input
-                      v-model="gerichtBild"
-                      label="Bild auswählen">
-
-                  </v-file-input>
-                  <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
-                  </v-text-field>
-
-
-
-                  <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
-                  </v-checkbox>
-
-                  <v-select
-                      ref="KategorieSelect"
-                      v-model="selectedKategorien"
-                      :items="kategorien"
-                      chips
-                      label="Kategorien"
-                      multiple
-                      outlined
-                      block
-                      @click="loadKategorien"
-                  ></v-select>
-                  <v-spacer class="ma-2"></v-spacer>
-                  <v-select
-                      v-model="selectedAllergene"
-                      :items="allergen"
-                      chips
-                      label="Allergene"
-                      multiple
-                      outlined
-                      block
-                      @click="loadAllergene"
-                  ></v-select>
-
-                  <v-spacer class="ma-2"></v-spacer>
-                  <v-col>
-                    <v-row>
-                      <v-btn
-                          @click="print"
-                          color="red"
-                          dark
-                          class="justify-center"
-                      >
-                        Fertig
-                      </v-btn>
-                      <v-spacer class="mr-2"></v-spacer>
-                      <v-btn
-                          @click="artDialog = false; test();"
-                          color="red"
-                          dark
-                          justify
-                      >
-                        Abbruch
-                      </v-btn>
-                    </v-row>
-                  </v-col>
-
+                  <v-row>
+                    <v-btn
+                        @click="print"
+                        color="red"
+                        dark
+                        class="justify-center"
+                    >
+                      Fertig
+                    </v-btn>
+                    <v-spacer class="mr-2"></v-spacer>
+                    <v-btn
+                        @click="artDialog = false; test();"
+                        color="red"
+                        dark
+                        justify
+                    >
+                      Abbruch
+                    </v-btn>
+                  </v-row>
                 </v-col>
-              </v-card>
-            </v-dialog>
-            <!------------  Artikel hinzufügen - ------------->
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-main>
-  </v-app>
+              </v-col>
+            </v-card>
+          </v-dialog>
+          <!------------  Artikel hinzufügen - ------------->
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-main>
 </template>
 
 <script>
