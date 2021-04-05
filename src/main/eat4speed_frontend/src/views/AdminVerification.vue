@@ -58,6 +58,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
+                    v-if="item.verifiziert === 0"
                     v-bind="attrs"
                     v-on="on"
                     class="mr-2"
@@ -139,21 +140,8 @@ export default {
   name: "AdminVerification",
   methods: {
     async reloadFahrer(){
-
-      console.log(this.select);
-      console.log(this.select.value)
-
-      if(this.select.value === 1) {
+      if (this.select.value === 1) {
         const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
-
-        console.log(ResponseAllFahrer);
-        console.log(ResponseAllFahrer.data);
-        console.log(ResponseAllFahrer.data[0])
-
-        var test = ResponseAllFahrer.data[0];
-
-        console.log(test[0]);
-
         this.allFahrer = ResponseAllFahrer;
 
         var arrayAllFahrer = [];
@@ -171,31 +159,12 @@ export default {
             anrede: fahrer[5]
           };
           arrayAllFahrer[it] = entry;
-
         }
-        /*
-      this.data = [
-        {
-          fahrernummer: test[0],
-          vorname: test[1],
-          nachname: test[2],
-          fahrzeugart: test[3],
-          verifiziert:test[4]
-        }
-      ]
-      */
-
         this.data = arrayAllFahrer;
-
-        console.log(arrayAllFahrer);
       }
 
-      if(this.select.value === 2) {
+      if (this.select.value === 2) {
         const ResponseNotVerifiedFahrer = await axios.get("/Fahrer/NOT_VERIFIED");
-
-        console.log(ResponseNotVerifiedFahrer);
-        console.log(ResponseNotVerifiedFahrer.data);
-        console.log(ResponseNotVerifiedFahrer.data[0])
 
         this.allFahrer = ResponseNotVerifiedFahrer;
 
@@ -216,29 +185,11 @@ export default {
           arrayNotVerifiedFahrer[it] = entry;
 
         }
-        /*
-      this.data = [
-        {
-          fahrernummer: test[0],
-          vorname: test[1],
-          nachname: test[2],
-          fahrzeugart: test[3],
-          verifiziert:test[4]
-        }
-      ]
-      */
-
         this.data = arrayNotVerifiedFahrer;
-
-        console.log(arrayNotVerifiedFahrer);
       }
 
       if(this.select.value === 3) {
         const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED");
-
-        console.log(ResponseVerifiedFahrer);
-        console.log(ResponseVerifiedFahrer.data);
-        console.log(ResponseVerifiedFahrer.data[0])
 
         this.allFahrer = ResponseVerifiedFahrer;
 
@@ -257,54 +208,25 @@ export default {
             anrede: fahrer[5]
           };
           arrayVerifiedFahrer[it] = entry;
-
         }
-        /*
-      this.data = [
-        {
-          fahrernummer: test[0],
-          vorname: test[1],
-          nachname: test[2],
-          fahrzeugart: test[3],
-          verifiziert:test[4]
-        }
-      ]
-      */
 
         this.data = arrayVerifiedFahrer;
-
-        console.log(arrayVerifiedFahrer);
       }
-
     },
     setCurrentRowItem(item)
     {
       this.currentRowItem = item;
-      console.log(item);
-      console.log(this.currentRowItem);
     },
     async deleteBewerbung() {
-
-      const ResponseDeleteFahrer = await axios.delete("Fahrer/"+this.currentRowItem.fahrernummer);
-
+      await axios.delete("Fahrer/"+this.currentRowItem.fahrernummer);
       this.reloadFahrer();
     },
     async verifyBewerbung() {
-
-      const ResponseVerifyFahrer = await axios.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer);
-
-      console.log(this.currentRowItem);
-      console.log(this.currentRowItem.fahrernummer);
-
+      await axios.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer);
       this.reloadFahrer();
     }
   },
   mounted() {
-    this.data = [
-      {
-        anrede: '',
-      }
-    ]
     this.reloadFahrer();
   },
   data() {

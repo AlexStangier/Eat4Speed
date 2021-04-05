@@ -3,5 +3,8 @@ module.exports = {
     "vuetify"
   ],
   outputDir: '../resources/META-INF/resources',
-  publicPath: ''
+  publicPath: '',
+  devServer: {
+    proxy: 'http://localhost:1337',
+  }
 }
