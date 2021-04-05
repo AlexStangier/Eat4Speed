@@ -1,51 +1,41 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container fill-height fluid>
-        <v-layout align-center justify-center>
-          <v-flex md6 sm6 xs12>
-
-            <v-card-title> Gerichte </v-card-title>
-            <v-divider></v-divider>
-            <v-virtual-scroll
-                :items="items"
-                :item-height="200"
-                max-height="500"
-            >
-              <template v-slot:default="{ item }">
-                <v-list-item>
-
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
-                  </v-list-item-content>
-
-                  <v-list-item-content>
-                    <v-list-item-group align="left">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <br>
-                    </v-list-item-group>
-                  </v-list-item-content>
-
-                  <v-list-item-content></v-list-item-content>
-
+  <v-main>
+    <v-container fill-height fluid>
+      <v-layout align-center justify-center>
+        <v-flex md6 sm6 xs12>
+          <v-card-title> Gerichte </v-card-title>
+          <v-divider></v-divider>
+          <v-virtual-scroll
+              :items="items"
+              :item-height="200"
+              max-height="500"
+          >
+            <template v-slot:default="{ item }">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
+                </v-list-item-content>
+                <v-list-item-content>
                   <v-list-item-group align="left">
-                    <v-list-item-content>{{ item.price}}</v-list-item-content>
-                    <v-btn small="true" bottom="bottom">Fertig</v-btn>
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+                    <br>
+                    <br>
                   </v-list-item-group>
-
-
-                </v-list-item>
-                <v-divider></v-divider>
-              </template>
-            </v-virtual-scroll>
-
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-main>
-  </v-app>
+                </v-list-item-content>
+                <v-list-item-content></v-list-item-content>
+                <v-list-item-group align="left">
+                  <v-list-item-content>{{ item.price}}</v-list-item-content>
+                  <v-btn small="true" bottom="bottom">Fertig</v-btn>
+                </v-list-item-group>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

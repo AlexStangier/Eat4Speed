@@ -1,60 +1,52 @@
 <template>
-  <v-app>
-    <v-main>
-      <v-container fill-height fluid>
-        <v-layout align-center justify-center>
-          <v-flex md6 sm6 xs12>
-
-              <h3 align="Left">Stammdaten</h3>
-
-
-            <v-form ref="registerForm" v-model="valid" lazy-validation>
-              <v-row>
-                <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="firstName" label="Vorname"
-                                maxlength="50" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="12" sm="12">
-                  <v-text-field v-model="lastName" label="Nachname"
-                                maxlength="50" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" sm="6">
-                  <v-text-field v-model="street" label="Straße"
-                                maxlength="50" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="6" sm="6">
-                  <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer" maxlength="20"
-                                required></v-text-field>
-                </v-col>
-
-                <v-col cols="12" md="8" sm="8">
-                  <v-text-field v-model="place" label="Ort"
-                                maxlength="50" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="4">
-                  <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="20"
-                                required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="8" sm="8">
-                  <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="4">
-                  <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
-                                required></v-text-field>
-                </v-col>
-
-                <v-spacer></v-spacer>
-                <v-col class="text-right">
-                  <v-btn>Speichern</v-btn>
-                </v-col>
-              </v-row>
-            </v-form>
-
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-main>
-  </v-app>
+  <v-main>
+    <v-container fill-height fluid>
+      <v-layout align-center justify-center>
+        <v-flex md6 sm6 xs12>
+          <h3 align="Left">Stammdaten</h3>
+          <v-form ref="registerForm" v-model="valid" lazy-validation>
+            <v-row>
+              <v-col cols="12" md="12" sm="12">
+                <v-text-field v-model="firstName" label="Vorname"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="12" sm="12">
+                <v-text-field v-model="lastName" label="Nachname"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" sm="6">
+                <v-text-field v-model="street" label="Straße"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" sm="6">
+                <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer" maxlength="20"
+                              required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="8" sm="8">
+                <v-text-field v-model="place" label="Ort"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4" sm="4">
+                <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="20"
+                              required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="8" sm="8">
+                <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="4" sm="4">
+                <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
+                              required></v-text-field>
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col class="text-right">
+                <v-btn>Speichern</v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-main>
 </template>
 
 
