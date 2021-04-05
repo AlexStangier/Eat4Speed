@@ -59,13 +59,14 @@
                       <v-list-item-title>Schichtplan</v-list-item-title>
                     </v-list-item>
 
+                    <router-link  to="/restaurant-stammdaten">
                     <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-account</v-icon>
                       </v-list-item-icon>
                       <v-list-item-title>Stammdaten</v-list-item-title>
                     </v-list-item>
-
+                    </router-link>
                     <v-list-item>
                       <v-list-item-icon>
                         <v-icon>mdi-margin</v-icon>
