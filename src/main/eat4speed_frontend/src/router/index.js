@@ -57,7 +57,7 @@ const routes = [
   {
     path:'/dish',
     name: 'Dish',
-    component: () => import('../views/Dish')
+    component: () => import('../views/Dish.vue')
   },
   {
     path: '/restaurant-bestellungen',
@@ -78,6 +78,11 @@ const routes = [
     path: '/restaurant-stammdaten',
     name: 'RestaurantStammdaten',
     component: () => import('../views/Restaurant_Stammdaten.vue')
+  },
+  {
+    path:'/customerRes',
+    name: 'CustomerRes',
+    component: () => import('../views/CustomerRestaurantView.vue')
   },
 ]
 
