@@ -35,7 +35,11 @@
                   </v-list-item-group>
                 </v-list-item-content>
                 <v-list-item-content></v-list-item-content>
-                <v-list-item-group align="center">
+                <v-list-item-group align="right">
+                  <v-btn small="true" right>
+                    <v-icon>mdi-heart</v-icon>
+                  </v-btn>
+                  <br>
                   <v-list-item-content>
                     Preis: {{ item.price}}
                     <br>
