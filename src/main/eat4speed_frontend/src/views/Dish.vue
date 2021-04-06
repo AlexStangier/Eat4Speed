@@ -5,20 +5,6 @@
       >
         <v-btn small to="/customer">Zurück</v-btn>
       </v-col>
-      <v-col
-          order="2"
-          offset="8"
-      >
-        <v-btn small>
-          Warenkorb
-          <v-icon>mdi-cart</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col
-          order="3"
-      >
-        Preis
-      </v-col>
     </v-row>
     <v-container>
       <v-container>
@@ -38,10 +24,15 @@
                     :key="c"
                 >
                   <v-content v-if="b === 1 & c === 1">
-                    Burger
+                    <h1>Burger</h1>
+                  </v-content>
+                  <v-content v-if="b === 1 & c === 3" align="right">
+                    <v-btn small="true" right="right">
+                      <v-icon>mdi-heart</v-icon>
+                    </v-btn>
                   </v-content>
                   <v-content v-if="b === 2 & c === 1">
-                    Bob's Burger
+                    <h3>Bob's Burger</h3>
                   </v-content>
                   <v-content v-if="b === 10 & c === 1">
                     Anzahl
