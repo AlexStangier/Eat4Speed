@@ -1,67 +1,58 @@
 <template>
-  <v-app>
-    <v-main>
+  <v-main>
+    <v-container>
       <v-container>
         <v-container>
-          <v-container>
-            <v-text-field placeholder="Suche..." autofocus clearable></v-text-field>
-            <v-btn>Suchen</v-btn>
-          </v-container>
-          <v-btn>Gericht</v-btn>
-          <v-btn>Umgebung</v-btn>
+          <v-text-field placeholder="Suche..." autofocus clearable></v-text-field>
+          <v-btn>Suchen</v-btn>
         </v-container>
-        <v-divider></v-divider>
-        <v-container>
-          <v-card class="mx-auto">
-            <v-card-title> Gerichte </v-card-title>
-            <v-divider></v-divider>
-
-            <v-virtual-scroll
-                :items="items"
-                :item-height="200"
-                max-height="600"
-            >
-              <template v-slot:default="{ item }" v-resize>
-                <v-list-item v-resize>
-
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
-                  </v-list-item-content>
-
-                  <v-list-item-content>
-                    <v-list-item-group align="left">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <br>
-
-                      <v-list-item-content>{{item.restaurant}}</v-list-item-content>
-                      <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
-                    </v-list-item-group>
-                  </v-list-item-content>
-
-                  <v-list-item-content></v-list-item-content>
-
-                  <v-list-item-group align="center">
-                    <v-list-item-content>
-                      Preis: {{ item.price}}
-                      <br>
-                      Mindestbestellwert: {{item.minimum}} €
-                    </v-list-item-content>
-                    <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small :value="item.rating"></v-rating>
-                    <br>
-                    <v-btn small="true" bottom="bottom" to="/dish">Bestellen</v-btn>
-                  </v-list-item-group>
-
-                </v-list-item>
-                <v-divider></v-divider>
-              </template>
-            </v-virtual-scroll>
-          </v-card>
-        </v-container>
+        <v-btn>Gericht</v-btn>
+        <v-btn>Umgebung</v-btn>
       </v-container>
-    </v-main>
-  </v-app>
+      <v-divider></v-divider>
+      <v-container>
+        <v-card class="mx-auto">
+          <v-card-title> Gerichte </v-card-title>
+          <v-divider></v-divider>
+          <v-virtual-scroll
+              :items="items"
+              :item-height="200"
+              max-height="600"
+          >
+            <template v-slot:default="{ item }" v-resize>
+              <v-list-item v-resize>
+                <v-list-item-content>
+                  <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
+                </v-list-item-content>
+                <v-list-item-content>
+                  <v-list-item-group align="left">
+                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+                    <br>
+                    <br>
+                    <v-list-item-content>{{item.restaurant}}</v-list-item-content>
+                    <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
+                  </v-list-item-group>
+                </v-list-item-content>
+                <v-list-item-content></v-list-item-content>
+                <v-list-item-group align="center">
+                  <v-list-item-content>
+                    Preis: {{ item.price}}
+                    <br>
+                    Mindestbestellwert: {{item.minimum}} €
+                  </v-list-item-content>
+                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small :value="item.rating"></v-rating>
+                  <br>
+                  <v-btn small="true" bottom="bottom" to="/dish">Bestellen</v-btn>
+                </v-list-item-group>
+              </v-list-item>
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+        </v-card>
+      </v-container>
+    </v-container>
+  </v-main>
 </template>
 
 <script>

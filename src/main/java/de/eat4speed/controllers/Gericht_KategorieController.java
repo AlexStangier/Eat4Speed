@@ -2,27 +2,26 @@ package de.eat4speed.controllers;
 
 
 import de.eat4speed.entities.Gericht_Kategorie;
-import de.eat4speed.repositories.Gericht_KategorieRepository;
+import de.eat4speed.services.interfaces.IGericht_KategorieService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.Timestamp;
+import javax.ws.rs.core.Response;
 
 @Path("/Gericht_Kategorie")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class Gericht_KategorieController {
 
 
     @Inject
-    Gericht_KategorieRepository gericht_kategorieRepository;
+    IGericht_KategorieService gericht_kategorieService;
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return gericht_kategorieRepository.listAll().toString();
+    @POST
+    public Response add(Gericht_Kategorie gericht_kategorie)
+    {
+        return gericht_kategorieService.addGericht_Kategorie(gericht_kategorie);
     }
 
 }

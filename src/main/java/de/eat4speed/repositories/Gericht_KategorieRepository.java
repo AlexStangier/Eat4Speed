@@ -10,5 +10,10 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class Gericht_KategorieRepository implements PanacheRepository<Gericht_Kategorie> {
 
+    @Transactional
+    public void addGericht_Kategorie(Gericht_Kategorie gericht_kategorie)
+    {
+        persist(gericht_kategorie);
+    }
 
 }
