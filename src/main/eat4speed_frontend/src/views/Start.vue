@@ -7,8 +7,8 @@
 
             <v-img
                 class="justify-center"
-                lazy-src="https://i.imgur.com/onX9Kvo.png"
-                src="https://i.imgur.com/onX9Kvo.png"
+                lazy-src="https://i.imgur.com/0lc6ENr.png"
+                src="https://i.imgur.com/0lc6ENr.png"
             ></v-img>
                         <v-row>
 
