@@ -108,7 +108,7 @@
                 <v-col>
                   <v-row>
                     <v-btn
-                        @click="print"
+                        @click="addGericht(); artDialog = false"
                         color="red"
                         dark
                         class="justify-center"
@@ -258,7 +258,7 @@ export default {
         await axios.post("/Gericht_Allergene", gericht_Allergene);
 
       }
-
+      this.loadGerichte();
 
     }
   },
