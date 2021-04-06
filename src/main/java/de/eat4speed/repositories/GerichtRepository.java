@@ -4,14 +4,38 @@ import de.eat4speed.entities.Gericht;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @ApplicationScoped
 public class GerichtRepository implements PanacheRepository<Gericht> {
 
+    @Inject
+    EntityManager entityManager;
+
+    @Transactional
     public void addGericht(Gericht gericht)
     {
         persist(gericht);
+    }
+
+    @Transactional
+    public List getAllGerichteDataRestaurantSpeiseKarte(int restaurant_ID)
+    {
+        List allGerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gerichtId, g.name, g.beschreibung, g.preis " +
+                        "FROM Gericht g " +
+                        "WHERE g.restaurant_id = ?1"
+        ).setParameter(1,restaurant_ID);
+
+        allGerichteData = query.getResultList();
+
+        return allGerichteData;
     }
 
 }
