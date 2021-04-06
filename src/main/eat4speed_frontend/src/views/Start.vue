@@ -51,7 +51,10 @@
                 Debug link controlpanel
               </v-btn>
               <v-btn to="/admin-verification">
-                Debug link AdminVerification
+                Debug link Driver Verification
+              </v-btn>
+              <v-btn to="/admin-verification-restaurant">
+                Debug link Restaurant Verification
               </v-btn>
             </template>
             <v-card class="pa-10">
