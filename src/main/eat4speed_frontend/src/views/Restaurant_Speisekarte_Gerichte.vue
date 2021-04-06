@@ -141,12 +141,51 @@ import axios from "axios";
 
 export default {
   name: "restaurant",
+  mounted() {
+    this.loadGerichte()
+  },
   methods: {
+
+    async loadGerichte() {
+      this.restaurantID = 22;
+      const ResponseGerichte = await axios.get("Gericht/getAllGerichtDataRestaurantSpeisekarte/" + this.restaurantID);
+
+      console.log(ResponseGerichte);
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++) {
+        let gerichtData = ResponseGerichte.data[i];
+
+        this.names[i] = gerichtData[1];
+        this.descriptions[i] = gerichtData[2];
+        this.prices[i] = gerichtData[3];
+      }
+      this.amountGerichte = ResponseGerichte.data.length;
+      this.version++;
+    },
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
     },
-    async loadKategorien()
-    {
+    computeItems() {
+
+      for (let i = 0; i < this.names.length; i++) {
+        const cname = this.names[i]
+        const cdescription = this.descriptions[i]
+        const cprice = this.prices[i]
+        const cimg = this.imgs[i]
+
+        let entry = {
+          name: cname,
+          description: cdescription,
+          price: cprice,
+          img: cimg
+        }
+        this.computedItems[i] = entry;
+      }
+      console.log(this.computedItems);
+      console.log(this.items);
+
+    },
+    async loadKategorien() {
       const ResponseAllKategorien = await axios.get("/Kategorie");
 
       console.log(ResponseAllKategorien);
@@ -161,11 +200,11 @@ export default {
       console.log(arrayKategorien);
       this.kategorien = arrayKategorien;
     },
-    async test(){
+    async test() {
       console.log(this.value);
       console.log(this.valueA);
     },
-    async loadAllergene(){
+    async loadAllergene() {
       const ResponseAllAllegergene = await axios.get("/Allergene");
 
       console.log(ResponseAllAllegergene);
@@ -181,32 +220,55 @@ export default {
       this.allergen = arrayAllergene;
 
     },
-    async addGericht(){
+    async addGericht() {
 
       this.restaurantID = 22;
 
+      if (this.gerichtVerfuegbar === true) {
+        this.gerichtVerfuegbar = 1;
+      } else {
+        this.gerichtVerfuegbar = 0;
+      }
+
       var gericht = {
-        abbildung:this.gerichtBild,
-        beschreibung:this.gerichtBeschreibung,
-        name:this.gerichtName,
-        restaurant_id:this.restaurantID,
-        verfuegbar:this.gerichtVerfuegbar,
-        preis:this.gerichtPreis
+        beschreibung: this.gerichtBeschreibung,
+        name: this.gerichtName,
+        restaurant_id: this.restaurantID,
+        verfuegbar: this.gerichtVerfuegbar,
+        preis: this.gerichtPreis
       }
 
       const responseGericht = await axios.post("/Gericht", gericht);
 
-      this.gericht_ID = responseGericht.data.gerichtID;
+      this.gericht_ID = responseGericht.data.gerichtId;
+
+      for (let i = 0; i < this.selectedKategorien.length; i++) {
+        let gericht_Kategorie = {
+          gericht_ID: this.gericht_ID,
+          name: this.selectedKategorien[i]
+        }
+        await axios.post("/Gericht_Kategorie", gericht_Kategorie);
+
+      }
+      for (let i = 0; i < this.selectedAllergene.length; i++) {
+        let gericht_Allergene = {
+          gericht_id: this.gericht_ID,
+          allergen: this.selectedAllergene[i]
+        }
+        await axios.post("/Gericht_Allergene", gericht_Allergene);
+
+      }
+
 
     }
   },
   data: () => ({
     artDialog: false,
-    names: ['Burger', 'Pizza', 'Sushi', 'McNuggets'],
-    descriptions: ['Es ist ein Burger', 'Krosse Krabe Pizza', 'Fischig', 'Mit Szechuan Sauce'],
-    prices: ['5,50 €', '100 €', '4,99 €', '3,99 €'],
-    imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg', 'https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg', 'https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg', 'https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
-    restaurants: ['Bobs Burgers', 'Krosse Krabbe', 'AsiaWok', 'MCDonalds'],
+    names: [],
+    descriptions: [],
+    prices: [],
+    imgs: [],
+    restaurants: [],
     kategorien: [],
     selectedKategorien: [],
     allergen: [],
@@ -217,19 +279,24 @@ export default {
     gerichtBild: "",
     gerichtPreis: "",
     gerichtVerfuegbar: "",
-    restaurantID:"",
-    gericht_ID:""
+    restaurantID: "",
+    gericht_ID: "",
+    computedItems: [],
+    version: 0,
+    amountGerichte : ""
   }),
 
   computed: {
     items() {
       let i = 0
-      return Array.from({length: 4}, () => {
+      this.version++;
+      return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
         const cprice = this.prices[i]
         const cimg = this.imgs[i]
         i++;
+        console.log(this.version);
 
         return {
           name: cname,
