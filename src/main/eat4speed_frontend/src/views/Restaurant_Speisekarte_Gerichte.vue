@@ -38,7 +38,93 @@
                 <v-list-item-content></v-list-item-content>
                 <v-list-item-group align="left">
                   <v-list-item-content>{{ item.price }}</v-list-item-content>
-                  <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
+                  <v-dialog
+                      :retain-focus="false"
+                      v-model="artDialog"
+                      width="500"
+                      persistent
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          color="red"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                          small
+                          bottom
+                      >
+                        Bearbeiten
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-col>
+                        <v-text-field
+                            v-model="gerichtName"
+                            :counter="20"
+                            label="Artikelname"
+                            required
+                        ></v-text-field>
+                        <v-textarea
+                            v-model="gerichtBeschreibung"
+                            :counter="100"
+                            label="Artikelbeschreibung"
+                            required
+                        ></v-textarea>
+                        <v-file-input
+                            v-model="gerichtBild"
+                            label="Bild auswählen">
+                        </v-file-input>
+                        <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
+                        </v-text-field>
+                        <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
+                        </v-checkbox>
+                        <v-select
+                            ref="KategorieSelect"
+                            v-model="selectedKategorien"
+                            :items="kategorien"
+                            chips
+                            label="Kategorien"
+                            multiple
+                            outlined
+                            block
+                            @click="loadKategorien"
+                        ></v-select>
+                        <v-spacer class="ma-2"></v-spacer>
+                        <v-select
+                            v-model="selectedAllergene"
+                            :items="allergen"
+                            chips
+                            label="Allergene"
+                            multiple
+                            outlined
+                            block
+                            @click="loadAllergene"
+                        ></v-select>
+                        <v-spacer class="ma-2"></v-spacer>
+                        <v-col>
+                          <v-row>
+                            <v-btn
+                                @click="addGericht(); artDialog = false"
+                                color="red"
+                                dark
+                                class="justify-center"
+                            >
+                              Fertig
+                            </v-btn>
+                            <v-spacer class="mr-2"></v-spacer>
+                            <v-btn
+                                @click="artDialog = false; test();"
+                                color="red"
+                                dark
+                                justify
+                            >
+                              Abbruch
+                            </v-btn>
+                          </v-row>
+                        </v-col>
+                      </v-col>
+                    </v-card>
+                  </v-dialog>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -289,7 +375,7 @@ export default {
   computed: {
     items() {
       let i = 0
-      this.version++;
+      //this.version++;
       return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
@@ -305,6 +391,19 @@ export default {
           img: cimg,
         }
       })
+    },
+  },
+  watch:{
+    artDialog: function(val){
+      if(val){
+        this.gerichtName = ''
+        this.gerichtBeschreibung = ''
+        this.gerichtBild = ''
+        this.gerichtPreis = ''
+        this.gerichtVerfuegbar = false
+        this.selectedAllergene = ''
+        this.selectedKategorien = ''
+      }
     }
   }
 }
