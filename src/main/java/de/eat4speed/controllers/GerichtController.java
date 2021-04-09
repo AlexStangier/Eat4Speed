@@ -31,6 +31,20 @@ public class GerichtController {
         return Response.status(Response.Status.CREATED).entity(gericht).build();
     }
 
+    @PUT
+    @Path("updateGerichtAllData")
+    public Response updateGerichtAllData(Gericht gericht)
+    {
+        return gerichtService.updateGerichtAllData(gericht);
+    }
+
+    @GET
+    @Path("{id}")
+    public Gericht getGerichtByGericht_ID(@PathParam("id") int gericht_ID)
+    {
+        return gerichtService.getGerichtByGerichtID(gericht_ID);
+    }
+
     @GET
     @Path("/getAllGerichtDataRestaurantSpeisekarte/{id}")
     public List getAllGerichtDataRestaurantSpeisekarte(@PathParam("id") int restaurant_id){

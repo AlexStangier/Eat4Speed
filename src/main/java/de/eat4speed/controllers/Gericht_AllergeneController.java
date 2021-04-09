@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/Gericht_Allergene")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,6 +23,13 @@ public class Gericht_AllergeneController {
     public Response add(Gericht_Allergene gericht_allergene)
     {
         return gericht_allergeneService.addGericht_Allergene(gericht_allergene);
+    }
+
+    @GET
+    @Path("getGericht_AllergeneByGericht_ID/{id}")
+    public List getGericht_AllergeneByGericht_ID(@PathParam("id") int id)
+    {
+        return gericht_allergeneService.getGericht_AllergeneByGericht_ID(id);
     }
 
 }

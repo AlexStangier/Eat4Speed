@@ -23,12 +23,18 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
+    public Gericht getGerichtByGerichtID(int gericht_ID)
+    {
+        return find("gerichtId", gericht_ID).firstResult();
+    }
+
+    @Transactional
     public List getAllGerichteDataRestaurantSpeiseKarte(int restaurant_ID)
     {
         List allGerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gerichtId, g.name, g.beschreibung, g.preis " +
+                "SELECT g.gerichtId, g.name, g.beschreibung, g.preis, g.gerichtId " +
                         "FROM Gericht g " +
                         "WHERE g.restaurant_id = ?1"
         ).setParameter(1,restaurant_ID);
@@ -36,6 +42,12 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         allGerichteData = query.getResultList();
 
         return allGerichteData;
+    }
+
+    @Transactional
+    public void updateGerichtAllData(Gericht gericht)
+    {
+        update("beschreibung = ?1, name = ?2, preis = ?3, verfuegbar = ?4 where gerichtId = ?5", gericht.getBeschreibung(),gericht.getName(),gericht.getPreis(),gericht.getVerfuegbar(),gericht.getGerichtId());
     }
 
 }

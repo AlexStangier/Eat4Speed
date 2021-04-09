@@ -52,6 +52,7 @@
                           v-on="on"
                           small
                           bottom
+                          @click="fillDataOfGerichtToAlter(item); currentlyAdding = false"
                       >
                         Bearbeiten
                       </v-btn>
@@ -104,7 +105,7 @@
                         <v-col>
                           <v-row>
                             <v-btn
-                                @click="addGericht(); artDialog = false"
+                                @click="changeGericht(); artDialog = false"
                                 color="red"
                                 dark
                                 class="justify-center"
@@ -142,6 +143,7 @@
                   dark
                   v-bind="attrs"
                   v-on="on"
+                  @click="currentlyAdding = true"
               >
                 Artikel hinzufügen
               </v-btn>
@@ -244,6 +246,7 @@ export default {
         this.names[i] = gerichtData[1];
         this.descriptions[i] = gerichtData[2];
         this.prices[i] = gerichtData[3];
+        this.gerichtIDs[i] = gerichtData[4];
       }
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -346,6 +349,69 @@ export default {
       }
       this.loadGerichte();
 
+    },
+    async fillDataOfGerichtToAlter(item) {
+      this.editedItem = item;
+
+      this.gerichtName = item.id;
+      console.log(item.id);
+      console.log(this.editedItem.id);
+
+      const responseGetGericht = await axios.get("/Gericht/"+this.editedItem.id);
+
+      this.gerichtName = responseGetGericht.data.name;
+      this.gerichtPreis = responseGetGericht.data.preis;
+      this.gerichtBeschreibung = responseGetGericht.data.beschreibung;
+
+      if(responseGetGericht.data.verfuegbar === 0)
+      {
+        this.gerichtVerfuegbar = false;
+      }
+      else
+      {
+        this.gerichtVerfuegbar = true;
+      }
+
+      const responseGetAllergene = await axios.get("/Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.editedItem.id);
+
+      for(let i = 0; i<responseGetAllergene.data.length;i++)
+      {
+        this.selectedAllergene[i]=responseGetAllergene.data[i];
+      }
+
+      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.editedItem.id);
+
+      for(let i = 0; i<responseGetKategorie.data.length;i++)
+      {
+        this.selectedKategorien[i]=responseGetKategorie.data[i];
+      }
+
+      console.log(responseGetGericht);
+    },
+    async changeGericht(){
+
+      if (this.gerichtVerfuegbar === true) {
+        this.gerichtVerfuegbar = 1;
+      } else {
+        this.gerichtVerfuegbar = 0;
+      }
+
+      let gericht = {
+        gerichtId: this.editedItem.id,
+        beschreibung: this.gerichtBeschreibung,
+        name: this.gerichtName,
+        restaurant_id: this.restaurantID,
+        verfuegbar: this.gerichtVerfuegbar,
+        preis: this.gerichtPreis
+      }
+
+      const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht);
+
+      console.log(responseGerichtToAlter);
+
+      this.version++;
+      this.loadGerichte();
+
     }
   },
   data: () => ({
@@ -355,6 +421,7 @@ export default {
     prices: [],
     imgs: [],
     restaurants: [],
+    gerichtIDs: [],
     kategorien: [],
     selectedKategorien: [],
     allergen: [],
@@ -369,40 +436,45 @@ export default {
     gericht_ID: "",
     computedItems: [],
     version: 0,
-    amountGerichte : ""
+    amountGerichte : 4,
+    editedItem : "",
+    currentlyAdding : false
   }),
 
   computed: {
     items() {
       let i = 0
-      //this.version++;
       return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
         const cprice = this.prices[i]
         const cimg = this.imgs[i]
+        const cid = this.gerichtIDs[i]
         i++;
-        console.log(this.version);
+        //console.log(this.version);
 
         return {
           name: cname,
           description: cdescription,
           price: cprice,
           img: cimg,
+          id: cid
         }
       })
     },
   },
   watch:{
-    artDialog: function(val){
-      if(val){
-        this.gerichtName = ''
-        this.gerichtBeschreibung = ''
-        this.gerichtBild = ''
-        this.gerichtPreis = ''
-        this.gerichtVerfuegbar = false
-        this.selectedAllergene = ''
-        this.selectedKategorien = ''
+    artDialog: function(show){
+      if(show){
+        if(this.currentlyAdding){
+          this.gerichtName = ''
+          this.gerichtBeschreibung = ''
+          this.gerichtBild = ''
+          this.gerichtPreis = ''
+          this.gerichtVerfuegbar = false
+          this.selectedAllergene = ''
+          this.selectedKategorien = ''
+        }
       }
     }
   }
