@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Benutzer`
     `Nachname`        VARCHAR(50) NOT NULL,
     `EmailAdresse`    VARCHAR(50) NOT NULL,
     `Passwort`        VARCHAR(50) NOT NULL,
-    `Rolle`           INT NOT NULL,
+    `Rolle`           VARCHAR(50) NOT NULL,
     `Paypal_Account`  VARCHAR(50) NOT NULL,
     `Telefonnummer`   VARCHAR(50) NOT NULL,
     PRIMARY KEY (`Benutzer_ID`)
@@ -195,6 +195,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Fahrzeug`
 (
     `Fahrzeug_ID` INT         NOT NULL AUTO_INCREMENT,
     `Fahrzeugtyp` VARCHAR(20) NOT NULL,
+    `kapazitaet_Gerichte` INT,
     PRIMARY KEY (`Fahrzeug_ID`)
 )
     ENGINE = InnoDB
@@ -295,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Gericht`
     `Restaurant_ID` INT          NOT NULL,
     `Name`          VARCHAR(50)  NOT NULL,
     `Beschreibung`  VARCHAR(200) NOT NULL,
-    `Abbildung`     BLOB         NULL DEFAULT NULL,
+    `Abbildung`     VARCHAR(200) NULL DEFAULT NULL,
     `Preis`         DOUBLE       NOT NULL,
     `Verfuegbar`    TINYINT(1)   NOT NULL,
     PRIMARY KEY (`Gericht_ID`),
