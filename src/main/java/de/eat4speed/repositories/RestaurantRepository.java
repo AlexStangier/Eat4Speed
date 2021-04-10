@@ -4,7 +4,6 @@ import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
 import de.eat4speed.entities.Kunde;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jdk.nashorn.internal.parser.JSONParser;
 import org.drools.core.runtime.help.impl.XStreamJSon;
 
 import javax.enterprise.context.ApplicationScoped;

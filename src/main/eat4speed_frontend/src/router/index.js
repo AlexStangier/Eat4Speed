@@ -55,6 +55,11 @@ const routes = [
     component: () => import('../views/AdminVerification.vue')
   },
   {
+    path: '/admin-verification-restaurant',
+    name: 'AdminVerificationRestaurant',
+    component: () => import('../views/AdminVerificationRestaurant.vue')
+  },
+  {
     path:'/dish',
     name: 'Dish',
     component: () => import('../views/Dish')
