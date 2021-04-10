@@ -34,6 +34,4 @@ public class BenutzerService implements IBenutzerService {
     public String listAll() {
         return _benutzer.listAll().toString();
     }
-
-
 }
