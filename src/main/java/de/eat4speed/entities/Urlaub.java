@@ -10,16 +10,16 @@ import java.sql.Date;
 public class Urlaub extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
-    private int urlaubs_id;
+    private int urlaubs_ID;
     private Date anfang;
     private Date ende;
     private int fahrernummer;
 
-    public long getUrlaubs_id() {
-        return urlaubs_id;
+    public long getUrlaubs_ID() {
+        return urlaubs_ID;
     }
-    public void setUrlaubs_id(int urlaubs_id) {
-        this.urlaubs_id = urlaubs_id;
+    public void setUrlaubs_ID(int urlaubs_id) {
+        this.urlaubs_ID = urlaubs_id;
     }
 
     public int getFahrernummer() { return fahrernummer; }
@@ -46,7 +46,7 @@ public class Urlaub extends PanacheEntityBase implements Serializable {
 
         Urlaub that = (Urlaub) o;
 
-        if (urlaubs_id != that.urlaubs_id) return false;
+        if (urlaubs_ID != that.urlaubs_ID) return false;
         if (anfang != null ? !anfang.equals(that.anfang) : that.anfang != null) return false;
         if (ende != null ? !ende.equals(that.ende) : that.ende != null) return false;
 
@@ -55,7 +55,7 @@ public class Urlaub extends PanacheEntityBase implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = urlaubs_id;
+        int result = urlaubs_ID;
         result = 31 * result + (anfang != null ? anfang.hashCode() : 0);
         result = 31 * result + (ende != null ? ende.hashCode() : 0);
         return result;
@@ -64,7 +64,7 @@ public class Urlaub extends PanacheEntityBase implements Serializable {
     @Override
     public String toString() {
         return "UrlaubEntity{" +
-                ", urlaubs_id=" + urlaubs_id +
+                ", urlaubs_ID=" + urlaubs_ID +
                 ", anfang=" + anfang +
                 ", ende=" + ende +
                 ", fahrernummer=" + fahrernummer +

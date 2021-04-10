@@ -12,27 +12,27 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
 
     @Id
     @GeneratedValue
-    private int bestell_Id;
-    private int bestellhistorien_Id;
-    private int auftrags_Id;
+    private int bestell_ID;
+    private int bestellhistorien_ID;
+    private int auftrags_ID;
     private Timestamp timestamp;
     private int rechnung;
 
-    public int getBestell_Id() {
-        return bestell_Id;
+    public int getBestell_ID() {
+        return bestell_ID;
     }
 
-    public void setBestell_Id(int bestellId) {
-        this.bestell_Id = bestellId;
+    public void setBestell_ID(int bestellId) {
+        this.bestell_ID = bestellId;
     }
 
 
-    public int getBestellhistorien_Id() {
-        return bestellhistorien_Id;
+    public int getBestellhistorien_ID() {
+        return bestellhistorien_ID;
     }
 
-    public void setBestellhistorien_Id(int bestellhistorienId) {
-        this.bestellhistorien_Id = bestellhistorienId;
+    public void setBestellhistorien_ID(int bestellhistorienId) {
+        this.bestellhistorien_ID = bestellhistorienId;
     }
 
     public Timestamp getTimestamp() {
@@ -57,19 +57,20 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bestellung that = (Bestellung) o;
-        return bestell_Id == that.bestell_Id && bestellhistorien_Id == that.bestellhistorien_Id && rechnung == that.rechnung && Objects.equals(timestamp, that.timestamp);
+        return bestell_ID == that.bestell_ID && bestellhistorien_ID == that.bestellhistorien_ID && auftrags_ID == that.auftrags_ID && rechnung == that.rechnung && Objects.equals(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bestell_Id, bestellhistorien_Id, timestamp, rechnung);
+        return Objects.hash(bestell_ID, bestellhistorien_ID, auftrags_ID, timestamp, rechnung);
     }
 
     @Override
     public String toString() {
         return "Bestellung{" +
-                "bestell_Id=" + bestell_Id +
-                ", bestellhistorien_Id=" + bestellhistorien_Id +
+                "bestell_ID=" + bestell_ID +
+                ", bestellhistorien_ID=" + bestellhistorien_ID +
+                ", auftrags_ID=" + auftrags_ID +
                 ", timestamp=" + timestamp +
                 ", rechnung=" + rechnung +
                 '}';

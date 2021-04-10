@@ -9,25 +9,25 @@ import java.io.Serializable;
 public class Bestellzuordnung extends PanacheEntityBase implements Serializable {
 
     @Id
-    private int bestell_Id;
+    private int bestell_ID;
     @Id
-    private int gericht_Id;
+    private int gericht_ID;
 
-    public int getBestell_Id() {
-        return bestell_Id;
+    public int getBestell_ID() {
+        return bestell_ID;
     }
 
-    public void setBestell_Id(int bestellId) {
-        this.bestell_Id = bestellId;
+    public void setBestell_ID(int bestellId) {
+        this.bestell_ID = bestellId;
     }
 
 
-    public int getGericht_Id() {
-        return gericht_Id;
+    public int getGericht_ID() {
+        return gericht_ID;
     }
 
-    public void setGericht_Id(int gerichtId) {
-        this.gericht_Id = gerichtId;
+    public void setGericht_ID(int gerichtId) {
+        this.gericht_ID = gerichtId;
     }
 
     @Override
@@ -37,24 +37,24 @@ public class Bestellzuordnung extends PanacheEntityBase implements Serializable 
 
         Bestellzuordnung that = (Bestellzuordnung) o;
 
-        if (bestell_Id != that.bestell_Id) return false;
-        if (gericht_Id != that.gericht_Id) return false;
+        if (bestell_ID != that.bestell_ID) return false;
+        if (gericht_ID != that.gericht_ID) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = bestell_Id;
-        result = 31 * result + gericht_Id;
+        int result = bestell_ID;
+        result = 31 * result + gericht_ID;
         return result;
     }
 
     @Override
     public String toString() {
         return "Bestellzuordnung{" +
-                "bestellId=" + bestell_Id +
-                ", gerichtId=" + gericht_Id +
+                "bestell_ID=" + bestell_ID +
+                ", gericht_ID=" + gericht_ID +
                 '}';
     }
 }

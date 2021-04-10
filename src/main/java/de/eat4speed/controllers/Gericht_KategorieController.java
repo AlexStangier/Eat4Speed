@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/Gericht_Kategorie")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,6 +23,22 @@ public class Gericht_KategorieController {
     public Response add(Gericht_Kategorie gericht_kategorie)
     {
         return gericht_kategorieService.addGericht_Kategorie(gericht_kategorie);
+    }
+
+    @GET
+    @Path("getGericht_KategorieByGericht_ID/{id}")
+    public List getGericht_KategorieByGericht_ID(@PathParam("id") int id)
+    {
+        return gericht_kategorieService.getGericht_KategorieByGericht_ID(id);
+    }
+
+    @DELETE
+    @Path("deleteGerichtKategorieByGerichtID/{id}")
+    public Response deleteGerichtKategorieByGerichtID(@PathParam("id") int id)
+    {
+        gericht_kategorieService.deleteGerichtKategorieByGerichtID(id);
+
+        return Response.status(Response.Status.OK).build();
     }
 
 }

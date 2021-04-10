@@ -1,14 +1,11 @@
 package de.eat4speed.services;
 
 
-import de.eat4speed.entities.Inhaltsstoffe;
-import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.repositories.InhaltsstoffeRepository;
 import de.eat4speed.services.interfaces.IInhaltsstoffeService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 import java.util.List;
 

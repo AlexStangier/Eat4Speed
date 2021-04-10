@@ -4,21 +4,23 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Fahrzeug extends PanacheEntityBase implements Serializable {
 
     @Id
     @GeneratedValue
-    private int fahrzeug_Id;
+    private int fahrzeug_ID;
     private String fahrzeugtyp;
+    private int kapazitaet_Gerichte;
 
-    public int getFahrzeug_Id() {
-        return fahrzeug_Id;
+    public int getFahrzeug_ID() {
+        return fahrzeug_ID;
     }
 
-    public void setFahrzeug_Id(int fahrzeugId) {
-        this.fahrzeug_Id = fahrzeugId;
+    public void setFahrzeug_ID(int fahrzeugId) {
+        this.fahrzeug_ID = fahrzeugId;
     }
 
     @Basic
@@ -30,31 +32,33 @@ public class Fahrzeug extends PanacheEntityBase implements Serializable {
         this.fahrzeugtyp = fahrzeugtyp;
     }
 
+    public int getKapazitaet_Gerichte() {
+        return kapazitaet_Gerichte;
+    }
+
+    public void setKapazitaet_Gerichte(int kapazitaet_Gerichte) {
+        this.kapazitaet_Gerichte = kapazitaet_Gerichte;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Fahrzeug that = (Fahrzeug) o;
-
-        if (fahrzeug_Id != that.fahrzeug_Id) return false;
-        if (fahrzeugtyp != null ? !fahrzeugtyp.equals(that.fahrzeugtyp) : that.fahrzeugtyp != null) return false;
-
-        return true;
+        Fahrzeug fahrzeug = (Fahrzeug) o;
+        return fahrzeug_ID == fahrzeug.fahrzeug_ID && kapazitaet_Gerichte == fahrzeug.kapazitaet_Gerichte && Objects.equals(fahrzeugtyp, fahrzeug.fahrzeugtyp);
     }
 
     @Override
     public int hashCode() {
-        int result = fahrzeug_Id;
-        result = 31 * result + (fahrzeugtyp != null ? fahrzeugtyp.hashCode() : 0);
-        return result;
+        return Objects.hash(fahrzeug_ID, fahrzeugtyp, kapazitaet_Gerichte);
     }
 
     @Override
     public String toString() {
-        return "FahrzeugEntity{" +
-                "fahrzeugId=" + fahrzeug_Id +
+        return "Fahrzeug{" +
+                "fahrzeug_ID=" + fahrzeug_ID +
                 ", fahrzeugtyp='" + fahrzeugtyp + '\'' +
+                ", kapazitaet_Gerichte=" + kapazitaet_Gerichte +
                 '}';
     }
 }

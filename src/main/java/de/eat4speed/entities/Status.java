@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Status extends PanacheEntityBase implements Serializable {
     @Id
     private String status_name;
-    private int rechnungs_id;
+    private int rechnungs_ID;
 
 
 
@@ -21,9 +21,9 @@ public class Status extends PanacheEntityBase implements Serializable {
         this.status_name = statusName;
     }
 
-    public int getRechnungs_id() { return rechnungs_id; }
+    public int getRechnungs_ID() { return rechnungs_ID; }
 
-    public void setRechnungs_id(int rechnungs_id) { this.rechnungs_id = rechnungs_id; }
+    public void setRechnungs_ID(int rechnungs_id) { this.rechnungs_ID = rechnungs_id; }
 
     @Override
     public boolean equals(Object o) {
@@ -46,7 +46,7 @@ public class Status extends PanacheEntityBase implements Serializable {
     public String toString() {
         return "StatusEntity{" +
                 "status_name='" + status_name + '\'' +
-                ", rechnungs_id=" + rechnungs_id +
+                ", rechnungs_ID=" + rechnungs_ID +
                 '}';
     }
 }
