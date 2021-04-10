@@ -322,14 +322,14 @@ export default {
       var gericht = {
         beschreibung: this.gerichtBeschreibung,
         name: this.gerichtName,
-        restaurant_id: this.restaurantID,
+        restaurant_ID: this.restaurantID,
         verfuegbar: this.gerichtVerfuegbar,
         preis: this.gerichtPreis
       }
 
       const responseGericht = await axios.post("/Gericht", gericht);
 
-      this.gericht_ID = responseGericht.data.gerichtId;
+      this.gericht_ID = responseGericht.data.gericht_ID;
 
       for (let i = 0; i < this.selectedKategorien.length; i++) {
         let gericht_Kategorie = {
@@ -341,7 +341,7 @@ export default {
       }
       for (let i = 0; i < this.selectedAllergene.length; i++) {
         let gericht_Allergene = {
-          gericht_id: this.gericht_ID,
+          gericht_ID: this.gericht_ID,
           allergen: this.selectedAllergene[i]
         }
         await axios.post("/Gericht_Allergene", gericht_Allergene);
@@ -397,10 +397,10 @@ export default {
       }
 
       let gericht = {
-        gerichtId: this.editedItem.id,
+        gericht_ID: this.editedItem.id,
         beschreibung: this.gerichtBeschreibung,
         name: this.gerichtName,
-        restaurant_id: this.restaurantID,
+        restaurant_ID: this.restaurantID,
         verfuegbar: this.gerichtVerfuegbar,
         preis: this.gerichtPreis
       }
@@ -408,6 +408,26 @@ export default {
       const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht);
 
       console.log(responseGerichtToAlter);
+
+      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/"+this.editedItem.id);
+      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/"+this.editedItem.id);
+
+      for (let i = 0; i < this.selectedKategorien.length; i++) {
+        let gericht_Kategorie = {
+          gericht_ID: this.editedItem.id,
+          name: this.selectedKategorien[i]
+        }
+        await axios.post("/Gericht_Kategorie", gericht_Kategorie);
+
+      }
+      for (let i = 0; i < this.selectedAllergene.length; i++) {
+        let gericht_Allergene = {
+          gericht_ID: this.editedItem.id,
+          allergen: this.selectedAllergene[i]
+        }
+        await axios.post("/Gericht_Allergene", gericht_Allergene);
+
+      }
 
       this.version++;
       this.loadGerichte();

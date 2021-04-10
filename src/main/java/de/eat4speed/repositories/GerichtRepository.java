@@ -34,9 +34,9 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List allGerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gerichtId, g.name, g.beschreibung, g.preis, g.gerichtId " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID " +
                         "FROM Gericht g " +
-                        "WHERE g.restaurant_id = ?1"
+                        "WHERE g.restaurant_ID = ?1"
         ).setParameter(1,restaurant_ID);
 
         allGerichteData = query.getResultList();
@@ -47,7 +47,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     @Transactional
     public void updateGerichtAllData(Gericht gericht)
     {
-        update("beschreibung = ?1, name = ?2, preis = ?3, verfuegbar = ?4 where gerichtId = ?5", gericht.getBeschreibung(),gericht.getName(),gericht.getPreis(),gericht.getVerfuegbar(),gericht.getGerichtId());
+        update("beschreibung = ?1, name = ?2, preis = ?3, verfuegbar = ?4 where gerichtId = ?5", gericht.getBeschreibung(),gericht.getName(),gericht.getPreis(),gericht.getVerfuegbar(),gericht.getGericht_ID());
     }
 
 }

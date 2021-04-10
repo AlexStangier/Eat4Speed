@@ -10,4 +10,6 @@ public interface IGericht_AllergeneService {
     Response addGericht_Allergene(Gericht_Allergene gericht_allergene);
 
     List getGericht_AllergeneByGericht_ID(int id);
+
+    int deleteGerichtAllergeneByGerichtID(int id);
 }

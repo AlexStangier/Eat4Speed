@@ -11,8 +11,8 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
 
     @Id
     @GeneratedValue
-    private int restaurant_Id;
-    private int benutzer_Id;
+    private int restaurant_ID;
+    private int benutzer_ID;
     private String name_Des_Restaurants;
     private String allgemeine_Beschreibung;
     private int anschrift;
@@ -21,20 +21,20 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
     private byte verifiziert;
 
 
-    public int getRestaurant_Id() {
-        return restaurant_Id;
+    public int getRestaurant_ID() {
+        return restaurant_ID;
     }
 
-    public void setRestaurant_Id(int restaurantId) {
-        this.restaurant_Id = restaurantId;
+    public void setRestaurant_ID(int restaurantId) {
+        this.restaurant_ID = restaurantId;
     }
 
-    public int getBenutzer_Id() {
-        return benutzer_Id;
+    public int getBenutzer_ID() {
+        return benutzer_ID;
     }
 
-    public void setBenutzer_Id(int benutzer_Id) {
-        this.benutzer_Id = benutzer_Id;
+    public void setBenutzer_ID(int benutzer_Id) {
+        this.benutzer_ID = benutzer_Id;
     }
 
     public String getName_Des_Restaurants() {
@@ -90,19 +90,19 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Restaurant that = (Restaurant) o;
-        return restaurant_Id == that.restaurant_Id && benutzer_Id == that.benutzer_Id && anschrift == that.anschrift && Double.compare(that.mindestbestellwert, mindestbestellwert) == 0 && Double.compare(that.bestellRadius, bestellRadius) == 0 && verifiziert == that.verifiziert && Objects.equals(name_Des_Restaurants, that.name_Des_Restaurants) && Objects.equals(allgemeine_Beschreibung, that.allgemeine_Beschreibung);
+        return restaurant_ID == that.restaurant_ID && benutzer_ID == that.benutzer_ID && anschrift == that.anschrift && Double.compare(that.mindestbestellwert, mindestbestellwert) == 0 && Double.compare(that.bestellRadius, bestellRadius) == 0 && verifiziert == that.verifiziert && Objects.equals(name_Des_Restaurants, that.name_Des_Restaurants) && Objects.equals(allgemeine_Beschreibung, that.allgemeine_Beschreibung);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(restaurant_Id, benutzer_Id, name_Des_Restaurants, allgemeine_Beschreibung, anschrift, mindestbestellwert, bestellRadius, verifiziert);
+        return Objects.hash(restaurant_ID, benutzer_ID, name_Des_Restaurants, allgemeine_Beschreibung, anschrift, mindestbestellwert, bestellRadius, verifiziert);
     }
 
     @Override
     public String toString() {
         return "Restaurant{" +
-                "restaurant_Id=" + restaurant_Id +
-                ", benutzer_Id=" + benutzer_Id +
+                "restaurant_ID=" + restaurant_ID +
+                ", benutzer_ID=" + benutzer_ID +
                 ", name_Des_Restaurants='" + name_Des_Restaurants + '\'' +
                 ", allgemeine_Beschreibung='" + allgemeine_Beschreibung + '\'' +
                 ", anschrift=" + anschrift +

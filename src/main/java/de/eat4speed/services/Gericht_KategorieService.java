@@ -34,5 +34,11 @@ public class Gericht_KategorieService implements IGericht_KategorieService {
         return gericht_kategorieRepository.getGericht_KategorieByGericht_ID(id);
     }
 
+    @Override
+    public int deleteGerichtKategorieByGerichtID(int id)
+    {
+        return gericht_kategorieRepository.deleteGerichtKategorieByGerichtID(id);
+    }
+
 
 }

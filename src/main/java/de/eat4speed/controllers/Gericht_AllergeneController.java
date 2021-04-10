@@ -32,4 +32,13 @@ public class Gericht_AllergeneController {
         return gericht_allergeneService.getGericht_AllergeneByGericht_ID(id);
     }
 
+    @DELETE
+    @Path("deleteGerichtAllergeneByGerichtID/{id}")
+    public Response deleteGerichtAllergeneByGerichtID(@PathParam("id") int id)
+    {
+        gericht_allergeneService.deleteGerichtAllergeneByGerichtID(id);
+
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

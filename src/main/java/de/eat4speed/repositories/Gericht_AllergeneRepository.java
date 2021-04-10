@@ -30,11 +30,19 @@ public class Gericht_AllergeneRepository implements PanacheRepository<Gericht_Al
         Query query = entityManager.createQuery("" +
                 "SELECT ga.allergen " +
                 "FROM Gericht_Allergene ga " +
-                "WHERE ga.gericht_id = ?1"
+                "WHERE ga.gericht_ID = ?1"
         ).setParameter(1,gericht_ID);
 
         allergeneByGericht_ID = query.getResultList();
 
         return allergeneByGericht_ID;
+    }
+
+    @Transactional
+    public int deleteGerichtAllergeneByGericht_ID(int id)
+    {
+        delete("gericht_id",id);
+
+        return id;
     }
 }

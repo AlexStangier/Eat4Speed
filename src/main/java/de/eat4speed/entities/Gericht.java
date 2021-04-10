@@ -4,31 +4,31 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.Objects;
 
 @Entity
 public class Gericht extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
-    private int gerichtId;
-    private int restaurant_id;
+    private int gericht_ID;
+    private int restaurant_ID;
     private String name;
     private String beschreibung;
-    private byte[] abbildung;
+    private String abbildung;
     private double preis;
     private byte verfuegbar;
 
 
-    public int getGerichtId() {
-        return gerichtId;
+    public int getGericht_ID() {
+        return gericht_ID;
     }
-    public void setGerichtId(int gerichtId) {
-        this.gerichtId = gerichtId;
+    public void setGericht_ID(int gerichtId) {
+        this.gericht_ID = gerichtId;
     }
 
-    public int getRestaurant_id() { return restaurant_id; }
+    public int getRestaurant_ID() { return restaurant_ID; }
 
-    public void setRestaurant_id(int restaurant_id) { this.restaurant_id = restaurant_id; }
+    public void setRestaurant_ID(int restaurant_id) { this.restaurant_ID = restaurant_id; }
 
     public String getName() {
         return name;
@@ -44,10 +44,11 @@ public class Gericht extends PanacheEntityBase implements Serializable {
         this.beschreibung = beschreibung;
     }
 
-    public byte[] getAbbildung() {
+    public String getAbbildung() {
         return abbildung;
     }
-    public void setAbbildung(byte[] abbildung) {
+
+    public void setAbbildung(String abbildung) {
         this.abbildung = abbildung;
     }
 
@@ -69,41 +70,23 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Gericht that = (Gericht) o;
-
-        if (gerichtId != that.gerichtId) return false;
-        if (Double.compare(that.preis, preis) != 0) return false;
-        if (verfuegbar != that.verfuegbar) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (beschreibung != null ? !beschreibung.equals(that.beschreibung) : that.beschreibung != null) return false;
-        if (!Arrays.equals(abbildung, that.abbildung)) return false;
-
-        return true;
+        Gericht gericht = (Gericht) o;
+        return gericht_ID == gericht.gericht_ID && restaurant_ID == gericht.restaurant_ID && Double.compare(gericht.preis, preis) == 0 && verfuegbar == gericht.verfuegbar && Objects.equals(name, gericht.name) && Objects.equals(beschreibung, gericht.beschreibung) && Objects.equals(abbildung, gericht.abbildung);
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = gerichtId;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (beschreibung != null ? beschreibung.hashCode() : 0);
-        result = 31 * result + Arrays.hashCode(abbildung);
-        temp = Double.doubleToLongBits(preis);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) verfuegbar;
-        return result;
+        return Objects.hash(gericht_ID, restaurant_ID, name, beschreibung, abbildung, preis, verfuegbar);
     }
 
     @Override
     public String toString() {
         return "Gericht{" +
-                "gerichtId=" + gerichtId +
-                ", restaurant_id=" + restaurant_id +
+                "gericht_ID=" + gericht_ID +
+                ", restaurant_ID=" + restaurant_ID +
                 ", name='" + name + '\'' +
                 ", beschreibung='" + beschreibung + '\'' +
-                ", abbildung=" + Arrays.toString(abbildung) +
+                ", abbildung='" + abbildung + '\'' +
                 ", preis=" + preis +
                 ", verfuegbar=" + verfuegbar +
                 '}';

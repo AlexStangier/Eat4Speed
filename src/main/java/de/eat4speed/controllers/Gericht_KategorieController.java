@@ -32,4 +32,13 @@ public class Gericht_KategorieController {
         return gericht_kategorieService.getGericht_KategorieByGericht_ID(id);
     }
 
+    @DELETE
+    @Path("deleteGerichtKategorieByGerichtID/{id}")
+    public Response deleteGerichtKategorieByGerichtID(@PathParam("id") int id)
+    {
+        gericht_kategorieService.deleteGerichtKategorieByGerichtID(id);
+
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

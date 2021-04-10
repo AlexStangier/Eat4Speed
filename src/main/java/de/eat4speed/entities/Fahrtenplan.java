@@ -16,6 +16,7 @@ public class Fahrtenplan {
     private int Fahrernummer;
     private int Liefer_Abholadresse;
     private int Vorherige_Station;
+    private int Naechste_Station;
     private int Fahrzeit_A_B;
     private int Distanz_zu_naechster_Station;
     private int Geschaetzte_Fahrtzeit;
@@ -84,22 +85,25 @@ public class Fahrtenplan {
         Geschaetzte_Fahrtzeit = geschaetzte_Fahrtzeit;
     }
 
+    public int getNaechste_Station() {
+        return Naechste_Station;
+    }
+
+    public void setNaechste_Station(int naechste_Station) {
+        Naechste_Station = naechste_Station;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrtenplan that = (Fahrtenplan) o;
-        return Fahrtenplan_ID == that.Fahrtenplan_ID && Auftrag_ID == that.Auftrag_ID
-                && Fahrernummer == that.Fahrernummer && Liefer_Abholadresse == that.Liefer_Abholadresse
-                && Vorherige_Station == that.Vorherige_Station && Fahrzeit_A_B == that.Fahrzeit_A_B
-                && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station
-                && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
+        return Fahrtenplan_ID == that.Fahrtenplan_ID && Auftrag_ID == that.Auftrag_ID && Fahrernummer == that.Fahrernummer && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station == that.Vorherige_Station && Naechste_Station == that.Naechste_Station && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Fahrtenplan_ID, Auftrag_ID, Fahrernummer, Liefer_Abholadresse,
-                Vorherige_Station, Fahrzeit_A_B, Distanz_zu_naechster_Station, Geschaetzte_Fahrtzeit);
+        return Objects.hash(Fahrtenplan_ID, Auftrag_ID, Fahrernummer, Liefer_Abholadresse, Vorherige_Station, Naechste_Station, Fahrzeit_A_B, Distanz_zu_naechster_Station, Geschaetzte_Fahrtzeit);
     }
 
     @Override
@@ -110,6 +114,7 @@ public class Fahrtenplan {
                 ", Fahrernummer=" + Fahrernummer +
                 ", Liefer_Abholadresse=" + Liefer_Abholadresse +
                 ", Vorherige_Station=" + Vorherige_Station +
+                ", Naechste_Station=" + Naechste_Station +
                 ", Fahrzeit_A_B=" + Fahrzeit_A_B +
                 ", Distanz_zu_naechster_Station=" + Distanz_zu_naechster_Station +
                 ", Geschaetzte_Fahrtzeit=" + Geschaetzte_Fahrtzeit +

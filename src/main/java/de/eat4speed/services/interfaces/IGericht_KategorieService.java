@@ -10,4 +10,6 @@ public interface IGericht_KategorieService {
     Response addGericht_Kategorie(Gericht_Kategorie gericht_kategorie);
 
     List getGericht_KategorieByGericht_ID(int id);
+
+    int deleteGerichtKategorieByGerichtID(int id);
 }

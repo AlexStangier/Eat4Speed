@@ -38,4 +38,12 @@ public class Gericht_KategorieRepository implements PanacheRepository<Gericht_Ka
 
         return kategorieByGericht_ID;
     }
+
+    @Transactional
+    public int deleteGerichtKategorieByGerichtID(int id)
+    {
+        delete("Gericht_ID",id);
+
+        return id;
+    }
 }

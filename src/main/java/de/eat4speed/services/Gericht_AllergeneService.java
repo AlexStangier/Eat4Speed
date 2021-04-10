@@ -34,4 +34,10 @@ public class Gericht_AllergeneService implements IGericht_AllergeneService {
         return gericht_allergeneRepository.getGericht_AllergeneByGericht_ID(id);
     }
 
+    @Override
+    public int deleteGerichtAllergeneByGerichtID(int id)
+    {
+        return gericht_allergeneRepository.deleteGerichtAllergeneByGericht_ID(id);
+    }
+
 }
