@@ -360,7 +360,8 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Gericht`
     COLLATE = utf8mb4_0900_ai_ci;
 
 ALTER TABLE `eatforspeed`.`Gericht`
-    CHANGE `Abbildung` `Abbildung`     VARCHAR(200) NULL DEFAULT NULL;
+    CHANGE `Abbildung` `Abbildung`     VARCHAR(200) NULL DEFAULT NULL,
+    ADD COLUMN `Ist_Getraenk`    TINYINT(1)   NOT NULL;
 
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Benachrichtigung_Kunde`
