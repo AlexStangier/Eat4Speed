@@ -40,7 +40,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List allRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_Id, r.name_Des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_Id, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_Id " +
                         "AND r.benutzer_Id = b.benutzer_ID "
@@ -57,7 +57,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List notVerifiedRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_Id, r.name_Des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_Id, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_Id " +
                         "AND r.benutzer_Id = b.benutzer_ID " +
@@ -75,7 +75,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List verifiedRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_Id, r.name_Des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_Id, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_Id " +
                         "AND r.benutzer_Id = b.benutzer_ID " +

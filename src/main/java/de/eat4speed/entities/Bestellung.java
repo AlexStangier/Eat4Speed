@@ -31,8 +31,8 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
         return bestellhistorien_ID;
     }
 
-    public void setBestellhistorien_ID(int bestellhistorienId) {
-        this.bestellhistorien_ID = bestellhistorienId;
+    public void setBestellhistorien_ID(int bestellhistorien_ID) {
+        this.bestellhistorien_ID = bestellhistorien_ID;
     }
 
     public Timestamp getTimestamp() {

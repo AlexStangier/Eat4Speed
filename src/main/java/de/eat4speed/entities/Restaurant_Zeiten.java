@@ -15,12 +15,12 @@ public class Restaurant_Zeiten extends PanacheEntityBase implements Serializable
     public int getRestaurant_ID() {
         return restaurant_ID;
     }
-    public void setRestaurant_ID(int restaurant_id) {
-        this.restaurant_ID = restaurant_id;
+    public void setRestaurant_ID(int restaurant_ID) {
+        this.restaurant_ID = restaurant_ID;
     }
 
     public int getOeffnungszeiten_ID() { return oeffnungszeiten_ID; }
-    public void setOeffnungszeiten_ID(int oeffnungszeiten_id) { this.oeffnungszeiten_ID = oeffnungszeiten_id; }
+    public void setOeffnungszeiten_ID(int oeffnungszeiten_ID) { this.oeffnungszeiten_ID = oeffnungszeiten_ID; }
 
     @Override
     public boolean equals(Object o) {

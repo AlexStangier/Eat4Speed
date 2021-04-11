@@ -28,7 +28,7 @@ public class AuftragController {
         auftrag.setAnschrift(1);
         auftrag.setLieferdistanz(2.0);
         auftrag.setTimestamp(new Timestamp(System.currentTimeMillis()));
-        auftrag.setKundenNummer(1);
+        auftrag.setKundennummer(1);
         auftrag.setStatus("aktiv");
 
         auftragRepository.addAuftrag(auftrag);

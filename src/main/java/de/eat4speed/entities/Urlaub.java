@@ -18,8 +18,8 @@ public class Urlaub extends PanacheEntityBase implements Serializable {
     public long getUrlaubs_ID() {
         return urlaubs_ID;
     }
-    public void setUrlaubs_ID(int urlaubs_id) {
-        this.urlaubs_ID = urlaubs_id;
+    public void setUrlaubs_ID(int urlaubs_ID) {
+        this.urlaubs_ID = urlaubs_ID;
     }
 
     public int getFahrernummer() { return fahrernummer; }

@@ -11,22 +11,22 @@ public class Gericht_Kategorie extends PanacheEntityBase implements Serializable
     @Id
     private int gericht_ID;
     @Id
-    private String name;
+    private String kategorie;
 
     public int getGericht_ID() {
         return gericht_ID;
     }
 
-    public void setGericht_ID(int gericht_id) {
-        this.gericht_ID = gericht_id;
+    public void setGericht_ID(int gericht_ID) {
+        this.gericht_ID = gericht_ID;
     }
 
-    public String getName() {
-        return name;
+    public String getKategorie() {
+        return kategorie;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setKategorie(String kategorie) {
+        this.kategorie = kategorie;
     }
 
     @Override
@@ -34,19 +34,19 @@ public class Gericht_Kategorie extends PanacheEntityBase implements Serializable
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Gericht_Kategorie that = (Gericht_Kategorie) o;
-        return gericht_ID == that.gericht_ID && Objects.equals(name, that.name);
+        return gericht_ID == that.gericht_ID && Objects.equals(kategorie, that.kategorie);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gericht_ID, name);
+        return Objects.hash(gericht_ID, kategorie);
     }
 
     @Override
     public String toString() {
         return "Gericht_Kategorie{" +
                 "gericht_ID=" + gericht_ID +
-                ", name='" + name + '\'' +
+                ", kategorie='" + kategorie + '\'' +
                 '}';
     }
 }

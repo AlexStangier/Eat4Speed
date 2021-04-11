@@ -14,16 +14,16 @@ public class Fahrzeug extends PanacheEntityBase implements Serializable {
     private int fahrzeug_ID;
     private String fahrzeugtyp;
     private int kapazitaet_Gerichte;
+    private String modell;
 
     public int getFahrzeug_ID() {
         return fahrzeug_ID;
     }
 
-    public void setFahrzeug_ID(int fahrzeugId) {
-        this.fahrzeug_ID = fahrzeugId;
+    public void setFahrzeug_ID(int fahrzeug_ID) {
+        this.fahrzeug_ID = fahrzeug_ID;
     }
 
-    @Basic
     public String getFahrzeugtyp() {
         return fahrzeugtyp;
     }
@@ -40,17 +40,25 @@ public class Fahrzeug extends PanacheEntityBase implements Serializable {
         this.kapazitaet_Gerichte = kapazitaet_Gerichte;
     }
 
+    public String getModell() {
+        return modell;
+    }
+
+    public void setModell(String modell) {
+        this.modell = modell;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrzeug fahrzeug = (Fahrzeug) o;
-        return fahrzeug_ID == fahrzeug.fahrzeug_ID && kapazitaet_Gerichte == fahrzeug.kapazitaet_Gerichte && Objects.equals(fahrzeugtyp, fahrzeug.fahrzeugtyp);
+        return fahrzeug_ID == fahrzeug.fahrzeug_ID && kapazitaet_Gerichte == fahrzeug.kapazitaet_Gerichte && Objects.equals(fahrzeugtyp, fahrzeug.fahrzeugtyp) && Objects.equals(modell, fahrzeug.modell);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fahrzeug_ID, fahrzeugtyp, kapazitaet_Gerichte);
+        return Objects.hash(fahrzeug_ID, fahrzeugtyp, kapazitaet_Gerichte, modell);
     }
 
     @Override
@@ -59,6 +67,7 @@ public class Fahrzeug extends PanacheEntityBase implements Serializable {
                 "fahrzeug_ID=" + fahrzeug_ID +
                 ", fahrzeugtyp='" + fahrzeugtyp + '\'' +
                 ", kapazitaet_Gerichte=" + kapazitaet_Gerichte +
+                ", modell='" + modell + '\'' +
                 '}';
     }
 }

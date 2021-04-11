@@ -17,8 +17,8 @@ public class Bestellzuordnung extends PanacheEntityBase implements Serializable 
         return bestell_ID;
     }
 
-    public void setBestell_ID(int bestellId) {
-        this.bestell_ID = bestellId;
+    public void setBestell_ID(int bestell_ID) {
+        this.bestell_ID = bestell_ID;
     }
 
 
@@ -26,8 +26,8 @@ public class Bestellzuordnung extends PanacheEntityBase implements Serializable 
         return gericht_ID;
     }
 
-    public void setGericht_ID(int gerichtId) {
-        this.gericht_ID = gerichtId;
+    public void setGericht_ID(int gericht_ID) {
+        this.gericht_ID = gericht_ID;
     }
 
     @Override

@@ -20,8 +20,8 @@ public class Rechnung extends PanacheEntityBase implements Serializable {
     public int getRechnungs_ID() {
         return rechnungs_ID;
     }
-    public void setRechnungs_ID(int rechnungs_id) {
-        this.rechnungs_ID = rechnungs_id;
+    public void setRechnungs_ID(int rechnungs_ID) {
+        this.rechnungs_ID = rechnungs_ID;
     }
 
 
@@ -49,7 +49,7 @@ public class Rechnung extends PanacheEntityBase implements Serializable {
     public Timestamp getDatum_Zahlungseingang() {
         return datum_Zahlungseingang;
     }
-    public void setDatum_Zahlungseingang(Timestamp datumZahlungseingang) { this.datum_Zahlungseingang = datumZahlungseingang; }
+    public void setDatum_Zahlungseingang(Timestamp datum_Zahlungseingang) { this.datum_Zahlungseingang = datum_Zahlungseingang; }
 
     @Override
     public boolean equals(Object o) {

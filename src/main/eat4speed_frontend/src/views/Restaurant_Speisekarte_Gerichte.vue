@@ -334,7 +334,7 @@ export default {
       for (let i = 0; i < this.selectedKategorien.length; i++) {
         let gericht_Kategorie = {
           gericht_ID: this.gericht_ID,
-          name: this.selectedKategorien[i]
+          kategorie: this.selectedKategorien[i]
         }
         await axios.post("/Gericht_Kategorie", gericht_Kategorie);
 
@@ -415,7 +415,7 @@ export default {
       for (let i = 0; i < this.selectedKategorien.length; i++) {
         let gericht_Kategorie = {
           gericht_ID: this.editedItem.id,
-          name: this.selectedKategorien[i]
+          kategorie: this.selectedKategorien[i]
         }
         await axios.post("/Gericht_Kategorie", gericht_Kategorie);
 
