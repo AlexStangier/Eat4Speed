@@ -9,5 +9,9 @@ public interface IGerichtService {
 
     Response addGericht(Gericht gericht);
 
+    Gericht getGerichtByGerichtID(int gericht_ID);
+
     List getAllGerichteDataRestaurantSpeisekarte(int restaurant_ID);
+
+    Response updateGerichtAllData(Gericht gericht);
 }
