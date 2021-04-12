@@ -4,16 +4,30 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Benutzer extends PanacheEntityBase implements Serializable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int benutzer_ID;
     private String benutzername;
-    private String E_Mail_Addresse;
+    private String vorname;
+    private String nachname;
+    private String emailAdresse;
     private String passwort;
     private String rolle;
     private String paypal_Account;
+    private int telefonnummer;
+
+    public int getBenutzer_ID() {
+        return benutzer_ID;
+    }
+
+    public void setBenutzer_ID(int benutzer_ID) {
+        this.benutzer_ID = benutzer_ID;
+    }
 
     public String getBenutzername() {
         return benutzername;
@@ -23,12 +37,28 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.benutzername = benutzername;
     }
 
-    public String getE_Mail_Addresse() {
-        return E_Mail_Addresse;
+    public String getVorname() {
+        return vorname;
     }
 
-    public void setE_Mail_Addresse(String e_Mail_Addresse) {
-        this.E_Mail_Addresse = e_Mail_Addresse;
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
+
+    public String getNachname() {
+        return nachname;
+    }
+
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
+    }
+
+    public String getEmailAdresse() {
+        return emailAdresse;
+    }
+
+    public void setEmailAdresse(String emailAdresse) {
+        this.emailAdresse = emailAdresse;
     }
 
     public String getPasswort() {
@@ -55,42 +85,40 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.paypal_Account = paypal_Account;
     }
 
+    public int getTelefonnummer() {
+        return telefonnummer;
+    }
+
+    public void setTelefonnummer(int telefonnummer) {
+        this.telefonnummer = telefonnummer;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
-        Benutzer that = (Benutzer) o;
-
-        if (benutzername != null ? !benutzername.equals(that.benutzername) : that.benutzername != null) return false;
-        if (E_Mail_Addresse != null ? !E_Mail_Addresse.equals(that.E_Mail_Addresse) : that.E_Mail_Addresse != null)
-            return false;
-        if (passwort != null ? !passwort.equals(that.passwort) : that.passwort != null) return false;
-        if (rolle != null ? !rolle.equals(that.rolle) : that.rolle != null) return false;
-        if (paypal_Account != null ? !paypal_Account.equals(that.paypal_Account) : that.paypal_Account != null)
-            return false;
-
-        return true;
+        Benutzer benutzer = (Benutzer) o;
+        return benutzer_ID == benutzer.benutzer_ID && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(rolle, benutzer.rolle) && Objects.equals(paypal_Account, benutzer.paypal_Account);
     }
 
     @Override
     public int hashCode() {
-        int result = benutzername != null ? benutzername.hashCode() : 0;
-        result = 31 * result + (E_Mail_Addresse != null ? E_Mail_Addresse.hashCode() : 0);
-        result = 31 * result + (passwort != null ? passwort.hashCode() : 0);
-        result = 31 * result + (rolle != null ? rolle.hashCode() : 0);
-        result = 31 * result + (paypal_Account != null ? paypal_Account.hashCode() : 0);
-        return result;
+        return Objects.hash(benutzer_ID, benutzername, vorname, nachname, emailAdresse, passwort, rolle, paypal_Account, telefonnummer);
     }
 
     @Override
     public String toString() {
         return "Benutzer{" +
-                "benutzername='" + benutzername + '\'' +
-                ", E_Mail_Addresse='" + E_Mail_Addresse + '\'' +
+                "benutzer_ID=" + benutzer_ID +
+                ", benutzername='" + benutzername + '\'' +
+                ", vorname='" + vorname + '\'' +
+                ", nachname='" + nachname + '\'' +
+                ", emailAdresse='" + emailAdresse + '\'' +
                 ", passwort='" + passwort + '\'' +
                 ", rolle='" + rolle + '\'' +
                 ", paypal_Account='" + paypal_Account + '\'' +
+                ", telefonnummer=" + telefonnummer +
                 '}';
     }
 }
