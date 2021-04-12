@@ -235,7 +235,7 @@ export default {
   methods: {
 
     async loadGerichte() {
-      this.restaurantID = 22;
+      this.restaurantID = 1;
       const ResponseGerichte = await axios.get("Gericht/getAllGerichtDataRestaurantSpeisekarte/" + this.restaurantID);
 
       console.log(ResponseGerichte);
@@ -311,7 +311,7 @@ export default {
     },
     async addGericht() {
 
-      this.restaurantID = 22;
+      this.restaurantID = 1;
 
       if (this.gerichtVerfuegbar === true) {
         this.gerichtVerfuegbar = 1;

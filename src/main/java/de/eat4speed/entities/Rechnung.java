@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 @Entity
 public class Rechnung extends PanacheEntityBase implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rechnungs_ID;
     private double betrag;
     private Timestamp rechnungsdatum;

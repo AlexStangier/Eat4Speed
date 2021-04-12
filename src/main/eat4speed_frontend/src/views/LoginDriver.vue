@@ -289,7 +289,9 @@ export default {
         benutzer_ID: this.benutzer_ID,
         anrede: this.salutation,
         geburtsdatum: this.date,
-        fuehrerschein: this.driverLicense
+        fuehrerschein: this.driverLicense,
+        ist_in_Pause: 0,
+        verifiziert: 0
       };
 
       const responseFahrer = await axios.post("/Fahrer", fahrer)
@@ -363,6 +365,7 @@ export default {
       date: "",
       salutation: "",
       password: "",
+      capacity: "",
       verify: "",
       // Login Tab
       loginValid: false,

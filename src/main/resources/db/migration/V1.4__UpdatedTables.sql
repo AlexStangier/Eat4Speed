@@ -273,7 +273,12 @@ ALTER TABLE `eatforspeed`.`Fahrer`
     ADD COLUMN `Anrede`             VARCHAR(50),
     ADD CONSTRAINT `fk_Fahrer_Aktueller_Standort`
     FOREIGN KEY (`Aktueller_Standort`)
-    REFERENCES `eatforspeed`.`Adressen` (`Adress_ID`);
+    REFERENCES `eatforspeed`.`Adressen` (`Adress_ID`),
+    DROP CONSTRAINT `fk_Fahrer_Fahrzeug`,
+    CHANGE `Fahrzeug` `Fahrzeug` INT NULL,
+    ADD CONSTRAINT `fk_Fahrer_Fahrzeug_R`
+        FOREIGN KEY (`Fahrzeug`)
+            REFERENCES `eatforspeed`.`Fahrzeug` (`Fahrzeug_ID`);
 
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Restaurant`

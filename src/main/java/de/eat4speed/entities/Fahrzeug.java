@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Fahrzeug extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fahrzeug_ID;
     private String fahrzeugtyp;
     private int kapazitaet_Gerichte;
