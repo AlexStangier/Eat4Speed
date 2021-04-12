@@ -5,14 +5,17 @@
     >
       <v-spacer></v-spacer>
 
-      <v-btn icon>
-        <v-icon>mdi-cart</v-icon>
-      </v-btn>
+      <Cart></Cart>
 
     </v-app-bar>
   </v-card>
 </template>
 
 <script>
-
+import Cart from '@/components/Cart.vue';
+export default {
+  components: {
+    Cart,
+  },
+}
 </script>
