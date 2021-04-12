@@ -24,9 +24,7 @@ public class BenutzerController {
     }
 
     @GET
-    //@RolesAllowed("admin")
     @RolesAllowed("admin")
-    //@PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
         return _benutzer.listAll().toString();
