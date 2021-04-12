@@ -9,7 +9,7 @@ import java.sql.Time;
 @Entity
 public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int oeffnungszeiten_ID;
     private Time anfang;
     private Time ende;

@@ -160,7 +160,7 @@ export default {
       let createdRestaurant;
       var restaurant = {
         benutzer_ID: this.benutzer_ID,
-        name_Des_Restaurants: this.restaurant_name,
+        name_des_Restaurants: this.restaurant_name,
         allgemeine_Beschreibung: this.descriptionShort,
         anschrift: this.adress_ID,
         verifiziert: 0

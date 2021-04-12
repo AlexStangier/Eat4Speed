@@ -9,7 +9,7 @@ import java.sql.Date;
 @Entity
 public class Urlaub extends PanacheEntityBase implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int urlaubs_ID;
     private Date anfang;
     private Date ende;

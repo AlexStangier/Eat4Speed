@@ -21,7 +21,10 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     @Transactional
     public void addFahrer(Fahrer fahrer)
     {
+        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
         persist(fahrer);
+        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
+
     }
 
     @Transactional

@@ -9,7 +9,7 @@ import java.util.Objects;
 @Entity
 public class Gericht extends PanacheEntityBase implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int gericht_ID;
     private int restaurant_ID;
     private String name;
@@ -17,22 +17,28 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     private String abbildung;
     private double preis;
     private byte verfuegbar;
-
+    private byte ist_Getraenk;
 
     public int getGericht_ID() {
         return gericht_ID;
     }
-    public void setGericht_ID(int gerichtId) {
-        this.gericht_ID = gerichtId;
+
+    public void setGericht_ID(int gericht_ID) {
+        this.gericht_ID = gericht_ID;
     }
 
-    public int getRestaurant_ID() { return restaurant_ID; }
+    public int getRestaurant_ID() {
+        return restaurant_ID;
+    }
 
-    public void setRestaurant_ID(int restaurant_id) { this.restaurant_ID = restaurant_id; }
+    public void setRestaurant_ID(int restaurant_ID) {
+        this.restaurant_ID = restaurant_ID;
+    }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -40,6 +46,7 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     public String getBeschreibung() {
         return beschreibung;
     }
+
     public void setBeschreibung(String beschreibung) {
         this.beschreibung = beschreibung;
     }
@@ -55,6 +62,7 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     public double getPreis() {
         return preis;
     }
+
     public void setPreis(double preis) {
         this.preis = preis;
     }
@@ -62,8 +70,17 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     public byte getVerfuegbar() {
         return verfuegbar;
     }
+
     public void setVerfuegbar(byte verfuegbar) {
         this.verfuegbar = verfuegbar;
+    }
+
+    public byte getIst_Getraenk() {
+        return ist_Getraenk;
+    }
+
+    public void setIst_Getraenk(byte ist_Getraenk) {
+        this.ist_Getraenk = ist_Getraenk;
     }
 
     @Override
@@ -71,12 +88,12 @@ public class Gericht extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Gericht gericht = (Gericht) o;
-        return gericht_ID == gericht.gericht_ID && restaurant_ID == gericht.restaurant_ID && Double.compare(gericht.preis, preis) == 0 && verfuegbar == gericht.verfuegbar && Objects.equals(name, gericht.name) && Objects.equals(beschreibung, gericht.beschreibung) && Objects.equals(abbildung, gericht.abbildung);
+        return gericht_ID == gericht.gericht_ID && restaurant_ID == gericht.restaurant_ID && Double.compare(gericht.preis, preis) == 0 && verfuegbar == gericht.verfuegbar && ist_Getraenk == gericht.ist_Getraenk && Objects.equals(name, gericht.name) && Objects.equals(beschreibung, gericht.beschreibung) && Objects.equals(abbildung, gericht.abbildung);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gericht_ID, restaurant_ID, name, beschreibung, abbildung, preis, verfuegbar);
+        return Objects.hash(gericht_ID, restaurant_ID, name, beschreibung, abbildung, preis, verfuegbar, ist_Getraenk);
     }
 
     @Override
@@ -89,6 +106,7 @@ public class Gericht extends PanacheEntityBase implements Serializable {
                 ", abbildung='" + abbildung + '\'' +
                 ", preis=" + preis +
                 ", verfuegbar=" + verfuegbar +
+                ", ist_Getraenk=" + ist_Getraenk +
                 '}';
     }
 }

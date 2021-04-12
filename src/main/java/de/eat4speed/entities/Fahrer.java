@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Fahrer extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fahrernummer;
     private int benutzer_ID;
     private String anrede;

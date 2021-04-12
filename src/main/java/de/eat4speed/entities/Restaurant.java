@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Restaurant extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int restaurant_ID;
     private int benutzer_ID;
     private String name_des_Restaurants;

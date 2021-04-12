@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Benachrichtigung_Kunde extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int benachrichtigungs_ID;
     private int kunde_ID;
     private int gericht;

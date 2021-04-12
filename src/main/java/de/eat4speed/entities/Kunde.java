@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Kunde extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int kundennummer;
     private int benutzer_ID;
     private String name;

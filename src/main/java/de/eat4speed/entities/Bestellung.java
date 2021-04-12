@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Bestellung extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bestell_ID;
     private int bestellhistorien_ID;
     private int auftrags_ID;

@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Auftrag extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long auftrags_ID;
     private int auftragnehmer;
     private Timestamp timestamp;

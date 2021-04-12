@@ -273,7 +273,12 @@ ALTER TABLE `eatforspeed`.`Fahrer`
     ADD COLUMN `Anrede`             VARCHAR(50),
     ADD CONSTRAINT `fk_Fahrer_Aktueller_Standort`
     FOREIGN KEY (`Aktueller_Standort`)
-    REFERENCES `eatforspeed`.`Adressen` (`Adress_ID`);
+    REFERENCES `eatforspeed`.`Adressen` (`Adress_ID`),
+    DROP CONSTRAINT `fk_Fahrer_Fahrzeug`,
+    CHANGE `Fahrzeug` `Fahrzeug` INT NULL,
+    ADD CONSTRAINT `fk_Fahrer_Fahrzeug_R`
+        FOREIGN KEY (`Fahrzeug`)
+            REFERENCES `eatforspeed`.`Fahrzeug` (`Fahrzeug_ID`);
 
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Restaurant`
@@ -360,7 +365,8 @@ CREATE TABLE IF NOT EXISTS `eatforspeed`.`Gericht`
     COLLATE = utf8mb4_0900_ai_ci;
 
 ALTER TABLE `eatforspeed`.`Gericht`
-    CHANGE `Abbildung` `Abbildung`     VARCHAR(200) NULL DEFAULT NULL;
+    CHANGE `Abbildung` `Abbildung`     VARCHAR(200) NULL DEFAULT NULL,
+    ADD COLUMN `Ist_Getraenk`    TINYINT(1)   NOT NULL;
 
 -- -----------------------------------------------------
 -- Table `eatforspeed`.`Benachrichtigung_Kunde`
