@@ -19,14 +19,14 @@ create table if not exists  Benutzer
 (
     Benutzer_ID    int auto_increment
         primary key,
+    Vorname        varchar(50) null,
+    Nachname       varchar(50) not null,
+    Benutzername   varchar(50) null,
     EmailAdresse   varchar(50) not null,
     Passwort       varchar(50) not null,
     Rolle          varchar(10) not null,
     Paypal_Account varchar(50) not null,
-    Nachname       varchar(50) not null,
-    Telefonnummer  int         null,
-    Benutzername   varchar(50) null,
-    Vorname        varchar(50) null
+    Telefonnummer  int         null
 );
 
 create table if not exists  Bestellhistorie
