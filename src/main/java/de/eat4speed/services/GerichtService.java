@@ -29,9 +29,23 @@ public class GerichtService implements IGerichtService {
     }
 
     @Override
+    public Gericht getGerichtByGerichtID(int gericht_ID)
+    {
+        return gerichtRepository.getGerichtByGerichtID(gericht_ID);
+    }
+
+    @Override
     public List getAllGerichteDataRestaurantSpeisekarte(int restaurant_ID)
     {
         return gerichtRepository.getAllGerichteDataRestaurantSpeiseKarte(restaurant_ID);
+    }
+
+    @Override
+    public Response updateGerichtAllData(Gericht gericht)
+    {
+        gerichtRepository.updateGerichtAllData(gericht);
+
+        return Response.status(Response.Status.OK).entity(gericht).build();
     }
 
 }

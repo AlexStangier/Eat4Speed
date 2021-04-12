@@ -10,16 +10,16 @@ import java.sql.Time;
 public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue
-    private int oeffnungszeiten_id;
+    private int oeffnungszeiten_ID;
     private Time anfang;
     private Time ende;
     private String wochentag;
 
-    public int getOeffnungszeiten_id() {
-        return oeffnungszeiten_id;
+    public int getOeffnungszeiten_ID() {
+        return oeffnungszeiten_ID;
     }
-    public void setOeffnungszeiten_id(int oeffnungszeitenId) {
-        this.oeffnungszeiten_id = oeffnungszeitenId;
+    public void setOeffnungszeiten_ID(int oeffnungszeitenId) {
+        this.oeffnungszeiten_ID = oeffnungszeitenId;
     }
 
 
@@ -51,7 +51,7 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
 
         Oeffnungszeiten that = (Oeffnungszeiten) o;
 
-        if (oeffnungszeiten_id != that.oeffnungszeiten_id) return false;
+        if (oeffnungszeiten_ID != that.oeffnungszeiten_ID) return false;
         if (anfang != null ? !anfang.equals(that.anfang) : that.anfang != null) return false;
         if (ende != null ? !ende.equals(that.ende) : that.ende != null) return false;
         if (wochentag != null ? !wochentag.equals(that.wochentag) : that.wochentag != null) return false;
@@ -61,7 +61,7 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = oeffnungszeiten_id;
+        int result = oeffnungszeiten_ID;
         result = 31 * result + (anfang != null ? anfang.hashCode() : 0);
         result = 31 * result + (ende != null ? ende.hashCode() : 0);
         result = 31 * result + (wochentag != null ? wochentag.hashCode() : 0);
@@ -71,7 +71,7 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     @Override
     public String toString() {
         return "OeffnungszeitenEntity{" +
-                "oeffnungszeiten_id=" + oeffnungszeiten_id +
+                "oeffnungszeiten_ID=" + oeffnungszeiten_ID +
                 ", anfang=" + anfang +
                 ", ende=" + ende +
                 ", wochentag='" + wochentag + '\'' +

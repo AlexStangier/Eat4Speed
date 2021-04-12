@@ -143,7 +143,7 @@ export default {
         emailAdresse: this.email,
         passwort: this.password,
         telefonnummer: this.phoneNumber,
-        rolle: 1,
+        rolle: "Customer",
         paypal_Account: this.paypal
       };
 
@@ -162,9 +162,9 @@ export default {
 
       console.log(responseAdressen);
       console.log(responseAdressen.data);
-      console.log(responseAdressen.data.adress_Id);
+      console.log(responseAdressen.data.adress_ID);
 
-      this.adress_ID = responseAdressen.data.adress_Id;
+      this.adress_ID = responseAdressen.data.adress_ID;
 
       let createdKunde;
       var kunde = {

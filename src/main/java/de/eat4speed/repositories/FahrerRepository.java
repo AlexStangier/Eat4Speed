@@ -1,11 +1,7 @@
 package de.eat4speed.repositories;
 
-import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Fahrer;
-import de.eat4speed.entities.Kunde;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import jdk.nashorn.internal.parser.JSONParser;
-import org.drools.core.runtime.help.impl.XStreamJSon;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -48,8 +44,8 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
                 Query query = entityManager.createQuery(
                 "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
-                        "WHERE f.fahrzeug = fz.fahrzeug_Id " +
-                        "AND f.benutzer_Id = b.benutzer_ID "
+                        "WHERE f.fahrzeug = fz.fahrzeug_ID " +
+                        "AND f.benutzer_ID = b.benutzer_ID "
 
         );
                 allFahrerData = query.getResultList();
@@ -65,8 +61,8 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         Query query = entityManager.createQuery(
                 "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
-                        "WHERE f.fahrzeug = fz.fahrzeug_Id " +
-                        "AND f.benutzer_Id = b.benutzer_ID " +
+                        "WHERE f.fahrzeug = fz.fahrzeug_ID " +
+                        "AND f.benutzer_ID = b.benutzer_ID " +
                         "AND f.verifiziert = 0"
 
         );
@@ -83,8 +79,8 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         Query query = entityManager.createQuery(
                 "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
-                        "WHERE f.fahrzeug = fz.fahrzeug_Id " +
-                        "AND f.benutzer_Id = b.benutzer_ID " +
+                        "WHERE f.fahrzeug = fz.fahrzeug_ID " +
+                        "AND f.benutzer_ID = b.benutzer_ID " +
                         "AND f.verifiziert = 1"
 
         );
