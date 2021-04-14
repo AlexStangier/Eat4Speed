@@ -568,7 +568,118 @@
                     </v-dialog>
                   </v-col>
                 </v-row>
+                <v-dialog
+                    :retain-focus="false"
+                    v-model="enabledException"
+                    width="290"
+                    persistent
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        color="red"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                        small
+                        bottom
+                    >
+                      Ausnahme...
+                    </v-btn>
 
+                  </template>
+
+                  <v-card d-flex>
+                    <v-col>
+                      <v-date-picker v-model="picker"></v-date-picker>
+                      <v-checkbox align-center label="Ganztägig"></v-checkbox>
+
+                      <v-col
+                          cols="11"
+                          sm="5"
+                      >
+                        <v-dialog
+                            ref="dialogEx"
+                            v-model="timeException.timePicker"
+                            :return-value.sync="timeException.timesStart"
+                            persistent
+                            width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                                v-model="timeException.timesStart"
+                                label="Von"
+                                prepend-icon="mdi-clock-time-four-outline"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-time-picker
+                              v-if="timeException.timePicker"
+                              v-model="timeException.timesStart"
+                              full-width
+                          >
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.dialogEx.save(timeException.timesStart)"
+                            >
+                              OK
+                            </v-btn>
+                          </v-time-picker>
+                        </v-dialog>
+                      </v-col>
+                      <v-col
+                          cols="11"
+                          sm="5"
+                      >
+                        <v-dialog
+                            ref="dialogEx2"
+                            v-model="timeException.timePickerEnd"
+                            :return-value.sync="timeException.timesEnd"
+                            persistent
+                            width="290px"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                                v-model="timeException.timesEnd"
+                                label="Bis"
+                                prepend-icon="mdi-clock-time-four-outline"
+                                readonly
+                                v-bind="attrs"
+                                v-on="on"
+                            ></v-text-field>
+                          </template>
+                          <v-time-picker
+                              v-if="timeException.timePickerEnd"
+                              v-model="timeException.timesEnd"
+                              full-width
+                          >
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.dialogEx2.save(timeException.timesEnd)"
+                            >
+                              OK
+                            </v-btn>
+                          </v-time-picker>
+                        </v-dialog>
+                      </v-col>
+
+                      <v-row justify="space-around" class="mb-2" @click="enabledException=false">
+                        <v-btn color="red" dark>
+                          Abbruch
+                        </v-btn>
+                        <v-btn color="green" dark align-end>
+                          Bestätigen
+                        </v-btn>
+                      </v-row>
+
+                    </v-col>
+                  </v-card>
+                </v-dialog>
               </v-col>
             </v-card>
           </template>
@@ -590,6 +701,13 @@ export default {
       timesStart: [null, null, null, null, null, null, null],
       timesEnd: [null, null, null, null, null, null, null],
     },
+    timeException: {
+      timePicker: false,
+      timePickerEnd: false,
+
+      timesStart: null,
+      timesEnd: null
+    },
     enabled: false,
     enabled1: false,
     enabled2: false,
@@ -597,19 +715,7 @@ export default {
     enabled4: false,
     enabled5: false,
     enabled6: false,
-    //time: null,
-    //modal2: false,
-    freitagSelect: false,
-    businessDialog: false,
-    focus: '',
-    type: 'month',
-
-    selectedEvent: {},
-    selectedElement: null,
-    selectedOpen: false,
-    events: [],
-    colors: ['green', 'red'],
-    names: ['Geöffnet', 'Geschlossen'],
+    enabledException: false,
   }),
   mounted() {
 
