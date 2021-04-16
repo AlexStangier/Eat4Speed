@@ -132,14 +132,13 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "AdminVerification",
   methods: {
     async reloadFahrer(){
       if (this.select.value === 1) {
-        const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
+        const ResponseAllFahrer = await this.$http.get("/Fahrer/ALL", this.$auth);
+
         this.allFahrer = ResponseAllFahrer;
 
         var arrayAllFahrer = [];
@@ -162,7 +161,7 @@ export default {
       }
 
       if (this.select.value === 2) {
-        const ResponseNotVerifiedFahrer = await axios.get("/Fahrer/NOT_VERIFIED");
+        const ResponseNotVerifiedFahrer = await this.$http.get("/Fahrer/NOT_VERIFIED");
 
         this.allFahrer = ResponseNotVerifiedFahrer;
 
@@ -187,7 +186,7 @@ export default {
       }
 
       if(this.select.value === 3) {
-        const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED");
+        const ResponseVerifiedFahrer = await this.$http.get("/Fahrer/VERIFIED");
 
         this.allFahrer = ResponseVerifiedFahrer;
 
@@ -216,11 +215,11 @@ export default {
       this.currentRowItem = item;
     },
     async deleteBewerbung() {
-      await axios.delete("Fahrer/"+this.currentRowItem.fahrernummer);
+      await this.$http.delete("Fahrer/"+this.currentRowItem.fahrernummer);
       this.reloadFahrer();
     },
     async verifyBewerbung() {
-      await axios.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer);
+      await this.$http.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer);
       this.reloadFahrer();
     }
   },

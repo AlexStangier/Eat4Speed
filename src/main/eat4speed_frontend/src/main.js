@@ -8,6 +8,12 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;
+Vue.prototype.$auth = {
+  auth: {
+    emailAdresse: store.state.emailAdresse,
+    passwort: store.state.passwort
+  }
+};
 
 //https://www.npmjs.com/package/vue2-google-maps
 Vue.use(VueGoogleMaps, {
