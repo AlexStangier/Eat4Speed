@@ -5,13 +5,22 @@
         <v-flex md6 sm6 xs12>
           <div class="text-h3 mb-10"> Restaurantname</div>
           <v-col class="d-flex justify-space-between mb-6">
-            <v-card-title class="text-h4"> Gerichte</v-card-title>
+            <v-card-title class="text-h4"> Speisekarte</v-card-title>
             <v-btn
                 color="red"
                 dark
                 align="right"
-                to="/restaurant-speisekarte-getränke"
                 class="mt-5"
+                @click="changeDisplayGetraenke"
+            >
+              Gerichte
+            </v-btn>
+            <v-btn
+                color="red"
+                dark
+                align="right"
+                class="mt-5"
+                @click="changeDisplayGetraenke"
             >
               Getränke
             </v-btn>
@@ -19,7 +28,7 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="200"
+              :item-height="300"
               max-height="500"
           >
             <template v-slot:default="{ item }">
@@ -71,10 +80,10 @@
                             label="Artikelbeschreibung"
                             required
                         ></v-textarea>
-                        <v-file-input
-                            v-model="gerichtBild"
-                            label="Bild auswählen">
-                        </v-file-input>
+                        <label>
+                          Bild auswählen
+                          <input type="file" ref="file" id="fileChange" accept="image/*" v-on:change="selectedPicture()"/>
+                        </label>
                         <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
                         </v-text-field>
                         <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
@@ -114,6 +123,15 @@
                             </v-btn>
                             <v-spacer class="mr-2"></v-spacer>
                             <v-btn
+                                @click="deleteGericht(); artDialog = false"
+                                color="red"
+                                dark
+                                class="justify-center"
+                            >
+                              Löschen
+                            </v-btn>
+                            <v-spacer class="mr-2"></v-spacer>
+                            <v-btn
                                 @click="artDialog = false; test();"
                                 color="red"
                                 dark
@@ -133,7 +151,7 @@
           </v-virtual-scroll>
           <!------------  Artikel hinzufügen + ------------->
           <v-dialog
-              v-model="artDialog"
+              v-model="artDialog2"
               width="500"
               persistent
           >
@@ -162,10 +180,10 @@
                     label="Artikelbeschreibung"
                     required
                 ></v-textarea>
-                <v-file-input
-                    v-model="gerichtBild"
-                    label="Bild auswählen">
-                </v-file-input>
+                <label>
+                  Bild auswählen
+                  <input type="file" ref="file" id="file" accept="image/*" v-on:change="selectedPicture()"/>
+                </label>
                 <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
                 </v-text-field>
                 <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
@@ -196,7 +214,7 @@
                 <v-col>
                   <v-row>
                     <v-btn
-                        @click="addGericht(); artDialog = false"
+                        @click="addGericht(); artDialog2 = false"
                         color="red"
                         dark
                         class="justify-center"
@@ -205,7 +223,7 @@
                     </v-btn>
                     <v-spacer class="mr-2"></v-spacer>
                     <v-btn
-                        @click="artDialog = false; test();"
+                        @click="artDialog2 = false; test();"
                         color="red"
                         dark
                         justify
@@ -230,13 +248,26 @@ import axios from "axios";
 export default {
   name: "restaurant",
   mounted() {
+    this.displayGetraenke=false;
+
     this.loadGerichte()
   },
   methods: {
 
     async loadGerichte() {
       this.restaurantID = 1;
-      const ResponseGerichte = await axios.get("Gericht/getAllGerichtDataRestaurantSpeisekarte/" + this.restaurantID);
+
+      let gerichtPath;
+
+      if(this.displayGetraenke === false)
+      {
+        gerichtPath = "Gericht/getAllGerichtDataRestaurantSpeisekarte/";
+      }
+      else{
+        gerichtPath = "Gericht/getAllGetraenkDataRestaurantSpeisekarte/";
+      }
+
+      const ResponseGerichte = await axios.get(gerichtPath + this.restaurantID);
 
       console.log(ResponseGerichte);
 
@@ -248,8 +279,39 @@ export default {
         this.prices[i] = gerichtData[3];
         this.gerichtIDs[i] = gerichtData[4];
       }
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++)
+      {
+        const config = { responseType:"arraybuffer" };
+        const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gerichtIDs[i],config);
+
+        console.log(responsePicture);
+
+        if(responsePicture.status !== 204)
+        {
+          console.log("received Picture")
+          console.log(responsePicture.data);
+
+          let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+          let imageURL = URL.createObjectURL(pictureBlob);
+          console.log(imageURL);
+
+          this.imgs[i] = imageURL;
+        }
+        else
+        {
+          this.imgs[i] = "";
+        }
+
+      }
+      console.log(this.imgs);
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
+    },
+    changeDisplayGetraenke() {
+      this.displayGetraenke = !this.displayGetraenke;
+      this.loadGerichte();
     },
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
@@ -311,6 +373,8 @@ export default {
     },
     async addGericht() {
 
+      console.log("it's fine");
+
       this.restaurantID = 1;
 
       if (this.gerichtVerfuegbar === true) {
@@ -319,16 +383,22 @@ export default {
         this.gerichtVerfuegbar = 0;
       }
 
+      if(this.displayGetraenke === true) {
+        this.istGetraenk = 1;
+      } else {
+        this.istGetraenk = 0;
+      }
+
       var gericht = {
         beschreibung: this.gerichtBeschreibung,
         name: this.gerichtName,
         restaurant_ID: this.restaurantID,
         verfuegbar: this.gerichtVerfuegbar,
         preis: this.gerichtPreis,
-        ist_Getraenk: 0
+        ist_Getraenk: this.istGetraenk
       }
 
-      const responseGericht = await axios.post("/Gericht", gericht);
+      const responseGericht = await axios.post("/Gericht/addGericht", gericht);
 
       this.gericht_ID = responseGericht.data.gericht_ID;
 
@@ -348,13 +418,39 @@ export default {
         await axios.post("/Gericht_Allergene", gericht_Allergene);
 
       }
+
+      if(this.gerichtBild !== null)
+      {
+        const picturedata = new FormData();
+        picturedata.append("file", this.gerichtBild);
+        picturedata.append("fileName", "Bild"+this.gericht_ID);
+
+        const options = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+
+        const responsePictureUpload = await axios.post( '/GerichtBilder/upload',
+            picturedata,options
+        ).then(function(){
+          console.log('Picture successfully uploaded');
+        })
+            .catch(function(){
+              console.log('Picture upload error');
+            });
+
+        console.log(responsePictureUpload);
+      }
       this.loadGerichte();
 
     },
     async fillDataOfGerichtToAlter(item) {
       this.editedItem = item;
 
-      this.gerichtName = item.id;
+      this.gerichtBild = null;
+
+      //this.gerichtName = item.id;
       console.log(item.id);
       console.log(this.editedItem.id);
 
@@ -391,10 +487,18 @@ export default {
     },
     async changeGericht(){
 
+      console.log("fuck this shit")
+
       if (this.gerichtVerfuegbar === true) {
         this.gerichtVerfuegbar = 1;
       } else {
         this.gerichtVerfuegbar = 0;
+      }
+
+      if(this.displayGetraenke === true) {
+        this.istGetraenk = 1;
+      } else {
+        this.istGetraenk = 0;
       }
 
       let gericht = {
@@ -404,7 +508,7 @@ export default {
         restaurant_ID: this.restaurantID,
         verfuegbar: this.gerichtVerfuegbar,
         preis: this.gerichtPreis,
-        ist_Getraenk: 0
+        ist_Getraenk: this.istGetraenk
       }
 
       const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht);
@@ -431,13 +535,48 @@ export default {
 
       }
 
+      if(this.gerichtBild !== null)
+      {
+        const picturedata = new FormData();
+        picturedata.append("file", this.gerichtBild);
+        picturedata.append("fileName", "Bild"+this.editedItem.id);
+
+        const options = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+
+        const responsePictureUpload = await axios.post( '/GerichtBilder/upload',
+            picturedata,options
+        ).then(function(){
+          console.log('Picture successfully uploaded');
+        })
+            .catch(function(){
+              console.log('Picture upload error');
+            });
+
+        console.log(responsePictureUpload);
+      }
+
       this.version++;
       this.loadGerichte();
 
+    },
+    selectedPicture() {
+      this.gerichtBild = this.$refs.file.files[0];
+      console.log(this.gerichtBild);
+    },
+    async deleteGericht() {
+      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/"+this.editedItem.id);
+      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/"+this.editedItem.id);
+      await axios.delete("Gericht/"+this.editedItem.id);
+      this.loadGerichte();
     }
   },
   data: () => ({
     artDialog: false,
+    artDialog2: false,
     names: [],
     descriptions: [],
     prices: [],
@@ -460,12 +599,15 @@ export default {
     version: 0,
     amountGerichte : 4,
     editedItem : "",
+    istGetraenk: "",
+    displayGetraenke: false,
     currentlyAdding : false
   }),
 
   computed: {
     items() {
       let i = 0
+      console.log("compute");
       return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
@@ -473,6 +615,7 @@ export default {
         const cimg = this.imgs[i]
         const cid = this.gerichtIDs[i]
         i++;
+
         //console.log(this.version);
 
         return {
@@ -486,7 +629,7 @@ export default {
     },
   },
   watch:{
-    artDialog: function(show){
+    artDialog2: function(show){
       if(show){
         if(this.currentlyAdding){
           this.gerichtName = ''

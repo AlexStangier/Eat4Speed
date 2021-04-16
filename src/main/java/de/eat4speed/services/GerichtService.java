@@ -1,6 +1,7 @@
 package de.eat4speed.services;
 
 import de.eat4speed.entities.Gericht;
+import de.eat4speed.multipart.MultipartBody;
 import de.eat4speed.repositories.GerichtRepository;
 import de.eat4speed.services.interfaces.IGerichtService;
 
@@ -41,11 +42,31 @@ public class GerichtService implements IGerichtService {
     }
 
     @Override
+    public List getAllGetraenkeDataRestaurantSpeiseKarte(int restaurant_ID)
+    {
+        return gerichtRepository.getAllGetraenkeDataRestaurantSpeiseKarte(restaurant_ID);
+    }
+
+    @Override
     public Response updateGerichtAllData(Gericht gericht)
     {
         gerichtRepository.updateGerichtAllData(gericht);
 
         return Response.status(Response.Status.OK).entity(gericht).build();
+    }
+
+    @Override
+    public void updatePicturePath(String path, int id)
+    {
+        gerichtRepository.updatePicturePath(path, id);
+    }
+
+    @Override
+    public Response deleteGericht(int gericht_ID)
+    {
+        gerichtRepository.deleteGericht(gericht_ID);
+
+        return Response.status(Response.Status.OK).build();
     }
 
 }
