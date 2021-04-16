@@ -102,11 +102,11 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     }
 
     /**
-     * Searches Benutzer table for entries matching the benutzername
+     * Searches Benutzer table for entries matching the emailaddress
      * @return Benutzer
      */
     public Benutzer findMatchingEntry(){
-        return find("Benutzername", benutzername).firstResult();
+        return find("EmailAdresse", emailAdresse).firstResult();
     }
 
     @Override
