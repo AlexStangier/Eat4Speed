@@ -25,6 +25,7 @@ export default {
       if (this.$auth.auth.username !== '') {
         return 'Angemeldet als: ' + email;
       }
+      return '';
     }
   }
 }

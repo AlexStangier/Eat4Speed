@@ -47,7 +47,7 @@ public class FahrerController {
 
     @GET
     @Path("getAll")
-    @PermitAll
+    @RolesAllowed("admin")
     public List getAllDrivers(){
         return _fahrer.getAllFahrer();
     }
