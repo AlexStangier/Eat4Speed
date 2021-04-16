@@ -1,4 +1,4 @@
-create table Adressen
+create table if not exists Adressen
 (
     Adress_ID    int auto_increment
         primary key,
@@ -8,34 +8,34 @@ create table Adressen
     Postleitzahl int         not null
 );
 
-create table Allergene
+create table if not exists  Allergene
 (
     Name         varchar(20)  not null
         primary key,
     Beschreibung varchar(200) null
 );
 
-create table Benutzer
+create table if not exists  Benutzer
 (
     Benutzer_ID    int auto_increment
         primary key,
+    Vorname        varchar(50) null,
+    Nachname       varchar(50) not null,
+    Benutzername   varchar(50) null,
     EmailAdresse   varchar(50) not null,
     Passwort       varchar(50) not null,
     Rolle          varchar(10) not null,
     Paypal_Account varchar(50) not null,
-    Nachname       varchar(50) not null,
-    Telefonnummer  int         null,
-    Benutzername   varchar(50) null,
-    Vorname        varchar(50) null
+    Telefonnummer  int         null
 );
 
-create table Bestellhistorie
+create table if not exists  Bestellhistorie
 (
     Bestellhistorien_ID int auto_increment
         primary key
 );
 
-create table Blacklist
+create table if not exists  Blacklist
 (
     Eintrag_ID        int auto_increment
         primary key,
@@ -43,7 +43,7 @@ create table Blacklist
     Loeschbegruendung varchar(200) not null
 );
 
-create table Fahrzeug
+create table if not exists  Fahrzeug
 (
     Fahrzeug_ID         int auto_increment
         primary key,
@@ -52,7 +52,7 @@ create table Fahrzeug
     Modell              varchar(50) null
 );
 
-create table Fahrer
+create table if not exists  Fahrer
 (
     Fahrernummer               int auto_increment
         primary key,
@@ -75,14 +75,14 @@ create table Fahrer
 create index fk_Fahrer_Fahrzeug
     on Fahrer (Fahrzeug);
 
-create table Kategorie
+create table if not exists  Kategorie
 (
     Name         varchar(20)  not null
         primary key,
     Beschreibung varchar(200) null
 );
 
-create table Kunde
+create table if not exists  Kunde
 (
     Kundennummer    int auto_increment
         primary key,
@@ -98,7 +98,7 @@ create table Kunde
         foreign key (Benutzer_ID) references Benutzer (Benutzer_ID)
 );
 
-create table Oeffnungszeiten
+create table if not exists  Oeffnungszeiten
 (
     Oeffnungszeiten_ID int auto_increment
         primary key,
@@ -107,7 +107,7 @@ create table Oeffnungszeiten
     Wochentag          varchar(10) not null
 );
 
-create table Rechnung
+create table if not exists  Rechnung
 (
     Rechnungs_ID          int auto_increment
         primary key,
@@ -117,7 +117,7 @@ create table Rechnung
     Datum_Zahlungseingang datetime   null
 );
 
-create table Restaurant
+create table if not exists  Restaurant
 (
     Restaurant_ID           int auto_increment
         primary key,
@@ -134,7 +134,7 @@ create table Restaurant
         foreign key (Benutzer_ID) references Benutzer (Benutzer_ID)
 );
 
-create table Benachrichtigung_Fahrer
+create table if not exists  Benachrichtigung_Fahrer
 (
     Benachrichtigungs_ID int auto_increment
         primary key,
@@ -148,7 +148,7 @@ create table Benachrichtigung_Fahrer
         foreign key (Restaurant_ID) references Restaurant (Restaurant_ID)
 );
 
-create table Bewertung
+create table if not exists  Bewertung
 (
     Bewertung_ID   int auto_increment
         primary key,
@@ -164,7 +164,7 @@ create table Bewertung
         foreign key (Restaurant_ID) references Restaurant (Restaurant_ID)
 );
 
-create table Einnahmen
+create table  if not exists Einnahmen
 (
     Einnahmen_ID  int auto_increment
         primary key,
@@ -176,7 +176,7 @@ create table Einnahmen
         foreign key (Restaurant_ID) references Restaurant (Restaurant_ID)
 );
 
-create table Favoritenliste_Restaurants
+create table if not exists  Favoritenliste_Restaurants
 (
     Restaurant_ID       int  not null,
     Kundennummer        int  not null,
@@ -189,7 +189,7 @@ create table Favoritenliste_Restaurants
         foreign key (Restaurant_ID) references Restaurant (Restaurant_ID)
 );
 
-create table Gericht
+create table if not exists  Gericht
 (
     Gericht_ID    int auto_increment
         primary key,
@@ -204,7 +204,7 @@ create table Gericht
         foreign key (Restaurant_ID) references Restaurant (Restaurant_ID)
 );
 
-create table Benachrichtigung_Kunde
+create table if not exists  Benachrichtigung_Kunde
 (
     Benachrichtigungs_ID int auto_increment
         primary key,
@@ -218,7 +218,7 @@ create table Benachrichtigung_Kunde
         foreign key (Kunde_ID) references Kunde (Kundennummer)
 );
 
-create table Favoritenliste_Gerichte
+create table if not exists  Favoritenliste_Gerichte
 (
     Gericht_ID          int  not null,
     Kundennummer        int  not null,
@@ -231,7 +231,7 @@ create table Favoritenliste_Gerichte
         foreign key (Kundennummer) references Kunde (Kundennummer)
 );
 
-create table Gericht_Allergene
+create table if not exists  Gericht_Allergene
 (
     Gericht_ID int         not null,
     Allergen   varchar(50) not null,
@@ -242,7 +242,7 @@ create table Gericht_Allergene
         foreign key (Gericht_ID) references Gericht (Gericht_ID)
 );
 
-create table Gericht_Kategorie
+create table if not exists  Gericht_Kategorie
 (
     Gericht_ID int         not null,
     Kategorie  varchar(20) not null,
@@ -253,7 +253,7 @@ create table Gericht_Kategorie
         foreign key (Kategorie) references Kategorie (Name)
 );
 
-create table Restaurant_Zeiten
+create table if not exists  Restaurant_Zeiten
 (
     Restaurant_ID      int not null,
     Oeffnungszeiten_ID int not null,
@@ -264,7 +264,7 @@ create table Restaurant_Zeiten
         foreign key (Restaurant_ID) references Restaurant (Restaurant_ID)
 );
 
-create table Schicht
+create table if not exists  Schicht
 (
     Schicht_ID   int auto_increment
         primary key,
@@ -275,7 +275,7 @@ create table Schicht
         foreign key (Fahrernummer) references Fahrer (Fahrernummer)
 );
 
-create table Status
+create table if not exists  Status
 (
     Status_Name  varchar(10) not null
         primary key,
@@ -284,7 +284,7 @@ create table Status
         foreign key (Rechnungs_ID) references Rechnung (Rechnungs_ID)
 );
 
-create table Auftrag
+create table if not exists  Auftrag
 (
     Auftrags_ID                           int auto_increment
         primary key,
@@ -304,7 +304,7 @@ create table Auftrag
         foreign key (Status) references Status (Status_Name)
 );
 
-create table Bestellung
+create table if not exists  Bestellung
 (
     Bestell_ID          int auto_increment
         primary key,
@@ -320,7 +320,7 @@ create table Bestellung
         foreign key (Auftrags_ID) references Auftrag (Auftrags_ID)
 );
 
-create table Bestellzuordnung
+create table if not exists  Bestellzuordnung
 (
     Bestell_ID int not null,
     Gericht_ID int not null,
@@ -331,7 +331,7 @@ create table Bestellzuordnung
         foreign key (Gericht_ID) references Gericht (Gericht_ID)
 );
 
-create table Fahrtenplan_Station
+create table if not exists  Fahrtenplan_Station
 (
     Stations_ID                  int auto_increment
         primary key,
@@ -355,7 +355,7 @@ create table Fahrtenplan_Station
         foreign key (Vorherige_Station) references Fahrtenplan_Station (Stations_ID)
 );
 
-create table Urlaub
+create table if not exists  Urlaub
 (
     Urlaubs_ID   int auto_increment
         primary key,
@@ -366,7 +366,7 @@ create table Urlaub
         foreign key (Fahrernummer) references Fahrer (Fahrernummer)
 );
 
-create table hibernate_sequence
+create table if not exists  hibernate_sequence
 (
     ORDID int auto_increment
         primary key
