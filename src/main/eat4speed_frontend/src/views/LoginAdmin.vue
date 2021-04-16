@@ -47,8 +47,8 @@ export default {
       .then((response) => {
         if (response.status === 200) {
           this.$store.commit('saveLoginData', {
-            emailAdresse: response.data.emailAdresse,
-            passwort: response.data.passwort
+            username: response.data.benutzername,
+            password: response.data.passwort
           });
           router.push({ name: "AdminVerification"})
         }

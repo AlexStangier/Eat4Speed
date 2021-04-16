@@ -3,6 +3,8 @@
     <v-app-bar
         flat
     >
+      {{ displayUser }}
+
       <v-spacer></v-spacer>
 
       <Cart></Cart>
@@ -17,5 +19,13 @@ export default {
   components: {
     Cart,
   },
+  computed: {
+    displayUser() {
+      const email = this.$auth.auth.username;
+      if (this.$auth.auth.username !== '') {
+        return 'Angemeldet als: ' + email;
+      }
+    }
+  }
 }
 </script>

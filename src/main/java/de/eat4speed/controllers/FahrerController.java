@@ -51,7 +51,6 @@ public class FahrerController {
         {
             case "ALL":
                 fahrerData = _fahrer.getAllFahrer();
-                System.out.println("Case All");
                 break;
             case "VERIFIED":
                 fahrerData = _fahrer.getVerifiedFahrer();

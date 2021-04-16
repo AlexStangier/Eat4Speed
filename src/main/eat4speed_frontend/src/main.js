@@ -10,8 +10,8 @@ Vue.config.productionTip = false
 Vue.prototype.$http = axios;
 Vue.prototype.$auth = {
   auth: {
-    emailAdresse: store.state.emailAdresse,
-    passwort: store.state.passwort
+    username: store.state.username,
+    password: store.state.password
   }
 };
 
