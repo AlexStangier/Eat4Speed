@@ -11,14 +11,14 @@ const vuexLocal = new VuexPersistence({
 
 export default new Vuex.Store({
   state: {
-    username: '',
-    password: ''
+    emailAdresse: '',
+    passwort: ''
   },
   plugins: [vuexLocal.plugin],
   mutations: {
     saveLoginData(state, payload) {
-      state.username = payload.username;
-      state.password = payload.password;
+      state.emailAdresse = payload.emailAdresse;
+      state.passwort = payload.passwort;
     }
   },
   actions: {
