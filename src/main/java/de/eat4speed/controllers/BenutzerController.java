@@ -2,8 +2,7 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.services.interfaces.IBenutzerService;
-
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -23,20 +22,10 @@ public class BenutzerController {
     }
 
     @GET
+    @RolesAllowed("user")
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
-        return _benutzer.listAll().toString();
+        return _benutzer.listAll();
     }
-
-    /*Elytron example*/
-
-    @GET
-    @PermitAll
-    //@RolesAllowed("admin")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String publicResource() {
-        return "public";
-    }
-
 
 }
