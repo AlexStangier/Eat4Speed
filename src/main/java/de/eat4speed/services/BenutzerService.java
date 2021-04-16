@@ -47,13 +47,17 @@ public class BenutzerService implements IBenutzerService {
     @Override
     public Response checkCredentials(Benutzer requestedUser) {
         Benutzer currBenutzer = requestedUser.findMatchingEntry();
+        //currBenutzer actually exists
         if (currBenutzer != null) {
+            //Credentials are correct
             if (currBenutzer.getPasswort().equals(requestedUser.getPasswort())) {
                 return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
+            //Credentails doesn't match
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Benutzer Daten sind falsch!").build();
             }
         } else {
+            //currBenutzer is null
             return Response.status(Response.Status.NOT_FOUND).entity("Benutzer existiert nicht!").build();
         }
     }
