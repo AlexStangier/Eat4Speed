@@ -24,6 +24,7 @@ public class GerichtController {
     IGerichtService gerichtService;
 
     @POST
+    @Path("addGericht")
     public Response add(Gericht gericht)
     {
         gerichtService.addGericht(gericht);
@@ -50,6 +51,20 @@ public class GerichtController {
     public List getAllGerichtDataRestaurantSpeisekarte(@PathParam("id") int restaurant_id){
 
         return gerichtService.getAllGerichteDataRestaurantSpeisekarte(restaurant_id);
+    }
+
+    @GET
+    @Path("/getAllGetraenkDataRestaurantSpeisekarte/{id}")
+    public List getAllGetraenkDataRestaurantSpeisekarte(@PathParam("id") int restaurant_id){
+
+        return gerichtService.getAllGetraenkeDataRestaurantSpeiseKarte(restaurant_id);
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteGericht(@PathParam("id") int gericht_ID)
+    {
+        return gerichtService.deleteGericht(gericht_ID);
     }
 
 }

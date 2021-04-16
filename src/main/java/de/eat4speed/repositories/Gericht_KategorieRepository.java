@@ -29,7 +29,7 @@ public class Gericht_KategorieRepository implements PanacheRepository<Gericht_Ka
         List kategorieByGericht_ID;
 
         Query query = entityManager.createQuery("" +
-                "SELECT ka.name " +
+                "SELECT ka.kategorie " +
                 "FROM Gericht_Kategorie ka " +
                 "WHERE ka.gericht_ID = ?1"
         ).setParameter(1,gericht_ID);
