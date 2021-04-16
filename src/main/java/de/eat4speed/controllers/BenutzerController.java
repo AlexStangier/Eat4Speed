@@ -2,8 +2,6 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.services.interfaces.IBenutzerService;
-
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -24,10 +22,10 @@ public class BenutzerController {
     }
 
     @GET
-    @RolesAllowed("admin")
+    @RolesAllowed("user")
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
-        return _benutzer.listAll().toString();
+        return _benutzer.listAll();
     }
 
 }
