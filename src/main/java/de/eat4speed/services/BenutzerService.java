@@ -46,7 +46,7 @@ public class BenutzerService implements IBenutzerService {
      */
     @Override
     public Response checkCredentials(Benutzer requestedUser) {
-        Benutzer currBenutzer = requestedUser.findMatchingEntry();
+        Benutzer currBenutzer = requestedUser.findMatchingEntryByEmail();
         //currBenutzer actually exists
         if (currBenutzer != null) {
             //Credentials are correct
