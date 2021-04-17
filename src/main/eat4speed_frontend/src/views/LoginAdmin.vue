@@ -56,8 +56,6 @@ export default {
             emailAdresse: response.data.emailAdresse,
             passwort: response.data.passwort
           });
-          this.openSnackbar('Login erfolgreich');
-          setTimeout(() => router.push({ name: "AdminVerification"}), 2500);
         }
       }, (error) => {
         if (error.message === 'Request failed with status code 404') {
