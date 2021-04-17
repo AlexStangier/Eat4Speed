@@ -26,13 +26,24 @@ public class BenutzerService implements IBenutzerService {
 
     @Override
     public Response addBenutzer(Benutzer obj) {
-        //hash password to base64
-        if (obj != null) {
+        //check if received user contains necessary fields
+        if (obj != null
+                && !obj.getBenutzername().isEmpty()
+                && !obj.getPasswort().isEmpty()
+                && !obj.getEmailAdresse().isEmpty()
+                && !obj.getVorname().isEmpty()
+                && !obj.getNachname().isEmpty()
+                && !obj.getRolle().isEmpty()
+        ) {
+            //hash password to base64
             obj.setPasswort(Base64.getEncoder().encodeToString(obj.getPasswort().getBytes(StandardCharsets.UTF_8)));
             obj.setRolle(obj.getRolle().toLowerCase(Locale.ROOT));
             _benutzer.addBenutzer(obj);
+            return Response.status(Response.Status.CREATED).entity(obj).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST).entity(obj).build();
         }
-        return Response.status(Response.Status.CREATED).entity(obj).build();
+
     }
 
     @Override
