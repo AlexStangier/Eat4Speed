@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Adressen extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int adress_ID;
     private String strasse;
     private int hausnummer;

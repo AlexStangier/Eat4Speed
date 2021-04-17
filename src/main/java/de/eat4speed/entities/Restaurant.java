@@ -10,14 +10,14 @@ import java.util.Objects;
 public class Restaurant extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int restaurant_ID;
     private int benutzer_ID;
-    private String name_Des_Restaurants;
+    private String name_des_Restaurants;
     private String allgemeine_Beschreibung;
     private int anschrift;
     private double mindestbestellwert;
-    private double bestellRadius;
+    private double bestellradius;
     private byte verifiziert;
 
 
@@ -25,24 +25,24 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
         return restaurant_ID;
     }
 
-    public void setRestaurant_ID(int restaurantId) {
-        this.restaurant_ID = restaurantId;
+    public void setRestaurant_ID(int restaurant_ID) {
+        this.restaurant_ID = restaurant_ID;
     }
 
     public int getBenutzer_ID() {
         return benutzer_ID;
     }
 
-    public void setBenutzer_ID(int benutzer_Id) {
-        this.benutzer_ID = benutzer_Id;
+    public void setBenutzer_ID(int benutzer_ID) {
+        this.benutzer_ID = benutzer_ID;
     }
 
-    public String getName_Des_Restaurants() {
-        return name_Des_Restaurants;
+    public String getName_des_Restaurants() {
+        return name_des_Restaurants;
     }
 
-    public void setName_Des_Restaurants(String name_Des_Restaurants) {
-        this.name_Des_Restaurants = name_Des_Restaurants;
+    public void setName_des_Restaurants(String name_des_Restaurants) {
+        this.name_des_Restaurants = name_des_Restaurants;
     }
 
     public String getAllgemeine_Beschreibung() {
@@ -69,12 +69,12 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
         this.mindestbestellwert = mindestbestellwert;
     }
 
-    public double getBestellRadius() {
-        return bestellRadius;
+    public double getBestellradius() {
+        return bestellradius;
     }
 
-    public void setBestellRadius(double bestellRadius) {
-        this.bestellRadius = bestellRadius;
+    public void setBestellradius(double bestellradius) {
+        this.bestellradius = bestellradius;
     }
 
     public byte getVerifiziert() {
@@ -90,12 +90,12 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Restaurant that = (Restaurant) o;
-        return restaurant_ID == that.restaurant_ID && benutzer_ID == that.benutzer_ID && anschrift == that.anschrift && Double.compare(that.mindestbestellwert, mindestbestellwert) == 0 && Double.compare(that.bestellRadius, bestellRadius) == 0 && verifiziert == that.verifiziert && Objects.equals(name_Des_Restaurants, that.name_Des_Restaurants) && Objects.equals(allgemeine_Beschreibung, that.allgemeine_Beschreibung);
+        return restaurant_ID == that.restaurant_ID && benutzer_ID == that.benutzer_ID && anschrift == that.anschrift && Double.compare(that.mindestbestellwert, mindestbestellwert) == 0 && Double.compare(that.bestellradius, bestellradius) == 0 && verifiziert == that.verifiziert && Objects.equals(name_des_Restaurants, that.name_des_Restaurants) && Objects.equals(allgemeine_Beschreibung, that.allgemeine_Beschreibung);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(restaurant_ID, benutzer_ID, name_Des_Restaurants, allgemeine_Beschreibung, anschrift, mindestbestellwert, bestellRadius, verifiziert);
+        return Objects.hash(restaurant_ID, benutzer_ID, name_des_Restaurants, allgemeine_Beschreibung, anschrift, mindestbestellwert, bestellradius, verifiziert);
     }
 
     @Override
@@ -103,11 +103,11 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
         return "Restaurant{" +
                 "restaurant_ID=" + restaurant_ID +
                 ", benutzer_ID=" + benutzer_ID +
-                ", name_Des_Restaurants='" + name_Des_Restaurants + '\'' +
+                ", name_des_Restaurants='" + name_des_Restaurants + '\'' +
                 ", allgemeine_Beschreibung='" + allgemeine_Beschreibung + '\'' +
                 ", anschrift=" + anschrift +
                 ", mindestbestellwert=" + mindestbestellwert +
-                ", bestellRadius=" + bestellRadius +
+                ", bestellradius=" + bestellradius +
                 ", verifiziert=" + verifiziert +
                 '}';
     }

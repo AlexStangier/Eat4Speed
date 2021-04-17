@@ -5,7 +5,10 @@ import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrzeug;
 import de.eat4speed.services.interfaces.IFahrerService;
 import org.hibernate.annotations.Parameter;
+import org.kie.api.definition.type.Role;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -13,8 +16,6 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/Fahrer")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
 public class FahrerController {
 
 
@@ -22,6 +23,8 @@ public class FahrerController {
     IFahrerService _fahrer;
 
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response add(Fahrer fahrer)
     {
         return _fahrer.addFahrer(fahrer);
@@ -41,8 +44,17 @@ public class FahrerController {
         return _fahrer.updateFahrer_Verifiziert(id);
     }
 
+
+    @GET
+    @Path("getAll")
+    @RolesAllowed("admin")
+    public List getAllDrivers(){
+        return _fahrer.getAllFahrer();
+    }
+
     @GET
     @Path("{selection}")
+    @PermitAll
     public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung)
     {
         List fahrerData = null;
@@ -51,7 +63,6 @@ public class FahrerController {
         {
             case "ALL":
                 fahrerData = _fahrer.getAllFahrer();
-                System.out.println("Case All");
                 break;
             case "VERIFIED":
                 fahrerData = _fahrer.getVerifiedFahrer();

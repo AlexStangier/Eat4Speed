@@ -8,22 +8,22 @@ import java.io.Serializable;
 @Entity
 public class Status extends PanacheEntityBase implements Serializable {
     @Id
-    private String status_name;
+    private String status_Name;
     private int rechnungs_ID;
 
 
 
-    public String getStatus_name() {
-        return status_name;
+    public String getStatus_Name() {
+        return status_Name;
     }
 
-    public void setStatus_name(String statusName) {
-        this.status_name = statusName;
+    public void setStatus_Name(String status_Name) {
+        this.status_Name = status_Name;
     }
 
     public int getRechnungs_ID() { return rechnungs_ID; }
 
-    public void setRechnungs_ID(int rechnungs_id) { this.rechnungs_ID = rechnungs_id; }
+    public void setRechnungs_ID(int rechnungs_ID) { this.rechnungs_ID = rechnungs_ID; }
 
     @Override
     public boolean equals(Object o) {
@@ -32,20 +32,20 @@ public class Status extends PanacheEntityBase implements Serializable {
 
         Status that = (Status) o;
 
-        if (status_name != null ? !status_name.equals(that.status_name) : that.status_name != null) return false;
+        if (status_Name != null ? !status_Name.equals(that.status_Name) : that.status_Name != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return status_name != null ? status_name.hashCode() : 0;
+        return status_Name != null ? status_Name.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "StatusEntity{" +
-                "status_name='" + status_name + '\'' +
+                "status_Name='" + status_Name + '\'' +
                 ", rechnungs_ID=" + rechnungs_ID +
                 '}';
     }

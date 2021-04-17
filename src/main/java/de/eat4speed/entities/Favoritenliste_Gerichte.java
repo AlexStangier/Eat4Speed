@@ -13,18 +13,18 @@ import java.util.Objects;
 public class Favoritenliste_Gerichte extends PanacheEntityBase implements Serializable {
 
     @Id
-    private int restaurant_ID;
+    private int gericht_ID;
     @Id
     private int kundennummer;
     private Timestamp hinzufuegedatum;
     private int anzahl_Bestellungen;
 
-    public int getRestaurant_ID() {
-        return restaurant_ID;
+    public int getGericht_ID() {
+        return gericht_ID;
     }
 
-    public void setRestaurant_ID(int restaurant_ID) {
-        this.restaurant_ID = restaurant_ID;
+    public void setGericht_ID(int gericht_ID) {
+        this.gericht_ID = gericht_ID;
     }
 
     public int getKundennummer() {
@@ -56,18 +56,18 @@ public class Favoritenliste_Gerichte extends PanacheEntityBase implements Serial
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favoritenliste_Gerichte that = (Favoritenliste_Gerichte) o;
-        return restaurant_ID == that.restaurant_ID && kundennummer == that.kundennummer && anzahl_Bestellungen == that.anzahl_Bestellungen && Objects.equals(hinzufuegedatum, that.hinzufuegedatum);
+        return gericht_ID == that.gericht_ID && kundennummer == that.kundennummer && anzahl_Bestellungen == that.anzahl_Bestellungen && Objects.equals(hinzufuegedatum, that.hinzufuegedatum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(restaurant_ID, kundennummer, hinzufuegedatum, anzahl_Bestellungen);
+        return Objects.hash(gericht_ID, kundennummer, hinzufuegedatum, anzahl_Bestellungen);
     }
 
     @Override
     public String toString() {
         return "Favoritenliste_Gerichte{" +
-                "restaurant_ID=" + restaurant_ID +
+                "gericht_ID=" + gericht_ID +
                 ", kundennummer=" + kundennummer +
                 ", hinzufuegedatum=" + hinzufuegedatum +
                 ", anzahl_Bestellungen=" + anzahl_Bestellungen +

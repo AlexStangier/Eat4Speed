@@ -2,18 +2,19 @@ package de.eat4speed.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class Fahrtenplan {
+public class Fahrtenplan_Station {
 
     @Id
-    @GeneratedValue
-    private int Fahrtenplan_ID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int Stations_ID;
     
-    private int Auftrag_ID;
-    private int Fahrernummer;
+    private int Auftrag;
+    private int Fahrer;
     private int Liefer_Abholadresse;
     private int Vorherige_Station;
     private int Naechste_Station;
@@ -21,28 +22,28 @@ public class Fahrtenplan {
     private int Distanz_zu_naechster_Station;
     private int Geschaetzte_Fahrtzeit;
 
-    public int getFahrtenplan_ID() {
-        return Fahrtenplan_ID;
+    public int getStations_ID() {
+        return Stations_ID;
     }
 
-    public void setFahrtenplan_ID(int fahrtenplan_ID) {
-        Fahrtenplan_ID = fahrtenplan_ID;
+    public void setStations_ID(int stations_ID) {
+        Stations_ID = stations_ID;
     }
 
-    public int getAuftrag_ID() {
-        return Auftrag_ID;
+    public int getAuftrag() {
+        return Auftrag;
     }
 
-    public void setAuftrag_ID(int auftrag_ID) {
-        Auftrag_ID = auftrag_ID;
+    public void setAuftrag(int auftrag) {
+        Auftrag = auftrag;
     }
 
-    public int getFahrernummer() {
-        return Fahrernummer;
+    public int getFahrer() {
+        return Fahrer;
     }
 
-    public void setFahrernummer(int fahrernummer) {
-        Fahrernummer = fahrernummer;
+    public void setFahrer(int fahrer) {
+        Fahrer = fahrer;
     }
 
     public int getLiefer_Abholadresse() {
@@ -59,6 +60,14 @@ public class Fahrtenplan {
 
     public void setVorherige_Station(int vorherige_Station) {
         Vorherige_Station = vorherige_Station;
+    }
+
+    public int getNaechste_Station() {
+        return Naechste_Station;
+    }
+
+    public void setNaechste_Station(int naechste_Station) {
+        Naechste_Station = naechste_Station;
     }
 
     public int getFahrzeit_A_B() {
@@ -85,33 +94,25 @@ public class Fahrtenplan {
         Geschaetzte_Fahrtzeit = geschaetzte_Fahrtzeit;
     }
 
-    public int getNaechste_Station() {
-        return Naechste_Station;
-    }
-
-    public void setNaechste_Station(int naechste_Station) {
-        Naechste_Station = naechste_Station;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Fahrtenplan that = (Fahrtenplan) o;
-        return Fahrtenplan_ID == that.Fahrtenplan_ID && Auftrag_ID == that.Auftrag_ID && Fahrernummer == that.Fahrernummer && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station == that.Vorherige_Station && Naechste_Station == that.Naechste_Station && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
+        Fahrtenplan_Station that = (Fahrtenplan_Station) o;
+        return Stations_ID == that.Stations_ID && Auftrag == that.Auftrag && Fahrer == that.Fahrer && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station == that.Vorherige_Station && Naechste_Station == that.Naechste_Station && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Fahrtenplan_ID, Auftrag_ID, Fahrernummer, Liefer_Abholadresse, Vorherige_Station, Naechste_Station, Fahrzeit_A_B, Distanz_zu_naechster_Station, Geschaetzte_Fahrtzeit);
+        return Objects.hash(Stations_ID, Auftrag, Fahrer, Liefer_Abholadresse, Vorherige_Station, Naechste_Station, Fahrzeit_A_B, Distanz_zu_naechster_Station, Geschaetzte_Fahrtzeit);
     }
 
     @Override
     public String toString() {
-        return "Fahrtenplan{" +
-                "Fahrtenplan_ID=" + Fahrtenplan_ID +
-                ", Auftrag_ID=" + Auftrag_ID +
-                ", Fahrernummer=" + Fahrernummer +
+        return "Fahrtenplan_Station{" +
+                "Stations_ID=" + Stations_ID +
+                ", Auftrag=" + Auftrag +
+                ", Fahrer=" + Fahrer +
                 ", Liefer_Abholadresse=" + Liefer_Abholadresse +
                 ", Vorherige_Station=" + Vorherige_Station +
                 ", Naechste_Station=" + Naechste_Station +

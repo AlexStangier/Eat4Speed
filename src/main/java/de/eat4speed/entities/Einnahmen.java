@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class Einnahmen extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int einnahmen_ID;
     private int restaurant_ID;
     private double umsatz;

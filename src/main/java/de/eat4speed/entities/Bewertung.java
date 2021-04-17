@@ -2,6 +2,7 @@ package de.eat4speed.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -10,62 +11,62 @@ import java.util.Objects;
 public class Bewertung {
 
     @Id
-    @GeneratedValue
-    private int Bewertungs_ID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int bewertungs_ID;
     
-    private int Kundennummer;
-    private int Restaurant_ID;
-    private int Sterne;
-    private String Text;
-    private Timestamp Datum;
+    private int kundennummer;
+    private int restaurant_ID;
+    private int sterne;
+    private String text;
+    private Timestamp datum;
     private byte wurde_gemeldet;
 
     public int getBewertungs_ID() {
-        return Bewertungs_ID;
+        return bewertungs_ID;
     }
 
     public void setBewertungs_ID(int bewertungs_ID) {
-        Bewertungs_ID = bewertungs_ID;
+        this.bewertungs_ID = bewertungs_ID;
     }
 
     public int getKundennummer() {
-        return Kundennummer;
+        return kundennummer;
     }
 
     public void setKundennummer(int kundennummer) {
-        Kundennummer = kundennummer;
+        this.kundennummer = kundennummer;
     }
 
     public int getRestaurant_ID() {
-        return Restaurant_ID;
+        return restaurant_ID;
     }
 
     public void setRestaurant_ID(int restaurant_ID) {
-        Restaurant_ID = restaurant_ID;
+        this.restaurant_ID = restaurant_ID;
     }
 
     public int getSterne() {
-        return Sterne;
+        return sterne;
     }
 
     public void setSterne(int sterne) {
-        Sterne = sterne;
+        this.sterne = sterne;
     }
 
     public String getText() {
-        return Text;
+        return text;
     }
 
     public void setText(String text) {
-        Text = text;
+        this.text = text;
     }
 
     public Timestamp getDatum() {
-        return Datum;
+        return datum;
     }
 
     public void setDatum(Timestamp datum) {
-        Datum = datum;
+        this.datum = datum;
     }
 
     public byte getWurde_gemeldet() {
@@ -81,23 +82,23 @@ public class Bewertung {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bewertung bewertung = (Bewertung) o;
-        return Bewertungs_ID == bewertung.Bewertungs_ID && Kundennummer == bewertung.Kundennummer && Restaurant_ID == bewertung.Restaurant_ID && Sterne == bewertung.Sterne && wurde_gemeldet == bewertung.wurde_gemeldet && Objects.equals(Text, bewertung.Text) && Objects.equals(Datum, bewertung.Datum);
+        return bewertungs_ID == bewertung.bewertungs_ID && kundennummer == bewertung.kundennummer && restaurant_ID == bewertung.restaurant_ID && sterne == bewertung.sterne && wurde_gemeldet == bewertung.wurde_gemeldet && Objects.equals(text, bewertung.text) && Objects.equals(datum, bewertung.datum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Bewertungs_ID, Kundennummer, Restaurant_ID, Sterne, Text, Datum, wurde_gemeldet);
+        return Objects.hash(bewertungs_ID, kundennummer, restaurant_ID, sterne, text, datum, wurde_gemeldet);
     }
 
     @Override
     public String toString() {
         return "Bewertung{" +
-                "Bewertungs_ID=" + Bewertungs_ID +
-                ", Kundennummer=" + Kundennummer +
-                ", Restaurant_ID=" + Restaurant_ID +
-                ", Sterne=" + Sterne +
-                ", Text='" + Text + '\'' +
-                ", Datum=" + Datum +
+                "bewertungs_ID=" + bewertungs_ID +
+                ", kundennummer=" + kundennummer +
+                ", restaurant_ID=" + restaurant_ID +
+                ", sterne=" + sterne +
+                ", text='" + text + '\'' +
+                ", datum=" + datum +
                 ", wurde_gemeldet=" + wurde_gemeldet +
                 '}';
     }

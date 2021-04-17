@@ -10,7 +10,7 @@ import java.util.Objects;
 public class Benutzer extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int benutzer_ID;
     private String benutzername;
     private String vorname;
@@ -93,13 +93,20 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.telefonnummer = telefonnummer;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Benutzer benutzer = (Benutzer) o;
         return benutzer_ID == benutzer.benutzer_ID && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(rolle, benutzer.rolle) && Objects.equals(paypal_Account, benutzer.paypal_Account);
+    }
+
+    /**
+     * Searches Benutzer table for entries matching the benutzername
+     * @return Benutzer
+     */
+    public Benutzer findMatchingEntryByEmail(){
+        return find("EmailAdresse", emailAdresse).firstResult();
     }
 
     @Override

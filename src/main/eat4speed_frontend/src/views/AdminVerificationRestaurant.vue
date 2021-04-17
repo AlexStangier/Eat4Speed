@@ -264,13 +264,13 @@ export default {
     },
     async deleteBewerbung() {
 
-      const ResponseDeleteRestaurant = await axios.delete("Restaurant/"+this.currentRowItem.restaurant_Id);
+      await axios.delete("Restaurant/"+this.currentRowItem.restaurant_Id);
 
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
 
-      const ResponseVerifyRestaurant = await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
+      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
 
       console.log(this.currentRowItem);
       console.log(this.currentRowItem.restaurant_Id);

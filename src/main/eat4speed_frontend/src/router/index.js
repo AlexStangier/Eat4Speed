@@ -84,6 +84,11 @@ const routes = [
     name: 'RestaurantStammdaten',
     component: () => import('../views/Restaurant_Stammdaten.vue')
   },
+  {
+    path: '/schichtplan',
+    name: 'Schichtplan',
+    component: () => import('../views/Schichtplan')
+  }
 ]
 
 const router = new VueRouter({

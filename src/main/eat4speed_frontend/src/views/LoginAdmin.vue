@@ -11,7 +11,7 @@
               <v-form ref="loginForm">
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field label="eMail" required></v-text-field>
+                    <v-text-field v-model="loginEmail" label="eMail" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
                     <v-text-field v-model="loginPassword" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -34,11 +34,27 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
   name: "LoginAdmin",
   methods: {
     login() {
-      // submit form to server/API here...
+      this.$http.post('/Login/admin', {
+        emailAdresse: this.loginEmail,
+        passwort: btoa(this.loginPassword)
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          this.$store.commit('saveLoginData', {
+            emailAdresse: response.data.emailAdresse,
+            passwort: response.data.passwort
+          });
+          router.push({ name: "AdminVerification"})
+        }
+      }, (error) => {
+        console.log(error);
+      });
     },
   },
   data() {
