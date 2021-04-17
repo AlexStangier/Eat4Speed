@@ -21,8 +21,8 @@ export default {
   },
   computed: {
     displayUser() {
-      const email = this.$auth.auth.emailAdresse;
-      if (email !== '') {
+      const email = this.$auth.auth.username;
+      if (email !== undefined) {
         return 'Angemeldet als: ' + email;
       }
       return '';
