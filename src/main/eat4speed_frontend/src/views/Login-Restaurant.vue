@@ -134,7 +134,7 @@ export default {
         emailAdresse: this.email,
         passwort: this.password,
         telefonnummer: this.phoneNumber,
-        rolle: 2,
+        rolle: "Restaurant",
         paypal_Account: this.paypal
       };
 
@@ -153,14 +153,14 @@ export default {
 
       console.log(responseAdressen);
       console.log(responseAdressen.data);
-      console.log(responseAdressen.data.adress_Id);
+      console.log(responseAdressen.data.adress_ID);
 
-      this.adress_ID = responseAdressen.data.adress_Id;
+      this.adress_ID = responseAdressen.data.adress_ID;
 
       let createdRestaurant;
       var restaurant = {
-        benutzer_Id: this.benutzer_ID,
-        name_Des_Restaurants: this.restaurant_name,
+        benutzer_ID: this.benutzer_ID,
+        name_des_Restaurants: this.restaurant_name,
         allgemeine_Beschreibung: this.descriptionShort,
         anschrift: this.adress_ID,
         verifiziert: 0

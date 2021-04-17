@@ -1,15 +1,16 @@
 package de.eat4speed.controllers;
 
 
-import de.eat4speed.entities.Benutzer;
 import de.eat4speed.entities.Restaurant;
-import de.eat4speed.repositories.RestaurantRepository;
+import de.eat4speed.entities.Fahrzeug;
+import de.eat4speed.services.interfaces.IRestaurantService;
+import org.hibernate.annotations.Parameter;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.Timestamp;
+import java.util.List;
 
 @Path("/Restaurant")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -18,20 +19,52 @@ public class RestaurantController {
 
 
     @Inject
-    RestaurantRepository restaurantRepository;
+    IRestaurantService _restaurant;
 
     @POST
     public Response add(Restaurant restaurant)
     {
-        restaurantRepository.addRestaurant(restaurant);
+        return _restaurant.addRestaurant(restaurant);
+    }
 
-        return Response.status(Response.Status.CREATED).entity(restaurant).build();
+
+    @PUT
+    @Path("updateVerifiziert/{id}")
+    public Response updateRestaurant_Verifiziert(@PathParam("id") int id)
+    {
+        return _restaurant.updateRestaurant_Verifiziert(id);
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return restaurantRepository.listAll().toString();
+    @Path("{selection}")
+    public List getAllRestaurant(@PathParam("selection") String restaurantSelectionVerifizierung)
+    {
+        List restaurantData = null;
+
+        switch(restaurantSelectionVerifizierung)
+        {
+            case "ALL":
+                restaurantData = _restaurant.getAllRestaurant();
+                System.out.println("Case All");
+                break;
+            case "VERIFIED":
+                restaurantData = _restaurant.getVerifiedRestaurant();
+                break;
+            case "NOT_VERIFIED":
+                restaurantData = _restaurant.getNotVerifiedRestaurant();
+                break;
+        }
+        return restaurantData;
     }
+
+    @DELETE
+    @Path("{id}")
+    public Response deleteRestaurant(@PathParam("id") int id)
+    {
+        return _restaurant.deleteRestaurant(id);
+    }
+
+
+
 
 }

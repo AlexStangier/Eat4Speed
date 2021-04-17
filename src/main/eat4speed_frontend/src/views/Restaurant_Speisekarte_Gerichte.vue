@@ -5,13 +5,22 @@
         <v-flex md6 sm6 xs12>
           <div class="text-h3 mb-10"> Restaurantname</div>
           <v-col class="d-flex justify-space-between mb-6">
-            <v-card-title class="text-h4"> Gerichte</v-card-title>
+            <v-card-title class="text-h4"> Speisekarte</v-card-title>
             <v-btn
                 color="red"
                 dark
                 align="right"
-                to="/restaurant-speisekarte-getränke"
                 class="mt-5"
+                @click="changeDisplayGerichte"
+            >
+              Gerichte
+            </v-btn>
+            <v-btn
+                color="red"
+                dark
+                align="right"
+                class="mt-5"
+                @click="changeDisplayGetraenke"
             >
               Getränke
             </v-btn>
@@ -19,7 +28,7 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="200"
+              :item-height="300"
               max-height="500"
           >
             <template v-slot:default="{ item }">
@@ -38,7 +47,103 @@
                 <v-list-item-content></v-list-item-content>
                 <v-list-item-group align="left">
                   <v-list-item-content>{{ item.price }}</v-list-item-content>
-                  <v-btn small="true" bottom="bottom">Bearbeiten</v-btn>
+                  <v-dialog
+                      :retain-focus="false"
+                      v-model="artDialog"
+                      width="500"
+                      persistent
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          color="red"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                          small
+                          bottom
+                          @click="fillDataOfGerichtToAlter(item); currentlyAdding = false"
+                      >
+                        Bearbeiten
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-col>
+                        <v-text-field
+                            v-model="gerichtName"
+                            :counter="20"
+                            label="Artikelname"
+                            required
+                        ></v-text-field>
+                        <v-textarea
+                            v-model="gerichtBeschreibung"
+                            :counter="100"
+                            label="Artikelbeschreibung"
+                            required
+                        ></v-textarea>
+                        <label>
+                          Bild auswählen
+                          <input type="file" ref="file" id="fileChange" accept="image/*" v-on:change="selectedPicture()"/>
+                        </label>
+                        <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
+                        </v-text-field>
+                        <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
+                        </v-checkbox>
+                        <v-select
+                            ref="KategorieSelect"
+                            v-model="selectedKategorien"
+                            :items="kategorien"
+                            chips
+                            label="Kategorien"
+                            multiple
+                            outlined
+                            block
+                            @click="loadKategorien"
+                        ></v-select>
+                        <v-spacer class="ma-2"></v-spacer>
+                        <v-select
+                            v-model="selectedAllergene"
+                            :items="allergen"
+                            chips
+                            label="Allergene"
+                            multiple
+                            outlined
+                            block
+                            @click="loadAllergene"
+                        ></v-select>
+                        <v-spacer class="ma-2"></v-spacer>
+                        <v-col>
+                          <v-row>
+                            <v-btn
+                                @click="changeGericht(); artDialog = false"
+                                color="red"
+                                dark
+                                class="justify-center"
+                            >
+                              Fertig
+                            </v-btn>
+                            <v-spacer class="mr-2"></v-spacer>
+                            <v-btn
+                                @click="deleteGericht(); artDialog = false"
+                                color="red"
+                                dark
+                                class="justify-center"
+                            >
+                              Löschen
+                            </v-btn>
+                            <v-spacer class="mr-2"></v-spacer>
+                            <v-btn
+                                @click="artDialog = false; test();"
+                                color="red"
+                                dark
+                                justify
+                            >
+                              Abbruch
+                            </v-btn>
+                          </v-row>
+                        </v-col>
+                      </v-col>
+                    </v-card>
+                  </v-dialog>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -46,7 +151,7 @@
           </v-virtual-scroll>
           <!------------  Artikel hinzufügen + ------------->
           <v-dialog
-              v-model="artDialog"
+              v-model="artDialog2"
               width="500"
               persistent
           >
@@ -56,6 +161,7 @@
                   dark
                   v-bind="attrs"
                   v-on="on"
+                  @click="currentlyAdding = true"
               >
                 Artikel hinzufügen
               </v-btn>
@@ -74,10 +180,10 @@
                     label="Artikelbeschreibung"
                     required
                 ></v-textarea>
-                <v-file-input
-                    v-model="gerichtBild"
-                    label="Bild auswählen">
-                </v-file-input>
+                <label>
+                  Bild auswählen
+                  <input type="file" ref="file" id="file" accept="image/*" v-on:change="selectedPicture()"/>
+                </label>
                 <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur">
                 </v-text-field>
                 <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
@@ -108,7 +214,7 @@
                 <v-col>
                   <v-row>
                     <v-btn
-                        @click="print"
+                        @click="addGericht(); artDialog2 = false"
                         color="red"
                         dark
                         class="justify-center"
@@ -117,7 +223,7 @@
                     </v-btn>
                     <v-spacer class="mr-2"></v-spacer>
                     <v-btn
-                        @click="artDialog = false; test();"
+                        @click="artDialog2 = false; test();"
                         color="red"
                         dark
                         justify
@@ -141,12 +247,108 @@ import axios from "axios";
 
 export default {
   name: "restaurant",
+  mounted() {
+    this.displayGetraenke=false;
+
+    this.loadGerichte()
+  },
   methods: {
+
+    async loadGerichte() {
+      this.restaurantID = 1;
+
+      let gerichtPath;
+
+      if(this.displayGetraenke === false)
+      {
+        gerichtPath = "Gericht/getAllGerichtDataRestaurantSpeisekarte/";
+      }
+      else{
+        gerichtPath = "Gericht/getAllGetraenkDataRestaurantSpeisekarte/";
+      }
+
+      const ResponseGerichte = await axios.get(gerichtPath + this.restaurantID);
+
+      console.log(ResponseGerichte);
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++) {
+        let gerichtData = ResponseGerichte.data[i];
+
+        this.names[i] = gerichtData[1];
+        this.descriptions[i] = gerichtData[2];
+        this.prices[i] = gerichtData[3];
+        this.gerichtIDs[i] = gerichtData[4];
+      }
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++)
+      {
+        const config = { responseType:"arraybuffer" };
+        const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gerichtIDs[i],config);
+
+        console.log(responsePicture);
+
+        if(responsePicture.status !== 204)
+        {
+          console.log("received Picture")
+          console.log(responsePicture.data);
+
+          let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+          let imageURL = URL.createObjectURL(pictureBlob);
+          console.log(imageURL);
+
+          this.imgs[i] = imageURL;
+        }
+        else
+        {
+          this.imgs[i] = "";
+        }
+
+      }
+      console.log(this.imgs);
+      this.amountGerichte = ResponseGerichte.data.length;
+      this.version++;
+    },
+    changeDisplayGetraenke() {
+      if(this.displayGetraenke===false)
+      {
+        this.displayGetraenke = !this.displayGetraenke;
+        this.loadGerichte();
+      }
+
+    },
+    changeDisplayGerichte() {
+      if(this.displayGetraenke===true)
+      {
+        this.displayGetraenke = !this.displayGetraenke;
+        this.loadGerichte();
+      }
+
+    },
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
     },
-    async loadKategorien()
-    {
+    computeItems() {
+
+      for (let i = 0; i < this.names.length; i++) {
+        const cname = this.names[i]
+        const cdescription = this.descriptions[i]
+        const cprice = this.prices[i]
+        const cimg = this.imgs[i]
+
+        let entry = {
+          name: cname,
+          description: cdescription,
+          price: cprice,
+          img: cimg
+        }
+        this.computedItems[i] = entry;
+      }
+      console.log(this.computedItems);
+      console.log(this.items);
+
+    },
+    async loadKategorien() {
       const ResponseAllKategorien = await axios.get("/Kategorie");
 
       console.log(ResponseAllKategorien);
@@ -161,11 +363,11 @@ export default {
       console.log(arrayKategorien);
       this.kategorien = arrayKategorien;
     },
-    async test(){
+    async test() {
       console.log(this.value);
       console.log(this.valueA);
     },
-    async loadAllergene(){
+    async loadAllergene() {
       const ResponseAllAllegergene = await axios.get("/Allergene");
 
       console.log(ResponseAllAllegergene);
@@ -181,32 +383,218 @@ export default {
       this.allergen = arrayAllergene;
 
     },
-    async addGericht(){
+    async addGericht() {
 
-      this.restaurantID = 22;
+      console.log("it's fine");
 
-      var gericht = {
-        abbildung:this.gerichtBild,
-        beschreibung:this.gerichtBeschreibung,
-        name:this.gerichtName,
-        restaurant_id:this.restaurantID,
-        verfuegbar:this.gerichtVerfuegbar,
-        preis:this.gerichtPreis
+      this.restaurantID = 1;
+
+      if (this.gerichtVerfuegbar === true) {
+        this.gerichtVerfuegbar = 1;
+      } else {
+        this.gerichtVerfuegbar = 0;
       }
 
-      const responseGericht = await axios.post("/Gericht", gericht);
+      if(this.displayGetraenke === true) {
+        this.istGetraenk = 1;
+      } else {
+        this.istGetraenk = 0;
+      }
 
-      this.gericht_ID = responseGericht.data.gerichtID;
+      var gericht = {
+        beschreibung: this.gerichtBeschreibung,
+        name: this.gerichtName,
+        restaurant_ID: this.restaurantID,
+        verfuegbar: this.gerichtVerfuegbar,
+        preis: this.gerichtPreis,
+        ist_Getraenk: this.istGetraenk
+      }
 
+      const responseGericht = await axios.post("/Gericht/addGericht", gericht);
+
+      this.gericht_ID = responseGericht.data.gericht_ID;
+
+      for (let i = 0; i < this.selectedKategorien.length; i++) {
+        let gericht_Kategorie = {
+          gericht_ID: this.gericht_ID,
+          kategorie: this.selectedKategorien[i]
+        }
+        await axios.post("/Gericht_Kategorie", gericht_Kategorie);
+
+      }
+      for (let i = 0; i < this.selectedAllergene.length; i++) {
+        let gericht_Allergene = {
+          gericht_ID: this.gericht_ID,
+          allergen: this.selectedAllergene[i]
+        }
+        await axios.post("/Gericht_Allergene", gericht_Allergene);
+
+      }
+
+      if(this.gerichtBild !== null)
+      {
+        const picturedata = new FormData();
+        picturedata.append("file", this.gerichtBild);
+        picturedata.append("fileName", "Bild"+this.gericht_ID);
+
+        const options = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+
+        const responsePictureUpload = await axios.post( '/GerichtBilder/upload',
+            picturedata,options
+        ).then(function(){
+          console.log('Picture successfully uploaded');
+        })
+            .catch(function(){
+              console.log('Picture upload error');
+            });
+
+        console.log(responsePictureUpload);
+      }
+      this.loadGerichte();
+
+    },
+    async fillDataOfGerichtToAlter(item) {
+      this.editedItem = item;
+
+      this.gerichtBild = null;
+
+      //this.gerichtName = item.id;
+      console.log(item.id);
+      console.log(this.editedItem.id);
+
+      const responseGetGericht = await axios.get("/Gericht/"+this.editedItem.id);
+
+      this.gerichtName = responseGetGericht.data.name;
+      this.gerichtPreis = responseGetGericht.data.preis;
+      this.gerichtBeschreibung = responseGetGericht.data.beschreibung;
+
+      if(responseGetGericht.data.verfuegbar === 0)
+      {
+        this.gerichtVerfuegbar = false;
+      }
+      else
+      {
+        this.gerichtVerfuegbar = true;
+      }
+
+      const responseGetAllergene = await axios.get("/Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.editedItem.id);
+
+      for(let i = 0; i<responseGetAllergene.data.length;i++)
+      {
+        this.selectedAllergene[i]=responseGetAllergene.data[i];
+      }
+
+      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.editedItem.id);
+
+      for(let i = 0; i<responseGetKategorie.data.length;i++)
+      {
+        this.selectedKategorien[i]=responseGetKategorie.data[i];
+      }
+
+      console.log(responseGetGericht);
+    },
+    async changeGericht(){
+
+      console.log("fuck this shit")
+
+      if (this.gerichtVerfuegbar === true) {
+        this.gerichtVerfuegbar = 1;
+      } else {
+        this.gerichtVerfuegbar = 0;
+      }
+
+      if(this.displayGetraenke === true) {
+        this.istGetraenk = 1;
+      } else {
+        this.istGetraenk = 0;
+      }
+
+      let gericht = {
+        gericht_ID: this.editedItem.id,
+        beschreibung: this.gerichtBeschreibung,
+        name: this.gerichtName,
+        restaurant_ID: this.restaurantID,
+        verfuegbar: this.gerichtVerfuegbar,
+        preis: this.gerichtPreis,
+        ist_Getraenk: this.istGetraenk
+      }
+
+      const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht);
+
+      console.log(responseGerichtToAlter);
+
+      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/"+this.editedItem.id);
+      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/"+this.editedItem.id);
+
+      for (let i = 0; i < this.selectedKategorien.length; i++) {
+        let gericht_Kategorie = {
+          gericht_ID: this.editedItem.id,
+          kategorie: this.selectedKategorien[i]
+        }
+        await axios.post("/Gericht_Kategorie", gericht_Kategorie);
+
+      }
+      for (let i = 0; i < this.selectedAllergene.length; i++) {
+        let gericht_Allergene = {
+          gericht_ID: this.editedItem.id,
+          allergen: this.selectedAllergene[i]
+        }
+        await axios.post("/Gericht_Allergene", gericht_Allergene);
+
+      }
+
+      if(this.gerichtBild !== null)
+      {
+        const picturedata = new FormData();
+        picturedata.append("file", this.gerichtBild);
+        picturedata.append("fileName", "Bild"+this.editedItem.id);
+
+        const options = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        };
+
+        const responsePictureUpload = await axios.post( '/GerichtBilder/upload',
+            picturedata,options
+        ).then(function(){
+          console.log('Picture successfully uploaded');
+        })
+            .catch(function(){
+              console.log('Picture upload error');
+            });
+
+        console.log(responsePictureUpload);
+      }
+
+      this.version++;
+      this.loadGerichte();
+
+    },
+    selectedPicture() {
+      this.gerichtBild = this.$refs.file.files[0];
+      console.log(this.gerichtBild);
+    },
+    async deleteGericht() {
+      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/"+this.editedItem.id);
+      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/"+this.editedItem.id);
+      await axios.delete("Gericht/"+this.editedItem.id);
+      this.loadGerichte();
     }
   },
   data: () => ({
     artDialog: false,
-    names: ['Burger', 'Pizza', 'Sushi', 'McNuggets'],
-    descriptions: ['Es ist ein Burger', 'Krosse Krabe Pizza', 'Fischig', 'Mit Szechuan Sauce'],
-    prices: ['5,50 €', '100 €', '4,99 €', '3,99 €'],
-    imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg', 'https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg', 'https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg', 'https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
-    restaurants: ['Bobs Burgers', 'Krosse Krabbe', 'AsiaWok', 'MCDonalds'],
+    artDialog2: false,
+    names: [],
+    descriptions: [],
+    prices: [],
+    imgs: [],
+    restaurants: [],
+    gerichtIDs: [],
     kategorien: [],
     selectedKategorien: [],
     allergen: [],
@@ -217,27 +605,54 @@ export default {
     gerichtBild: "",
     gerichtPreis: "",
     gerichtVerfuegbar: "",
-    restaurantID:"",
-    gericht_ID:""
+    restaurantID: "",
+    gericht_ID: "",
+    computedItems: [],
+    version: 0,
+    amountGerichte : 4,
+    editedItem : "",
+    istGetraenk: "",
+    displayGetraenke: false,
+    currentlyAdding : false
   }),
 
   computed: {
     items() {
       let i = 0
-      return Array.from({length: 4}, () => {
+      console.log("compute");
+      return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
         const cprice = this.prices[i]
         const cimg = this.imgs[i]
+        const cid = this.gerichtIDs[i]
         i++;
+
+        //console.log(this.version);
 
         return {
           name: cname,
           description: cdescription,
           price: cprice,
           img: cimg,
+          id: cid
         }
       })
+    },
+  },
+  watch:{
+    artDialog2: function(show){
+      if(show){
+        if(this.currentlyAdding){
+          this.gerichtName = ''
+          this.gerichtBeschreibung = ''
+          this.gerichtBild = ''
+          this.gerichtPreis = ''
+          this.gerichtVerfuegbar = false
+          this.selectedAllergene = ''
+          this.selectedKategorien = ''
+        }
+      }
     }
   }
 }

@@ -10,14 +10,14 @@ import java.util.Objects;
 public class Benutzer extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int benutzer_ID;
     private String benutzername;
     private String vorname;
     private String nachname;
     private String emailAdresse;
     private String passwort;
-    private int rolle;
+    private String rolle;
     private String paypal_Account;
     private int telefonnummer;
 
@@ -69,11 +69,11 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.passwort = passwort;
     }
 
-    public int getRolle() {
+    public String getRolle() {
         return rolle;
     }
 
-    public void setRolle(int rolle) {
+    public void setRolle(String rolle) {
         this.rolle = rolle;
     }
 
@@ -98,7 +98,15 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Benutzer benutzer = (Benutzer) o;
-        return benutzer_ID == benutzer.benutzer_ID && rolle == benutzer.rolle && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(paypal_Account, benutzer.paypal_Account);
+        return benutzer_ID == benutzer.benutzer_ID && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(rolle, benutzer.rolle) && Objects.equals(paypal_Account, benutzer.paypal_Account);
+    }
+
+    /**
+     * Searches Benutzer table for entries matching the benutzername
+     * @return Benutzer
+     */
+    public Benutzer findMatchingEntryByEmail(){
+        return find("EmailAdresse", emailAdresse).firstResult();
     }
 
     @Override
@@ -115,7 +123,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
                 ", nachname='" + nachname + '\'' +
                 ", emailAdresse='" + emailAdresse + '\'' +
                 ", passwort='" + passwort + '\'' +
-                ", rolle=" + rolle +
+                ", rolle='" + rolle + '\'' +
                 ", paypal_Account='" + paypal_Account + '\'' +
                 ", telefonnummer=" + telefonnummer +
                 '}';

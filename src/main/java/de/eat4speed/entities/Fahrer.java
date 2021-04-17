@@ -4,22 +4,21 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 public class Fahrer extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fahrernummer;
-    private int benutzer_Id;
+    private int benutzer_ID;
     private String anrede;
     private int geleistete_Fahrten;
-    private byte ist_In_Pause;
+    private byte ist_in_Pause;
     private int fahrzeug;
     private int aktueller_Standort;
-    private int anzahl_aktuelle_Auftraege;
+    private int anzahl_Aktueller_Auftraege;
     private byte verifiziert;
     private String fuehrerschein;
     private String geburtsdatum;
@@ -32,25 +31,12 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.fahrernummer = fahrernummer;
     }
 
-    public int getBenutzer_Id() { return benutzer_Id; }
-
-    public void setBenutzer_Id(int benutzer_Id) { this.benutzer_Id = benutzer_Id; }
-
-    public Integer getGeleisteteFahrten() {
-        return geleistete_Fahrten;
+    public int getBenutzer_ID() {
+        return benutzer_ID;
     }
 
-    public void setGeleisteteFahrten(Integer geleisteteFahrten) {
-        this.geleistete_Fahrten = geleisteteFahrten;
-    }
-
-
-    public byte getIstInPause() {
-        return ist_In_Pause;
-    }
-
-    public void setIstInPause(byte istInPause) {
-        this.ist_In_Pause = istInPause;
+    public void setBenutzer_ID(int benutzer_ID) {
+        this.benutzer_ID = benutzer_ID;
     }
 
     public String getAnrede() {
@@ -69,12 +55,12 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.geleistete_Fahrten = geleistete_Fahrten;
     }
 
-    public byte getIst_In_Pause() {
-        return ist_In_Pause;
+    public byte getIst_in_Pause() {
+        return ist_in_Pause;
     }
 
-    public void setIst_In_Pause(byte ist_In_Pause) {
-        this.ist_In_Pause = ist_In_Pause;
+    public void setIst_in_Pause(byte ist_in_Pause) {
+        this.ist_in_Pause = ist_in_Pause;
     }
 
     public int getFahrzeug() {
@@ -93,12 +79,12 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.aktueller_Standort = aktueller_Standort;
     }
 
-    public int getAnzahl_aktuelle_Auftraege() {
-        return anzahl_aktuelle_Auftraege;
+    public int getAnzahl_Aktueller_Auftraege() {
+        return anzahl_Aktueller_Auftraege;
     }
 
-    public void setAnzahl_aktuelle_Auftraege(int anzahl_aktuelle_Auftraege) {
-        this.anzahl_aktuelle_Auftraege = anzahl_aktuelle_Auftraege;
+    public void setAnzahl_Aktueller_Auftraege(int anzahl_Aktueller_Auftraege) {
+        this.anzahl_Aktueller_Auftraege = anzahl_Aktueller_Auftraege;
     }
 
     public byte getVerifiziert() {
@@ -109,9 +95,13 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         this.verifiziert = verifiziert;
     }
 
-    public String getFuehrerschein() { return fuehrerschein; }
+    public String getFuehrerschein() {
+        return fuehrerschein;
+    }
 
-    public void setFuehrerschein(String fuehrerschein) { this.fuehrerschein = fuehrerschein; }
+    public void setFuehrerschein(String fuehrerschein) {
+        this.fuehrerschein = fuehrerschein;
+    }
 
     public String getGeburtsdatum() {
         return geburtsdatum;
@@ -126,25 +116,25 @@ public class Fahrer extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrer fahrer = (Fahrer) o;
-        return fahrernummer == fahrer.fahrernummer && benutzer_Id == fahrer.benutzer_Id && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_In_Pause == fahrer.ist_In_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_aktuelle_Auftraege == fahrer.anzahl_aktuelle_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(anrede, fahrer.anrede) && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && Objects.equals(geburtsdatum, fahrer.geburtsdatum);
+        return fahrernummer == fahrer.fahrernummer && benutzer_ID == fahrer.benutzer_ID && geleistete_Fahrten == fahrer.geleistete_Fahrten && ist_in_Pause == fahrer.ist_in_Pause && fahrzeug == fahrer.fahrzeug && aktueller_Standort == fahrer.aktueller_Standort && anzahl_Aktueller_Auftraege == fahrer.anzahl_Aktueller_Auftraege && verifiziert == fahrer.verifiziert && Objects.equals(anrede, fahrer.anrede) && Objects.equals(fuehrerschein, fahrer.fuehrerschein) && Objects.equals(geburtsdatum, fahrer.geburtsdatum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fahrernummer, benutzer_Id, anrede, geleistete_Fahrten, ist_In_Pause, fahrzeug, aktueller_Standort, anzahl_aktuelle_Auftraege, verifiziert, fuehrerschein, geburtsdatum);
+        return Objects.hash(fahrernummer, benutzer_ID, anrede, geleistete_Fahrten, ist_in_Pause, fahrzeug, aktueller_Standort, anzahl_Aktueller_Auftraege, verifiziert, fuehrerschein, geburtsdatum);
     }
 
     @Override
     public String toString() {
         return "Fahrer{" +
                 "fahrernummer=" + fahrernummer +
-                ", benutzer_Id=" + benutzer_Id +
+                ", benutzer_ID=" + benutzer_ID +
                 ", anrede='" + anrede + '\'' +
                 ", geleistete_Fahrten=" + geleistete_Fahrten +
-                ", ist_In_Pause=" + ist_In_Pause +
+                ", ist_in_Pause=" + ist_in_Pause +
                 ", fahrzeug=" + fahrzeug +
                 ", aktueller_Standort=" + aktueller_Standort +
-                ", anzahl_aktuelle_Auftraege=" + anzahl_aktuelle_Auftraege +
+                ", anzahl_Aktueller_Auftraege=" + anzahl_Aktueller_Auftraege +
                 ", verifiziert=" + verifiziert +
                 ", fuehrerschein='" + fuehrerschein + '\'' +
                 ", geburtsdatum='" + geburtsdatum + '\'' +

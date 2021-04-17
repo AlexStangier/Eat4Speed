@@ -9,28 +9,28 @@ import java.io.Serializable;
 public class Einnahmen extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
-    private int einnahmen_Id;
-    private int restaurant_Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int einnahmen_ID;
+    private int restaurant_ID;
     private double umsatz;
     private int monat;
     private int jahr;
 
-    public int getEinnahmen_Id() {
-        return einnahmen_Id;
+    public int getEinnahmen_ID() {
+        return einnahmen_ID;
     }
 
-    public void setEinnahmen_Id(int einnahmenId) {
-        this.einnahmen_Id = einnahmenId;
+    public void setEinnahmen_ID(int einnahmenId) {
+        this.einnahmen_ID = einnahmenId;
     }
 
 
-    public int getRestaurant_Id() {
-        return restaurant_Id;
+    public int getRestaurant_ID() {
+        return restaurant_ID;
     }
 
-    public void setRestaurant_Id(int restaurantId) {
-        this.restaurant_Id = restaurantId;
+    public void setRestaurant_ID(int restaurantId) {
+        this.restaurant_ID = restaurantId;
     }
 
 
@@ -67,8 +67,8 @@ public class Einnahmen extends PanacheEntityBase implements Serializable {
 
         Einnahmen that = (Einnahmen) o;
 
-        if (einnahmen_Id != that.einnahmen_Id) return false;
-        if (restaurant_Id != that.restaurant_Id) return false;
+        if (einnahmen_ID != that.einnahmen_ID) return false;
+        if (restaurant_ID != that.restaurant_ID) return false;
         if (Double.compare(that.umsatz, umsatz) != 0) return false;
         if (monat != that.monat) return false;
         if (jahr != that.jahr) return false;
@@ -80,8 +80,8 @@ public class Einnahmen extends PanacheEntityBase implements Serializable {
     public int hashCode() {
         int result;
         long temp;
-        result = einnahmen_Id;
-        result = 31 * result + restaurant_Id;
+        result = einnahmen_ID;
+        result = 31 * result + restaurant_ID;
         temp = Double.doubleToLongBits(umsatz);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + monat;
@@ -92,8 +92,8 @@ public class Einnahmen extends PanacheEntityBase implements Serializable {
     @Override
     public String toString() {
         return "Einnahmen{" +
-                "einnahmen_Id=" + einnahmen_Id +
-                ", restaurant_Id=" + restaurant_Id +
+                "einnahmen_ID=" + einnahmen_ID +
+                ", restaurant_ID=" + restaurant_ID +
                 ", umsatz=" + umsatz +
                 ", monat=" + monat +
                 ", jahr=" + jahr +

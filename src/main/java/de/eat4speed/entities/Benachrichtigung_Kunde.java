@@ -11,20 +11,20 @@ import java.util.Objects;
 public class Benachrichtigung_Kunde extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
-    private int benachrichtigungs_Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int benachrichtigungs_ID;
     private int kunde_ID;
     private int gericht;
     private String benachrichtigung;
     private Timestamp timestamp;
 
 
-    public int getBenachrichtigungs_Id() {
-        return benachrichtigungs_Id;
+    public int getBenachrichtigungs_ID() {
+        return benachrichtigungs_ID;
     }
 
-    public void setBenachrichtigungs_Id(int benachrichtigungsId) {
-        this.benachrichtigungs_Id = benachrichtigungsId;
+    public void setBenachrichtigungs_ID(int benachrichtigungsId) {
+        this.benachrichtigungs_ID = benachrichtigungsId;
     }
 
 
@@ -66,18 +66,18 @@ public class Benachrichtigung_Kunde extends PanacheEntityBase implements Seriali
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Benachrichtigung_Kunde that = (Benachrichtigung_Kunde) o;
-        return benachrichtigungs_Id == that.benachrichtigungs_Id && kunde_ID == that.kunde_ID && gericht == that.gericht && Objects.equals(benachrichtigung, that.benachrichtigung) && Objects.equals(timestamp, that.timestamp);
+        return benachrichtigungs_ID == that.benachrichtigungs_ID && kunde_ID == that.kunde_ID && gericht == that.gericht && Objects.equals(benachrichtigung, that.benachrichtigung) && Objects.equals(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(benachrichtigungs_Id, kunde_ID, gericht, benachrichtigung, timestamp);
+        return Objects.hash(benachrichtigungs_ID, kunde_ID, gericht, benachrichtigung, timestamp);
     }
 
     @Override
     public String toString() {
         return "Benachrichtigung_Kunde{" +
-                "benachrichtigungs_Id=" + benachrichtigungs_Id +
+                "benachrichtigungs_ID=" + benachrichtigungs_ID +
                 ", kunde_ID=" + kunde_ID +
                 ", gericht=" + gericht +
                 ", benachrichtigung='" + benachrichtigung + '\'' +

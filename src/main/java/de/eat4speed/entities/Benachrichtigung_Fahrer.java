@@ -11,20 +11,20 @@ import java.util.Objects;
 public class Benachrichtigung_Fahrer extends PanacheEntityBase implements Serializable {
 
     @Id
-    @GeneratedValue
-    private int benachrichtigungs_Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int benachrichtigungs_ID;
     private int fahrernummer;
     private String benachrichtigung;
-    private int restaurant_Id;
+    private int restaurant_ID;
     private Timestamp timestamp;
 
 
-    public int getBenachrichtigungs_Id() {
-        return benachrichtigungs_Id;
+    public int getBenachrichtigungs_ID() {
+        return benachrichtigungs_ID;
     }
 
-    public void setBenachrichtigungs_Id(int benachrichtigungsId) {
-        this.benachrichtigungs_Id = benachrichtigungsId;
+    public void setBenachrichtigungs_ID(int benachrichtigungsID) {
+        this.benachrichtigungs_ID = benachrichtigungsID;
     }
 
     public String getBenachrichtigung() {
@@ -51,12 +51,12 @@ public class Benachrichtigung_Fahrer extends PanacheEntityBase implements Serial
         this.fahrernummer = fahrernummer;
     }
 
-    public int getRestaurant_Id() {
-        return restaurant_Id;
+    public int getRestaurant_ID() {
+        return restaurant_ID;
     }
 
-    public void setRestaurant_Id(int restaurant_Id) {
-        this.restaurant_Id = restaurant_Id;
+    public void setRestaurant_ID(int restaurant_ID) {
+        this.restaurant_ID = restaurant_ID;
     }
 
     @Override
@@ -64,21 +64,21 @@ public class Benachrichtigung_Fahrer extends PanacheEntityBase implements Serial
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Benachrichtigung_Fahrer that = (Benachrichtigung_Fahrer) o;
-        return benachrichtigungs_Id == that.benachrichtigungs_Id && fahrernummer == that.fahrernummer && restaurant_Id == that.restaurant_Id && Objects.equals(benachrichtigung, that.benachrichtigung) && Objects.equals(timestamp, that.timestamp);
+        return benachrichtigungs_ID == that.benachrichtigungs_ID && fahrernummer == that.fahrernummer && restaurant_ID == that.restaurant_ID && Objects.equals(benachrichtigung, that.benachrichtigung) && Objects.equals(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(benachrichtigungs_Id, fahrernummer, benachrichtigung, restaurant_Id, timestamp);
+        return Objects.hash(benachrichtigungs_ID, fahrernummer, benachrichtigung, restaurant_ID, timestamp);
     }
 
     @Override
     public String toString() {
         return "Benachrichtigung_Fahrer{" +
-                "benachrichtigungs_Id=" + benachrichtigungs_Id +
+                "benachrichtigungs_ID=" + benachrichtigungs_ID +
                 ", fahrernummer=" + fahrernummer +
                 ", benachrichtigung='" + benachrichtigung + '\'' +
-                ", restaurant_Id=" + restaurant_Id +
+                ", restaurant_ID=" + restaurant_ID +
                 ", timestamp=" + timestamp +
                 '}';
     }

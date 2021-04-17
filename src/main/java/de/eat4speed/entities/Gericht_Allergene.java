@@ -8,16 +8,16 @@ import java.io.Serializable;
 @Entity
 public class Gericht_Allergene extends PanacheEntityBase implements Serializable {
     @Id
-    private int gericht_id;
+    private int gericht_ID;
     @Id
     private String allergen;
 
 
-    public int getGericht_id() {
-        return gericht_id;
+    public int getGericht_ID() {
+        return gericht_ID;
     }
-    public void setGericht_id(int gericht_id) {
-        this.gericht_id = gericht_id;
+    public void setGericht_ID(int gericht_id) {
+        this.gericht_ID = gericht_id;
     }
 
     public String getAllergen() {
@@ -34,7 +34,7 @@ public class Gericht_Allergene extends PanacheEntityBase implements Serializable
 
         Gericht_Allergene that = (Gericht_Allergene) o;
 
-        if (gericht_id != that.gericht_id) return false;
+        if (gericht_ID != that.gericht_ID) return false;
         if (allergen != null ? !allergen.equals(that.allergen) : that.allergen != null) return false;
 
         return true;
@@ -42,7 +42,7 @@ public class Gericht_Allergene extends PanacheEntityBase implements Serializable
 
     @Override
     public int hashCode() {
-        int result = gericht_id;
+        int result = gericht_ID;
         result = 31 * result + (allergen != null ? allergen.hashCode() : 0);
         return result;
     }
@@ -50,7 +50,7 @@ public class Gericht_Allergene extends PanacheEntityBase implements Serializable
     @Override
     public String toString() {
         return "GerichtAllergeneEntity{" +
-                "gericht_id=" + gericht_id +
+                "gericht_ID=" + gericht_ID +
                 ", allergen='" + allergen + '\'' +
                 '}';
     }

@@ -277,7 +277,7 @@ export default {
         emailAdresse: this.email,
         passwort: this.password,
         telefonnummer: this.phoneNumber,
-        rolle: 3,
+        rolle: "Driver",
         paypal_Account: "dummy"
       };
 
@@ -286,10 +286,12 @@ export default {
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
       var fahrer = {
-        benutzer_Id: this.benutzer_ID,
+        benutzer_ID: this.benutzer_ID,
         anrede: this.salutation,
         geburtsdatum: this.date,
-        fuehrerschein: this.driverLicense
+        fuehrerschein: this.driverLicense,
+        ist_in_Pause: 0,
+        verifiziert: 0
       };
 
       const responseFahrer = await axios.post("/Fahrer", fahrer)
@@ -308,10 +310,10 @@ export default {
 
       const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
 
-      this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_Id;
+      this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_ID;
 
       var createdFahrzeug = {
-        fahrzeug_Id: this.fahrzeug_ID,
+        fahrzeug_ID: this.fahrzeug_ID,
         fahrzeugtyp: this.vehicle
       };
 
@@ -363,6 +365,7 @@ export default {
       date: "",
       salutation: "",
       password: "",
+      capacity: "",
       verify: "",
       // Login Tab
       loginValid: false,

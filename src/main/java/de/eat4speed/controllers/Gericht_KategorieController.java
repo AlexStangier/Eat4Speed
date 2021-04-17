@@ -2,27 +2,43 @@ package de.eat4speed.controllers;
 
 
 import de.eat4speed.entities.Gericht_Kategorie;
-import de.eat4speed.repositories.Gericht_KategorieRepository;
+import de.eat4speed.services.interfaces.IGericht_KategorieService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.sql.Timestamp;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/Gericht_Kategorie")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class Gericht_KategorieController {
 
 
     @Inject
-    Gericht_KategorieRepository gericht_kategorieRepository;
+    IGericht_KategorieService gericht_kategorieService;
+
+    @POST
+    public Response add(Gericht_Kategorie gericht_kategorie)
+    {
+        return gericht_kategorieService.addGericht_Kategorie(gericht_kategorie);
+    }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return gericht_kategorieRepository.listAll().toString();
+    @Path("getGericht_KategorieByGericht_ID/{id}")
+    public List getGericht_KategorieByGericht_ID(@PathParam("id") int id)
+    {
+        return gericht_kategorieService.getGericht_KategorieByGericht_ID(id);
+    }
+
+    @DELETE
+    @Path("deleteGerichtKategorieByGerichtID/{id}")
+    public Response deleteGerichtKategorieByGerichtID(@PathParam("id") int id)
+    {
+        gericht_kategorieService.deleteGerichtKategorieByGerichtID(id);
+
+        return Response.status(Response.Status.OK).build();
     }
 
 }

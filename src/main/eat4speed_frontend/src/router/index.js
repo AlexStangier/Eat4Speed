@@ -55,9 +55,14 @@ const routes = [
     component: () => import('../views/AdminVerification.vue')
   },
   {
+    path: '/admin-verification-restaurant',
+    name: 'AdminVerificationRestaurant',
+    component: () => import('../views/AdminVerificationRestaurant.vue')
+  },
+  {
     path:'/dish',
     name: 'Dish',
-    component: () => import('../views/Dish.vue')
+    component: () => import('../views/Dish')
   },
   {
     path: '/restaurant-bestellungen',
@@ -80,10 +85,10 @@ const routes = [
     component: () => import('../views/Restaurant_Stammdaten.vue')
   },
   {
-    path:'/customerRes',
-    name: 'CustomerRes',
-    component: () => import('../views/CustomerRestaurantView.vue')
-  },
+    path: '/schichtplan',
+    name: 'Schichtplan',
+    component: () => import('../views/Schichtplan')
+  }
 ]
 
 const router = new VueRouter({

@@ -2,13 +2,11 @@ package de.eat4speed.services;
 
 import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrzeug;
-import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.repositories.FahrerRepository;
 import de.eat4speed.services.interfaces.IFahrerService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -51,7 +49,7 @@ public class FahrerService implements IFahrerService {
     @Override
     public Response updateFahrer_Fahrzeug_Id(int id, Fahrzeug fahrzeug)
     {
-        fahrerRepository.updateFahrer_Fahrzeug_id(id, fahrzeug.getFahrzeug_Id());
+        fahrerRepository.updateFahrer_Fahrzeug_id(id, fahrzeug.getFahrzeug_ID());
 
         return Response.status(Response.Status.OK).entity(fahrzeug).build();
     }
