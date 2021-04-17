@@ -113,6 +113,20 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         return benutzer_ID == benutzer.benutzer_ID && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(rolle, benutzer.rolle) && Objects.equals(paypal_Account, benutzer.paypal_Account);
     }
 
+    public Benutzer() {
+    }
+
+    public Benutzer(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, int telefonnummer) {
+        this.benutzername = benutzername;
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.emailAdresse = emailAdresse;
+        this.passwort = passwort;
+        this.rolle = rolle;
+        this.paypal_Account = paypal_Account;
+        this.telefonnummer = telefonnummer;
+    }
+
     /**
      * Searches Benutzer table for entries matching the benutzername
      *
