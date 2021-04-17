@@ -50,12 +50,12 @@ export default {
         passwort: btoa(this.loginPassword)
       })
       .then((response) => {
-        console.log(response.status);
         if (response.status === 200) {
           this.$store.commit('saveLoginData', {
             emailAdresse: response.data.emailAdresse,
             passwort: response.data.passwort
           });
+          router.push({ name: "AdminVerification"})
         }
       }, (error) => {
         if (error.message === 'Request failed with status code 404') {
