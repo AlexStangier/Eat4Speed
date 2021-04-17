@@ -11,7 +11,7 @@
                 dark
                 align="right"
                 class="mt-5"
-                @click="changeDisplayGetraenke"
+                @click="changeDisplayGerichte"
             >
               Gerichte
             </v-btn>
@@ -310,8 +310,20 @@ export default {
       this.version++;
     },
     changeDisplayGetraenke() {
-      this.displayGetraenke = !this.displayGetraenke;
-      this.loadGerichte();
+      if(this.displayGetraenke===false)
+      {
+        this.displayGetraenke = !this.displayGetraenke;
+        this.loadGerichte();
+      }
+
+    },
+    changeDisplayGerichte() {
+      if(this.displayGetraenke===true)
+      {
+        this.displayGetraenke = !this.displayGetraenke;
+        this.loadGerichte();
+      }
+
     },
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
