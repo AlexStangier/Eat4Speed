@@ -29,15 +29,20 @@
           </v-card>
         </v-flex>
       </v-layout>
+      <popup :popupData="popupData" ></popup>
     </v-container>
   </v-main>
 </template>
 
 <script>
 import router from "@/router";
+import Popup from '@/components/Snackbar.vue';
 
 export default {
   name: "LoginAdmin",
+  components: {
+    popup: Popup,
+  },
   methods: {
     login() {
       this.$http.post('/Login/admin', {
@@ -45,23 +50,37 @@ export default {
         passwort: btoa(this.loginPassword)
       })
       .then((response) => {
+        console.log(response.status);
         if (response.status === 200) {
           this.$store.commit('saveLoginData', {
             emailAdresse: response.data.emailAdresse,
             passwort: response.data.passwort
           });
-          router.push({ name: "AdminVerification"})
+          this.openSnackbar('Login erfolgreich');
+          setTimeout(() => router.push({ name: "AdminVerification"}), 2500);
         }
       }, (error) => {
-        console.log(error);
+        if (error.message === 'Request failed with status code 404') {
+          this.openSnackbar('Benutzername oder Passwort falsch');
+        } else {
+          this.openSnackbar(error);
+        }
       });
+    },
+    openSnackbar(message) {
+      this.popupData.display = true;
+      this.popupData.message = message;
     },
   },
   data() {
     return {
       show1: false,
       loginPassword: "",
-      loginEmail: ""
+      loginEmail: "",
+      popupData: {
+        display: false,
+        message: '',
+      }
     }
   }
 };
