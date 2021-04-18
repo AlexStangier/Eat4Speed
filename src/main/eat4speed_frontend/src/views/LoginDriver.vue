@@ -20,19 +20,11 @@
               <v-tab-item>
                 <v-card class="px-4">
                   <v-card-text>
-                    <v-form
-                        ref="loginForm"
-                        v-model="loginValid"
-                        lazy-validation
-                    >
+                    <v-form ref="loginForm" v-model="valid" lazy-validation>
                       <v-row>
                         <v-col cols="12">
-                          <v-text-field
-                              v-model="loginEmail"
-                              :rules="loginEmailRules"
-                              label="E-Mail"
-                              required
-                          ></v-text-field>
+                          <v-text-field v-model="loginEmail" :rules="loginEmailRules" label="E-Mail"
+                                        required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
@@ -47,17 +39,9 @@
                               @click:append="show1 = !show1"
                           ></v-text-field>
                         </v-col>
-                        <!-- <v-spacer></v-spacer> -->
+                        <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn
-                              :disabled="!validateLogin"
-                              color="red"
-                              dark
-                              rounded
-                              @click="validateLogin"
-                          >Login
-                          </v-btn
-                          >
+                          <v-btn color="red" dark rounded @click="login">Login</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -249,7 +233,8 @@
 </template>
 
 <script>
-import axios from "axios";
+import router from "@/router";
+import Popup from '@/components/Snackbar.vue';
 
 export default {
   name: "LoginDriver",
@@ -267,7 +252,27 @@ export default {
 
       //}
     },
-
+    async login() {
+      this.$http.post('/Login/driver', {
+        emailAdresse: this.loginEmail,
+        passwort: btoa(this.loginPassword)
+      })
+          .then((response) => {
+            if (response.status === 200) {
+              this.$store.commit('saveLoginData', {
+                emailAdresse: response.data.emailAdresse,
+                passwort: response.data.passwort
+              });
+              router.push({ name: "Start"})
+            }
+          }, (error) => {
+            if (error.message === 'Request failed with status code 404') {
+              this.openSnackbar('Benutzername oder Passwort falsch');
+            } else {
+              this.openSnackbar(error);
+            }
+          });
+    },
     async validateRegistration() {
 
       var benutzer = {
