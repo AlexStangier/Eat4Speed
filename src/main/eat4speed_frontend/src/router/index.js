@@ -88,7 +88,12 @@ const routes = [
     path: '/schichtplan',
     name: 'Schichtplan',
     component: () => import('../views/Schichtplan')
-  }
+  },
+  {
+    path: '/restaurant-umsatzstatistik',
+    name: 'RestaurantUmsatzstatistik',
+    component: () => import('../views/Restaurant_Umsatzstatistik.vue')
+  },
 ]
 
 const router = new VueRouter({
