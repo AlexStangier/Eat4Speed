@@ -136,7 +136,7 @@
 import axios from "axios";
 
 export default {
-  name: "AdminVerificationRestaurant",
+  name: "AdminVerifizierungRestaurants",
   methods: {
     async reloadRestaurant(){
 

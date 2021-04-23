@@ -133,7 +133,7 @@
 
 <script>
 export default {
-  name: "AdminVerification",
+  name: "AdminVerifizierungFahrer",
   methods: {
     async reloadFahrer(){
       if (this.select.value === 1) {
