@@ -18,7 +18,7 @@ Vue.prototype.$auth = {
 //https://www.npmjs.com/package/vue2-google-maps
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'YOUR_API_TOKEN',
+    key: 'AIzaSyCltkBHd3EaI9C9cUQvGYEMIjhLuETEFH4',
     libraries: 'places'
   },
 })

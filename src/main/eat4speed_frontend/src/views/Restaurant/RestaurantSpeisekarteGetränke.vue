@@ -143,7 +143,7 @@
 
 <script>
 export default {
-  name: "restaurant",
+  name: "RestaurantSpeisekarteGetränke",
   methods: {
     openLogin(){
       this.$refs.Anmeldung.class="px-4 d-flex"

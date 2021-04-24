@@ -60,7 +60,7 @@ Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie co
 
 <script>
 export default {
-  name: "dish"
+  name: "KundeDish"
 }
 </script>
 

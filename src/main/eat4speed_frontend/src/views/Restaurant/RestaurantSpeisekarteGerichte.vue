@@ -246,7 +246,7 @@
 import axios from "axios";
 
 export default {
-  name: "restaurant",
+  name: "RestaurantSpeisekarteGerichte",
   mounted() {
     this.displayGetraenke=false;
 
