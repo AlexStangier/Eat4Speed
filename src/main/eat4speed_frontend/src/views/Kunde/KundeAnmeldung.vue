@@ -127,7 +127,7 @@ import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
 
 export default {
-  name: "LoginCustomer",
+  name: "KundeAnmeldung",
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Passwort muss übereinstimmen.";

@@ -691,7 +691,7 @@
 
 <script>
 export default {
-  name: "Schichtplan",
+  name: "RestaurantSchichtplan",
   methods: {},
   data: () => ({
     times: {

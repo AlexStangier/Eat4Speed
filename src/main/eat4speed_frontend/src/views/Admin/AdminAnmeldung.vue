@@ -39,7 +39,7 @@ import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
 
 export default {
-  name: "LoginAdmin",
+  name: "AdminAnmeldung",
   components: {
     popup: Popup,
   },
@@ -55,7 +55,7 @@ export default {
             emailAdresse: response.data.emailAdresse,
             passwort: response.data.passwort
           });
-          router.push({ name: "AdminVerification"})
+          router.push({ name: "AdminVerifizierungFahrer"})
         }
       }, (error) => {
         if (error.message === 'Request failed with status code 404') {

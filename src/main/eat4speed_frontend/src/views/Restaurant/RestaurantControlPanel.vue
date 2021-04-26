@@ -93,6 +93,7 @@
 
 <script>
 export default {
+  name: "RestaurantControlPanel",
   data: () => ({
     drawer: false,
     group: null,

@@ -237,7 +237,7 @@ import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
 
 export default {
-  name: "LoginDriver",
+  name: "FahrerAnmeldung",
   computed: {
     passwordMatch() {
       return () =>

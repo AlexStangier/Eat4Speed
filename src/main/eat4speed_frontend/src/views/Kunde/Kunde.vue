@@ -57,7 +57,7 @@
 
 <script>
 export default {
-  name: "customer",
+  name: "Kunde",
   data: () => ({
     names: ['Burger','Pizza','Sushi','McNuggets'],
     descriptions: ['Es ist ein Burger.','Krosse Krabe Pizza.','Räucherlachs.','Mit Szechuan Sauce.'],

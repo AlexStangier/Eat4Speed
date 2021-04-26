@@ -54,7 +54,7 @@
 import axios from "axios";
 
 export default {
-  name: "Restaurant_Stammdaten",
+  name: "RestaurantStammdaten",
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Passwort muss übereinstimmen.";
