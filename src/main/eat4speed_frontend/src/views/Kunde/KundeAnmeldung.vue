@@ -119,7 +119,7 @@
 import axios from "axios";
 
 export default {
-  name: "LoginCustomer",
+  name: "KundeAnmeldung",
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Passwort muss übereinstimmen.";

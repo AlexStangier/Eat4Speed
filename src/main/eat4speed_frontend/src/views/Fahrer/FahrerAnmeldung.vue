@@ -252,7 +252,7 @@
 import axios from "axios";
 
 export default {
-  name: "LoginDriver",
+  name: "FahrerAnmeldung",
   computed: {
     passwordMatch() {
       return () =>
