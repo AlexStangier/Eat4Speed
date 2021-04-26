@@ -71,7 +71,8 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer" maxlength="20"
+                          <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer"
+                                        maxlength="20"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
@@ -86,7 +87,8 @@
                           <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
+                          <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
+                                        maxlength="20"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
@@ -100,7 +102,8 @@
                                         @click:append="show1 = !show1"></v-text-field>
                         </v-col>
                         <v-col cols="12">
-                          <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, passwordMatch]"
+                          <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                                        :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'Passwort'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
                                         @click:append="show1 = !show1"></v-text-field>
@@ -118,6 +121,7 @@
           </v-card>
         </v-flex>
       </v-layout>
+      <popup :popupData="popupData"></popup>
     </v-container>
   </v-main>
 </template>
@@ -125,9 +129,13 @@
 <script>
 import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
+import axios from "axios";
 
 export default {
   name: "RestaurantAnmeldung",
+  components: {
+    popup: Popup,
+  },
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Passwort muss übereinstimmen.";
@@ -145,7 +153,7 @@ export default {
                 emailAdresse: response.data.emailAdresse,
                 passwort: response.data.passwort
               });
-              router.push({ name: "Start"})
+              router.push({name: "Startseite"})
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {
@@ -211,6 +219,10 @@ export default {
       this.$refs.form.resetValidation();
     }
   },
+  openSnackbar(message) {
+    this.popupData.display = true;
+    this.popupData.message = message;
+  },
   data() {
     return {
       tab: 0,
@@ -237,6 +249,10 @@ export default {
       verify: "",
       loginPassword: "",
       loginEmail: "",
+      popupData: {
+        display: false,
+        message: '',
+      },
       loginEmailRules: [
         v => !!v || "Required",
         v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"

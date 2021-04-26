@@ -228,6 +228,7 @@
           </v-card>
         </v-flex>
       </v-layout>
+      <popup :popupData="popupData"></popup>
     </v-container>
   </v-main>
 </template>
@@ -235,9 +236,13 @@
 <script>
 import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
+import axios from "axios";
 
 export default {
   name: "FahrerAnmeldung",
+  components: {
+    popup: Popup,
+  },
   computed: {
     passwordMatch() {
       return () =>
@@ -263,7 +268,7 @@ export default {
                 emailAdresse: response.data.emailAdresse,
                 passwort: response.data.passwort
               });
-              router.push({ name: "Start"})
+              router.push({name: "Startseite"})
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {
@@ -322,7 +327,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      await axios.put("/Fahrer/updateFahrzeugId/"+this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
@@ -340,6 +345,10 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     }
+  },
+  openSnackbar(message) {
+    this.popupData.display = true;
+    this.popupData.message = message;
   },
   data() {
     return {
@@ -376,6 +385,10 @@ export default {
       loginValid: false,
       loginPassword: "",
       loginEmail: "",
+      popupData: {
+        display: false,
+        message: '',
+      },
       loginEmailRules: [
         (v) => !!v || "Required",
         (v) => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein",

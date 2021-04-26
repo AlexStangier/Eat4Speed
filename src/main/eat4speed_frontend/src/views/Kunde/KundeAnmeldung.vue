@@ -118,6 +118,7 @@
           </v-card>
         </v-flex>
       </v-layout>
+      <popup :popupData="popupData"></popup>
     </v-container>
   </v-main>
 </template>
@@ -125,16 +126,17 @@
 <script>
 import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
+import axios from "axios";
 
 export default {
   name: "KundeAnmeldung",
+  components: {
+    popup: Popup,
+  },
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Passwort muss übereinstimmen.";
     }
-  },
-  components: {
-    popup: Popup,
   },
   methods: {
 
@@ -149,7 +151,7 @@ export default {
                 emailAdresse: response.data.emailAdresse,
                 passwort: response.data.passwort
               });
-              router.push({ name: "Start"})
+              router.push({name: "Startseite"})
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {
@@ -158,7 +160,7 @@ export default {
               this.openSnackbar(error);
             }
           });
-      },
+    },
     async validate() {
 
       console.log("test");
@@ -219,6 +221,10 @@ export default {
       this.$refs.form.resetValidation();
     }
   },
+  openSnackbar(message) {
+    this.popupData.display = true;
+    this.popupData.message = message;
+  },
   data() {
     return {
       tab: 0,
@@ -244,6 +250,10 @@ export default {
       loginEmail: "",
       username: "",
       paypal: "",
+      popupData: {
+        display: false,
+        message: '',
+      },
       loginEmailRules: [
         v => !!v || "Required",
         v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
