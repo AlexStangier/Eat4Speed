@@ -6,6 +6,7 @@ import RestaurantBestellungen from '@/views/Restaurant/RestaurantBestellungen.vu
 import RestaurantBestellübersicht from '@/views/Restaurant/RestaurantBestellübersicht.vue'
 import RestaurantStammdaten from '@/views/Restaurant/RestaurantStammdaten.vue'
 import RestaurantSchichtplan from '@/views/Restaurant/RestaurantSchichtplan.vue'
+import RestaurantUmsatzstatistik from "@/views/Restaurant/RestaurantUmsatzstatistik";
 
 export default [
     {
@@ -47,5 +48,10 @@ export default [
         path: '/restaurant/schichtplan',
         name: 'RestaurantSchichtplan',
         component: RestaurantSchichtplan
+    },
+    {
+        path: '/restaurant/umsatzstatistik',
+        name: 'RestaurantUmsatzstatistik',
+        component: RestaurantUmsatzstatistik
     }
 ]
