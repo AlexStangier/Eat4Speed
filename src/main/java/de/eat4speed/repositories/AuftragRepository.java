@@ -11,9 +11,18 @@ import javax.transaction.Transactional;
 public class AuftragRepository implements PanacheRepository<Auftrag> {
 
     @Transactional
-    public void addAuftrag(Auftrag auftrag)
-    {
+    public void addAuftrag(Auftrag auftrag) {
         persist(auftrag);
     }
 
+    @Transactional
+    public void deleteAuftag(int id) {
+        delete("auftrags_ID",id);
+    }
+
+    @Transactional
+    public void updateAuftragStatus(int id, String status)
+    {
+        update("status = ?1 where id = ?2",status,id);
+    }
 }

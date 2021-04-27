@@ -143,7 +143,7 @@ export default {
         emailAdresse: this.email,
         passwort: this.password,
         telefonnummer: this.phoneNumber,
-        rolle: "Customer",
+        rolle: "kunde",
         paypal_Account: this.paypal
       };
 

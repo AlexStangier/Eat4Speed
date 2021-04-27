@@ -47,8 +47,11 @@
               >
                 Anmelden
               </v-btn>
-              <v-btn to="/restaurant-controlpanel">
+              <v-btn to="/restaurant/controlPanel">
                 Debug link controlpanel
+              </v-btn>
+              <v-btn to="/kunde">
+                Debug link customer
               </v-btn>
               <v-btn to="/admin-verification">
                 Debug link Driver Verification
@@ -62,13 +65,13 @@
                 Anmeldung
               </v-card-title>
               <v-spacer class="pb-10"></v-spacer>
-              <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/login-customer"
+              <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/anmeldung"
                      @click="gerichtFarbe">Kunde</v-btn>
               <v-spacer class="pb-10"></v-spacer>
-              <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/login-restaurant"
+              <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/restaurant/anmeldung"
                      @click="gerichtFarbe">Restaurant</v-btn>
               <v-spacer class="pb-10"></v-spacer>
-              <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/login-driver"
+              <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200" to="/fahrer/anmeldung"
                      @click="gerichtFarbe">Fahrer</v-btn>
             </v-card>
           </v-dialog>

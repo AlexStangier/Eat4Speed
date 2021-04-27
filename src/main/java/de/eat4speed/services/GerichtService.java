@@ -46,6 +46,23 @@ public class GerichtService implements IGerichtService {
     {
         return gerichtRepository.getAllGetraenkeDataRestaurantSpeiseKarte(restaurant_ID);
     }
+    @Override
+    public List getGerichtDataByGerichtName(String gerichtName)
+    {
+        return gerichtRepository.getGerichtDataByGerichtName(gerichtName);
+    }
+
+    @Override
+    public List getGerichtDataByGerichtKategorie(String kategorie)
+    {
+        return gerichtRepository.getGerichtDataByGerichtKategorie(kategorie);
+    }
+
+    @Override
+    public List getGerichtDataByRestaurant_ID(int restaurant_ID)
+    {
+        return gerichtRepository.getGerichtDataByRestaurant_ID(restaurant_ID);
+    }
 
     @Override
     public Response updateGerichtAllData(Gericht gericht)

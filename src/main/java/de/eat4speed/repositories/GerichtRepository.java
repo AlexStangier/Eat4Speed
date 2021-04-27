@@ -63,6 +63,59 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
+    public List getGerichtDataByGerichtName(String gerichtName)
+    {
+        List gerichteData;
+
+        String likeName = "%"+gerichtName+"%";
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
+                        "FROM Gericht g " +
+                        "WHERE g.name LIKE ?1"
+        ).setParameter(1,likeName);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List getGerichtDataByGerichtKategorie(String kategorie)
+    {
+        List gerichteData;
+
+        String likeKategorie = "%"+kategorie+"%";
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
+                        "FROM Gericht g, Gericht_Kategorie kg " +
+                        "WHERE g.gericht_ID = kg.gericht_ID " +
+                        "AND kg.kategorie LIKE ?1"
+        ).setParameter(1,likeKategorie);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List getGerichtDataByRestaurant_ID(int restaurant_ID)
+    {
+        List gerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
+                        "FROM Gericht g " +
+                        "WHERE g.restaurant_ID = ?1 "
+        ).setParameter(1,restaurant_ID);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
     public void updateGerichtAllData(Gericht gericht)
     {
         update("beschreibung = ?1, name = ?2, preis = ?3, verfuegbar = ?4 where gericht_ID = ?5", gericht.getBeschreibung(),gericht.getName(),gericht.getPreis(),gericht.getVerfuegbar(),gericht.getGericht_ID());

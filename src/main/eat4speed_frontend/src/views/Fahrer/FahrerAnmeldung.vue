@@ -277,7 +277,7 @@ export default {
         emailAdresse: this.email,
         passwort: this.password,
         telefonnummer: this.phoneNumber,
-        rolle: "Driver",
+        rolle: "fahrer",
         paypal_Account: "dummy"
       };
 
