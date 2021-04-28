@@ -33,7 +33,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>ControlPanel</v-list-item-title>
                   </v-list-item>
-                  <router-link  to="/restaurant-speisekarte-gerichte"><v-list-item>
+                  <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
                     <v-list-item-icon>
                       <v-icon>mdi-silverware</v-icon>
                     </v-list-item-icon>

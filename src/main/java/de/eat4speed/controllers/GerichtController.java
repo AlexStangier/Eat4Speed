@@ -60,6 +60,27 @@ public class GerichtController {
         return gerichtService.getAllGetraenkeDataRestaurantSpeiseKarte(restaurant_id);
     }
 
+    @GET
+    @Path("/getGerichtDataByGerichtName/{name}")
+    public List getGerichtDataByGerichtName(@PathParam("name") String gerichtName)
+    {
+        return gerichtService.getGerichtDataByGerichtName(gerichtName);
+    }
+
+    @GET
+    @Path("/getGerichtDataByGerichtKategorie/{kategorie}")
+    public List getGerichtDataByGerichtKategorie(@PathParam("kategorie") String kategorie)
+    {
+        return gerichtService.getGerichtDataByGerichtKategorie(kategorie);
+    }
+
+    @GET
+    @Path("/getGerichtDataByRestaurant_ID/{id}")
+    public List getGerichtDataByRestaurant_ID(@PathParam("id") int restaurant_ID)
+    {
+        return gerichtService.getGerichtDataByRestaurant_ID(restaurant_ID);
+    }
+
     @DELETE
     @Path("{id}")
     public Response deleteGericht(@PathParam("id") int gericht_ID)
