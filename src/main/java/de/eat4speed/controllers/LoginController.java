@@ -23,4 +23,25 @@ public class LoginController {
     public Response checkAdminCredentials(Benutzer requestedUser) {
         return _benutzer.checkCredentials(requestedUser);
     }
+
+    @POST
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("user")
+    public Response checkCustomerCredentials(Benutzer requestedUser) { return _benutzer.checkCredentials(requestedUser);
+    }
+
+    @POST
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("restaurant")
+    public Response checkRestaurantCredentials(Benutzer requestedUser) { return _benutzer.checkCredentials(requestedUser);
+    }
+
+    @POST
+    @PermitAll
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("driver")
+    public Response checkDriverCredentials(Benutzer requestedUser) { return _benutzer.checkCredentials(requestedUser);
+    }
 }

@@ -20,19 +20,11 @@
               <v-tab-item>
                 <v-card class="px-4">
                   <v-card-text>
-                    <v-form
-                        ref="loginForm"
-                        v-model="loginValid"
-                        lazy-validation
-                    >
+                    <v-form ref="loginForm" v-model="valid" lazy-validation>
                       <v-row>
                         <v-col cols="12">
-                          <v-text-field
-                              v-model="loginEmail"
-                              :rules="loginEmailRules"
-                              label="E-Mail"
-                              required
-                          ></v-text-field>
+                          <v-text-field v-model="loginEmail" :rules="loginEmailRules" label="E-Mail"
+                                        required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
@@ -47,17 +39,9 @@
                               @click:append="show1 = !show1"
                           ></v-text-field>
                         </v-col>
-                        <!-- <v-spacer></v-spacer> -->
+                        <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn
-                              :disabled="!validateLogin"
-                              color="red"
-                              dark
-                              rounded
-                              @click="validateLogin"
-                          >Login
-                          </v-btn
-                          >
+                          <v-btn color="red" dark rounded @click="login">Login</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -244,15 +228,21 @@
           </v-card>
         </v-flex>
       </v-layout>
+      <popup :popupData="popupData"></popup>
     </v-container>
   </v-main>
 </template>
 
 <script>
+import router from "@/router";
+import Popup from '@/components/Snackbar.vue';
 import axios from "axios";
 
 export default {
   name: "FahrerAnmeldung",
+  components: {
+    popup: Popup,
+  },
   computed: {
     passwordMatch() {
       return () =>
@@ -267,7 +257,27 @@ export default {
 
       //}
     },
-
+    async login() {
+      this.$http.post('/Login/driver', {
+        emailAdresse: this.loginEmail,
+        passwort: btoa(this.loginPassword)
+      })
+          .then((response) => {
+            if (response.status === 200) {
+              this.$store.commit('saveLoginData', {
+                emailAdresse: response.data.emailAdresse,
+                passwort: response.data.passwort
+              });
+              router.push({name: "Startseite"})
+            }
+          }, (error) => {
+            if (error.message === 'Request failed with status code 404') {
+              this.openSnackbar('Benutzername oder Passwort falsch');
+            } else {
+              this.openSnackbar(error);
+            }
+          });
+    },
     async validateRegistration() {
 
       var benutzer = {
@@ -317,7 +327,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      await axios.put("/Fahrer/updateFahrzeugId/"+this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
@@ -335,6 +345,10 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     }
+  },
+  openSnackbar(message) {
+    this.popupData.display = true;
+    this.popupData.message = message;
   },
   data() {
     return {
@@ -371,6 +385,10 @@ export default {
       loginValid: false,
       loginPassword: "",
       loginEmail: "",
+      popupData: {
+        display: false,
+        message: '',
+      },
       loginEmailRules: [
         (v) => !!v || "Required",
         (v) => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein",
