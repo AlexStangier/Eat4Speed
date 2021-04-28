@@ -3,7 +3,7 @@
     <v-container>
       <v-card class="mx-auto">
         <v-card-title>
-          <v-img alt="Bild von Restaurant" max-height="40%" max-width="40%" src="https://www.onpsx.de/uploads/mediapool/dvdreviews/sponge1-03.jpg"></v-img>
+          <v-img alt="Bild von Restaurant" max-height="35%" max-width="35%" src="https://www.onpsx.de/uploads/mediapool/dvdreviews/sponge1-03.jpg"></v-img>
 
           <v-list-item-content>
             <v-item-group>
@@ -66,7 +66,7 @@
               </v-list-item-content>
 
               <v-list-item-content>
-                <v-list-item-group align="left">
+                <v-list-item-group class="text-left">
                   <v-list-item-title>{{ item.name }}</v-list-item-title>
                   <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                   <br>
@@ -76,7 +76,7 @@
 
               <v-list-item-content></v-list-item-content>
 
-              <v-list-item-group align="right">
+              <v-list-item-group class="text-right">
                 <v-btn small="true" right>
                   <v-icon>mdi-heart</v-icon>
                 </v-btn>
