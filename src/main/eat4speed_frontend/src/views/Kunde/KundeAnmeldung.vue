@@ -180,6 +180,14 @@ export default {
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
+      var bestellhistorie = {
+
+      };
+
+      const responseBestellhistorie = await axios.post("/Bestellhistorie/addBestellhistorie", bestellhistorie);
+
+      this.bestellhistorien_ID = responseBestellhistorie.data.bestellhistorien_ID;
+
       var adressen = {
         strasse: this.street,
         hausnummer: this.houseNumber,
@@ -201,7 +209,8 @@ export default {
         anrede: this.salutation,
         name: this.lastName,
         vorname: this.firstName,
-        anschrift: this.adress_ID
+        anschrift: this.adress_ID,
+        bestellhistorie: this.bestellhistorien_ID
       };
 
       axios.post("/Kunde", kunde)
@@ -236,6 +245,7 @@ export default {
       salutation: "",
       adress_ID: "",
       benutzer_ID: "",
+      bestellhistorien_ID: "",
       firstName: "",
       lastName: "",
       street: "",

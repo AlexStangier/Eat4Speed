@@ -116,6 +116,44 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
+    public List getGerichtDataByKundennummer_Favoriten(int kundennummer)
+    {
+        List gerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, g.restaurant_ID, fg.anzahl_Bestellungen, fg.hinzufuegedatum " +
+                        "FROM Gericht g, Kunde k, Favoritenliste_Gerichte fg " +
+                        "WHERE g.gericht_ID = fg.gericht_ID " +
+                        "AND k.kundennummer = fg.kundennummer " +
+                        "AND k.kundennummer = ?1"
+        ).setParameter(1,kundennummer);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List getGerichtDataByKundennummer_Bestellhistorie(int kundennummer)
+    {
+        List gerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
+                        "FROM Gericht g, Bestellung b, Kunde k, Bestellzuordnung bz, Bestellhistorie bh " +
+                        "WHERE k.bestellhistorie = bh.bestellhistorien_ID " +
+                        "AND bh.bestellhistorien_ID = b.bestellhistorien_ID " +
+                        "AND b.bestell_ID = bz.bestell_ID " +
+                        "AND bz.gericht_ID = g.gericht_ID " +
+                        "AND k.kundennummer = ?1"
+        ).setParameter(1,kundennummer);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
     public void updateGerichtAllData(Gericht gericht)
     {
         update("beschreibung = ?1, name = ?2, preis = ?3, verfuegbar = ?4 where gericht_ID = ?5", gericht.getBeschreibung(),gericht.getName(),gericht.getPreis(),gericht.getVerfuegbar(),gericht.getGericht_ID());
