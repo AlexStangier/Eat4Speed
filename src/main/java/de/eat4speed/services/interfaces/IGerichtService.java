@@ -16,6 +16,12 @@ public interface IGerichtService {
 
     List getAllGetraenkeDataRestaurantSpeiseKarte(int restaurant_ID);
 
+    List getGerichtDataByGerichtName(String gerichtName);
+
+    List getGerichtDataByGerichtKategorie(String kategorie);
+
+    List getGerichtDataByRestaurant_ID(int restaurant_ID);
+
     Response updateGerichtAllData(Gericht gericht);
 
     void updatePicturePath(String path, int id);

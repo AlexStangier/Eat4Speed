@@ -50,6 +50,18 @@
               >
                 Anmelden
               </v-btn>
+              <v-btn to="/restaurant/controlPanel">
+                Debug link controlpanel
+              </v-btn>
+              <v-btn to="/kunde">
+                Debug link customer
+              </v-btn>
+              <v-btn to="/admin-verification">
+                Debug link Driver Verification
+              </v-btn>
+              <v-btn to="/admin-verification-restaurant">
+                Debug link Restaurant Verification
+              </v-btn>
             </template>
             <v-card class="pa-10">
               <v-card-title class="d-flex justify-center">

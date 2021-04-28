@@ -16,7 +16,7 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="200"
+              :item-height="300"
               max-height="600"
           >
             <template v-slot:default="{ item }" v-resize>
@@ -32,6 +32,7 @@
                     <br>
                     <v-list-item-content>{{item.restaurant}}</v-list-item-content>
                     <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
+                    <v-list-item-content>Verfügbar: {{item.available}}</v-list-item-content>
                   </v-list-item-group>
                 </v-list-item-content>
                 <v-list-item-content></v-list-item-content>
@@ -66,7 +67,8 @@ export default {
     restaurants:['Bobs Burgers','Krosse Krabbe','AsiaWok','MCDonalds'],
     distances: ['10','29','7','4'],
     minimums: ['5','10','15','-'],
-    ratings: ['4.5', '5', '3.5', '4']
+    availabilities: [],
+    ids: []
   }),
   computed: {
     items(){
@@ -79,7 +81,7 @@ export default {
         const crestaurant = this.restaurants[i]
         const cdistance = this.distances[i]
         const cminimum = this.minimums[i]
-        const crating = this.ratings[i]
+        const cavailable = this.availabilities[i]
         i++;
 
         return {
@@ -90,7 +92,7 @@ export default {
           restaurant: crestaurant,
           distance: cdistance,
           minimum: cminimum,
-          rating: crating
+          available: cavailable
         }
       })
     }

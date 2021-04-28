@@ -15,7 +15,7 @@ public class Kunde extends PanacheEntityBase implements Serializable {
     private int benutzer_ID;
     private String name;
     private String vorname;
-    private String bestellhistorie;
+    private int bestellhistorie;
     private String anrede;
     private int anschrift;
 
@@ -44,11 +44,11 @@ public class Kunde extends PanacheEntityBase implements Serializable {
         this.vorname = vorname;
     }
 
-    public String getBestellhistorie() {
+    public int getBestellhistorie() {
         return bestellhistorie;
     }
 
-    public void setBestellhistorie(String bestellhistorie) {
+    public void setBestellhistorie(int bestellhistorie) {
         this.bestellhistorie = bestellhistorie;
     }
 
@@ -81,7 +81,7 @@ public class Kunde extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Kunde kunde = (Kunde) o;
-        return kundennummer == kunde.kundennummer && benutzer_ID == kunde.benutzer_ID && anschrift == kunde.anschrift && Objects.equals(name, kunde.name) && Objects.equals(vorname, kunde.vorname) && Objects.equals(bestellhistorie, kunde.bestellhistorie) && Objects.equals(anrede, kunde.anrede);
+        return kundennummer == kunde.kundennummer && benutzer_ID == kunde.benutzer_ID && bestellhistorie == kunde.bestellhistorie && anschrift == kunde.anschrift && Objects.equals(name, kunde.name) && Objects.equals(vorname, kunde.vorname) && Objects.equals(anrede, kunde.anrede);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class Kunde extends PanacheEntityBase implements Serializable {
                 ", benutzer_ID=" + benutzer_ID +
                 ", name='" + name + '\'' +
                 ", vorname='" + vorname + '\'' +
-                ", bestellhistorie='" + bestellhistorie + '\'' +
+                ", bestellhistorie=" + bestellhistorie +
                 ", anrede='" + anrede + '\'' +
                 ", anschrift=" + anschrift +
                 '}';
