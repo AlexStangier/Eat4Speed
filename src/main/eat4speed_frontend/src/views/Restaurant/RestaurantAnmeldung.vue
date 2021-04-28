@@ -171,7 +171,7 @@ export default {
         emailAdresse: this.email,
         passwort: this.password,
         telefonnummer: this.phoneNumber,
-        rolle: "Restaurant",
+        rolle: "restaurant",
         paypal_Account: this.paypal
       };
 
