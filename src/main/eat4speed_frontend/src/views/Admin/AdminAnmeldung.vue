@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
+import { eventBus } from '@/event/event';
 
 export default {
   name: "AdminAnmeldung",
@@ -51,11 +51,13 @@ export default {
       })
       .then((response) => {
         if (response.status === 200) {
-          this.$store.commit('saveLoginData', {
+          const payload = {
             emailAdresse: response.data.emailAdresse,
             passwort: response.data.passwort
-          });
-          router.push({ name: "AdminVerifizierungFahrer"})
+          }
+          this.$store.commit('saveLoginData', payload);
+          eventBus.$emit('setLogin', payload.emailAdresse);
+          this.$router.push({ name: "AdminVerifizierungFahrer"})
         }
       }, (error) => {
         if (error.message === 'Request failed with status code 404') {

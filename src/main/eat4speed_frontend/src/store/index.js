@@ -1,27 +1,39 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
+import Cookies from 'js-cookie'
 
 Vue.use(Vuex)
 
-// TODO: use cookies to expire login data
+const in30Minutes = 1/48;
+
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
 })
 
 export default new Vuex.Store({
   state: {
-    emailAdresse: '',
-    passwort: ''
   },
   plugins: [vuexLocal.plugin],
   mutations: {
-    saveLoginData(state, payload) {
-      state.emailAdresse = payload.emailAdresse;
-      state.passwort = payload.passwort;
+    saveLoginData: (state, payload) => {
+      Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: false });
+      Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: false });
     }
   },
   actions: {
+    deleteLoginDate: () => {
+      Cookies.remove('emailAdresse');
+      Cookies.remove('passwort');
+    },
+  },
+  getters: {
+    getLoginData: () => ({
+      auth: {
+        username: Cookies.get('emailAdresse'),
+        password: Cookies.get('passwort')
+      }
+    }),
   },
   modules: {
   }
