@@ -17,8 +17,8 @@ export default new Vuex.Store({
   plugins: [vuexLocal.plugin],
   mutations: {
     saveLoginData: (state, payload) => {
-      Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: false });
-      Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: false });
+      Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: true });
+      Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: true });
     }
   },
   actions: {
