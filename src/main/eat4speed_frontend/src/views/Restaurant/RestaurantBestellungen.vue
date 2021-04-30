@@ -3,55 +3,54 @@
     <v-container fill-height fluid>
       <v-layout align-center justify-center>
         <v-flex md6 sm6 xs12>
+          <h1 class="mb-5">Offene Bestellungen (verschwinden wenn Kunde sie erhält)</h1>
           <v-list>
-            <v-row class = "mr-5">
-            <h1>LOL</h1>
-              <v-spacer/>
-            <h1>LOL</h1>
-              <v-spacer/>
-            <h1>LOL</h1>
-            </v-row>
-            <v-list-item>
-              <v-btn
-                  class="mr-10"
-                  color="red"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="currentlyAdding = true"
-              >
-                Bestellung
-              </v-btn>
+
+            <v-list-item class="mb-12">
+              <v-card class="mr-10" color="red" dark>
+              <v-col >
+                <v-card-title>Bestellung 1 (Name des kunden?)</v-card-title>
+                <v-card-text>- Pizza Mozarella</v-card-text>
+                <v-card-text>- Cola groß</v-card-text>
+
+              </v-col>
+              </v-card>
               <v-slider
-                  v-model="fruits"
-                  :tick-labels="ticksLabels"
-                  :max="2"
-                  step="1"
-                  ticks="always"
-                  tick-size="10"
-              ></v-slider>
-            </v-list-item>
-            <v-list-item>
-              <v-btn
-                  class="mr-10"
-                  color="red"
-                  dark
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="currentlyAdding = true"
-              >
-                Bestellung
-              </v-btn>
-              <v-slider
-                  v-model="fruits"
                   :tick-labels="bestellstati"
                   :max="2"
                   step="1"
                   ticks="always"
-                  tick-size="10"
-                  thumb-label
+                  tick-size="0"
                   thumb-size="100"
               >
+                <template v-slot:thumb-color="{ value }">
+                  {{ bestellstatifarben[value] }}
+                </template>
+                <template v-slot:thumb-label="{ value }">
+                  {{ bestellstati[value] }}
+                </template>
+              </v-slider>
+            </v-list-item>
+            <v-list-item class="mb-12">
+              <v-card class="mr-10" color="red" dark>
+                <v-col>
+                  <v-card-title>Bestellung 2 (Name des kunden?)</v-card-title>
+                  <v-card-text>- Calzone</v-card-text>
+                  <v-card-text>- Cola groß</v-card-text>
+
+                </v-col>
+              </v-card>
+              <v-slider
+                  :tick-labels="bestellstati"
+                  :max="2"
+                  step="1"
+                  ticks="always"
+                  tick-size="0"
+                  thumb-size="100"
+              >
+                <template v-slot:thumb-color="{ value }">
+                  {{ bestellstatifarben[value] }}
+                </template>
                 <template v-slot:thumb-label="{ value }">
                   {{ bestellstati[value] }}
                 </template>
@@ -71,6 +70,7 @@ export default {
   data () {
     return {
       bestellstati: ['Bereit', 'In Zubereitung', 'Abholbereit'],
+      bestellstatifarben: ['red', 'yellow', 'green'],
       bestellungen: [
         {
           name: 'Bestellung 1',
