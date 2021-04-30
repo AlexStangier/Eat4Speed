@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="1"
       >
-        <v-btn small to="/customer">Zurück</v-btn>
+        <v-btn small to="/Kunde">Zurück</v-btn>
       </v-col>
       <v-col
           order="2"
@@ -27,7 +27,7 @@
               v-for="a in 2"
               :key="a"
           >
-            <v-img v-if="a === 1" src="https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg" alt="Bild von Essen" max-height="500" max-width="500"></v-img>
+            <v-img v-if="a === 1" :src="gerichtBild" alt="Bild von Essen" max-height="500" max-width="500"></v-img>
             <v-content v-if="a === 2" align="left"> <!--Information-->
               <v-row
                   v-for="b in 10"
@@ -38,16 +38,17 @@
                     :key="c"
                 >
                   <v-content v-if="b === 1 & c === 1">
-                    Burger
+                    <v-text-field readonly v-model="gerichtName"></v-text-field>
                   </v-content>
                   <v-content v-if="b === 2 & c === 1">
-                    Bob's Burger
+                    <v-text-field readonly v-model="restaurantName"></v-text-field>
                   </v-content>
                   <v-content v-if="b === 10 & c === 1">
                     Anzahl
                   </v-content>
                   <v-content v-if="b === 10 & c === 2">
                     Preis
+                    <v-text-field readonly v-model="gerichtPreis"></v-text-field>
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
                     <v-btn>Bestellen</v-btn>
@@ -58,9 +59,7 @@
           </v-col>
         </v-row>
         <br>
-        <v-textarea outlined readonly no-resize rows="8" value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet,"></v-textarea>
+        <v-textarea outlined readonly no-resize rows="8" v-model="gerichtBeschreibung"></v-textarea>
         </v-container>
       </v-container>
     </v-container>
@@ -68,8 +67,74 @@ Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie co
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "KundeDish"
+  name: "KundeDish",
+  mounted(){
+    this.gericht_ID = this.$store.getters.gericht_ID;
+    this.loadGericht();
+  },
+  methods: {
+    async loadGericht() {
+      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID);
+
+      console.log(ResponseGerichte);
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++) {
+        let gerichtData = ResponseGerichte.data[i];
+
+        this.gerichtName = gerichtData[1];
+        this.gerichtBeschreibung = gerichtData[2];
+        this.gerichtPreis = gerichtData[3] + "€";
+        this.gerichtVerfuegbar = gerichtData[4];
+        this.restaurant_ID = gerichtData[5];
+        this.restaurantName = gerichtData[6];
+        this.restaurantMindestbestellwert = gerichtData[7];
+      }
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++)
+      {
+        const config = { responseType:"arraybuffer" };
+        const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_ID,config);
+
+        console.log(responsePicture);
+
+        if(responsePicture.status !== 204)
+        {
+          console.log("received Picture")
+          console.log(responsePicture.data);
+
+          let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+          let imageURL = URL.createObjectURL(pictureBlob);
+          console.log(imageURL);
+
+          this.gerichtBild = imageURL;
+        }
+        else
+        {
+          this.gerichtBild = "";
+        }
+
+      }
+      this.version++;
+
+    }
+  },
+  data: () => ({
+    gerichtName: "",
+    gerichtBeschreibung: "",
+    gerichtBild: "",
+    gerichtPreis: "",
+    gerichtVerfuegbar: "",
+    restaurant_ID: "",
+    restaurantName: "",
+    restaurantMindestbestellwert: "",
+    gericht_ID: "",
+    version: 0,
+
+  }),
 }
 </script>
 

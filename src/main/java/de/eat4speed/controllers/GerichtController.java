@@ -81,6 +81,13 @@ public class GerichtController {
         return gerichtService.getGerichtDataByRestaurant_ID(restaurant_ID);
     }
 
+    @GET
+    @Path("/getGerichtDataByGericht_ID/{id}")
+    public List getGerichtDataByGericht_ID(@PathParam("id") int gericht_ID)
+    {
+        return gerichtService.getGerichtDataByGericht_ID(gericht_ID);
+    }
+
     @DELETE
     @Path("{id}")
     public Response deleteGericht(@PathParam("id") int gericht_ID)

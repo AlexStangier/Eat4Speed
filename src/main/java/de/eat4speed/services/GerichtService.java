@@ -65,6 +65,12 @@ public class GerichtService implements IGerichtService {
     }
 
     @Override
+    public List getGerichtDataByGericht_ID(int gericht_ID)
+    {
+        return gerichtRepository.getGerichtDataByGericht_ID(gericht_ID);
+    }
+
+    @Override
     public Response updateGerichtAllData(Gericht gericht)
     {
         gerichtRepository.updateGerichtAllData(gericht);

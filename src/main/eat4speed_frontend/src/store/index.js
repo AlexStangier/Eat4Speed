@@ -13,9 +13,17 @@ const vuexLocal = new VuexPersistence({
 
 export default new Vuex.Store({
   state: {
+    searchString:"",
+    gericht_ID:""
   },
   plugins: [vuexLocal.plugin],
   mutations: {
+    changeSearchString: (state, payload) => {
+      state.searchString = payload;
+    },
+    changeGericht_ID: (state, payload) => {
+      state.gericht_ID = payload;
+    } ,
     saveLoginData: (state, payload) => {
       Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: true });
       Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: true });
@@ -28,6 +36,12 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    searchString: state => {
+      return state.searchString;
+    },
+    gericht_ID: state => {
+      return state.gericht_ID;
+    },
     getLoginData: () => ({
       auth: {
         username: Cookies.get('emailAdresse'),
