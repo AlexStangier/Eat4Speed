@@ -22,6 +22,8 @@ public interface IGerichtService {
 
     List getGerichtDataByRestaurant_ID(int restaurant_ID);
 
+    List getGerichtDataByGericht_ID(int gericht_ID);
+
     Response updateGerichtAllData(Gericht gericht);
 
     void updatePicturePath(String path, int id);

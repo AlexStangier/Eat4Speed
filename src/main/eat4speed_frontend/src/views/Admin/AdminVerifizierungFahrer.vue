@@ -137,7 +137,7 @@ export default {
   methods: {
     async reloadFahrer(){
       if (this.select.value === 1) {
-        const ResponseAllFahrer = await this.$http.get("/Fahrer/getAll", this.$auth);
+        const ResponseAllFahrer = await this.$http.get("/Fahrer/getAll", this.$store.getters.getLoginData);
 
         this.allFahrer = ResponseAllFahrer;
 

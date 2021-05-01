@@ -3,17 +3,13 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import router from './router'
 import store from './store'
+import cookies from 'js-cookie'
 import axios from "axios";
 import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;
-Vue.prototype.$auth = {
-  auth: {
-    username: store.state.emailAdresse,
-    password: store.state.passwort
-  }
-};
+Vue.prototype.$cookies = cookies;
 
 //https://www.npmjs.com/package/vue2-google-maps
 Vue.use(VueGoogleMaps, {

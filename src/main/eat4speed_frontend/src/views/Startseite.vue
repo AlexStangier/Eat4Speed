@@ -13,14 +13,14 @@
               <v-text-field label="Suche nach Gericht"
                             ref="Suchfeld"
                             required
-                            v-model="search"
+                            v-model="searchString"
                             append-icon="mdi-magnify"
                             single-line
                             hide-details
               >
               </v-text-field>
             </v-col>
-            <v-btn :disabled="!valid" to="/Customer" color="red" dark rounded elevation="15" align="bottom"
+            <v-btn :disabled="!valid" :to="{ name: 'Kunde'}" color="red" dark rounded elevation="15" align="bottom"
                    @click="validate">Los
             </v-btn>
           </v-row>
@@ -81,8 +81,18 @@
 <script>
 export default {
   name: 'Startseite',
-
+  mounted() {
+    this.$store.commit("changeCartGerichte",[]);
+  },
+  beforeRouteLeave(to, from, next) {
+    this.setStoreSearchString();
+    next();
+  },
   methods: {
+    setStoreSearchString() {
+      this.$store.commit("changeSearchString",this.searchString);
+      console.log("changed searchString to "+this.$store.getters.searchString);
+    },
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
     },
@@ -112,6 +122,7 @@ export default {
     return {
 
       valid: true,
+      searchString: "",
       salutation: "",
       firstName: "",
       lastName: "",

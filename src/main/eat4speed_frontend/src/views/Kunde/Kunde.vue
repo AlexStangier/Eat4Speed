@@ -3,8 +3,12 @@
     <v-container>
       <v-container>
         <v-container>
-          <v-text-field placeholder="Suche..." autofocus clearable></v-text-field>
-          <v-btn>Suchen</v-btn>
+          <v-text-field placeholder="Suche..." autofocus clearable
+            v-model="searchString"
+          ></v-text-field>
+          <v-btn
+            @click="loadGerichte"
+          >Suchen</v-btn>
         </v-container>
         <v-btn>Gericht</v-btn>
         <v-btn>Umgebung</v-btn>
@@ -20,7 +24,7 @@
               max-height="600"
           >
             <template v-slot:default="{ item }" v-resize>
-              <v-list-item v-resize>
+              <v-list-item v-resize :key="version">
                 <v-list-item-content>
                   <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
                 </v-list-item-content>
@@ -44,7 +48,7 @@
                   </v-list-item-content>
                   <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small :value="item.rating"></v-rating>
                   <br>
-                  <v-btn small="true" bottom="bottom" to="/dish">Bestellen</v-btn>
+                  <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'dish'}">Bestellen</v-btn>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -57,39 +61,132 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "Kunde",
+  mounted() {
+    this.searchString = this.$store.getters.searchString;
+    console.log(this.searchString);
+
+    this.loadGerichte();
+  },
+  beforeRouteLeave(to, from, next) {
+    this.setStoreGericht_ID();
+    next();
+  },
+  methods: {
+    selectGericht(item) {
+      console.log("Gericht selected "+item.id);
+      this.selectedGericht_ID = item.id;
+      this.setStoreGericht_ID()
+    },
+    setStoreSearchString() {
+      this.$store.commit("changeSearchString",this.searchString);
+      console.log("changed searchString to "+this.$store.getters.searchString);
+    },
+    setStoreGericht_ID() {
+      this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
+      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+    },
+    async loadGerichte() {
+      this.setStoreSearchString();
+      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
+
+      console.log(ResponseGerichte);
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++) {
+        let gerichtData = ResponseGerichte.data[i];
+
+        this.gericht_IDs[i] = gerichtData[0];
+        this.names[i] = gerichtData[1];
+        this.descriptions[i] = gerichtData[2];
+        this.prices[i] = gerichtData[3];
+
+        if(gerichtData[4] === 0)
+        {
+          this.availabilities[i] = "nicht verfügbar";
+        }
+        else
+        {
+          this.availabilities[i] = "verfügbar";
+        }
+        this.restaurant_IDs[i] = gerichtData[5];
+        this.restaurantnamen[i] = gerichtData[6];
+        this.minimums[i] = gerichtData[7];
+      }
+
+      for (let i = 0; i < ResponseGerichte.data.length; i++)
+      {
+        const config = { responseType:"arraybuffer" };
+        const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
+
+        console.log(responsePicture);
+
+        if(responsePicture.status !== 204)
+        {
+          console.log("received Picture")
+          console.log(responsePicture.data);
+
+          let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+          let imageURL = URL.createObjectURL(pictureBlob);
+          console.log(imageURL);
+
+          this.imgs[i] = imageURL;
+        }
+        else
+        {
+          this.imgs[i] = "";
+        }
+
+      }
+      console.log(this.imgs);
+      this.amountGerichte = 0;
+      this.amountGerichte = ResponseGerichte.data.length;
+      this.version++;
+    },
+  },
   data: () => ({
-    names: ['Burger','Pizza','Sushi','McNuggets'],
-    descriptions: ['Es ist ein Burger.','Krosse Krabe Pizza.','Räucherlachs.','Mit Szechuan Sauce.'],
-    prices: ['5,50 €', '10 €','4,99 €', '3,99 €'],
-    imgs: ['https://ais.kochbar.de/vms/5ced0e371d90da128862f2c2/1200x1200/burger.jpg','https://n-cdn.serienjunkies.de/review/97124-pizza-delivery.jpg','https://as.com/deporteyvida/imagenes/2018/09/28/portada/1538126553_039389_1538126831_noticia_normal.jpg','https://wrcb.images.worldnow.com/images/19836084_G.jpeg'],
-    restaurants:['Bobs Burgers','Krosse Krabbe','AsiaWok','MCDonalds'],
-    distances: ['10','29','7','4'],
-    minimums: ['5','10','15','-'],
-    availabilities: [],
-    ids: []
+    searchString: "",
+    amountGerichte: 4,
+    selectedGericht_ID: "",
+    version: 0,
+    gericht_IDs: [],
+    names: [],
+    descriptions: [],
+    prices: [],
+    imgs: [],
+    restaurant_IDs: [],
+    restaurantnamen:[],
+    distances: [],
+    minimums: [],
+    availabilities: []
   }),
   computed: {
     items(){
       let i = 0
-      return Array.from({ length: 4}, () => {
+      return Array.from({ length: this.amountGerichte}, () => {
+        const cid = this.gericht_IDs[i]
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
         const cprice = this.prices[i]
         const cimg = this.imgs[i]
-        const crestaurant = this.restaurants[i]
+        const crestaurantid = this.restaurant_IDs[i]
+        const crestaurantname = this.restaurantnamen[i]
         const cdistance = this.distances[i]
         const cminimum = this.minimums[i]
         const cavailable = this.availabilities[i]
         i++;
 
         return {
+          id: cid,
           name: cname,
           description: cdescription,
           price: cprice,
           img: cimg,
-          restaurant: crestaurant,
+          restaurantid: crestaurantid,
+          restaurant: crestaurantname,
           distance: cdistance,
           minimum: cminimum,
           available: cavailable

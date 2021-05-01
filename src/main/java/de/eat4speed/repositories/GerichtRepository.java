@@ -70,10 +70,28 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         String likeName = "%"+gerichtName+"%";
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
-                        "FROM Gericht g " +
-                        "WHERE g.name LIKE ?1"
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, r.restaurant_ID, r.name_des_Restaurants, r.mindestbestellwert " +
+                        "FROM Gericht g, Restaurant r " +
+                        "WHERE g.restaurant_ID = r.restaurant_ID " +
+                        "AND g.name LIKE ?1"
         ).setParameter(1,likeName);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List getGerichtDataByGericht_ID(int gericht_ID)
+    {
+        List gerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, r.restaurant_ID, r.name_des_Restaurants, r.mindestbestellwert " +
+                        "FROM Gericht g, Restaurant r " +
+                        "WHERE g.restaurant_ID = r.restaurant_ID " +
+                        "AND g.gericht_ID = ?1"
+        ).setParameter(1,gericht_ID);
 
         gerichteData = query.getResultList();
 
