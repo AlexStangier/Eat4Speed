@@ -5,20 +5,6 @@
       >
         <v-btn small to="/Kunde">Zurück</v-btn>
       </v-col>
-      <v-col
-          order="2"
-          offset="8"
-      >
-        <v-btn small @click="addToCart">
-          Warenkorb
-          <v-icon>mdi-cart</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col
-          order="3"
-      >
-        Preis
-      </v-col>
     </v-row>
     <v-container>
       <v-container>
@@ -52,7 +38,10 @@
                     <v-text-field readonly v-model="gerichtPreis"></v-text-field>
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
-                    <v-btn>Bestellen</v-btn>
+                    <v-btn small @click="addToCart">
+                      Zum Warenkorb hinzufügen
+                      <v-icon>mdi-cart</v-icon>
+                    </v-btn>
                   </v-content>
                 </v-col>
               </v-row>
@@ -71,7 +60,7 @@
 import axios from "axios";
 
 export default {
-  name: "KundeDish",
+  name: "Gericht",
   mounted(){
     this.gericht_ID = this.$store.getters.gericht_ID;
     this.loadGericht();

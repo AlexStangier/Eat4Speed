@@ -7,6 +7,20 @@
         </v-badge>
         -->
       </v-btn>
+      <v-container>
+        <v-row>
+          <v-text-field placeholder="Suche..." autofocus clearable
+                        v-model="searchString"
+          ></v-text-field>
+          <v-btn
+              @click="setStoreSearchString"
+              :to="{ name: 'Kunde'}"
+          >Suchen</v-btn>
+          <v-btn>Gericht</v-btn>
+          <v-btn>Umgebung</v-btn>
+        </v-row>
+      </v-container>
+
     </template>
     <v-card width="400">
       <v-list>
@@ -57,6 +71,7 @@
       </v-card-text>
 
     </v-card>
+
   </v-menu>
 
 </template>
@@ -67,7 +82,15 @@ export default {
   mounted() {
     this.loadGerichteFromStore();
   },
+  beforeRouteLeave(to, from, next) {
+    this.setStoreSearchString();
+    next();
+  },
   methods: {
+    setStoreSearchString() {
+      this.$store.commit("changeSearchString",this.searchString);
+      console.log("changed searchString to "+this.$store.getters.searchString);
+    },
     selectGericht(item) {
       this.selectedGericht = item;
     },
@@ -87,7 +110,8 @@ export default {
     return {
       carts: [],
       version:0,
-      selectedGericht:""
+      selectedGericht:"",
+      searchString:""
     };
   },
 }

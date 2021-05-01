@@ -101,16 +101,7 @@
             </v-menu>
           </v-col>
         </v-row>
-        <v-container>
-          <v-text-field placeholder="Suche..." autofocus clearable
-            v-model="searchString"
-          ></v-text-field>
-          <v-btn
-            @click="loadGerichte"
-          >Suchen</v-btn>
-        </v-container>
-        <v-btn>Gericht</v-btn>
-        <v-btn>Umgebung</v-btn>
+
       </v-container>
       <v-container>
         <v-card class="mx-auto">
@@ -150,7 +141,7 @@
                   </v-list-item-content>
                   <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                   <br>
-                  <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'dish'}">Bestellen</v-btn>
+                  <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Bestellen</v-btn>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -183,6 +174,9 @@ export default {
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
+    getStoreSeachString() {
+      this.searchString = this.$store.getters.searchString;
+    },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
@@ -192,7 +186,6 @@ export default {
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     async loadGerichte() {
-      this.setStoreSearchString();
       const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
 
       console.log(ResponseGerichte);
@@ -294,6 +287,12 @@ export default {
           available: cavailable
         }
       })
+    }
+  },
+  watch:{
+    '$store.state.searchString': function() {
+      this.getStoreSeachString()
+      this.loadGerichte();
     }
   }
 }
