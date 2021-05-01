@@ -9,7 +9,7 @@
           order="2"
           offset="8"
       >
-        <v-btn small>
+        <v-btn small @click="addToCart">
           Warenkorb
           <v-icon>mdi-cart</v-icon>
         </v-btn>
@@ -44,7 +44,8 @@
                     <v-text-field readonly v-model="restaurantName"></v-text-field>
                   </v-content>
                   <v-content v-if="b === 10 & c === 1">
-                    Anzahl
+                    <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number">
+                    </v-text-field>
                   </v-content>
                   <v-content v-if="b === 10 & c === 2">
                     Preis
@@ -120,6 +121,18 @@ export default {
       }
       this.version++;
 
+    },
+    addToCart() {
+
+      let cartGericht = {
+        gericht_ID: this.gericht_ID,
+        name: this.gerichtName,
+        thumbnail: this.gerichtBild,
+        quantity: this.gerichtAnzahl
+      }
+
+      this.$store.commit("addToCartGerichte", cartGericht);
+      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     }
   },
   data: () => ({
@@ -128,6 +141,8 @@ export default {
     gerichtBild: "",
     gerichtPreis: "",
     gerichtVerfuegbar: "",
+    gerichtAnzahl: 0,
+    cartGerichte: "",
     restaurant_ID: "",
     restaurantName: "",
     restaurantMindestbestellwert: "",

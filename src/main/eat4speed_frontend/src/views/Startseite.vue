@@ -81,6 +81,9 @@
 <script>
 export default {
   name: 'Startseite',
+  mounted() {
+    this.$store.commit("changeCartGerichte",[]);
+  },
   beforeRouteLeave(to, from, next) {
     this.setStoreSearchString();
     next();

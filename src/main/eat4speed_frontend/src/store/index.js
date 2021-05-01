@@ -14,7 +14,8 @@ const vuexLocal = new VuexPersistence({
 export default new Vuex.Store({
   state: {
     searchString:"",
-    gericht_ID:""
+    gericht_ID:"",
+    cartGerichte:[]
   },
   plugins: [vuexLocal.plugin],
   mutations: {
@@ -24,6 +25,23 @@ export default new Vuex.Store({
     changeGericht_ID: (state, payload) => {
       state.gericht_ID = payload;
     } ,
+    addToCartGerichte: (state, payload) => {
+      state.cartGerichte.push(payload);
+    },
+    removeFromCartGerichte: (state, payload) => {
+
+      for(let i = 0; i<state.cartGerichte.length;i++)
+      {
+        if(state.cartGerichte[i].gericht_ID===payload.gericht_ID)
+        {
+          state.cartGerichte.splice(i,1);
+        }
+      }
+
+      },
+    changeCartGerichte: (state, payload) => {
+      state.cartGerichte = payload;
+    },
     saveLoginData: (state, payload) => {
       Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: true });
       Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: true });
@@ -41,6 +59,9 @@ export default new Vuex.Store({
     },
     gericht_ID: state => {
       return state.gericht_ID;
+    },
+    getCartGerichte: state => {
+      return state.cartGerichte;
     },
     getLoginData: () => ({
       auth: {

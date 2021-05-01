@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{on}">
-      <v-btn v-on="on" icon>
+      <v-btn v-on="on" @click="loadGerichteFromStore" icon>
         <v-icon>mdi-cart</v-icon>
         <!-- <v-badge v-if="totalItem > 0" :content="totalItem" inline>
         </v-badge>
@@ -22,7 +22,7 @@
       <v-divider></v-divider>
       <v-card-text v-if="carts.length > 0">
 
-        <v-list>
+        <v-list :key="version">
 
           <v-list-item v-for="(item, idx) in carts" :key="idx">
             <v-list-item-avatar>
@@ -32,10 +32,11 @@
             <v-list-item-content>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
               <v-list-item-subtitle>{{ item.quantity }} item{{ item.quantity > 1 ? 's' : '' }}</v-list-item-subtitle>
+              <v-list-item-subtitle hidden>{{ item.gericht_ID }}</v-list-item-subtitle>
             </v-list-item-content>
 
             <v-list-item-action>
-              <v-btn icon small>
+              <v-btn icon @mouseover="selectGericht(item)" @click="deleteGerichtFromStore" small>
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -63,20 +64,30 @@
 <script>
 export default {
   name: "Cart",
+  mounted() {
+    this.loadGerichteFromStore();
+  },
+  methods: {
+    selectGericht(item) {
+      this.selectedGericht = item;
+    },
+    loadGerichteFromStore() {
+      this.carts = this.$store.getters.getCartGerichte;
+      console.log(this.carts);
+      this.version++;
+    },
+    deleteGerichtFromStore() {
+      console.log(this.selectedGericht.name);
+      this.$store.commit("removeFromCartGerichte",this.selectedGericht);
+      this.loadGerichteFromStore();
+      this.version++;
+    }
+  },
   data() {
     return {
-      carts: [
-        {
-          name: 'test',
-          thumbnail: 'https://foodbrother.com/wp-content/uploads/2020/04/burger-food-brother.jpg',
-          quantity: 1,
-        },
-        {
-          name: 'test2',
-          thumbnail: 'https://image.brigitte.de/11225976/t/Lx/v3/w960/r1.5/-/ramen-teaser.jpg',
-          quantity: 2,
-        }
-      ],
+      carts: [],
+      version:0,
+      selectedGericht:""
     };
   },
 }
