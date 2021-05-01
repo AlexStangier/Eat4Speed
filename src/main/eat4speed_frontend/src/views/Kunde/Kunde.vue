@@ -2,6 +2,105 @@
   <v-main>
     <v-container>
       <v-container>
+        <v-row no-gutters>
+          <v-col sm="2">
+            <v-select
+                v-model="selectedRating"
+                label="Bewertung"
+                :items="selectRating"
+                clearable="true"
+            >
+              <template v-slot:selection="data">
+                {{data.item}} {{"Sterne"}}
+              </template>
+              <template v-slot:item="data">
+                {{data.item}} {{"Sterne"}}
+              </template>
+            </v-select>
+          </v-col>
+          <v-col sm="2" offset-sm="1">
+            <v-select
+                v-model="selectedArea"
+                label="Entfernung"
+                :items="selectArea"
+                clearable="true"
+            >
+              <template v-slot:selection="data">
+                {{data.item}} {{"km"}}
+              </template>
+              <template v-slot:item="data">
+                {{data.item}} {{"km"}}
+              </template>
+            </v-select>
+          </v-col>
+          <v-col offset-sm="1">
+            <v-btn>Auf der Karte anzeigen</v-btn>
+          </v-col>
+          <v-col order-sm="12" offset-sm="1">
+            <v-menu
+                bottom
+                offset-y
+                :close-on-content-click="false"
+            >
+              <template v-slot:activator="{ on, attrs}">
+                <v-btn
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                  Filter
+                </v-btn>
+              </template>
+              <v-list
+                  max-width="400"
+                  min-width="400"
+
+              >
+                <v-subheader>Mindestbestellwert</v-subheader>
+                <v-list-item>
+                  <v-slider
+                      v-model="filterCosts"
+                      min="5"
+                      max="100"
+                      step="5"
+                      thumb-label
+                      prepend-icon="mdi-cash"
+                      append-icon="mdi-cash-multiple"
+                  >
+                    <template v-slot:thumb-label="{ value }">
+                      {{value}} {{"€"}}
+                    </template>
+                  </v-slider>
+                </v-list-item>
+                <v-list-item>
+                  <v-container fluid>
+                    <v-select
+                        v-model="filterOptions"
+                        :items="Options"
+                        label="Filteroptionen"
+                        multiple
+                    >
+                      <template v-slot:selection="{ item, index }">
+                        <v-chip v-if="index < 3">
+                          <span>{{ item }}</span>
+                        </v-chip>
+                        <v-chip v-if="index === 3">
+                            <span
+                                class="grey--text caption"
+                            >
+                              (+{{ filterOptions.length - 3 }} weitere)
+                            </span>
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-container>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn color="error">Filter löschen</v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-col>
+        </v-row>
         <v-container>
           <v-text-field placeholder="Suche..." autofocus clearable
             v-model="searchString"
@@ -13,7 +112,6 @@
         <v-btn>Gericht</v-btn>
         <v-btn>Umgebung</v-btn>
       </v-container>
-      <v-divider></v-divider>
       <v-container>
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
@@ -29,7 +127,7 @@
                   <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
                 </v-list-item-content>
                 <v-list-item-content>
-                  <v-list-item-group align="left">
+                  <v-list-item-group class="text-left">
                     <v-list-item-title>{{ item.name }}</v-list-item-title>
                     <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                     <br>
@@ -40,13 +138,17 @@
                   </v-list-item-group>
                 </v-list-item-content>
                 <v-list-item-content></v-list-item-content>
-                <v-list-item-group align="center">
+                <v-list-item-group class="text-right">
+                  <v-btn small="true" right>
+                    <v-icon>mdi-heart</v-icon>
+                  </v-btn>
+                  <br>
                   <v-list-item-content>
                     Preis: {{ item.price}}
                     <br>
                     Mindestbestellwert: {{item.minimum}} €
                   </v-list-item-content>
-                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small :value="item.rating"></v-rating>
+                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                   <br>
                   <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'dish'}">Bestellen</v-btn>
                 </v-list-item-group>
