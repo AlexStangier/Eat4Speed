@@ -149,11 +149,13 @@ export default {
       })
           .then((response) => {
             if (response.status === 200) {
-              this.$store.commit('saveLoginData', {
+              const payload = {
                 emailAdresse: response.data.emailAdresse,
                 passwort: response.data.passwort
-              });
-              router.push({name: "Startseite"})
+              }
+              this.$store.commit('saveLoginData', payload);
+              eventBus.$emit('setLogin', payload.emailAdresse);
+              this.$router.push({name: "Startseite"})
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {

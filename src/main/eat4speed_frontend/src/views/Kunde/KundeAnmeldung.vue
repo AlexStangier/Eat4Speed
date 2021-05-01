@@ -127,6 +127,7 @@
 import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
 import axios from "axios";
+import {eventBus} from '@/event/event';
 
 export default {
   name: "KundeAnmeldung",
@@ -147,11 +148,13 @@ export default {
       })
           .then((response) => {
             if (response.status === 200) {
-              this.$store.commit('saveLoginData', {
+              const payload = {
                 emailAdresse: response.data.emailAdresse,
                 passwort: response.data.passwort
-              });
-              router.push({name: "Startseite"})
+              }
+              this.$store.commit('saveLoginData', payload);
+              eventBus.$emit('setLogin', payload.emailAdresse);
+              this.$router.push({name: "Startseite"})
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {
@@ -180,9 +183,7 @@ export default {
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
-      var bestellhistorie = {
-
-      };
+      var bestellhistorie = {};
 
       const responseBestellhistorie = await axios.post("/Bestellhistorie/addBestellhistorie", bestellhistorie);
 
