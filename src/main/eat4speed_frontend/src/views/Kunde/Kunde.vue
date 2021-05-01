@@ -291,7 +291,7 @@ export default {
   },
   watch:{
     '$store.state.searchString': function() {
-      this.getStoreSeachString()
+      this.getStoreSeachString();
       this.loadGerichte();
     }
   }

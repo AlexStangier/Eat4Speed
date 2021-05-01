@@ -13,7 +13,7 @@
                         v-model="searchString"
           ></v-text-field>
           <v-btn
-              @click="setStoreSearchString"
+              @mousedown="setStoreSearchString"
               :to="{ name: 'Kunde'}"
           >Suchen</v-btn>
           <v-btn>Gericht</v-btn>
@@ -83,6 +83,7 @@ export default {
     this.loadGerichteFromStore();
   },
   beforeRouteLeave(to, from, next) {
+    console.log("leave");
     this.setStoreSearchString();
     next();
   },
