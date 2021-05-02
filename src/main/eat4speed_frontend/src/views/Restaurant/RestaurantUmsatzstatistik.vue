@@ -35,21 +35,11 @@
 
 
 
-              <v-sheet
-                  class="v-sheet--offset mx-auto"
-                  color="cyan"
-                  elevation="12"
-                  max-width="calc(100% - 32px)"
-              >
-                <v-sparkline
 
-                    :labels="iteratedDates"
-                    :value="value"
-                    color="white"
-                    line-width="2"
-                    padding="16"
-                ></v-sparkline>
-              </v-sheet>
+
+          <line-chart :data="{'2017-01-01': 11, '2017-01-02': 6}"></line-chart>
+                <line-chart :data="iteratedDates"></line-chart>
+
 
 
 
@@ -63,28 +53,24 @@
 
 <script>
 import moment from 'moment';
+import Vue from 'vue';
+import Chartkick from 'vue-chartkick';
+import Chart from 'chart.js';
+
+Vue.use(Chartkick.use(Chart));
 export default {
 
   data () {
     return{
-      labels: [
-        '15.04',
-        '16.04',
-        '17.04',
-        '18.04',
-        '19.04',
-        '20.04',
-        '21.04',
-        '22.04',
-      ],
+
           value:[ ],
           dates : ['2021-09-10', '2021-09-20'],
-      iteratedDates :[]
+      iteratedDates :{}
     };
   },
   methods:{
     async iterateDate() {
-      this.iteratedDates=[];
+      this.iteratedDates={};
       this.value=[];
       var date0;
       var date1;
@@ -99,9 +85,11 @@ export default {
 
       //var datesList = [];
       for (var d = date0; d <= date1; d.setDate(d.getDate() + 1)) {
-        const date = moment(d, "YYYYMMDD").format("YYYY.MM.DD");
-        this.iteratedDates.push(date.toString());
-        this.value.push(Math.random());
+        const date = moment(d, "YYYYMMDD").format("YYYY-MM-DD");
+       // this.iteratedDates.push(date.toString());
+        this.iteratedDates[date] = Math.random()+1;
+       // this.iteratedDates.push(date.toString(),Math.random());
+        //this.value.push(Math.random());
       }
       console.log(this.iteratedDates);
 
