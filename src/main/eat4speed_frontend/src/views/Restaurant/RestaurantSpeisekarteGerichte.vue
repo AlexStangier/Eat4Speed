@@ -250,12 +250,12 @@ export default {
   mounted() {
     this.displayGetraenke=false;
 
+    this.restaurantID = 2;
     this.loadGerichte()
   },
   methods: {
 
     async loadGerichte() {
-      this.restaurantID = 1;
 
       let gerichtPath;
 
@@ -306,6 +306,7 @@ export default {
 
       }
       console.log(this.imgs);
+      this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
@@ -386,8 +387,6 @@ export default {
     async addGericht() {
 
       console.log("it's fine");
-
-      this.restaurantID = 1;
 
       if (this.gerichtVerfuegbar === true) {
         this.gerichtVerfuegbar = 1;

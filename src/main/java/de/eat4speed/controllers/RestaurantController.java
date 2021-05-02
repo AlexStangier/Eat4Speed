@@ -22,27 +22,23 @@ public class RestaurantController {
     IRestaurantService _restaurant;
 
     @POST
-    public Response add(Restaurant restaurant)
-    {
+    public Response add(Restaurant restaurant) {
         return _restaurant.addRestaurant(restaurant);
     }
 
 
     @PUT
     @Path("updateVerifiziert/{id}")
-    public Response updateRestaurant_Verifiziert(@PathParam("id") int id)
-    {
+    public Response updateRestaurant_Verifiziert(@PathParam("id") int id) {
         return _restaurant.updateRestaurant_Verifiziert(id);
     }
 
     @GET
     @Path("{selection}")
-    public List getAllRestaurant(@PathParam("selection") String restaurantSelectionVerifizierung)
-    {
+    public List getAllRestaurant(@PathParam("selection") String restaurantSelectionVerifizierung) {
         List restaurantData = null;
 
-        switch(restaurantSelectionVerifizierung)
-        {
+        switch (restaurantSelectionVerifizierung) {
             case "ALL":
                 restaurantData = _restaurant.getAllRestaurant();
                 System.out.println("Case All");
@@ -55,6 +51,19 @@ public class RestaurantController {
                 break;
         }
         return restaurantData;
+    }
+
+    @GET
+    @Path("getRestaurantDataByRestaurantName/{name}")
+    public List getRestaurantDataByRestaurantName(@PathParam("name") String restaurantName) {
+        return _restaurant.getRestaurantDataByRestaurantName(restaurantName);
+    }
+
+    @GET
+    @Path("getAllRestaurantDataByRestaurant_ID/{id}")
+    public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID)
+    {
+        return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
     }
 
     @DELETE

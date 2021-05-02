@@ -12,12 +12,10 @@
           <v-text-field placeholder="Suche..." autofocus clearable
                         v-model="searchString"
           ></v-text-field>
-          <v-btn
-              @mousedown="setStoreSearchString"
-              :to="{ name: 'Kunde'}"
+          <v-btn @click="setStoreSearchString"
           >Suchen</v-btn>
-          <v-btn>Gericht</v-btn>
-          <v-btn>Umgebung</v-btn>
+          <v-btn @click="setDestinationToGerichte">Gericht</v-btn>
+          <v-btn @click="setDestinationToRestaurants">Umgebung</v-btn>
         </v-row>
       </v-container>
 
@@ -91,6 +89,22 @@ export default {
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
+      if(this.searchDestination === "Gerichte")
+      {
+        this.$store.commit("changeSearchType", "Gerichte");
+        this.$router.push({ name: 'Kunde'});
+      }
+      else
+      {
+        this.$store.commit("changeSearchType", "Restaurants")
+        this.$router.push({ path: '/kundeRestaurants' });
+      }
+    },
+    setDestinationToGerichte() {
+      this.searchDestination = "Gerichte";
+    },
+    setDestinationToRestaurants() {
+      this.searchDestination = "Restaurants";
     },
     selectGericht(item) {
       this.selectedGericht = item;
@@ -112,7 +126,8 @@ export default {
       carts: [],
       version:0,
       selectedGericht:"",
-      searchString:""
+      searchString:"",
+      searchDestination:""
     };
   },
 }

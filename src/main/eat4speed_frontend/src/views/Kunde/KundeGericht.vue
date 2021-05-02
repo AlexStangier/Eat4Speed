@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="1"
       >
-        <v-btn small to="/Kunde">Zurück</v-btn>
+        <v-btn small @click="returnToPreviousView">Zurück</v-btn>
       </v-col>
     </v-row>
     <v-container>
@@ -122,6 +122,16 @@ export default {
 
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    },
+    returnToPreviousView() {
+      if(this.$store.getters.searchType==="Gerichte")
+      {
+        this.$router.push({name: "Kunde"});
+      }
+      else
+      {
+        this.$router.push({name: "KundeAuswahlseiteRestaurant"});
+      }
     }
   },
   data: () => ({

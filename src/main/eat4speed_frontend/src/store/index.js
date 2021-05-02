@@ -15,10 +15,17 @@ export default new Vuex.Store({
   state: {
     searchString:"",
     gericht_ID:"",
-    cartGerichte:[]
+    cartGerichte:[],
+    selectedRestaurant_ID:"",
+    searchType:""
   },
   plugins: [vuexLocal.plugin],
-  mutations: {
+  mutations: {changeSearchType: (state, payload) => {
+      state.searchType = payload;
+    },
+    changeSelectedRestaurant_ID: (state, payload) => {
+      state.selectedRestaurant_ID = payload;
+    },
     changeSearchString: (state, payload) => {
       state.searchString = payload;
     },
@@ -54,6 +61,12 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    searchType: state => {
+      return state.searchType;
+    },
+    selectedRestaurant_ID: state => {
+      return state.selectedRestaurant_ID;
+    },
     searchString: state => {
       return state.searchString;
     },

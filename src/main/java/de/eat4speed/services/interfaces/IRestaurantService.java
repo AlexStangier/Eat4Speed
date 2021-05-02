@@ -16,6 +16,10 @@ public interface IRestaurantService {
 
     List<String> getVerifiedRestaurant();
 
+    List getRestaurantDataByRestaurantName(String restaurantName);
+
+    public List getAllRestaurantDataByRestaurant_ID(int restaurant_ID);
+
     Response updateRestaurant_Verifiziert(int id);
 
     Response deleteRestaurant(int id);

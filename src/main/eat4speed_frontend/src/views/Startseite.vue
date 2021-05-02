@@ -20,8 +20,8 @@
               >
               </v-text-field>
             </v-col>
-            <v-btn :disabled="!valid" :to="{ name: 'Kunde'}" color="red" dark rounded elevation="15" align="bottom"
-                   @click="validate">Los
+            <v-btn :disabled="!valid" color="red" dark rounded elevation="15" align="bottom"
+                   @click="setStoreSearchString">Los
             </v-btn>
           </v-row>
           <v-row
@@ -29,10 +29,10 @@
           >
             <v-col>
               <v-btn :disabled="!valid" ref="GerichtButton" color="blue" dark rounded elevation="15" width="200"
-                     @click="gerichtFarbe">Gericht
+                     @click="gerichtFarbe" @mousedown="setDestinationToGerichte">Gericht
               </v-btn>
               <v-btn :disabled="!valid" ref="UmgebungButton" color="red" dark rounded elevation="15" width="200"
-                     @click="umbegungFarbe">Umgebung
+                     @click="umbegungFarbe" @mousedown="setDestinationToRestaurants">Umgebung
               </v-btn>
             </v-col>
           </v-row>
@@ -84,14 +84,28 @@ export default {
   mounted() {
     this.$store.commit("changeCartGerichte",[]);
   },
-  beforeRouteLeave(to, from, next) {
-    this.setStoreSearchString();
-    next();
-  },
   methods: {
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
+      if(this.searchDestination === "Gerichte")
+      {
+        this.$store.commit("changeSearchType","Gerichte");
+        this.$router.push({ name: 'Kunde'});
+      }
+      else
+      {
+        this.$store.commit("changeSearchType","Restaurants");
+        console.log("To Restaurants");
+        this.$router.push({path: '/kundeRestaurants'});
+      }
+    },
+    setDestinationToGerichte() {
+      this.searchDestination = "Gerichte";
+    },
+    setDestinationToRestaurants() {
+      console.log("Changed Destination to Restaurants");
+      this.searchDestination = "Restaurants";
     },
     openLogin() {
       this.$refs.Anmeldung.class = "px-4 d-flex"
@@ -136,6 +150,7 @@ export default {
       verify: "",
       loginPassword: "",
       loginEmail: "",
+      searchDestination: "",
       loginEmailRules: [
         v => !!v || "Required",
         v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
