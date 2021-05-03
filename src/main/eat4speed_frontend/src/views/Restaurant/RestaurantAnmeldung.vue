@@ -133,7 +133,6 @@
 </template>
 
 <script>
-import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
 import axios from "axios";
 import {eventBus} from '@/event/event';
