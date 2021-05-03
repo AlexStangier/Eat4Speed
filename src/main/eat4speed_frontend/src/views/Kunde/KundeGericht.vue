@@ -35,7 +35,7 @@
                   </v-content>
                   <v-content v-if="b === 10 & c === 2">
                     Preis
-                    <v-text-field readonly v-model="gerichtPreis"></v-text-field>
+                    {{ gerichtPreis + '&euro;' }}
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
                     <v-btn small @click="addToCart">
@@ -76,7 +76,7 @@ export default {
 
         this.gerichtName = gerichtData[1];
         this.gerichtBeschreibung = gerichtData[2];
-        this.gerichtPreis = gerichtData[3] + "€";
+        this.gerichtPreis = parseFloat(gerichtData[3]);
         this.gerichtVerfuegbar = gerichtData[4];
         this.restaurant_ID = gerichtData[5];
         this.restaurantName = gerichtData[6];
@@ -117,7 +117,8 @@ export default {
         gericht_ID: this.gericht_ID,
         name: this.gerichtName,
         thumbnail: this.gerichtBild,
-        quantity: this.gerichtAnzahl
+        quantity: this.gerichtAnzahl,
+        price: this.gerichtPreis
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
@@ -138,7 +139,7 @@ export default {
     gerichtName: "",
     gerichtBeschreibung: "",
     gerichtBild: "",
-    gerichtPreis: "",
+    gerichtPreis: 0.0,
     gerichtVerfuegbar: "",
     gerichtAnzahl: 0,
     cartGerichte: "",
