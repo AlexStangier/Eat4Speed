@@ -7,6 +7,9 @@ import java.io.Serializable;
 
 @Entity
 public class Restaurant_Zeiten extends PanacheEntityBase implements Serializable {
+
+    public Restaurant_Zeiten(){}
+
     @Id
     private int restaurant_ID;
     @Id

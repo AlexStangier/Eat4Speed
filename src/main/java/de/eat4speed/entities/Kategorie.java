@@ -8,6 +8,9 @@ import java.util.Objects;
 
 @Entity
 public class Kategorie extends PanacheEntityBase implements Serializable {
+
+    public Kategorie(){}
+
     @Id
     private String name;
     private String beschreibung;

@@ -9,6 +9,8 @@ import java.util.Objects;
 @Entity
 public class Bestellhistorie extends PanacheEntityBase implements Serializable {
 
+    public Bestellhistorie(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bestellhistorien_ID;

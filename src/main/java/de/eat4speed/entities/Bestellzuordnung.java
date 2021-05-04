@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Entity
 public class Bestellzuordnung extends PanacheEntityBase implements Serializable {
 
+    public Bestellzuordnung(){}
+
     @Id
     private int bestell_ID;
     @Id

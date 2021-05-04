@@ -13,6 +13,9 @@ import java.util.Objects;
 
 @Entity
 public class Schicht extends PanacheEntityBase implements Serializable {
+
+    public Schicht(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int schicht_ID;

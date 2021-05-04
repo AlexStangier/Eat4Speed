@@ -10,6 +10,8 @@ import java.util.Objects;
 @Entity
 public class Benachrichtigung_Fahrer extends PanacheEntityBase implements Serializable {
 
+    public Benachrichtigung_Fahrer(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int benachrichtigungs_ID;

@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Entity
 public class Adressen extends PanacheEntityBase implements Serializable {
 
+    public Adressen(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int adress_ID;

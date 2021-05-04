@@ -9,6 +9,8 @@ import java.util.Objects;
 @Entity
 public class Restaurant extends PanacheEntityBase implements Serializable {
 
+    public Restaurant(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int restaurant_ID;

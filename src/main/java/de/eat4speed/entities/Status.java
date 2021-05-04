@@ -7,11 +7,12 @@ import java.io.Serializable;
 
 @Entity
 public class Status extends PanacheEntityBase implements Serializable {
+
+    public Status(){}
+
     @Id
     private String status_Name;
     private int rechnungs_ID;
-
-
 
     public String getStatus_Name() {
         return status_Name;

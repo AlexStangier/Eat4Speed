@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 
 @Entity
 public class Rechnung extends PanacheEntityBase implements Serializable {
+
+    public Rechnung(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rechnungs_ID;

@@ -10,6 +10,8 @@ import java.util.Objects;
 @Entity
 public class Bewertung {
 
+    public Bewertung(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bewertungs_ID;

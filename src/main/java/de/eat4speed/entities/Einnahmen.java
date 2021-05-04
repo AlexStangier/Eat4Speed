@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Entity
 public class Einnahmen extends PanacheEntityBase implements Serializable {
 
+    public Einnahmen(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int einnahmen_ID;
