@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @ApplicationScoped
 public class BestellungService implements IBestellungService {
@@ -99,6 +100,7 @@ public class BestellungService implements IBestellungService {
             Status status = new Status();
             status.setStatus_Name("offen");
             status.setRechnungs_ID(bill.getRechnungs_ID());
+            _statusRepository.persist(status);
 
             //create Auftrag
             Auftrag order = new Auftrag();
@@ -107,12 +109,21 @@ public class BestellungService implements IBestellungService {
             order.setAuftragnehmer(safeItems.get(0).getRestaurant_ID());
             order.setTimestamp(new Timestamp(date.getTime()));
             order.setAnschrift(orderer.getAnschrift());
+            order.setStatus(status.getStatus_Name().toLowerCase(Locale.ROOT));
 
+            //TODO add algorithm result here
+            order.setLieferdistanz(23.0);
+            order.setGeschaetzte_fahrzeit_restaurant_ziel(15);
 
+            _auftragRepository.addAuftrag(order);
 
+            //make sure changes have been applied
+            _auftragRepository.flush();
+
+            //create new Bestellhistorie entry
+            Bestellhistorie orderHistoryEntry = new Bestellhistorie();
+            orderHistoryEntry.setBestellhistorien_ID((int) order.getAuftrags_ID());
+            _bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
         }
-
-
     }
-
 }
