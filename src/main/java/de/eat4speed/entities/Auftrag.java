@@ -10,6 +10,8 @@ import java.util.Objects;
 @Entity
 public class Auftrag extends PanacheEntityBase implements Serializable {
 
+    public Auftrag(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long auftrags_ID;

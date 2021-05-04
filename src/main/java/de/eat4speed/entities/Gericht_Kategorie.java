@@ -8,6 +8,9 @@ import java.util.Objects;
 
 @Entity
 public class Gericht_Kategorie extends PanacheEntityBase implements Serializable {
+
+    public Gericht_Kategorie(){}
+
     @Id
     private int gericht_ID;
     @Id

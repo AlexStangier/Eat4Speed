@@ -10,6 +10,8 @@ import java.util.Objects;
 @Entity
 public class Bestellung extends PanacheEntityBase implements Serializable {
 
+    public Bestellung(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bestell_ID;

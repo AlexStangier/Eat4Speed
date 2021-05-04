@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Entity
 public class Allergene extends PanacheEntityBase implements Serializable {
 
+    public Allergene(){}
+
     @Id
     private String name;
     private String beschreibung;

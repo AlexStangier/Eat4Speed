@@ -1,6 +1,5 @@
 package de.eat4speed.services.interfaces;
 
-import de.eat4speed.entities.Auftrag;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
 
@@ -16,6 +15,7 @@ public interface IBestellungService {
      * Creates and persists an order
      * @param items the order itmes
      * @param customerId the customer
+     * @return
      */
-    void createBestellung(List<Gericht> items, long customerId) throws SQLException;
+    Response createBestellung(int[] items, long customerId) throws SQLException;
 }

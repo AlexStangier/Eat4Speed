@@ -8,6 +8,9 @@ import java.util.Objects;
 
 @Entity
 public class Gericht extends PanacheEntityBase implements Serializable {
+
+    public Gericht(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int gericht_ID;

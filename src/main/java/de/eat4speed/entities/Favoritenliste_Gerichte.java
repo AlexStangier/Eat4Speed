@@ -12,6 +12,8 @@ import java.util.Objects;
 @Entity
 public class Favoritenliste_Gerichte extends PanacheEntityBase implements Serializable {
 
+    public Favoritenliste_Gerichte(){}
+
     @Id
     private int gericht_ID;
     @Id

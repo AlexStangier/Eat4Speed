@@ -13,6 +13,8 @@ import java.util.Objects;
 @Entity
 public class Blacklist extends PanacheEntityBase implements Serializable {
 
+    public Blacklist(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int eintrag_ID;

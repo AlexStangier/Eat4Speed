@@ -1,30 +1,27 @@
 package de.eat4speed.controllers;
 
-
-import de.eat4speed.repositories.BestellungRepository;
-import de.eat4speed.repositories.FahrzeugRepository;
+import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.sql.SQLException;
+import java.util.List;
 
 @Path("/Bestellung")
 public class BestellungController {
 
-
     @Inject
-    BestellungRepository bestellungRepository;
+    IBestellungService _bestellungen;
 
-    @GET
+    @POST
     @PermitAll
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return bestellungRepository.listAll().toString();
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("add")
+    public Response add(int[] items, long customerId) throws SQLException {
+        return _bestellungen.createBestellung(items,customerId);
     }
-
-
 
 }

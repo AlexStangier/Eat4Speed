@@ -8,6 +8,9 @@ import java.sql.Date;
 
 @Entity
 public class Urlaub extends PanacheEntityBase implements Serializable {
+
+    public Urlaub(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int urlaubs_ID;

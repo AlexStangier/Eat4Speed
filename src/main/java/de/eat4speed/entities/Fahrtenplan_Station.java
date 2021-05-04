@@ -9,6 +9,8 @@ import java.util.Objects;
 @Entity
 public class Fahrtenplan_Station {
 
+    public Fahrtenplan_Station(){}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Stations_ID;

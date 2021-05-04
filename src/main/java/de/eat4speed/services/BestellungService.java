@@ -7,7 +7,6 @@ import de.eat4speed.services.interfaces.IBestellungService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.Console;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class BestellungService implements IBestellungService {
     private BestellzuordnungRepository _bestellzuordnungRepository;
     private GerichtRepository _gerichtRepository;
     private BenutzerRepository _benutzerRepository;
-    private Adressen _adressenRepository;
+    private AdressenRepository _adressenRepository;
 
     @Inject
     public BestellungService(BestellungRepository bestellungRepository,
@@ -37,7 +36,7 @@ public class BestellungService implements IBestellungService {
                              BestellzuordnungRepository bestellzuordnungRepository,
                              GerichtRepository gerichtRepository,
                              BenutzerRepository benutzerRepository,
-                             Adressen adressenRepository) {
+                             AdressenRepository adressenRepository) {
         _bestellungRepository = bestellungRepository;
         _rechnungRepository = rechnungRepository;
         _auftragRepository = auftragRepository;
@@ -57,28 +56,30 @@ public class BestellungService implements IBestellungService {
     }
 
     /**
-     * Creates and persists an order
+     * Creates and persists an order with all attached items
      *
      * @param items      the order itmes
      * @param customerId the customer
+     * @return HTTP Response
      */
     @Override
-    public void createBestellung(List<Gericht> items, long customerId) throws SQLException {
+    public Response createBestellung(int[] items, long customerId) throws SQLException {
         ArrayList<Gericht> safeItems = new ArrayList<>();
         Benutzer orderer = null;
         Date date = new Date();
 
         try {
             //get items by id
-            for (Gericht item : items) {
+            for (int item : items) {
                 //make sure items are valid and not tempered
-                safeItems.add(_gerichtRepository.getGerichtByGerichtID(item.getGericht_ID()));
+                safeItems.add(_gerichtRepository.getGerichtByGerichtID(item));
             }
 
             //get customer by id
             orderer = _benutzerRepository.findById(customerId);
         } catch (Exception e) {
             System.out.println("Failed while creating order:" + e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
 
         if (!safeItems.isEmpty() && orderer != null) {
@@ -124,6 +125,8 @@ public class BestellungService implements IBestellungService {
             Bestellhistorie orderHistoryEntry = new Bestellhistorie();
             orderHistoryEntry.setBestellhistorien_ID((int) order.getAuftrags_ID());
             _bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
+            return Response.status(Response.Status.CREATED).entity(order).build();
         }
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
     }
 }
