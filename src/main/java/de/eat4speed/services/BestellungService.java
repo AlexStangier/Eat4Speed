@@ -1,17 +1,18 @@
 package de.eat4speed.services;
 
+import de.eat4speed.dto.OrderDto;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 @ApplicationScoped
@@ -58,25 +59,25 @@ public class BestellungService implements IBestellungService {
     /**
      * Creates and persists an order with all attached items
      *
-     * @param items      the order itmes
-     * @param customerId the customer
+     * @param obj Dto containing a list of items and an customer identifier
      * @return HTTP Response
      */
     @Override
-    public Response createBestellung(int[] items, long customerId) throws SQLException {
+    @Transactional
+    public Response createBestellung(OrderDto obj) throws SQLException {
         ArrayList<Gericht> safeItems = new ArrayList<>();
         Benutzer orderer = null;
         Date date = new Date();
 
         try {
             //get items by id
-            for (int item : items) {
+            for (int item : obj.items) {
                 //make sure items are valid and not tempered
                 safeItems.add(_gerichtRepository.getGerichtByGerichtID(item));
             }
 
             //get customer by id
-            orderer = _benutzerRepository.findById(customerId);
+            orderer = _benutzerRepository.getBenutzerByID(obj.getCustomerId());
         } catch (Exception e) {
             System.out.println("Failed while creating order:" + e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -101,7 +102,7 @@ public class BestellungService implements IBestellungService {
             Status status = new Status();
             status.setStatus_Name("offen");
             status.setRechnungs_ID(bill.getRechnungs_ID());
-            _statusRepository.persist(status);
+            //_statusRepository.persist(status);
 
             //create Auftrag
             Auftrag order = new Auftrag();
@@ -109,12 +110,13 @@ public class BestellungService implements IBestellungService {
             //TODO set different ids if order is composit of mutiple restaurants
             order.setAuftragnehmer(safeItems.get(0).getRestaurant_ID());
             order.setTimestamp(new Timestamp(date.getTime()));
-            order.setAnschrift(orderer.getAnschrift());
+            //TODO fix Anschrift key
+            order.setAnschrift(1);
             order.setStatus(status.getStatus_Name().toLowerCase(Locale.ROOT));
 
             //TODO add algorithm result here
             order.setLieferdistanz(23.0);
-            order.setGeschaetzte_fahrzeit_restaurant_ziel(15);
+            order.setGeschaetzte_fahrtzeit_restaurant_ziel(15);
 
             _auftragRepository.addAuftrag(order);
 
@@ -124,7 +126,7 @@ public class BestellungService implements IBestellungService {
             //create new Bestellhistorie entry
             Bestellhistorie orderHistoryEntry = new Bestellhistorie();
             orderHistoryEntry.setBestellhistorien_ID((int) order.getAuftrags_ID());
-            _bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
+            //_bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
             return Response.status(Response.Status.CREATED).entity(order).build();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();

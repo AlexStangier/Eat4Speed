@@ -1,5 +1,6 @@
 package de.eat4speed.services.interfaces;
 
+import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 
 import javax.ws.rs.core.Response;
@@ -17,4 +18,5 @@ public interface IBenutzerService {
      */
     Response checkCredentials(Benutzer requestedUser);
 
+    Integer getEmailById(UserEmailDto email);
 }
