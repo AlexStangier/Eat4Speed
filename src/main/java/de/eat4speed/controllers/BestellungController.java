@@ -1,5 +1,6 @@
 package de.eat4speed.controllers;
 
+import de.eat4speed.dto.OrderDto;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -20,8 +21,8 @@ public class BestellungController {
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("add")
-    public Response add(int[] items, long customerId) throws SQLException {
-        return _bestellungen.createBestellung(items,customerId);
+    public Response add(OrderDto obj) throws SQLException {
+        return _bestellungen.createBestellung(obj);
     }
 
 }
