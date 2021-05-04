@@ -128,9 +128,20 @@
         <!-- PAYPAL -->
         <dependency>
             <groupId>com.paypal.sdk</groupId>
-            <artifactId>rest-api-sdk</artifactId>
+            <artifactId>checkout-sdk</artifactId>
             <version>LATEST</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20180813</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.6</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

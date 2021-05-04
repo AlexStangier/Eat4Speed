@@ -10,6 +10,4 @@ import javax.transaction.Transactional;
 @ApplicationScoped
 public class RechnungRepository implements PanacheRepository<Rechnung> {
 
-
-
 }

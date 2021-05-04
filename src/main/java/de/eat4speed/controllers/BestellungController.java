@@ -4,6 +4,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.repositories.BestellungRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -18,9 +19,12 @@ public class BestellungController {
     BestellungRepository bestellungRepository;
 
     @GET
+    @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     public String get(){
         return bestellungRepository.listAll().toString();
     }
+
+
 
 }
