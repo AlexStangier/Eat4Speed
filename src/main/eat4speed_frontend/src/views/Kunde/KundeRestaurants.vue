@@ -119,13 +119,12 @@
                 </v-list-item-content>
                 <v-list-item-content>
                   <v-list-item-group class="text-left">
-                    <v-list-item-title>{{ item.name }}</v-list-item-title>
+                    <v-list-item-title>{{ item.restaurant }}</v-list-item-title>
                     <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                     <br>
                     <br>
-                    <v-list-item-content>{{item.restaurant}}</v-list-item-content>
-                    <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
-                    <v-list-item-content>Verfügbar: {{item.available}}</v-list-item-content>
+                    <v-list-item-content>Mindestbestellwert: {{item.mindestbestellwert}} €</v-list-item-content>
+                    <v-list-item-content>Bestellradius: {{item.bestellradius}}</v-list-item-content>
                   </v-list-item-group>
                 </v-list-item-content>
                 <v-list-item-content></v-list-item-content>
@@ -134,14 +133,9 @@
                     <v-icon>mdi-heart</v-icon>
                   </v-btn>
                   <br>
-                  <v-list-item-content>
-                    Preis: {{ item.price}}
-                    <br>
-                    Mindestbestellwert: {{item.minimum}} €
-                  </v-list-item-content>
                   <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                   <br>
-                  <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Bestellen</v-btn>
+                  <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -157,22 +151,17 @@
 import axios from "axios";
 
 export default {
-  name: "Kunde",
+  name: "KundeRestaurants",
   mounted() {
     this.searchString = this.$store.getters.searchString;
     console.log(this.searchString);
 
-    this.loadGerichte();
-  },
-  beforeRouteLeave(to, from, next) {
-    this.setStoreGericht_ID();
-    next();
+    this.loadRestaurants();
   },
   methods: {
-    selectGericht(item) {
-      console.log("Gericht selected "+item.id);
-      this.selectedGericht_ID = item.id;
-      this.setStoreGericht_ID()
+    selectRestaurant(item) {
+      console.log("Restaurant selected "+item.restaurantid);
+      this.selectedRestaurant = item.restaurantid;
     },
     getStoreSeachString() {
       this.searchString = this.$store.getters.searchString;
@@ -181,37 +170,26 @@ export default {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
     },
-    setStoreGericht_ID() {
-      this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+    setStoreRestaurant_ID() {
+      this.$store.commit("changeSelectedRestaurant_ID",this.selectedRestaurant);
+      this.$router.push({name: "KundeAuswahlseiteRestaurant"});
     },
-    async loadGerichte() {
-      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
+    async loadRestaurants() {
+      const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByRestaurantName/" + this.searchString);
 
-      console.log(ResponseGerichte);
+      console.log(ResponseRestaurants);
 
-      for (let i = 0; i < ResponseGerichte.data.length; i++) {
-        let gerichtData = ResponseGerichte.data[i];
+      for (let i = 0; i < ResponseRestaurants.data.length; i++) {
+        let restaurantData = ResponseRestaurants.data[i];
 
-        this.gericht_IDs[i] = gerichtData[0];
-        this.names[i] = gerichtData[1];
-        this.descriptions[i] = gerichtData[2];
-        this.prices[i] = gerichtData[3];
-
-        if(gerichtData[4] === 0)
-        {
-          this.availabilities[i] = "nicht verfügbar";
-        }
-        else
-        {
-          this.availabilities[i] = "verfügbar";
-        }
-        this.restaurant_IDs[i] = gerichtData[5];
-        this.restaurantnamen[i] = gerichtData[6];
-        this.minimums[i] = gerichtData[7];
+        this.restaurant_IDs[i] = restaurantData[0];
+        this.restaurantnamen[i] = restaurantData[1];
+        this.descriptions[i] = restaurantData[2];
+        this.minimums[i] = restaurantData[3];
+        this.bestellradius[i] = restaurantData[4];
       }
-
-      for (let i = 0; i < ResponseGerichte.data.length; i++)
+      //TODO
+      /*for (let i = 0; i < ResponseRestaurants.data.length; i++)
       {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
@@ -236,55 +214,44 @@ export default {
         }
 
       }
-      console.log(this.imgs);
-      this.amountGerichte = 0;
-      this.amountGerichte = ResponseGerichte.data.length;
+      console.log(this.imgs);*/
+      this.amountRestaurants = 0;
+      this.amountRestaurants = ResponseRestaurants.data.length;
       this.version++;
     },
   },
   data: () => ({
     searchString: "",
-    amountGerichte: 4,
-    selectedGericht_ID: "",
+    amountRestaurants: 4,
+    selectedRestaurant: "",
     version: 0,
-    gericht_IDs: [],
-    names: [],
     descriptions: [],
-    prices: [],
     imgs: [],
     restaurant_IDs: [],
     restaurantnamen:[],
     distances: [],
     minimums: [],
-    availabilities: []
+    bestellradius: []
   }),
   computed: {
     items(){
       let i = 0
-      return Array.from({ length: this.amountGerichte}, () => {
-        const cid = this.gericht_IDs[i]
-        const cname = this.names[i]
+      return Array.from({ length: this.amountRestaurants}, () => {
         const cdescription = this.descriptions[i]
-        const cprice = this.prices[i]
         const cimg = this.imgs[i]
         const crestaurantid = this.restaurant_IDs[i]
         const crestaurantname = this.restaurantnamen[i]
-        const cdistance = this.distances[i]
         const cminimum = this.minimums[i]
-        const cavailable = this.availabilities[i]
+        const cbestellradius = this.bestellradius[i]
         i++;
 
         return {
-          id: cid,
-          name: cname,
           description: cdescription,
-          price: cprice,
           img: cimg,
           restaurantid: crestaurantid,
           restaurant: crestaurantname,
-          distance: cdistance,
-          minimum: cminimum,
-          available: cavailable
+          mindestbestellwert: cminimum,
+          cbestellradius: cbestellradius
         }
       })
     }
@@ -292,7 +259,7 @@ export default {
   watch:{
     '$store.state.searchString': function() {
       this.getStoreSeachString();
-      this.loadGerichte();
+      this.loadRestaurants();
     }
   }
 }

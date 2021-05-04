@@ -62,6 +62,12 @@
                           <v-text-field v-model="lastName" :rules="[rules.required]" label="Nachname" maxlength="20"
                                         required></v-text-field>
                         </v-col>
+                        <v-col cols="12" md="6" sm="6">
+                          <v-text-field v-model="mindestBestellwert" number :rules="[rules.required]" label="Mindestbestellwert" required></v-text-field>
+                        </v-col>
+                        <v-col cols="12" md="6" sm="6">
+                          <v-text-field v-model="bestellradius" number :rules="[rules.required]" label="Bestellradius" required></v-text-field>
+                        </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
                                         maxlength="20" required></v-text-field>
@@ -127,7 +133,6 @@
 </template>
 
 <script>
-import router from "@/router";
 import Popup from '@/components/Snackbar.vue';
 import axios from "axios";
 import {eventBus} from '@/event/event';
@@ -203,7 +208,9 @@ export default {
         name_des_Restaurants: this.restaurant_name,
         allgemeine_Beschreibung: this.descriptionShort,
         anschrift: this.adress_ID,
-        verifiziert: 0
+        verifiziert: 0,
+        mindestbestellwert: this.mindestBestellwert,
+        bestellradius: this.bestellradius
       };
 
       axios.post("/Restaurant", restaurant)
@@ -249,6 +256,8 @@ export default {
       email: "",
       phoneNumber: "",
       password: "",
+      mindestBestellwert: "",
+      bestellradius: "",
       verify: "",
       loginPassword: "",
       loginEmail: "",

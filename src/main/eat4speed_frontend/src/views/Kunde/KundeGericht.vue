@@ -3,21 +3,7 @@
     <v-row>
       <v-col cols="1"
       >
-        <v-btn small to="/Kunde">Zurück</v-btn>
-      </v-col>
-      <v-col
-          order="2"
-          offset="8"
-      >
-        <v-btn small @click="addToCart">
-          Warenkorb
-          <v-icon>mdi-cart</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col
-          order="3"
-      >
-        Preis
+        <v-btn small @click="returnToPreviousView">Zurück</v-btn>
       </v-col>
     </v-row>
     <v-container>
@@ -49,10 +35,13 @@
                   </v-content>
                   <v-content v-if="b === 10 & c === 2">
                     Preis
-                    <v-text-field readonly v-model="gerichtPreis"></v-text-field>
+                    {{ gerichtPreis + '&euro;' }}
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
-                    <v-btn>Bestellen</v-btn>
+                    <v-btn small @click="addToCart">
+                      Zum Warenkorb hinzufügen
+                      <v-icon>mdi-cart</v-icon>
+                    </v-btn>
                   </v-content>
                 </v-col>
               </v-row>
@@ -71,7 +60,7 @@
 import axios from "axios";
 
 export default {
-  name: "KundeDish",
+  name: "Gericht",
   mounted(){
     this.gericht_ID = this.$store.getters.gericht_ID;
     this.loadGericht();
@@ -87,7 +76,7 @@ export default {
 
         this.gerichtName = gerichtData[1];
         this.gerichtBeschreibung = gerichtData[2];
-        this.gerichtPreis = gerichtData[3] + "€";
+        this.gerichtPreis = parseFloat(gerichtData[3]);
         this.gerichtVerfuegbar = gerichtData[4];
         this.restaurant_ID = gerichtData[5];
         this.restaurantName = gerichtData[6];
@@ -128,18 +117,29 @@ export default {
         gericht_ID: this.gericht_ID,
         name: this.gerichtName,
         thumbnail: this.gerichtBild,
-        quantity: this.gerichtAnzahl
+        quantity: this.gerichtAnzahl,
+        price: this.gerichtPreis
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    },
+    returnToPreviousView() {
+      if(this.$store.getters.searchType==="Gerichte")
+      {
+        this.$router.push({name: "Kunde"});
+      }
+      else
+      {
+        this.$router.push({name: "KundeAuswahlseiteRestaurant"});
+      }
     }
   },
   data: () => ({
     gerichtName: "",
     gerichtBeschreibung: "",
     gerichtBild: "",
-    gerichtPreis: "",
+    gerichtPreis: 0.0,
     gerichtVerfuegbar: "",
     gerichtAnzahl: 0,
     cartGerichte: "",

@@ -7,6 +7,18 @@
         </v-badge>
         -->
       </v-btn>
+      <v-container>
+        <v-row>
+          <v-text-field placeholder="Suche..." autofocus clearable
+                        v-model="searchString"
+          ></v-text-field>
+          <v-btn @click="setStoreSearchString"
+          >Suchen</v-btn>
+          <v-btn @click="setDestinationToGerichte">Gericht</v-btn>
+          <v-btn @click="setDestinationToRestaurants">Umgebung</v-btn>
+        </v-row>
+      </v-container>
+
     </template>
     <v-card width="400">
       <v-list>
@@ -32,7 +44,7 @@
             <v-list-item-content>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
               <v-list-item-subtitle>{{ item.quantity }} item{{ item.quantity > 1 ? 's' : '' }}</v-list-item-subtitle>
-              <v-list-item-subtitle hidden>{{ item.gericht_ID }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ calculateItemPrice(item.quantity, item.price) }} &euro;</v-list-item-subtitle>
             </v-list-item-content>
 
             <v-list-item-action>
@@ -44,6 +56,10 @@
 
 
         </v-list>
+
+        <v-divider></v-divider>
+
+        <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
 
         <v-card-actions>
           <v-btn block color="primary" rounded>
@@ -57,6 +73,7 @@
       </v-card-text>
 
     </v-card>
+
   </v-menu>
 
 </template>
@@ -67,27 +84,60 @@ export default {
   mounted() {
     this.loadGerichteFromStore();
   },
+  beforeRouteLeave(to, from, next) {
+    this.setStoreSearchString();
+    next();
+  },
   methods: {
+    setStoreSearchString() {
+      this.$store.commit("changeSearchString",this.searchString);
+      if(this.searchDestination === "Gerichte")
+      {
+        this.$store.commit("changeSearchType", "Gerichte");
+        this.$router.push({ name: 'Kunde'});
+      }
+      else
+      {
+        this.$store.commit("changeSearchType", "Restaurants")
+        this.$router.push({ path: '/kundeRestaurants' });
+      }
+    },
+    setDestinationToGerichte() {
+      this.searchDestination = "Gerichte";
+    },
+    setDestinationToRestaurants() {
+      this.searchDestination = "Restaurants";
+    },
     selectGericht(item) {
       this.selectedGericht = item;
     },
     loadGerichteFromStore() {
       this.carts = this.$store.getters.getCartGerichte;
-      console.log(this.carts);
       this.version++;
     },
     deleteGerichtFromStore() {
-      console.log(this.selectedGericht.name);
       this.$store.commit("removeFromCartGerichte",this.selectedGericht);
       this.loadGerichteFromStore();
       this.version++;
+    },
+    calculateItemPrice(price, amount) {
+      return price * amount;
+    },
+    calculateCartPrice() {
+      let cartPrice = 0;
+      this.carts.forEach(value => {
+        cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
+      });
+      return cartPrice;
     }
   },
   data() {
     return {
       carts: [],
       version:0,
-      selectedGericht:""
+      selectedGericht:"",
+      searchString:"",
+      searchDestination:""
     };
   },
 }

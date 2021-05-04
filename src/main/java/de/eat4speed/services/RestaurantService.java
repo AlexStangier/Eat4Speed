@@ -48,6 +48,17 @@ public class RestaurantService implements IRestaurantService {
         return restaurantRepository.getVerifiedRestaurant();
     }
 
+    @Override
+    public List getRestaurantDataByRestaurantName(String restaurantName)
+    {
+        return restaurantRepository.getRestaurantDataByRestaurantName(restaurantName);
+    }
+
+    @Override
+    public List getAllRestaurantDataByRestaurant_ID(int restaurant_ID)
+    {
+        return restaurantRepository.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
+    }
 
     @Override
     public Response updateRestaurant_Verifiziert(int id)
