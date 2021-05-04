@@ -15,6 +15,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     private String benutzername;
     private String vorname;
     private String nachname;
+    private int Anschrift;
     private String emailAdresse;
     private String passwort;
     private String rolle;
@@ -93,6 +94,14 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.telefonnummer = telefonnummer;
     }
 
+    public int getAnschrift() {
+        return Anschrift;
+    }
+
+    public void setAnschrift(int anschrift) {
+        Anschrift = anschrift;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,9 +112,10 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
 
     /**
      * Searches Benutzer table for entries matching the benutzername
+     *
      * @return Benutzer
      */
-    public Benutzer findMatchingEntryByEmail(){
+    public Benutzer findMatchingEntryByEmail() {
         return find("EmailAdresse", emailAdresse).firstResult();
     }
 

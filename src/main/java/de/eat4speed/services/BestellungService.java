@@ -100,15 +100,13 @@ public class BestellungService implements IBestellungService {
             status.setStatus_Name("offen");
             status.setRechnungs_ID(bill.getRechnungs_ID());
 
-            //get address from customer
-            orderer.get
-
             //create Auftrag
             Auftrag order = new Auftrag();
             order.setKundennummer(orderer.getBenutzer_ID());
             //TODO set different ids if order is composit of mutiple restaurants
             order.setAuftragnehmer(safeItems.get(0).getRestaurant_ID());
             order.setTimestamp(new Timestamp(date.getTime()));
+            order.setAnschrift(orderer.getAnschrift());
 
 
 
