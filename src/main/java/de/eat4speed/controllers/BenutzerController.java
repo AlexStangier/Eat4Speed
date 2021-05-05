@@ -31,10 +31,10 @@ public class BenutzerController {
         return _benutzer.listAll();
     }
 
-    @GET
+    @POST
     @PermitAll
-    @Produces(MediaType.TEXT_PLAIN)
     @Path("getIdByEmail")
+    @Produces(MediaType.TEXT_PLAIN)
     public Integer getIdByEmail(UserEmailDto email) {
         return _benutzer.getEmailById(email);
     }
