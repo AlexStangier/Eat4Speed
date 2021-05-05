@@ -13,7 +13,8 @@
                         v-model="searchString"
           ></v-text-field>
           <v-btn @click="setStoreSearchString"
-          >Suchen</v-btn>
+          >Suchen
+          </v-btn>
           <v-btn @click="setDestinationToGerichte">Gericht</v-btn>
           <v-btn @click="setDestinationToRestaurants">Umgebung</v-btn>
         </v-row>
@@ -62,7 +63,7 @@
         <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
 
         <v-card-actions>
-          <v-btn block color="primary" rounded>
+          <v-btn block color="primary" rounded @click="paypalRequest()">
             Checkout
           </v-btn>
         </v-card-actions>
@@ -90,16 +91,13 @@ export default {
   },
   methods: {
     setStoreSearchString() {
-      this.$store.commit("changeSearchString",this.searchString);
-      if(this.searchDestination === "Gerichte")
-      {
+      this.$store.commit("changeSearchString", this.searchString);
+      if (this.searchDestination === "Gerichte") {
         this.$store.commit("changeSearchType", "Gerichte");
-        this.$router.push({ name: 'Kunde'});
-      }
-      else
-      {
+        this.$router.push({name: 'Kunde'});
+      } else {
         this.$store.commit("changeSearchType", "Restaurants")
-        this.$router.push({ path: '/kundeRestaurants' });
+        this.$router.push({path: '/kundeRestaurants'});
       }
     },
     setDestinationToGerichte() {
@@ -116,7 +114,7 @@ export default {
       this.version++;
     },
     deleteGerichtFromStore() {
-      this.$store.commit("removeFromCartGerichte",this.selectedGericht);
+      this.$store.commit("removeFromCartGerichte", this.selectedGericht);
       this.loadGerichteFromStore();
       this.version++;
     },
@@ -129,15 +127,39 @@ export default {
         cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
       });
       return cartPrice;
+    },
+    async getCustomerId() {
+      const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$store.getters.getLoginData.auth.username });
+      return response.data;
+    },
+    async paypalRequest() {
+      const items = [];
+      this.$store.getters.getCartGerichte.forEach(item => {
+        items.push(item.gericht_ID);
+      });
+
+      const customerId = await this.getCustomerId();
+
+      this.$http.post('/Bestellung/add', {
+        items: items,
+        customerId: customerId
+      }).then((response) => {
+        if (response.status === 201) {
+          console.log('success');
+          this.$store.commit("deleteCartGerichte");
+          this.version++;
+          this.$router.push({name: "Startseite"});
+        }
+      });
     }
   },
   data() {
     return {
       carts: [],
-      version:0,
-      selectedGericht:"",
-      searchString:"",
-      searchDestination:""
+      version: 0,
+      selectedGericht: "",
+      searchString: "",
+      searchDestination: ""
     };
   },
 }
