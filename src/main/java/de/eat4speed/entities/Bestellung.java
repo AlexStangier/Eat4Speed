@@ -54,6 +54,18 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
         this.rechnung = rechnung;
     }
 
+    public int getAuftrags_ID() {
+        return auftrags_ID;
+    }
+
+    public void setAuftrags_ID(int auftrags_ID) {
+        this.auftrags_ID = auftrags_ID;
+    }
+
+    public void setRechnung(int rechnung) {
+        this.rechnung = rechnung;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
