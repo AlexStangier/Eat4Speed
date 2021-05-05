@@ -168,6 +168,36 @@
                         <v-btn small="small">Zum Warenkorb hinzufügen</v-btn>
                       </v-list>
                     </v-menu>
+
+                    <v-col cols="auto">
+                      <v-dialog
+                          max-width="80%"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              small="small"
+                          >Alternativen</v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                          <v-card>
+                            <v-toolbar>Alternativen</v-toolbar>
+                            <v-card-text>
+                              <div class="text-h2 pa-12">Inhalt</div>
+                            </v-card-text>
+                            <v-card-actions class="justify-end">
+                              <v-btn>Erster Button</v-btn>
+                              <v-btn>Zweiter Button</v-btn>
+                              <v-btn
+                                  @click="dialog.value = false"
+                              >Close</v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+                    </v-col>
+
                   </v-list-item-group>
                 </v-list-item>
                 <v-divider></v-divider>
