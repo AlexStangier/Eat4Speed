@@ -102,7 +102,6 @@ public class BestellungService implements IBestellungService {
             Status status = new Status();
             status.setStatus_Name("offen");
             status.setRechnungs_ID(bill.getRechnungs_ID());
-            //_statusRepository.persist(status);
 
             //create Auftrag
             Auftrag order = new Auftrag();
@@ -126,6 +125,15 @@ public class BestellungService implements IBestellungService {
             //create new Bestellhistorie entry
             Bestellhistorie orderHistoryEntry = new Bestellhistorie();
             orderHistoryEntry.setBestellhistorien_ID((int) order.getAuftrags_ID());
+
+            //bestellung
+            Bestellung bestellung = new Bestellung();
+            bestellung.setRechnung(bill.getRechnungs_ID());
+            bestellung.setTimestamp(new Timestamp(date.getTime()));
+            bestellung.setBestellhistorien_ID(1);
+            bestellung.setAuftrags_ID((int) order.getAuftrags_ID());
+            _bestellungRepository.persist(bestellung);
+
             //_bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
             return Response.status(Response.Status.CREATED).entity(order).build();
         }
