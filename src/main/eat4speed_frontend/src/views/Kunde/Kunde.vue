@@ -109,42 +109,69 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="300"
+              item-height="300"
               max-height="600"
           >
             <template v-slot:default="{ item }" v-resize>
-              <v-list-item v-resize :key="version">
-                <v-list-item-content>
-                  <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
-                </v-list-item-content>
-                <v-list-item-content>
-                  <v-list-item-group class="text-left">
-                    <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                    <br>
-                    <br>
-                    <v-list-item-content>{{item.restaurant}}</v-list-item-content>
-                    <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
-                    <v-list-item-content>Verfügbar: {{item.available}}</v-list-item-content>
-                  </v-list-item-group>
-                </v-list-item-content>
-                <v-list-item-content></v-list-item-content>
-                <v-list-item-group class="text-right">
-                  <v-btn small="true" right>
-                    <v-icon>mdi-heart</v-icon>
-                  </v-btn>
-                  <br>
+              <v-container>
+                <v-list-item v-resize :key="version">
                   <v-list-item-content>
-                    Preis: {{ item.price}}
-                    <br>
-                    Mindestbestellwert: {{item.minimum}} €
+                    <v-img alt="Bild von Essen" max-height="250" max-width="250" position="center center" :src="item.img"></v-img>
                   </v-list-item-content>
-                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
-                  <br>
-                  <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Bestellen</v-btn>
-                </v-list-item-group>
-              </v-list-item>
-              <v-divider></v-divider>
+                  <v-list-item-content>
+                    <v-list-item-group class="text-left">
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
+                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+                      <br>
+                      <v-list-item-content>{{item.restaurant}}</v-list-item-content>
+                      <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
+                      <v-list-item-content>Verfügbar: {{item.available}}</v-list-item-content>
+                    </v-list-item-group>
+                  </v-list-item-content>
+                  <v-list-item-content></v-list-item-content>
+                  <v-list-item-group class="text-right">
+                    <v-btn small="true" right>
+                      <v-icon>mdi-heart</v-icon>
+                    </v-btn>
+                    <br>
+                    <v-list-item-content>
+                      Preis: {{ item.price +' €'}}
+                      <br>
+                      Mindestbestellwert: {{item.minimum}} €
+                    </v-list-item-content>
+                    <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
+                    <br>
+                    <v-btn small="true" bottom="bottom" :to="{name: 'Gericht'}" @mouseover="selectGericht(item)">Details</v-btn>
+                    <v-menu
+                        bottom
+                        offset-y
+                        :close-on-content-click="false"
+                    >
+                      <template v-slot:activator="{ on, attrs}">
+                        <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            small="true"
+                            bottom="bottom"
+                        >
+                          Bestellen
+                        </v-btn>
+                      </template>
+                      <v-list
+                          max-width="200"
+                          min-width="250"
+                          class="text-center"
+                      >
+                        <v-list-item>
+                          <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
+                        </v-list-item>
+                        <v-btn small="small">Zum Warenkorb hinzufügen</v-btn>
+                      </v-list>
+                    </v-menu>
+                  </v-list-item-group>
+                </v-list-item>
+                <v-divider></v-divider>
+              </v-container>
             </template>
           </v-virtual-scroll>
         </v-card>
@@ -256,7 +283,14 @@ export default {
     restaurantnamen:[],
     distances: [],
     minimums: [],
-    availabilities: []
+    availabilities: [],
+    gerichtAnzahl: 1,
+    selectRating: [5,4,3,2,1],
+    selectArea: [5,10,20,30,40],
+    countMinMaxRule:[
+      v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
+      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+    ],
   }),
   computed: {
     items(){
