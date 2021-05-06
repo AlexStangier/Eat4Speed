@@ -18,22 +18,22 @@
               <v-row
                   v-for="b in 10"
                   :key="b"
+                  align="center"
               >
                 <v-col
                     v-for="c in 3"
                     :key="c"
                 >
                   <v-content v-if="b === 1 & c === 1">
-                    <v-text-field readonly v-model="gerichtName"></v-text-field>
+                    <h1> {{ gerichtName }} </h1>
                   </v-content>
-                  <v-content v-if="b === 2 & c === 1">
-                    <v-text-field readonly v-model="restaurantName"></v-text-field>
+                  <v-content v-if="b === 2 & c === 1" class="low">
+                    {{ restaurantName }}
                   </v-content>
-                  <v-content v-if="b === 10 & c === 1">
-                    <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number">
-                    </v-text-field>
+                  <v-content v-if="b === 10 & c === 1" class="text-center">
+                    <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
                   </v-content>
-                  <v-content v-if="b === 10 & c === 2">
+                  <v-content v-if="b === 10 & c === 2" class="text-center">
                     Preis
                     {{ gerichtPreis + '&euro;' }}
                   </v-content>
@@ -141,13 +141,17 @@ export default {
     gerichtBild: "",
     gerichtPreis: 0.0,
     gerichtVerfuegbar: "",
-    gerichtAnzahl: 0,
+    gerichtAnzahl: 1,
     cartGerichte: "",
     restaurant_ID: "",
     restaurantName: "",
     restaurantMindestbestellwert: "",
     gericht_ID: "",
     version: 0,
+    countMinMaxRule:[
+        v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
+        v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+    ],
 
   }),
 }
