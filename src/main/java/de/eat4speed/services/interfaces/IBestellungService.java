@@ -1,5 +1,6 @@
 package de.eat4speed.services.interfaces;
 
+import de.eat4speed.dto.OrderDto;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
 
@@ -12,10 +13,10 @@ public interface IBestellungService {
     Response addBestellung(Bestellung bestellung);
 
     /**
-     * Creates and persists an order
-     * @param items the order itmes
-     * @param customerId the customer
-     * @return
+     * Creates and persists an order with all attached items
+     *
+     * @param obj Dto containing a list of items and an customer identifier
+     * @return HTTP Response
      */
-    Response createBestellung(int[] items, long customerId) throws SQLException;
+    Response createBestellung(OrderDto obj) throws SQLException;
 }

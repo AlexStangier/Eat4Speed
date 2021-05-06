@@ -18,7 +18,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     private String benutzername;
     private String vorname;
     private String nachname;
-    private int Anschrift;
+    //private int Anschrift;
     private String emailAdresse;
     private String passwort;
     private String rolle;
@@ -97,13 +97,13 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.telefonnummer = telefonnummer;
     }
 
-    public int getAnschrift() {
+    /*public int getAnschrift() {
         return Anschrift;
     }
 
     public void setAnschrift(int anschrift) {
         Anschrift = anschrift;
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {

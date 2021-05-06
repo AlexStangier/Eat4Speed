@@ -65,25 +65,37 @@
         </v-card-title>
         <v-divider></v-divider>
 
-        <v-card-title class="text-h4"> Speisekarte</v-card-title>
-        <v-btn
-            color="red"
-            dark
-            align="right"
-            class="mt-5"
-            @click="changeDisplayGerichte"
-        >
-          Gerichte
-        </v-btn>
-        <v-btn
-            color="red"
-            dark
-            align="right"
-            class="mt-5"
-            @click="changeDisplayGetraenke"
-        >
-          Getränke
-        </v-btn>
+        <v-card-title>
+          <v-col>
+            <v-row class="text-h4">
+              Speisekarte
+            </v-row>
+            <v-row>
+              <v-list-item-action>
+                <v-btn
+                    color="red"
+                    dark
+                    align="right"
+                    class="mt-5"
+                    @click="changeDisplayGerichte"
+                >
+                  Gerichte
+                </v-btn>
+              </v-list-item-action>
+              <v-list-item-action>
+                <v-btn
+                    color="red"
+                    dark
+                    align="right"
+                    class="mt-5"
+                    @click="changeDisplayGetraenke"
+                >
+                  Getränke
+                </v-btn>
+              </v-list-item-action>
+            </v-row>
+          </v-col>
+        </v-card-title>
         <v-divider></v-divider>
         <v-virtual-scroll
             :items="items"
@@ -94,7 +106,7 @@
           <template v-slot:default="{ item }">
             <v-list-item>
               <v-list-item-content>
-                <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
+                <v-img alt="Bild von Essen" max-height="250" max-width="250" :src="item.img"></v-img>
               </v-list-item-content>
               <v-list-item-content>
                 <v-list-item-group align="left">

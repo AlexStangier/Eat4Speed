@@ -1,5 +1,6 @@
 package de.eat4speed.services;
 
+import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.services.interfaces.IBenutzerService;
@@ -60,5 +61,10 @@ public class BenutzerService implements IBenutzerService {
             //currBenutzer is null
             return Response.status(Response.Status.NOT_FOUND).entity("Benutzer existiert nicht!").build();
         }
+    }
+
+    @Override
+    public Integer getEmailById(UserEmailDto email) {
+        return _benutzer.getBenutzerIdByEmail(email);
     }
 }

@@ -1,7 +1,10 @@
 package de.eat4speed.controllers;
 
+import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.services.interfaces.IBenutzerService;
+
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -26,6 +29,14 @@ public class BenutzerController {
     @Produces(MediaType.TEXT_PLAIN)
     public String get() {
         return _benutzer.listAll();
+    }
+
+    @POST
+    @PermitAll
+    @Path("getIdByEmail")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Integer getIdByEmail(UserEmailDto email) {
+        return _benutzer.getEmailById(email);
     }
 
 }

@@ -20,7 +20,8 @@ export default new Vuex.Store({
     searchType:""
   },
   plugins: [vuexLocal.plugin],
-  mutations: {changeSearchType: (state, payload) => {
+  mutations: {
+    changeSearchType: (state, payload) => {
       state.searchType = payload;
     },
     changeSelectedRestaurant_ID: (state, payload) => {
@@ -52,7 +53,10 @@ export default new Vuex.Store({
     saveLoginData: (state, payload) => {
       Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: true });
       Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: true });
-    }
+    },
+    deleteCartGerichte: (state) => {
+      state.cartGerichte = [];
+    },
   },
   actions: {
     deleteLoginDate: () => {
