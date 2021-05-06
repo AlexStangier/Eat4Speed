@@ -153,6 +153,8 @@
                             v-on="on"
                             small="true"
                             bottom="bottom"
+                            @mouseover="selectItem(item)"
+                            @click="gerichtAnzahl=0"
                         >
                           Bestellen
                         </v-btn>
@@ -165,7 +167,7 @@
                         <v-list-item>
                           <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
                         </v-list-item>
-                        <v-btn small="small">Zum Warenkorb hinzufügen</v-btn>
+                        <v-btn @click="addToCart()" small="small">Zum Warenkorb hinzufügen</v-btn>
                       </v-list>
                     </v-menu>
 
@@ -226,6 +228,10 @@ export default {
     next();
   },
   methods: {
+    selectItem(item) {
+      console.log("Gericht selected "+item.id);
+      this.selectedItem = item;
+    },
     selectGericht(item) {
       console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
@@ -298,11 +304,26 @@ export default {
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
+    addToCart() {
+
+      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      let cartGericht = {
+        gericht_ID: this.selectedItem.id,
+        name: this.selectedItem.name,
+        thumbnail: this.selectedItem.img,
+        quantity: this.gerichtAnzahl,
+        price: this.selectedItem.price
+      }
+
+      this.$store.commit("addToCartGerichte", cartGericht);
+      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    }
   },
   data: () => ({
     searchString: "",
     amountGerichte: 4,
     selectedGericht_ID: "",
+    selectedItem: "",
     version: 0,
     gericht_IDs: [],
     names: [],
