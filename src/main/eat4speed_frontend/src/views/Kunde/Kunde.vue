@@ -227,6 +227,9 @@
                               v-bind="attrs"
                               v-on="on"
                               small="small"
+                              @mouseenter="selectItem(item)"
+                              @mousedown="loadKategorien"
+                              @click="nameOptionActive=false; kategorieOptionActive=false"
                           >Alternativen</v-btn>
                         </template>
                         <template v-slot:default="dialog">
@@ -236,8 +239,25 @@
                               <div class="text-h2 pa-12">Inhalt</div>
                             </v-card-text>
                             <v-card-actions class="justify-end">
-                              <v-btn>Erster Button</v-btn>
-                              <v-btn>Zweiter Button</v-btn>
+                              <v-checkbox label="Name" v-model="nameOptionActive">
+                              </v-checkbox>
+                              <v-checkbox label="Kategorien" v-model="kategorieOptionActive">
+                              </v-checkbox>
+                              <v-select
+                                  ref="KategorieSelect"
+                                  v-model="selectedKategorien"
+                                  :items="kategorien"
+                                  chips
+                                  label="Kategorien"
+                                  multiple
+                                  outlined
+                                  block
+                                  :key="kategorieVersion"
+                              ></v-select>
+                              <v-btn
+                                  @mousedown="findAlternatives"
+                                  @click="dialog.value = false"
+                              >Alternativen</v-btn>
                               <v-btn
                                   @click="dialog.value = false"
                               >Close</v-btn>
@@ -295,6 +315,74 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
+    async findAlternatives() {
+      let dishAlternativeOptions = {
+        gericht_ID: this.selectedItem.id,
+        gerichtName: this.selectedItem.name,
+        kategorien: this.selectedKategorien,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive
+      }
+      console.log("Before sending get...")
+
+      const responseAlternatives = await axios.post("Gericht/getGerichtAlternatives", dishAlternativeOptions);
+
+      console.log("After sending get...")
+
+      console.log(responseAlternatives)
+
+      for (let i = 0; i < responseAlternatives.data.length; i++) {
+        let gerichtData = responseAlternatives.data[i];
+
+        this.gericht_IDs[i] = gerichtData[0];
+        this.names[i] = gerichtData[1];
+        this.descriptions[i] = gerichtData[2];
+        this.prices[i] = gerichtData[3];
+
+        if(gerichtData[4] === 0)
+        {
+          this.availabilities[i] = "nicht verfügbar";
+        }
+        else
+        {
+          this.availabilities[i] = "verfügbar";
+        }
+        this.restaurant_IDs[i] = gerichtData[5];
+        this.restaurantnamen[i] = gerichtData[6];
+        this.minimums[i] = gerichtData[7];
+      }
+
+      for (let i = 0; i < responseAlternatives.data.length; i++)
+      {
+        const config = { responseType:"arraybuffer" };
+        const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
+
+        console.log(responsePicture);
+
+        if(responsePicture.status !== 204)
+        {
+          console.log("received Picture")
+          console.log(responsePicture.data);
+
+          let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+          let imageURL = URL.createObjectURL(pictureBlob);
+          console.log(imageURL);
+
+          this.imgs[i] = imageURL;
+        }
+        else
+        {
+          this.imgs[i] = "";
+        }
+
+      }
+      console.log(this.imgs);
+      this.amountGerichte = 0;
+      this.amountGerichte = responseAlternatives.data.length;
+      this.version++;
+
+    },
     async loadGerichte() {
       const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
 
@@ -351,6 +439,17 @@ export default {
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
+    async loadKategorien() {
+      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id);
+
+      let arrayKategorien = [];
+      for(let i = 0; i<responseGetKategorie.data.length;i++)
+      {
+        arrayKategorien[i]=responseGetKategorie.data[i];
+      }
+      this.kategorien = arrayKategorien;
+      this.kategorieVersion++;
+    },
     addToCart() {
 
       console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
@@ -372,6 +471,7 @@ export default {
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
+    kategorieVersion: 0,
     gericht_IDs: [],
     names: [],
     descriptions: [],
@@ -382,6 +482,10 @@ export default {
     distances: [],
     minimums: [],
     availabilities: [],
+    kategorien: [],
+    selectedKategorien: [],
+    nameOptionActive: false,
+    kategorieOptionActive: false,
     gerichtAnzahl: 1,
     selectRating: [5,4,3,2,1],
     selectArea: [5,10,20,30,40],

@@ -1,11 +1,13 @@
 package de.eat4speed.controllers;
 
 
+import de.eat4speed.dishAlternatives.DishAlternativesOptions;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.entities.Gericht;
 import de.eat4speed.repositories.GerichtRepository;
 import de.eat4speed.services.GerichtService;
 import de.eat4speed.services.interfaces.IGerichtService;
+import org.hibernate.annotations.Parameter;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -86,6 +88,18 @@ public class GerichtController {
     public List getGerichtDataByGericht_ID(@PathParam("id") int gericht_ID)
     {
         return gerichtService.getGerichtDataByGericht_ID(gericht_ID);
+    }
+
+    @POST
+    @Path("/getGerichtAlternatives")
+    public List getGerichtAlternatives(DishAlternativesOptions options)
+    {
+        System.out.println(options.getGerichtName());
+        //System.out.println(options.getKategorien().get(0));
+        System.out.println(options.isUseName());
+        System.out.println(options.isUseKategorien());
+
+        return gerichtService.getGerichtAlternatives(options);
     }
 
     @DELETE
