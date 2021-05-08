@@ -1,10 +1,7 @@
 package de.eat4speed.services;
 
-import de.eat4speed.entities.Bestellhistorie;
 import de.eat4speed.entities.Bestellzuordnung;
-import de.eat4speed.repositories.BestellhistorieRepository;
 import de.eat4speed.repositories.BestellzuordnungRepository;
-import de.eat4speed.services.interfaces.IBestellhistorieService;
 import de.eat4speed.services.interfaces.IBestellzuordnungService;
 
 import javax.enterprise.context.ApplicationScoped;
