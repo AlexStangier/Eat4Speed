@@ -39,8 +39,8 @@
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
                     <v-btn small @click="addToCart">
-                      Zum Warenkorb hinzufügen
                       <v-icon>mdi-cart</v-icon>
+                      Zum Warenkorb hinzufügen
                     </v-btn>
                   </v-content>
                 </v-col>

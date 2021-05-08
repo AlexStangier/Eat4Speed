@@ -2,7 +2,7 @@
   <v-main>
     <v-container>
       <v-container>
-        <v-row no-gutters>
+        <v-row no-gutters align="center">
           <v-col sm="2">
             <v-select
                 v-model="selectedRating"
@@ -33,10 +33,57 @@
               </template>
             </v-select>
           </v-col>
-          <v-col offset-sm="1">
+          <v-col sm="2" offset-sm="1">
             <v-btn>Auf der Karte anzeigen</v-btn>
           </v-col>
-          <v-col order-sm="12" offset-sm="1">
+          <v-col sm="2" offset-sm="1">
+
+            <v-menu
+                bottom
+                offset-y
+                :close-on-content-click="false"
+            >
+              <template v-slot:activator="{ on, attrs}">
+                <v-btn
+                    v-bind="attrs"
+                    v-on="on"
+                >
+                  <v-icon> mdi-account </v-icon>
+                  Konto
+                </v-btn>
+              </template>
+              <v-list
+                  max-width="400"
+              >
+                <v-list-item>
+                  <v-btn :to="{name: 'Favorites'}" text>
+                    <v-icon>mdi-heart</v-icon>
+                    Favoriten
+                  </v-btn>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn text>
+                    <v-icon>mdi-map-clock</v-icon>
+                    Lieferansicht
+                  </v-btn>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn text>
+                    <v-icon>mdi-history</v-icon>
+                    Bestellhistorie
+                  </v-btn>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn :to="{name: 'Einstellungen'}" text>
+                    <v-icon>mdi-account-cog-outline</v-icon>
+                    Einstellungen
+                  </v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+
+          </v-col>
+          <v-col order-sm="12">
             <v-menu
                 bottom
                 offset-y
@@ -130,7 +177,7 @@
                   </v-list-item-content>
                   <v-list-item-content></v-list-item-content>
                   <v-list-item-group class="text-right">
-                    <v-btn small="true" right>
+                    <v-btn small="true" right icon>
                       <v-icon>mdi-heart</v-icon>
                     </v-btn>
                     <br>
