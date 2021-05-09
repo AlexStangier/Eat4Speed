@@ -87,6 +87,8 @@ public class GerichtService implements IGerichtService {
         List<Integer> alternative_IDs = new ArrayList<>();
         List<String> nameParts;
 
+        Integer excluded_ID = options.getGericht_ID();
+
         System.out.println("Alternativen: ");
 
         if(options.isUseName())
@@ -127,6 +129,8 @@ public class GerichtService implements IGerichtService {
         }
         List gerichtAlternativen = null;
 
+        alternative_IDs.remove(excluded_ID);
+
         if(alternative_IDs.size()>0)
         {
             gerichtAlternativen = gerichtRepository.getGerichtDataByGericht_ID(alternative_IDs.get(0));
@@ -144,6 +148,11 @@ public class GerichtService implements IGerichtService {
         }
 
         return gerichtAlternativen;
+    }
+
+    @Override
+    public List getGerichtDataByKundennummer_Favoriten(int kundennummer){
+        return gerichtRepository.getGerichtDataByKundennummer_Favoriten(kundennummer);
     }
 
     @Override

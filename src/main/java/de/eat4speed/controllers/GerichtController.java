@@ -90,6 +90,13 @@ public class GerichtController {
         return gerichtService.getGerichtDataByGericht_ID(gericht_ID);
     }
 
+    @GET
+    @Path("/getGerichtDataByKundennummer_Favoriten/{kundennummer}")
+    public List getGerichtDataByKundennummer_Favoriten(@PathParam("kundennummer") int kundennummer)
+    {
+        return gerichtService.getGerichtDataByKundennummer_Favoriten(kundennummer);
+    }
+
     @POST
     @Path("/getGerichtAlternatives")
     public List getGerichtAlternatives(DishAlternativesOptions options)

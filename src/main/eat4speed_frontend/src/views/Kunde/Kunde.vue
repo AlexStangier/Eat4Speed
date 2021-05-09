@@ -130,9 +130,37 @@
                   </v-list-item-content>
                   <v-list-item-content></v-list-item-content>
                   <v-list-item-group class="text-right">
-                    <v-btn small="true" right>
-                      <v-icon>mdi-heart</v-icon>
-                    </v-btn>
+
+                    <div :key="version" v-if="item.isFav === true">
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              @mouseenter="selectItem(item)"  small="true" right
+                              @mousedown="deleteFromFavorites"
+                              v-bind="attrs"
+                              v-on="on"
+                          >
+                            <v-icon>mdi-heart</v-icon>
+                          </v-btn>
+                        </template>
+                          <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                      </v-tooltip>
+                    </div>
+                    <div :key="version" v-else>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              @mouseenter="selectItem(item)"  small="true" right
+                              @mousedown="addToFavorites"
+                              v-bind="attrs"
+                              v-on="on"
+                          >
+                              <v-icon>mdi-heart-outline</v-icon>
+                          </v-btn>
+                        </template>
+                          <span>Zu Favoriten hinzufügen</span>
+                      </v-tooltip>
+                    </div>
                     <br>
                     <v-list-item-content>
                       Preis: {{ item.price +' €'}}
@@ -240,6 +268,8 @@ export default {
   mounted() {
     this.searchString = this.$store.getters.searchString;
     console.log(this.searchString);
+    //TODO change later!
+    this.loggedInKunde_ID = 3;
 
     this.loadGerichte();
   },
@@ -336,10 +366,41 @@ export default {
       this.version++;
 
     },
+    async addToFavorites() {
+      var today = new Date();
+      const gerichtFavorite = {
+        gericht_ID: this.selectedItem.id,
+        kundennummer: this.loggedInKunde_ID,
+        hinzufuegedatum: today,
+        //TODO get anzahl_Bestellungen from Database
+        anzahl_Bestellungen: 0
+      }
+
+      await axios.post("Favoritenliste_Gerichte", gerichtFavorite);
+
+      this.loadGerichte();
+    },
+    async deleteFromFavorites(){
+      await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+      this.loadGerichte();
+    },
     async loadGerichte() {
+
+      const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+
+      console.log(ResponseFavoriten);
+      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      {
+        let favData = ResponseFavoriten.data[i];
+        this.favoritenlisteGerichte_IDs[i] = favData[0];
+        this.hinzufuegedaten[i]= favData[7];
+      }
+
       const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
 
       console.log(ResponseGerichte);
+
+      //console.log("Verarbeite ResponseGerichte")
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -360,7 +421,23 @@ export default {
         this.restaurant_IDs[i] = gerichtData[5];
         this.restaurantnamen[i] = gerichtData[6];
         this.minimums[i] = gerichtData[7];
+
+        //console.log("Durchlauf vor Fav");
+        if(this.favoritenlisteGerichte_IDs.includes(gerichtData[0]))
+        {
+          this.isFavorite[i] = true;
+          let index = this.favoritenlisteGerichte_IDs.indexOf(gerichtData[0]);
+          this.hinzufuegedatumAssigned[i] = this.hinzufuegedaten[index];
+        }
+        else
+        {
+          this.isFavorite[i] = false;
+          this.hinzufuegedatumAssigned[i] = null;
+        }
+        //console.log("Durchlauf nach Fav");
       }
+
+      //console.log("Suche nach Bildern");
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
@@ -387,6 +464,8 @@ export default {
         }
 
       }
+
+      //console.log("Verarbeitung abgeschlossen")
       console.log(this.imgs);
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
@@ -420,6 +499,7 @@ export default {
   },
   data: () => ({
     searchString: "",
+    loggedInKunde_ID: 0,
     amountGerichte: 4,
     selectedGericht_ID: "",
     selectedItem: "",
@@ -437,6 +517,10 @@ export default {
     availabilities: [],
     kategorien: [],
     selectedKategorien: [],
+    favoritenlisteGerichte_IDs: [],
+    hinzufuegedaten: [],
+    hinzufuegedatumAssigned: [],
+    isFavorite: [],
     nameOptionActive: false,
     kategorieOptionActive: false,
     gerichtAnzahl: 1,
@@ -461,6 +545,8 @@ export default {
         const cdistance = this.distances[i]
         const cminimum = this.minimums[i]
         const cavailable = this.availabilities[i]
+        const cisFav = this.isFavorite[i]
+        const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         i++;
 
         return {
@@ -473,7 +559,9 @@ export default {
           restaurant: crestaurantname,
           distance: cdistance,
           minimum: cminimum,
-          available: cavailable
+          available: cavailable,
+          isFav: cisFav,
+          hinzufuegedatum: chinzufuegedatum
         }
       })
     }
