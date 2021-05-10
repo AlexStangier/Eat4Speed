@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/Benutzer")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -37,6 +38,12 @@ public class BenutzerController {
     @Produces(MediaType.TEXT_PLAIN)
     public Integer getIdByEmail(UserEmailDto email) {
         return _benutzer.getEmailById(email);
+    }
+
+    @GET
+    @Path("getBenutzerByLogin/{email}")
+    public List getBenutzerByLogin(@PathParam("email") String email){
+        return _benutzer.getBenutzerByLogin(email);
     }
 
 }

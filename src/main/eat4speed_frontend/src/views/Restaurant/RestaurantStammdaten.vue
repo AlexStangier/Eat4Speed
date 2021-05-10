@@ -6,12 +6,24 @@
           <h3 align="Left">Stammdaten</h3>
           <v-form ref="registerForm" v-model="valid" lazy-validation>
             <v-row>
-              <v-col cols="12" md="12" sm="12">
+              <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="firstName" label="Vorname"
                               maxlength="50" required></v-text-field>
               </v-col>
-              <v-col cols="12" md="12" sm="12">
+              <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="lastName" label="Nachname"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="12" sm="12">
+                <v-text-field v-model="restaurant_name" label="Restaurant Name"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" sm="6">
+                <v-text-field v-model="radius" label="Radius"
+                              maxlength="50" required></v-text-field>
+              </v-col>
+              <v-col cols="12" md="6" sm="6">
+                <v-text-field v-model="mindestbestellwert" label="Mindestbestellwert"
                               maxlength="50" required></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
@@ -37,6 +49,14 @@
                 <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
                               required></v-text-field>
               </v-col>
+              <v-btn
+                  @click="loadStammdaten(); artDialog = false"
+                  color="red"
+                  dark
+                  class="justify-center"
+              >
+                Test
+              </v-btn>
               <v-spacer></v-spacer>
               <v-col class="text-right">
                 <v-btn>Speichern</v-btn>
@@ -55,12 +75,34 @@ import axios from "axios";
 
 export default {
   name: "RestaurantStammdaten",
+  mounted() {
+    this.loadStammdaten();
+  },
   computed: {
     passwordMatch() {
       return () => this.password === this.verify || "Passwort muss übereinstimmen.";
     }
   },
   methods: {
+    async loadStammdaten(){
+
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/"+this.$store.getters.getLoginData.auth.username);
+      let StammdatenData = ResponseStammdaten.data[0];
+
+      console.log(ResponseStammdaten);
+
+      this.firstName = StammdatenData[0];
+      this.lastName = StammdatenData[1];
+      this.email = StammdatenData[2];
+      this.phoneNumber = StammdatenData[3];
+      this.restaurant_name = StammdatenData[4];
+      this.radius = StammdatenData[5];
+      this.mindestbestellwert = StammdatenData[6];
+      this.street = StammdatenData[7];
+      this.place = StammdatenData[8];
+      this.postCode = StammdatenData[9];
+      this.houseNumber = StammdatenData[10];
+    },
 
 
     reset() {
@@ -118,6 +160,8 @@ export default {
       benutzer_ID: "",
       adress_ID: "",
       street: "",
+      radius: "",
+      mindestbestellwert: "",
       houseNumber: "",
       place: "",
       postCode: "",

@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
 
 @ApplicationScoped
@@ -66,5 +67,10 @@ public class BenutzerService implements IBenutzerService {
     @Override
     public Integer getEmailById(UserEmailDto email) {
         return _benutzer.getBenutzerIdByEmail(email);
+    }
+
+    @Override
+    public List getBenutzerByLogin(String email){
+        return _benutzer.getBenutzerByLogin(email);
     }
 }
