@@ -82,6 +82,43 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
+    public List<Integer> getGericht_IDsByGerichtName(String gerichtName)
+    {
+        List<Integer> gerichteData;
+
+        String likeName = "%"+gerichtName+"%";
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID " +
+                        "FROM Gericht g " +
+                        "WHERE g.name LIKE ?1"
+        ).setParameter(1,likeName);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List<Integer> getGericht_IDsByGerichtKategorie(String kategorie)
+    {
+        List<Integer> gerichteData;
+
+        String likeKategorie = "%"+kategorie+"%";
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID " +
+                        "FROM Gericht g, Gericht_Kategorie kg " +
+                        "WHERE g.gericht_ID = kg.gericht_ID " +
+                        "AND kg.kategorie LIKE ?1"
+        ).setParameter(1,likeKategorie);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
     public List getGerichtDataByGericht_ID(int gericht_ID)
     {
         List gerichteData;
@@ -158,10 +195,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
 
         Query query = entityManager.createQuery(
                 "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
-                        "FROM Gericht g, Bestellung b, Kunde k, Bestellzuordnung bz, Bestellhistorie bh " +
-                        "WHERE k.bestellhistorie = bh.bestellhistorien_ID " +
-                        "AND bh.bestellhistorien_ID = b.bestellhistorien_ID " +
-                        "AND b.bestell_ID = bz.bestell_ID " +
+                        "FROM Gericht g, Bestellung b, Kunde k, Bestellzuordnung bz " +
+                        "WHERE b.bestell_ID = bz.bestell_ID " +
                         "AND bz.gericht_ID = g.gericht_ID " +
                         "AND k.kundennummer = ?1"
         ).setParameter(1,kundennummer);

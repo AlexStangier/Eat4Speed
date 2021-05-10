@@ -129,9 +129,13 @@ export default {
       {
         this.$router.push({name: "Kunde"});
       }
-      else
+      else if(this.$store.getters.searchType==="Restaurants")
       {
         this.$router.push({name: "KundeAuswahlseiteRestaurant"});
+      }
+      else if(this.$store.getters.searchType==="Favoriten")
+      {
+        this.$router.push({name: "Favorites"})
       }
     }
   },

@@ -1,6 +1,5 @@
 package de.eat4speed.services.interfaces;
 
-import de.eat4speed.entities.Bestellhistorie;
 import de.eat4speed.entities.Bestellzuordnung;
 
 import javax.ws.rs.core.Response;

@@ -29,4 +29,12 @@ public class Favoritenliste_GerichteService implements IFavoritenliste_GerichteS
         return Response.status(Response.Status.CREATED).entity(favoritenliste_gerichte).build();
     }
 
+    @Override
+    public Response removeFavoritenliste_Gerichte(int gericht_id, int kundennummer)
+    {
+        favoritenliste_gerichteRepository.removeFavoritenliste_Gerichte(gericht_id, kundennummer);
+
+        return Response.status(Response.Status.OK).build();
+    }
+
 }
