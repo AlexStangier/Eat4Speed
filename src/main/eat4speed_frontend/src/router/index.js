@@ -13,6 +13,12 @@ const routes = [
     name: 'Startseite',
     component: () => import('../views/Startseite.vue')
   },
+  {
+    path: '/bezahlungErfolgreich',
+    name: 'BezahlungErfolgreich',
+    props: true,
+    component: () => import('../views/Kunde/KundeBezahlungErfolgreich.vue')
+  },
   ...adminRoutes,
   ...fahrerRoutes,
   ...kundeRoutes,
