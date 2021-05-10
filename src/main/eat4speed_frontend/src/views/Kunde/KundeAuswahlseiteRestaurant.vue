@@ -11,7 +11,7 @@
                 <h1>{{restaurantName}}</h1>
               </v-list-item-action>
               <v-list-item-action>
-                <v-btn small="true" right="right">
+                <v-btn small="true" right="right" icon>
                   <v-icon>mdi-heart</v-icon>
                 </v-btn>
               </v-list-item-action>
