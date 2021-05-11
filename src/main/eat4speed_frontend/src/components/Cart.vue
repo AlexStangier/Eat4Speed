@@ -44,7 +44,7 @@
 
             <v-list-item-content>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ item.quantity }} item{{ item.quantity > 1 ? 's' : '' }}</v-list-item-subtitle>
+              <v-list-item-subtitle>Anzahl: {{ item.quantity }}</v-list-item-subtitle>
               <v-list-item-subtitle>{{ calculateItemPrice(item.quantity, item.price) }} &euro;</v-list-item-subtitle>
             </v-list-item-content>
 
@@ -148,7 +148,7 @@ export default {
           console.log('success');
           this.$store.commit("deleteCartGerichte");
           this.version++;
-          this.$router.push({name: "Startseite"});
+          this.$router.push({name: "BezahlungErfolgreich", params: {cart: this.carts}});
         }
       });
     }

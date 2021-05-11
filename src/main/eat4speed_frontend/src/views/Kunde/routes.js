@@ -3,8 +3,8 @@ import Kunde from '@/views/Kunde/Kunde.vue'
 import KundeGericht from '@/views/Kunde/KundeGericht.vue'
 import KundeFavorites from '@/views/Kunde/KundeFavorites.vue'
 import KundeAuswahlseiteRestaurant from '@/views/Kunde/KundeAuswahlseiteRestaurant.vue'
-import KundeEinstellungen from '@/views/Kunde/KundeEinstellungen';
-import KundeRestaurants from "@/views/Kunde/KundeRestaurants";
+import KundeEinstellungen from '@/views/Kunde/KundeEinstellungen.vue';
+import KundeRestaurants from "@/views/Kunde/KundeRestaurants.vue";
 
 export default [
     {
@@ -34,12 +34,12 @@ export default [
     },
     {
         path: '/einstellungen',
-        Name: 'Einstellungen',
+        name: 'Einstellungen',
         component: KundeEinstellungen
     },
     {
         path: '/kundeRestaurants',
-        Name: 'KundeRestaurants',
+        name: 'KundeRestaurants',
         component: KundeRestaurants
     }
 ]
