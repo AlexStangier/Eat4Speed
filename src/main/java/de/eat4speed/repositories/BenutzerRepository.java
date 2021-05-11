@@ -38,11 +38,17 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         List restaurantBenutzer;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, b.emailAdresse, b.telefonnummer, r.name_des_Restaurants, r.bestellradius, r.mindestbestellwert, a.strasse, a.ort, a.postleitzahl, a.hausnummer from Benutzer b, Restaurant r, Adressen a where b.emailAdresse LIKE ?1 and b.benutzer_ID = r.benutzer_ID and r.anschrift = a.adress_ID"
+                "SELECT b.vorname, b.nachname, b.emailAdresse, b.telefonnummer, r.name_des_Restaurants, r.bestellradius, r.mindestbestellwert, a.strasse, a.ort, a.postleitzahl, a.hausnummer, b.benutzer_ID, r.restaurant_ID, a.adress_ID from Benutzer b, Restaurant r, Adressen a where b.emailAdresse LIKE ?1 and b.benutzer_ID = r.benutzer_ID and r.anschrift = a.adress_ID"
         ).setParameter(1, email);
 
         restaurantBenutzer = query.getResultList();
         return restaurantBenutzer;
     }
+
+    @Transactional
+    public void updateBenutzerRestaurant(Benutzer benutzer) {
+        update("emailAdresse = ?1, vorname = ?2, nachname = ?3, telefonnummer = ?4 where benutzer_ID = ?5", benutzer.getEmailAdresse(), benutzer.getVorname(), benutzer.getNachname(), benutzer.getTelefonnummer(), benutzer.getBenutzer_ID());
+    }
+
 
 }

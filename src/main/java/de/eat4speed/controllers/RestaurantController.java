@@ -1,6 +1,7 @@
 package de.eat4speed.controllers;
 
 
+import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
 import de.eat4speed.entities.Fahrzeug;
 import de.eat4speed.services.interfaces.IRestaurantService;
@@ -61,19 +62,21 @@ public class RestaurantController {
 
     @GET
     @Path("getAllRestaurantDataByRestaurant_ID/{id}")
-    public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID)
-    {
+    public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID) {
         return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
     }
 
     @DELETE
     @Path("{id}")
-    public Response deleteRestaurant(@PathParam("id") int id)
-    {
+    public Response deleteRestaurant(@PathParam("id") int id) {
         return _restaurant.deleteRestaurant(id);
     }
 
-
+    @PUT
+    @Path("updateRestaurantStammdaten")
+    public Response updateRestaurantStammdaten(Restaurant restaurant) {
+        return _restaurant.updateRestaurantStammdaten(restaurant);
+    }
 
 
 }

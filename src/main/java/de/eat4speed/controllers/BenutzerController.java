@@ -42,8 +42,14 @@ public class BenutzerController {
 
     @GET
     @Path("getBenutzerByLogin/{email}")
-    public List getBenutzerByLogin(@PathParam("email") String email){
+    public List getBenutzerByLogin(@PathParam("email") String email) {
         return _benutzer.getBenutzerByLogin(email);
+    }
+
+    @PUT
+    @Path("updateBenutzerRestaurant")
+    public Response updateBenutzerRestaurant(Benutzer benutzer) {
+        return _benutzer.updateBenutzerRestaurant(benutzer);
     }
 
 }

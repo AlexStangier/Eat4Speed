@@ -2,9 +2,9 @@ package de.eat4speed.controllers;
 
 
 import de.eat4speed.entities.Adressen;
-import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.AdressenRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
+import de.eat4speed.services.interfaces.IAdressenService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -20,6 +20,9 @@ public class AdressenController {
     @Inject
     AdressenRepository adressenRepository;
 
+    @Inject
+    IAdressenService _adressen;
+
     @POST
     public Response add(Adressen adressen)
     {
@@ -34,6 +37,11 @@ public class AdressenController {
         return adressenRepository.listAll().toString();
     }
 
+    @PUT
+    @Path("updateAdresse")
+    public Response updateAdresse(Adressen adressen) {
+        return _adressen.updateAdresse(adressen);
+    }
 
 
 }

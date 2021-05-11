@@ -17,4 +17,9 @@ public class AdressenRepository implements PanacheRepository<Adressen> {
         persist(adresse);
     }
 
+    @Transactional
+    public void updateAdresse(Adressen adresse) {
+        update("strasse = ?1, ort = ?2, postleitzahl = ?3, hausnummer = ?4 where adress_id = ?5", adresse.getStrasse(), adresse.getOrt(), adresse.getPostleitzahl(), adresse.getHausnummer(), adresse.getAdress_ID());
+    }
+
 }
