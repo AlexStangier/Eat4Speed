@@ -424,12 +424,9 @@ export default {
       }
 
       await axios.post("Favoritenliste_Gerichte", gerichtFavorite);
-
-      this.loadGerichte();
     },
     async deleteFromFavorites(){
       await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
-      this.loadGerichte();
     },
     async loadGerichte() {
 
