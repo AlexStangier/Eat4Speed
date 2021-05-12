@@ -1,15 +1,16 @@
 package de.eat4speed.controllers;
 
 
+import de.eat4speed.entities.Gericht;
 import de.eat4speed.entities.Oeffnungszeiten;
 import de.eat4speed.repositories.OeffnungszeitenRepository;
+import de.eat4speed.services.OeffnungszeitenService;
+import de.eat4speed.services.interfaces.IOeffnungszeitenService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 
 @Path("/Oeffnungszeiten")
@@ -17,12 +18,15 @@ public class OeffnungszeitenController {
 
 
     @Inject
-    OeffnungszeitenRepository oeffnungszeitenRepository;
+    IOeffnungszeitenService oeffnungszeitenService;
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
-        return oeffnungszeitenRepository.listAll().toString();
-    }
+
+    @POST
+    @Path("setArbeitstag")
+    public Response add(Oeffnungszeiten zeit){
+        oeffnungszeitenService.setArbeitstag(zeit);
+
+        return Response.status(Response.Status.CREATED).entity(zeit).build();
+    };
 
 }

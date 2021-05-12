@@ -590,7 +590,7 @@
 
                   <v-card d-flex>
                     <v-col>
-                      <v-date-picker v-model="picker"></v-date-picker>
+                      <v-date-picker></v-date-picker>
                       <v-checkbox align-center label="Ganztägig"></v-checkbox>
 
                       <v-col
@@ -672,7 +672,7 @@
                         <v-btn color="red" dark>
                           Abbruch
                         </v-btn>
-                        <v-btn color="green" dark align-end>
+                        <v-btn color="green" @click="executeAll" dark align-end>
                           Bestätigen
                         </v-btn>
                       </v-row>
@@ -690,9 +690,10 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "RestaurantSchichtplan",
-  methods: {},
   data: () => ({
     times: {
       timePicker: [false, false, false, false, false, false, false],
@@ -717,9 +718,40 @@ export default {
     enabled6: false,
     enabledException: false,
   }),
-  mounted() {
+  methods: {
 
-  },
+    executeAll(){
+      console.log("Es wird was gemacht...")
+      this.setArbeitstag(0, "Montag")
+      //this.setArbeitstag(1, "Dienstag")
+      //this.setArbeitstag(2, "Mittwoch")
+      //this.setArbeitstag(3, "Donnerstag")
+      //this.setArbeitstag(4, "Freitag")
+      //this.setArbeitstag(5, "Samstag")
+      //this.setArbeitstag(6, "Sonntag")
+    },
+    async setArbeitstag() {
+
+      console.log(new Date().toLocaleTimeString());
+      console.log(this.times.timesEnd[0]);
+
+      let time = {
+        anfang: JSON.stringify(new Date().toLocaleTimeString()),
+
+        ende: JSON.stringify(new Date().toLocaleTimeString()),
+
+        wochentag: "Mittwoch"
+      }
+
+      const txt = await axios.post("/Oeffnungszeiten/setArbeitstag", time);
+  console.log(txt)
+      //this.gericht_ID = responseGericht.data.gericht_ID;
+
+    },
+    mounted() {
+
+    },
+  }
 }
 </script>
 
