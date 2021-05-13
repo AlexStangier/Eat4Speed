@@ -29,6 +29,8 @@ public interface IGerichtService {
 
     List getGerichtDataByKundennummer_Favoriten(int kundennummer);
 
+    List searchGerichte(DishAlternativesOptions options);
+
     Response updateGerichtAllData(Gericht gericht);
 
     void updatePicturePath(String path, int id);

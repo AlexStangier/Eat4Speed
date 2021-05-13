@@ -93,6 +93,22 @@ export default {
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
       if (this.searchDestination === "Gerichte") {
+        const searchOptions = {
+          gericht_ID: -1,
+          gerichtName: this.searchString,
+          kategorien: [],
+          excludedAllergene: [],
+          maxMindestbestellwert: 0,
+          maxEntfernung: 0,
+          minBewertung: 0,
+          useName: true,
+          useKategorien: false,
+          useAllergene: false,
+          useMindestbestellwert: false,
+          useEntfernung: false,
+          useBewertung: false
+        }
+        this.$store.commit("changeSearchOptions", searchOptions);
         this.$store.commit("changeSearchType", "Gerichte");
         this.$router.push({name: 'Kunde'});
       } else {

@@ -97,6 +97,13 @@ public class GerichtController {
         return gerichtService.getGerichtDataByKundennummer_Favoriten(kundennummer);
     }
 
+    @POST()
+    @Path("/searchGerichte")
+    public List searchGerichte(DishAlternativesOptions options)
+    {
+        return gerichtService.searchGerichte(options);
+    }
+
     @POST
     @Path("/getGerichtAlternatives")
     public List getGerichtAlternatives(DishAlternativesOptions options)

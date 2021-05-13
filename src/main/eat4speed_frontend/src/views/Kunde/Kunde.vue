@@ -93,6 +93,7 @@
                 <v-btn
                     v-bind="attrs"
                     v-on="on"
+                    @mouseenter="loadAllKategorienAndAllergene"
                 >
                   Filter
                 </v-btn>
@@ -102,10 +103,14 @@
                   min-width="400"
 
               >
+                <v-checkbox label="Suche benutzen" v-model="nameOptionActive">
+                </v-checkbox>
+                <v-checkbox label="Mindestbestellwert benutzen" v-model="mindestbestellwertOptionActive">
+                </v-checkbox>
                 <v-subheader>Mindestbestellwert</v-subheader>
                 <v-list-item>
                   <v-slider
-                      v-model="filterCosts"
+                      v-model="selectedMindestbestellwert"
                       min="5"
                       max="100"
                       step="5"
@@ -120,29 +125,37 @@
                 </v-list-item>
                 <v-list-item>
                   <v-container fluid>
-                    <v-select
-                        v-model="filterOptions"
-                        :items="Options"
-                        label="Filteroptionen"
-                        multiple
-                    >
-                      <template v-slot:selection="{ item, index }">
-                        <v-chip v-if="index < 3">
-                          <span>{{ item }}</span>
-                        </v-chip>
-                        <v-chip v-if="index === 3">
-                            <span
-                                class="grey--text caption"
-                            >
-                              (+{{ filterOptions.length - 3 }} weitere)
-                            </span>
-                        </v-chip>
-                      </template>
-                    </v-select>
+                    <v-checkbox label="Kategorien benutzen" v-model="kategorieOptionActive">
+                    </v-checkbox>
+                      <v-select
+                          ref="KategorieSelect"
+                          v-model="selectedKategorien"
+                          :items="kategorien"
+                          chips
+                          label="Kategorien"
+                          multiple
+                          outlined
+                          block
+                          :key="kategorieVersion"
+                      ></v-select>
+                    <v-checkbox label="Allergene benutzen" v-model="allergeneOptionActive">
+                    </v-checkbox>
+                      <v-select
+                          ref="AllergeneSelect"
+                          v-model="selectedAllergene"
+                          :items="allergene"
+                          chips
+                          label="Allergene"
+                          multiple
+                          outlined
+                          block
+                          :key="allergeneVersion"
+                      ></v-select>
                   </v-container>
                 </v-list-item>
                 <v-list-item>
                   <v-btn color="error">Filter löschen</v-btn>
+                  <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -314,6 +327,8 @@ export default {
   name: "Kunde",
   mounted() {
     this.searchString = this.$store.getters.searchString;
+    this.searchOptions = this.$store.getters.searchOptions;
+
     console.log(this.searchString);
     //TODO change later!
     this.loggedInKunde_ID = 3;
@@ -322,6 +337,7 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     this.setStoreGericht_ID();
+    this.setStoreSearchOptions();
     next();
   },
   methods: {
@@ -341,21 +357,36 @@ export default {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
     },
+    setStoreSearchOptions(){
+      this.$store.commit("changeSearchOptions", this.searchOptions);
+    },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     async findAlternatives() {
-      let dishAlternativeOptions = {
+
+      const searchOptions = {
         gericht_ID: this.selectedItem.id,
         gerichtName: this.selectedItem.name,
         kategorien: this.selectedKategorien,
+        excludedAllergene: [],
+        maxMindestbestellwert: 0,
+        maxEntfernung: 0,
+        minBewertung: 0,
         useName: this.nameOptionActive,
-        useKategorien: this.kategorieOptionActive
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: false,
+        useMindestbestellwert: false,
+        useEntfernung: false,
+        useBewertung: false
       }
+
+      this.searchOptions = searchOptions;
+
       console.log("Before sending get...")
 
-      const responseAlternatives = await axios.post("Gericht/getGerichtAlternatives", dishAlternativeOptions);
+      const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
 
       console.log("After sending get...")
 
@@ -424,9 +455,11 @@ export default {
       }
 
       await axios.post("Favoritenliste_Gerichte", gerichtFavorite);
+      this.loadGerichte();
     },
     async deleteFromFavorites(){
       await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+      this.loadGerichte();
     },
     async loadGerichte() {
 
@@ -440,7 +473,9 @@ export default {
         this.hinzufuegedaten[i]= favData[7];
       }
 
-      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
+      //const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
+
+      const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
 
       console.log(ResponseGerichte);
 
@@ -526,6 +561,53 @@ export default {
       this.kategorien = arrayKategorien;
       this.kategorieVersion++;
     },
+    async loadAllKategorienAndAllergene() {
+      this.loadAllKategorien();
+      this.loadAllAllergene();
+    },
+    async loadAllKategorien() {
+      const responseGetKategorie = await axios.get("Kategorie");
+
+      let arrayKategorien = [];
+      for(let i = 0; i<responseGetKategorie.data.length;i++)
+      {
+        arrayKategorien[i]=responseGetKategorie.data[i];
+      }
+      this.kategorien = arrayKategorien;
+      this.kategorieVersion++;
+    },
+    async loadAllAllergene() {
+      const responseGetAllergene = await axios.get("Allergene");
+
+      let arrayAllergene = [];
+      for(let i = 0; i<responseGetAllergene.data.length;i++)
+      {
+        arrayAllergene[i]=responseGetAllergene.data[i];
+      }
+      this.allergene = arrayAllergene;
+      this.allergeneVersion++;
+    },
+    async applyFiltersAndSearch() {
+      const searchOptions = {
+        gericht_ID: -1,
+        gerichtName: this.searchString,
+        kategorien: this.selectedKategorien,
+        excludedAllergene: this.selectedAllergene,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: this.allergeneOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadGerichte();
+    },
     addToCart() {
 
       console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
@@ -542,6 +624,7 @@ export default {
     }
   },
   data: () => ({
+    searchOptions: {},
     searchString: "",
     loggedInKunde_ID: 0,
     amountGerichte: 4,
@@ -549,6 +632,7 @@ export default {
     selectedItem: "",
     version: 0,
     kategorieVersion: 0,
+    allergeneVersion: 0,
     gericht_IDs: [],
     names: [],
     descriptions: [],
@@ -561,12 +645,21 @@ export default {
     availabilities: [],
     kategorien: [],
     selectedKategorien: [],
+    allergene: [],
+    selectedAllergene: [],
+    selectedMindestbestellwert: 0,
+    selectedBewertung: 0,
+    selectedEntfernung: 0,
     favoritenlisteGerichte_IDs: [],
     hinzufuegedaten: [],
     hinzufuegedatumAssigned: [],
     isFavorite: [],
     nameOptionActive: false,
     kategorieOptionActive: false,
+    allergeneOptionActive: false,
+    mindestbestellwertOptionActive: false,
+    bewertungOptionActive: false,
+    entfernungOptionActive: false,
     gerichtAnzahl: 1,
     selectRating: [5,4,3,2,1],
     selectArea: [5,10,20,30,40],

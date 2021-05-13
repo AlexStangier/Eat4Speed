@@ -17,12 +17,30 @@ export default new Vuex.Store({
     gericht_ID:"",
     cartGerichte:[],
     selectedRestaurant_ID:"",
-    searchType:""
+    searchType:"",
+    searchOptions: {
+      gericht_ID: -1,
+      gerichtName: "",
+      kategorien: [],
+      excludedAllergene: [],
+      maxMindestbestellwert: 0,
+      maxEntfernung: 0,
+      minBewertung: 0,
+      useName: true,
+      useKategorien: false,
+      useAllergene: false,
+      useMindestbestellwert: false,
+      useEntfernung: false,
+      useBewertung: false
+    }
   },
   plugins: [vuexLocal.plugin],
   mutations: {
     changeSearchType: (state, payload) => {
       state.searchType = payload;
+    },
+    changeSearchOptions: (state, payload) => {
+      state.searchOptions = payload;
     },
     changeSelectedRestaurant_ID: (state, payload) => {
       state.selectedRestaurant_ID = payload;
@@ -67,6 +85,9 @@ export default new Vuex.Store({
   getters: {
     searchType: state => {
       return state.searchType;
+    },
+    searchOptions: state => {
+      return state.searchOptions;
     },
     selectedRestaurant_ID: state => {
       return state.selectedRestaurant_ID;
