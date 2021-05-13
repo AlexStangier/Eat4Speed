@@ -13,8 +13,6 @@ import javax.enterprise.context.ApplicationScoped;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @ApplicationScoped
 public class Algo_FahrerAuswahl {
@@ -24,80 +22,74 @@ public class Algo_FahrerAuswahl {
     private FahrtenplanRepository fahrtenplanRepository = new FahrtenplanRepository();
     private FahrzeugRepository fahrzeugRepository = new FahrzeugRepository();
 
-    private static List<Fahrer> naheFahrer;
     private Fahrtenplan_Station startPunkt;
-    private int count = 0;
     private final int sekunden = 30;
     private final int maxFahrer = 10;
     private int anzahlGerichte;
-    private boolean isRunning = false;
-    private Timer timer;
 
+    // Sende Auftrag an besten Fahrer, falls nach 30 sekunden nicht angenommen
+    // sende zusätzlich an nächstbesten fahrer falls keine fahrer mehr da oder 5min vergangen sind
+    // -> neustart
     public void Fahrtenvergabe(int startPunktID) {
+
+        List<Fahrer> naheFahrer = null;
+        int count = 0;
         startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
 
         // TODO anzahlGerichte berechnen
         anzahlGerichte = 1;
 
-        // Sende Auftrag an besten Fahrer
-        // falls nach 30 sekunden nicht angenommen
-        // sende zusätzlich an nächstbesten fahrer
-        // falls keine fahrer mehr da oder 5min vergangen sind
-        // neustart
+        boolean isRunning = true;
 
-        isRunning = true;
+        //fahrernummer 7  4  2  3  8  6  9  5 10 11
+        //fahrer      f6 f3 f1 f2 f7 f5 f8 f4 f9 f10
+        while(isRunning) {
 
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask()
-        {
-            @Override
-            public void run()
+            // start
+            if (count == 0)
             {
-                System.out.println("TEst1");
-                // start / neustart
-                if (count == 0)
+                naheFahrer = getNaheFahrer();
+                System.out.println("size: " + naheFahrer.size());
+            }
+
+            // sende alle 30 sek an nächstbesten Fahrer
+            if (naheFahrer.size() > 0 && !AuftragAngenommen(startPunktID))
+            {
+                if (naheFahrer.size() > count && count < maxFahrer)
                 {
-                    naheFahrer = getNaheFahrer();
+                    // wenn noch an unter maxFahrer gesendet
+                    System.out.println(count + " Schicke an Fahrer mit ID: "+naheFahrer.get(count).getFahrernummer());
+                    Schicht schicht = schichtRepository.getSchichtHeute(naheFahrer.get(count).getFahrernummer());
+                    sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrernummer());
+                    count++;
                 }
-                // sende alle 30 sek an nächstbesten Fahrer
-                if (naheFahrer.size() > 0 && AuftragAngenommen(startPunktID) == false)
+                else
                 {
-                    if (naheFahrer.size() > count && count < maxFahrer)
+                    // wenn Liste durch und nicht angenommen
+                    // anfragen entfernen und neustart
+                    for (int i = 0; i < count; i++)
                     {
-                        // wenn noch an unter maxFahrer gesendet
-                        System.out.println("TEst2");
-                        sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrernummer());
-                        count++;
-                        System.out.println("Suche...");
+                        entferne_Auftrag_von_Fahrer(naheFahrer.get(i).getFahrernummer());
                     }
-                    else
-                    {
-                        // wenn Liste durch und nicht angenommen
-                        // anfragen entfernen und neustart
-                        for (int i = 0; i < count; i++)
-                        {
-                            entferne_Auftrag_von_Fahrer(naheFahrer.get(i).getFahrernummer());
-                            count = 0;
-                        }
-                    }
-                }
-                else if (AuftragAngenommen(startPunktID) == true)
-                {
-                    // evtl anfragen entfernen
-                    timer.cancel();
-                    isRunning = false;
+                    System.out.println("NEUSTART");
+                    count = 0;
                 }
             }
-        }, 0, sekunden * 1000);
-
-        while(isRunning)
-        {
+            else if (AuftragAngenommen(startPunktID))
+            {
+                // evtl anfragen entfernen
+                isRunning = false;
+            }
+            else if (naheFahrer.size() == 0)
+            {
+                System.out.println("No Found -> Restarting in 30s");
+            }
+            System.out.flush();
             try
             {
-                System.out.println("TEst3");
-                this.wait(1 * 1000);
+                Thread.sleep(sekunden * 1000);
             }
-            catch(InterruptedException e)
+            catch (Exception e)
             {
                 e.printStackTrace();
             }
@@ -127,14 +119,16 @@ public class Algo_FahrerAuswahl {
     {
         List<Fahrer> fahrer = fahrerRepository.getEveryVerifiedFahrer();
 
+        System.out.println(fahrer.size());
+
         // sortieren nach nähe zum Startpunkt der Stationen
         fahrer.sort(new SortByDistanz(startPunkt));
 
-        for (Fahrer f : fahrer)
+        for (int i = 0; i < fahrer.size(); i++)
         {
-            if (CheckFahrerAvailability(f) == false)
-            {
-                fahrer.remove(f);
+            if (!CheckFahrerAvailability(fahrer.get(i))) {
+                fahrer.remove(fahrer.get(i));
+                i--;
             }
         }
 
@@ -150,9 +144,10 @@ public class Algo_FahrerAuswahl {
             Schicht schicht = schichtRepository.getSchichtHeute(fahrer.getFahrernummer());
             Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
 
-            Timestamp time = new Timestamp(new Date().getTime());
+            Timestamp time = new Timestamp(new Date().getTime()
+                    + (startPunkt.getGeschaetzte_Fahrtzeit() * 60L * 1000L));
 
-            if (schicht.getEnde().getTime() > ( time.getTime() + startPunkt.getGeschaetzte_Fahrtzeit( ) ) && fahrzeug.getKapazitaet_Gerichte() > anzahlGerichte)
+            if (schicht.getEnde().after(time) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
             {
                 isAvailable = true;
             }

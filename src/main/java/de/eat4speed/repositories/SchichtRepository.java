@@ -40,18 +40,9 @@ public class SchichtRepository implements PanacheRepository<Schicht> {
         return allSchichtData;
     }
 
-    // ToDO
     @Transactional
     public Schicht getSchichtHeute(int fahrernummer)
-    {/*
-        Query query = entityManager.createQuery(
-                "Select s.schicht_ID, s.fahrernummer, s.anfang, s.ende " +
-                        "From Schicht s " +
-                        "Where s.fahrernummer = " + fahrernummer + " " +
-                        "order by s.ende DESC"
-        );
-        List<Schicht> resultList = query.getResultList();
-*/
+    {
         return find("Fahrernummer", Sort.by("Ende"), fahrernummer ).firstResult();
     }
 
