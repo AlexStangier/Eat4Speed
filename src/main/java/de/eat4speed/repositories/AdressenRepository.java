@@ -1,8 +1,6 @@
 package de.eat4speed.repositories;
 
 import de.eat4speed.entities.Adressen;
-import de.eat4speed.entities.Auftrag;
-import de.eat4speed.entities.Benutzer;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -15,6 +13,12 @@ public class AdressenRepository implements PanacheRepository<Adressen> {
     public void addAdresse(Adressen adresse)
     {
         persist(adresse);
+    }
+
+    @Transactional
+    public Adressen getAdresseByID(int id)
+    {
+        return find("Adress_ID", id).list().get(0);
     }
 
 }

@@ -1,5 +1,6 @@
 package de.eat4speed.services;
 
+import de.eat4speed.entities.Adressen;
 import de.eat4speed.repositories.AdressenRepository;
 import de.eat4speed.repositories.BenutzerRepository;
 
@@ -15,5 +16,7 @@ public class AdressenService {
     public AdressenService(AdressenRepository adressenRepository) {
         this.adressenRepository = adressenRepository;
     }
+
+    public Adressen getAdresseByID(Integer ID) { return this.adressenRepository.getAdresseByID(ID); }
 
 }

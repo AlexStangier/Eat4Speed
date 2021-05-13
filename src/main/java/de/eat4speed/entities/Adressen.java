@@ -15,6 +15,8 @@ public class Adressen extends PanacheEntityBase implements Serializable {
     private int hausnummer;
     private String ort;
     private int postleitzahl;
+    private String lng;
+    private String lat;
 
     public int getAdress_ID() {
         return adress_ID;
@@ -32,7 +34,6 @@ public class Adressen extends PanacheEntityBase implements Serializable {
         this.strasse = strasse;
     }
 
-
     public int getHausnummer() {
         return hausnummer;
     }
@@ -40,7 +41,6 @@ public class Adressen extends PanacheEntityBase implements Serializable {
     public void setHausnummer(int hausnummer) {
         this.hausnummer = hausnummer;
     }
-
 
     public String getOrt() {
         return ort;
@@ -50,7 +50,6 @@ public class Adressen extends PanacheEntityBase implements Serializable {
         this.ort = ort;
     }
 
-
     public int getPostleitzahl() {
         return postleitzahl;
     }
@@ -58,6 +57,14 @@ public class Adressen extends PanacheEntityBase implements Serializable {
     public void setPostleitzahl(int postleitzahl) {
         this.postleitzahl = postleitzahl;
     }
+
+    public void setLng(String lng) { this.lng = lng; }
+
+    public String getLng() { return lng; }
+
+    public void setLat(String lat) { this.lat = lat; }
+
+    public String getLat() { return lat; }
 
     @Override
     public boolean equals(Object o) {
@@ -82,6 +89,8 @@ public class Adressen extends PanacheEntityBase implements Serializable {
         result = 31 * result + hausnummer;
         result = 31 * result + (ort != null ? ort.hashCode() : 0);
         result = 31 * result + postleitzahl;
+        result = 31 * result + (lng != null ? ort.hashCode() : 0);
+        result = 31 * result + (lat != null ? ort.hashCode() : 0);
         return result;
     }
 
@@ -93,6 +102,8 @@ public class Adressen extends PanacheEntityBase implements Serializable {
                 ", hausnummer=" + hausnummer +
                 ", ort='" + ort + '\'' +
                 ", postleitzahl=" + postleitzahl +
+                ", lng=" + lng +
+                ", lat=" + lat +
                 '}';
     }
 }

@@ -93,6 +93,13 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public List getEveryVerifiedFahrer()
+    {
+        byte b = 1;
+        return find("verifiziert", b ).list();
+    }
+
+    @Transactional
     public int deleteFahrer(int fahrernummer)
     {
         delete("fahrernummer", fahrernummer);
