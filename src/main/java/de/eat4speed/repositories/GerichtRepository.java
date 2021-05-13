@@ -119,6 +119,60 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
+    public List<Integer> getGericht_IDsByGerichtAllergene(String allergen)
+    {
+        List<Integer> gerichteData;
+
+        String likeAllergen = "%"+allergen+"%";
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID " +
+                        "FROM Gericht g, Gericht_Allergene ka " +
+                        "WHERE g.gericht_ID = ka.gericht_ID " +
+                        "AND ka.allergen LIKE ?1"
+        ).setParameter(1,likeAllergen);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List<Integer> getGericht_IDsByMindestbestellwertMax(Double mindestbestellwert)
+    {
+        List<Integer> gerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID " +
+                        "FROM Gericht g, Restaurant r " +
+                        "WHERE g.restaurant_ID = r.restaurant_ID " +
+                        "AND r.mindestbestellwert > ?1"
+        ).setParameter(1,mindestbestellwert);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
+    public List<Integer> getGericht_IDsByBewertung(int bewertung)
+    {
+        List<Integer> gerichteData;
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID " +
+                        "FROM Gericht g, Restaurant r, Bewertung b " +
+                        "WHERE g.restaurant_ID = r.restaurant_ID " +
+                        "AND b.restaurant_ID = r.restaurant_ID " +
+                        "AND AVG(b.sterne) < ?1"
+        ).setParameter(1,bewertung);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
     public List getGerichtDataByGericht_ID(int gericht_ID)
     {
         List gerichteData;
