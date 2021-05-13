@@ -568,6 +568,17 @@
                     </v-dialog>
                   </v-col>
                 </v-row>
+                <v-btn
+                    @click="executeAll"
+                    class = "mb-2"
+                    color="red"
+                    dark
+                    small
+                    bottom
+                >
+                  Änderungen speichern
+                </v-btn>
+                <v-spacer></v-spacer>
                 <v-dialog
                     :retain-focus="false"
                     v-model="enabledException"
@@ -576,7 +587,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                        color="red"
+                        color="brown"
                         dark
                         v-bind="attrs"
                         v-on="on"
@@ -723,33 +734,25 @@ export default {
 
     executeAll(){
       console.log("Es wird was gemacht...")
-      //this.setArbeitstag(0, "Montag")
-      //this.setArbeitstag(1, "Dienstag")
-      //this.setArbeitstag(2, "Mittwoch")
-      //this.setArbeitstag(3, "Donnerstag")
-      //this.setArbeitstag(4, "Freitag")
-      //this.setArbeitstag(5, "Samstag")
-      //this.setArbeitstag(6, "Sonntag")
+      if(this.enabled) this.setArbeitstag(0, "Montag")
+      if(this.enabled1) this.setArbeitstag(1, "Dienstag")
+      if(this.enabled2) this.setArbeitstag(2, "Mittwoch")
+      if(this.enabled3) this.setArbeitstag(3, "Donnerstag")
+      if(this.enabled4) this.setArbeitstag(4, "Freitag")
+      if(this.enabled5) this.setArbeitstag(5, "Samstag")
+      if(this.enabled6) this.setArbeitstag(6, "Sonntag")
     },
-    async setArbeitstag() {
-
-      console.log(new Date().toLocaleTimeString());
-      console.log(this.times.timesEnd[0]);
-
-
+    async setArbeitstag(pos, tag) {
 
       let time = {
-        anfang: new Date(),
-        ende: new Date(),
-        wochentag: "Mittwoch"
+
+        anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
+        ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
+        wochentag: tag
       }
 
-
-
       const txt = await axios.post("/Oeffnungszeiten/setArbeitstag", time);
-  console.log(txt)
-      //this.gericht_ID = responseGericht.data.gericht_ID;
-
+      console.log(txt)
     },
     mounted() {
 
