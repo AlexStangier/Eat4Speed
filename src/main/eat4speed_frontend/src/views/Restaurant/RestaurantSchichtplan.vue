@@ -672,7 +672,7 @@
                         <v-btn color="red" dark>
                           Abbruch
                         </v-btn>
-                        <v-btn color="green" @click="executeAll" dark align-end>
+                        <v-btn color="green" @click="setArbeitstag" dark align-end>
                           Bestätigen
                         </v-btn>
                       </v-row>
@@ -691,6 +691,7 @@
 
 <script>
 import axios from "axios";
+
 
 export default {
   name: "RestaurantSchichtplan",
@@ -722,7 +723,7 @@ export default {
 
     executeAll(){
       console.log("Es wird was gemacht...")
-      this.setArbeitstag(0, "Montag")
+      //this.setArbeitstag(0, "Montag")
       //this.setArbeitstag(1, "Dienstag")
       //this.setArbeitstag(2, "Mittwoch")
       //this.setArbeitstag(3, "Donnerstag")
@@ -735,13 +736,15 @@ export default {
       console.log(new Date().toLocaleTimeString());
       console.log(this.times.timesEnd[0]);
 
+
+
       let time = {
-        anfang: JSON.stringify(new Date().toLocaleTimeString()),
-
-        ende: JSON.stringify(new Date().toLocaleTimeString()),
-
+        anfang: new Date(),
+        ende: new Date(),
         wochentag: "Mittwoch"
       }
+
+
 
       const txt = await axios.post("/Oeffnungszeiten/setArbeitstag", time);
   console.log(txt)
