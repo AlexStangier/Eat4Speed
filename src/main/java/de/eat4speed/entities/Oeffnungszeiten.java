@@ -4,7 +4,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
+import java.sql.Timestamp;
+
 
 @Entity
 public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
@@ -14,8 +15,8 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int oeffnungszeiten_ID;
-    private Time anfang;
-    private Time ende;
+    private Timestamp anfang;
+    private Timestamp ende;
     private String wochentag;
 
     public int getOeffnungszeiten_ID() {
@@ -26,17 +27,17 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     }
 
 
-    public Time getAnfang() {
+    public Timestamp getAnfang() {
         return anfang;
     }
-    public void setAnfang(Time anfang) {
+    public void setAnfang(Timestamp anfang) {
         this.anfang = anfang;
     }
 
-    public Time getEnde() {
+    public Timestamp getEnde() {
         return ende;
     }
-    public void setEnde(Time ende) {
+    public void setEnde(Timestamp ende) {
         this.ende = ende;
     }
 
