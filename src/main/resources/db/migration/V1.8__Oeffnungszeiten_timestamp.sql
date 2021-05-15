@@ -1,6 +1,6 @@
-#SET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=0;
 
-#alter TABLE Oeffnungszeiten MODIFY COLUMN Anfang datetime;
-#alter TABLE Oeffnungszeiten MODIFY COLUMN Ende datetime;
+alter TABLE Oeffnungszeiten MODIFY COLUMN Anfang datetime;
+alter TABLE Oeffnungszeiten MODIFY COLUMN Ende datetime;
 
-#SET FOREIGN_KEY_CHECKS=1;
+SET FOREIGN_KEY_CHECKS=1;

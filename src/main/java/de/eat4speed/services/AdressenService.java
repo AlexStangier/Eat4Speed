@@ -28,4 +28,16 @@ public class AdressenService implements IAdressenService {
         _adressen.updateAdresse(adressen);
         return Response.status(Response.Status.OK).entity(adressen).build();
     }
+
+    @Override
+    public List getAllKundeLngLat() {
+        return _adressen.getAllKundeLngLat();
+    }
+
+    @Override
+    public List getAllRestaurantLngLat() {
+        return _adressen.getAllRestaurantLngLat();
+    }
+
+
 }

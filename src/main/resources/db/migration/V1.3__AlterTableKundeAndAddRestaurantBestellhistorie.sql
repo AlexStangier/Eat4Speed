@@ -1,4 +1,4 @@
-
+#
 ALTER TABLE Kunde
     MODIFY COLUMN Bestellhistorie INT,
     ADD CONSTRAINT fk_Kunde_Bestellhistorie

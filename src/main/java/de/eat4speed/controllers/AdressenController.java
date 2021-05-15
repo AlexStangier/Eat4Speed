@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/Adressen")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -24,8 +25,7 @@ public class AdressenController {
     IAdressenService _adressen;
 
     @POST
-    public Response add(Adressen adressen)
-    {
+    public Response add(Adressen adressen) {
         adressenRepository.addAdresse(adressen);
 
         return Response.status(Response.Status.CREATED).entity(adressen).build();
@@ -33,8 +33,20 @@ public class AdressenController {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
+    public String get() {
         return adressenRepository.listAll().toString();
+    }
+
+    @GET
+    @Path("/getAllKundeLngLat")
+    public List getAllKundeLngLat() {
+        return _adressen.getAllKundeLngLat();
+    }
+
+    @GET
+    @Path("/getAllRestaurantLngLat")
+    public List getAllRestaurantLngLat() {
+        return _adressen.getAllRestaurantLngLat();
     }
 
     @PUT

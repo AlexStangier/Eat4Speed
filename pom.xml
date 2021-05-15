@@ -183,6 +183,7 @@
                     <url>jdbc:mysql://195.90.210.214/eatforspeed?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin</url>
                     <user>eatforspeed</user>
                     <password>#eat4Speed!</password>
+                    <target>current</target>
                 </configuration>
             </plugin>
         </plugins>

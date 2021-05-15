@@ -9,4 +9,8 @@ import java.util.List;
 public interface IAdressenService {
 
     Response updateAdresse(Adressen adressen);
+
+    public List getAllKundeLngLat();
+
+    public List getAllRestaurantLngLat();
 }
