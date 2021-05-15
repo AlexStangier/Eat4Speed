@@ -28,4 +28,11 @@ public class EntfernungKundeRestaurantController {
         return entfernungKundeRestaurantService.addEntfernungKundeRestaurant(entfernungKundeRestaurant);
     }
 
+    @GET
+    @Path("/getEntfernungByKundennummerRestaurant_ID/{kundennummer}/{restaurant_ID}")
+    public List getEntfernungByKundennummerRestaurant_ID(@PathParam("kundennummer") int kundennummer, @PathParam("restaurant_ID") int restaurant_ID)
+    {
+        return entfernungKundeRestaurantService.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
+    }
+
 }

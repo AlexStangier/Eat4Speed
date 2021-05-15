@@ -173,6 +173,27 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
+    public List<Integer> getGericht_IDsByDistance(int kundennummer, Double distance)
+    {
+        List<Integer> gerichteData;
+        System.out.println(distance);
+
+        Query query = entityManager.createQuery(
+                "SELECT g.gericht_ID " +
+                        "FROM Kunde k, Restaurant r, EntfernungKundeRestaurant ekr, Gericht g " +
+                        "WHERE g.restaurant_ID = r.restaurant_ID " +
+                        "AND r.restaurant_ID = ekr.restaurant_ID " +
+                        "AND k.kundennummer = ekr.kundennummer " +
+                        "AND k.kundennummer = ?1 " +
+                        "AND ekr.entfernung > ?2"
+        ).setParameter(1,kundennummer).setParameter(2,distance);
+
+        gerichteData = query.getResultList();
+
+        return gerichteData;
+    }
+
+    @Transactional
     public List getGerichtDataByGericht_ID(int gericht_ID)
     {
         List gerichteData;

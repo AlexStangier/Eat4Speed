@@ -93,6 +93,7 @@ export default {
       {
         const searchOptions = {
           gericht_ID: -1,
+          kundennummer: this.loggedInKunde_ID,
           gerichtName: this.searchString,
           kategorien: [],
           excludedAllergene: [],

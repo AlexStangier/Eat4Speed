@@ -20,10 +20,11 @@
           </v-col>
           <v-col sm="2" offset-sm="1">
             <v-select
-                v-model="selectedArea"
+                v-model="selectedEntfernung"
                 label="Entfernung"
                 :items="selectArea"
                 clearable="true"
+                @change="applyDistanceFilterAndSearch"
             >
               <template v-slot:selection="data">
                 {{data.item}} {{"km"}}
@@ -331,7 +332,7 @@ export default {
 
     console.log(this.searchString);
     //TODO change later!
-    this.loggedInKunde_ID = 3;
+    this.loggedInKunde_ID = 6;
 
     this.loadGerichte();
   },
@@ -368,6 +369,7 @@ export default {
 
       const searchOptions = {
         gericht_ID: this.selectedItem.id,
+        kundennummer: this.loggedInKunde_ID,
         gerichtName: this.selectedItem.name,
         kategorien: this.selectedKategorien,
         excludedAllergene: [],
@@ -546,6 +548,17 @@ export default {
 
       //console.log("Verarbeitung abgeschlossen")
       console.log(this.imgs);
+
+      for(let i = 0; i<this.restaurant_IDs.length;i++)
+      {
+        const responseDistance = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_IDs[i])
+
+        console.log(responseDistance);
+
+        this.distances[i] = responseDistance.data[0];
+
+      }
+
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -590,6 +603,40 @@ export default {
     async applyFiltersAndSearch() {
       const searchOptions = {
         gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
+        gerichtName: this.searchString,
+        kategorien: this.selectedKategorien,
+        excludedAllergene: this.selectedAllergene,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: this.allergeneOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadGerichte();
+    },
+    async applyDistanceFilterAndSearch() {
+
+      if(this.selectedEntfernung>=5)
+      {
+        this.entfernungOptionActive = true;
+      }
+      else
+      {
+        this.entfernungOptionActive = false;
+      }
+      this.nameOptionActive = true;
+
+      const searchOptions = {
+        gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
         gerichtName: this.searchString,
         kategorien: this.selectedKategorien,
         excludedAllergene: this.selectedAllergene,
