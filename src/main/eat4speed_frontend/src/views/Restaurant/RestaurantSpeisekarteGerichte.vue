@@ -250,7 +250,7 @@ export default {
   mounted() {
     this.displayGetraenke=false;
 
-    this.restaurantID = 2;
+    this.restaurantID = 5;
     this.loadGerichte()
   },
   methods: {

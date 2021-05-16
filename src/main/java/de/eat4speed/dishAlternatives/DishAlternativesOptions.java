@@ -6,6 +6,7 @@ import java.util.Objects;
 public class DishAlternativesOptions {
     private int gericht_ID;
     private String gerichtName = "";
+    private int kundennummer;
     private List<String> kategorien;
     private List<String> excludedAllergene;
     private double maxMindestbestellwert;
@@ -17,7 +18,6 @@ public class DishAlternativesOptions {
     private boolean useMindestbestellwert;
     private boolean useEntfernung;
     private boolean useBewertung;
-
 
     public int getGericht_ID() {
         return gericht_ID;
@@ -33,6 +33,14 @@ public class DishAlternativesOptions {
 
     public void setGerichtName(String gerichtName) {
         this.gerichtName = gerichtName;
+    }
+
+    public int getKundennummer() {
+        return kundennummer;
+    }
+
+    public void setKundennummer(int kundennummer) {
+        this.kundennummer = kundennummer;
     }
 
     public List<String> getKategorien() {
@@ -128,12 +136,12 @@ public class DishAlternativesOptions {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DishAlternativesOptions that = (DishAlternativesOptions) o;
-        return gericht_ID == that.gericht_ID && Double.compare(that.maxMindestbestellwert, maxMindestbestellwert) == 0 && Double.compare(that.maxEntfernung, maxEntfernung) == 0 && minBewertung == that.minBewertung && useName == that.useName && useKategorien == that.useKategorien && useAllergene == that.useAllergene && useMindestbestellwert == that.useMindestbestellwert && useEntfernung == that.useEntfernung && useBewertung == that.useBewertung && Objects.equals(gerichtName, that.gerichtName) && Objects.equals(kategorien, that.kategorien) && Objects.equals(excludedAllergene, that.excludedAllergene);
+        return gericht_ID == that.gericht_ID && kundennummer == that.kundennummer && Double.compare(that.maxMindestbestellwert, maxMindestbestellwert) == 0 && Double.compare(that.maxEntfernung, maxEntfernung) == 0 && minBewertung == that.minBewertung && useName == that.useName && useKategorien == that.useKategorien && useAllergene == that.useAllergene && useMindestbestellwert == that.useMindestbestellwert && useEntfernung == that.useEntfernung && useBewertung == that.useBewertung && Objects.equals(gerichtName, that.gerichtName) && Objects.equals(kategorien, that.kategorien) && Objects.equals(excludedAllergene, that.excludedAllergene);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gericht_ID, gerichtName, kategorien, excludedAllergene, maxMindestbestellwert, maxEntfernung, minBewertung, useName, useKategorien, useAllergene, useMindestbestellwert, useEntfernung, useBewertung);
+        return Objects.hash(gericht_ID, gerichtName, kundennummer, kategorien, excludedAllergene, maxMindestbestellwert, maxEntfernung, minBewertung, useName, useKategorien, useAllergene, useMindestbestellwert, useEntfernung, useBewertung);
     }
 
     @Override
@@ -141,6 +149,7 @@ public class DishAlternativesOptions {
         return "DishAlternativesOptions{" +
                 "gericht_ID=" + gericht_ID +
                 ", gerichtName='" + gerichtName + '\'' +
+                ", kundennummer=" + kundennummer +
                 ", kategorien=" + kategorien +
                 ", excludedAllergene=" + excludedAllergene +
                 ", maxMindestbestellwert=" + maxMindestbestellwert +

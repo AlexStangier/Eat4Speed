@@ -10,4 +10,6 @@ import java.util.List;
 public interface IEntfernungKundeRestaurantService {
 
     public Response addEntfernungKundeRestaurant(EntfernungKundeRestaurant entfernungKundeRestaurant);
+
+    List getEntfernungByKundennummerRestaurant_ID(int kundennummer, int restaurant_ID);
 }

@@ -237,6 +237,7 @@ public class GerichtService implements IGerichtService {
                 if(gericht_IDsByAllergeneAll.contains(search_IDs.get(i)))
                 {
                     search_IDs.remove(search_IDs.get(i));
+                    i--;
                 }
             }
 
@@ -253,6 +254,7 @@ public class GerichtService implements IGerichtService {
                 if(gericht_IDsByMindestbestellwertAll.contains(search_IDs.get(i)))
                 {
                     search_IDs.remove(search_IDs.get(i));
+                    i--;
                 }
             }
         }
@@ -268,11 +270,32 @@ public class GerichtService implements IGerichtService {
                 if(gericht_IDsByBewertungAll.contains(search_IDs.get(i)))
                 {
                     search_IDs.remove(search_IDs.get(i));
+                    i--;
                 }
             }
         }
         //todo Entfernungen
         List<Integer> gericht_IDsByEntfernungAll = null;
+
+        System.out.println(search_IDs);
+        if(options.isUseEntfernung())
+        {
+            gericht_IDsByEntfernungAll = gerichtRepository.getGericht_IDsByDistance(options.getKundennummer(), options.getMaxEntfernung());
+
+            System.out.println("Entfernung:");
+            System.out.println(gericht_IDsByEntfernungAll);
+
+            for(int i = 0; i < search_IDs.size(); i++)
+            {
+                System.out.println(search_IDs.get(i));
+                if(gericht_IDsByEntfernungAll.contains(search_IDs.get(i)))
+                {
+                    search_IDs.remove(search_IDs.get(i));
+                    i--;
+                }
+            }
+        }
+        System.out.println(search_IDs);
 
         List foundGerichte = null;
 

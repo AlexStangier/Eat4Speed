@@ -32,4 +32,9 @@ public class EntfernungKundeRestaurantService implements IEntfernungKundeRestaur
 
         return Response.status(Response.Status.CREATED).entity(entfernungKundeRestaurant).build();
     }
+
+    @Override
+    public List getEntfernungByKundennummerRestaurant_ID(int kundennummer, int restaurant_ID) {
+        return entfernungKundeRestaurantRepository.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
+    }
 }
