@@ -7,6 +7,7 @@ public class PaypalDto {
     public String updateLink;
     public String selfLink;
     public String orderId;
+    public int bestellungsId;
 
     public PaypalDto() {
     }
@@ -49,5 +50,13 @@ public class PaypalDto {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public int getBestellungId() {
+        return bestellungsId;
+    }
+
+    public void setBestellungId(int bestellungId) {
+        this.bestellungsId = bestellungId;
     }
 }

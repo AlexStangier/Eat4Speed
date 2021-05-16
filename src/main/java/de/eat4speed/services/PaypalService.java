@@ -43,7 +43,7 @@ public class PaypalService implements IPaypalService {
         Auftrag auftrag = _auftragRepository.getAuftragByID((int) auftragId);
         Bestellung bestellung = null;
         Order order = null;
-        PaypalDto ppDto = null;
+        PaypalDto ppDto = new PaypalDto();
         List<String> resultLinks = new ArrayList<>();
 
         if (auftrag != null) {
@@ -63,12 +63,13 @@ public class PaypalService implements IPaypalService {
                     HttpResponse<Order> response = Credentials.client.execute(request);
                     order = response.result();
                     ppDto.setOrderId(order.id());
-                    order.links().forEach(link -> resultLinks.add(link.rel() + " => " + link.method() + ":" + link.href()));
+                    order.links().forEach(link -> resultLinks.add(link.href()));
                     order.links().forEach(link -> System.out.println(link.rel() + " => " + link.method() + ":" + link.href()));
                     ppDto.setSelfLink(resultLinks.get(0));
                     ppDto.setApproveLink(resultLinks.get(1));
                     ppDto.setUpdateLink(resultLinks.get(2));
                     ppDto.setCaptureLink(resultLinks.get(3));
+                    ppDto.setBestellungId(bestellung.getBestell_ID());
                 } catch (IOException ioe) {
                     if (ioe instanceof HttpException) {
                         // Something went wrong server-side
