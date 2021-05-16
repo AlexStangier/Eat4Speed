@@ -6,6 +6,7 @@ import store from './store'
 import cookies from 'js-cookie'
 import axios from "axios";
 import * as VueGoogleMaps from 'vue2-google-maps'
+import VideoBackground from 'vue-responsive-video-background-player'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;
@@ -18,6 +19,8 @@ Vue.use(VueGoogleMaps, {
     libraries: 'places'
   },
 })
+
+Vue.component('video-background', VideoBackground);
 
 new Vue({
   vuetify,
