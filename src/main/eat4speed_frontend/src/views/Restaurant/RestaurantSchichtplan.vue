@@ -744,11 +744,16 @@ export default {
     },
     async setArbeitstag(pos, tag) {
 
+      //const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      //let StammdatenData = ResponseStammdaten.data[0];
+
       let time = {
 
         anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
         ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
-        wochentag: tag
+        wochentag: tag,
+        //restaurant_id: StammdatenData[12]
+        restaurant_id: 1
       }
 
       const txt = await axios.post("/Oeffnungszeiten/setArbeitstag", time);
