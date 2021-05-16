@@ -10,8 +10,8 @@ public class Status extends PanacheEntityBase implements Serializable {
 
     public Status(){}
 
-    public Status(String status_Name, int rechnungs_ID) {
-        this.status_Name = status_Name;
+    public Status(int rechnungs_ID) {
+        this.status_Name = "offen";
         this.rechnungs_ID = rechnungs_ID;
     }
 

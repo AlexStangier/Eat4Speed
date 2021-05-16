@@ -13,11 +13,9 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
     public Auftrag() {
     }
 
-    public Auftrag(long auftrags_ID, int auftragnehmer, Timestamp timestamp, Timestamp timestamp_On_Customer_Demand, int anschrift, Double lieferdistanz, int kundennummer, String status, int geschaetzte_fahrtzeit_restaurant_ziel) {
-        this.auftrags_ID = auftrags_ID;
+    public Auftrag(int auftragnehmer, Timestamp timestamp, int anschrift, Double lieferdistanz, int kundennummer, String status, int geschaetzte_fahrtzeit_restaurant_ziel) {
         this.auftragnehmer = auftragnehmer;
         this.timestamp = timestamp;
-        this.timestamp_On_Customer_Demand = timestamp_On_Customer_Demand;
         this.anschrift = anschrift;
         this.lieferdistanz = lieferdistanz;
         this.kundennummer = kundennummer;

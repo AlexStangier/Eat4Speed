@@ -82,50 +82,46 @@ public class BestellungService implements IBestellungService {
 
         if (!safeItems.isEmpty() && benutzer != null) {
             //create new rechnung
-            Rechnung rechnung = new Rechnung();
+            Rechnung rechnung = null;
+            Adressen adresse = null;
+            Auftrag auftrag = null;
+            Bestellung bestellung = null;
 
-            rechnung.setBetrag(safeItems.stream().mapToDouble(Gericht::getPreis).sum());
-            //add tax
-            rechnung.setBetrag(rechnung.getBetrag() * 1.07 + 2.00);
-            rechnung.setRechnungsdatum(new Timestamp(date.getTime()));
-            rechnung.setZahlungseingang((byte) 0);
+            try {
+                rechnung = new Rechnung((safeItems.stream().mapToDouble(Gericht::getPreis).sum() * 1.07 + 2.00), new Timestamp(date.getTime()), (byte) 0);
+            } catch (Exception e) {
+                System.out.println("Failed while creating rechnung:" + e);
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+            }
+
             _rechnungRepository.persist(rechnung);
+            if (_rechnungRepository.isPersistent(rechnung)) {
 
-            //make sure changes have been applied
-            _rechnungRepository.flush();
+                try {
+                    adresse = _adressenRepository.getAdresseByCustomerId(benutzer.getBenutzer_ID());
+                } catch (Exception e) {
+                    System.out.println("Failed while querying address:" + e);
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+                }
+                try {
+                    auftrag = new Auftrag(safeItems.get(0).getRestaurant_ID(), new Timestamp(date.getTime()), adresse.getAdress_ID(), 23.00, benutzer.getBenutzer_ID(), "offen", 10);
+                } catch (Exception e) {
+                    System.out.println("Failed while creating auftrag:" + e);
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+                }
 
-            //set Status
-            Status status = new Status();
-            status.setStatus_Name("offen");
-            status.setRechnungs_ID(rechnung.getRechnungs_ID());
+                _auftragRepository.persist(auftrag);
+                if (_auftragRepository.isPersistent(auftrag)) {
+                    try {
+                        bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID());
+                    } catch (Exception e) {
+                        System.out.println("Failed while creating bestellung:" + e);
+                        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+                    }
+                    _bestellungRepository.persist(bestellung);
+                }
+            }
 
-            //create Auftrag
-            Auftrag auftrag = new Auftrag();
-            auftrag.setKundennummer(benutzer.getBenutzer_ID());
-            //TODO set different ids if order is composit of mutiple restaurants
-            auftrag.setAuftragnehmer(safeItems.get(0).getRestaurant_ID());
-            auftrag.setTimestamp(new Timestamp(date.getTime()));
-            //TODO fix Anschrift key
-            auftrag.setAnschrift(1);
-            auftrag.setStatus(status.getStatus_Name().toLowerCase(Locale.ROOT));
-
-            //TODO add algorithm result here
-            auftrag.setLieferdistanz(23.0);
-            auftrag.setGeschaetzte_fahrtzeit_restaurant_ziel(15);
-
-            _auftragRepository.addAuftrag(auftrag);
-
-            //make sure changes have been applied
-            _auftragRepository.flush();
-
-            //bestellung
-            Bestellung bestellung = new Bestellung();
-            bestellung.setRechnung(rechnung.getRechnungs_ID());
-            bestellung.setTimestamp(new Timestamp(date.getTime()));
-            bestellung.setAuftrags_ID((int) auftrag.getAuftrags_ID());
-            _bestellungRepository.persist(bestellung);
-
-            //_bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
             return Response.status(Response.Status.CREATED).entity(auftrag).build();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
