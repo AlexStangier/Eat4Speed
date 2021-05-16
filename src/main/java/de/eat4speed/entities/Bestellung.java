@@ -12,6 +12,13 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
 
     public Bestellung(){}
 
+    public Bestellung(int bestell_ID, int auftrags_ID, Timestamp timestamp, int rechnung) {
+        this.bestell_ID = bestell_ID;
+        this.auftrags_ID = auftrags_ID;
+        this.timestamp = timestamp;
+        this.rechnung = rechnung;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int bestell_ID;
