@@ -136,9 +136,9 @@ export default {
       const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse);
       const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant);
 
-      // console.log(responseBenutzerRestaurantToAlter);
-      // console.log(responseAdresseToAlter);
-      // console.log(responseRestaurantToAlter);
+      console.log(responseBenutzerRestaurantToAlter);
+      console.log(responseAdresseToAlter);
+      console.log(responseRestaurantToAlter);
 
     },
     reset() {
