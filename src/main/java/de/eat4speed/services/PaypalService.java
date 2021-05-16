@@ -64,7 +64,6 @@ public class PaypalService implements IPaypalService {
                     order = response.result();
                     ppDto.setOrderId(order.id());
                     order.links().forEach(link -> resultLinks.add(link.href()));
-                    order.links().forEach(link -> System.out.println(link.rel() + " => " + link.method() + ":" + link.href()));
                     ppDto.setSelfLink(resultLinks.get(0));
                     ppDto.setApproveLink(resultLinks.get(1));
                     ppDto.setUpdateLink(resultLinks.get(2));
