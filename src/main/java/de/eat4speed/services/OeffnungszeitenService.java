@@ -29,4 +29,18 @@ public class OeffnungszeitenService implements IOeffnungszeitenService{
 
         return Response.status(Response.Status.CREATED).entity(zeit).build();
     }
+
+    @Override
+    public Response updateArbeitstag(Oeffnungszeiten zeit)
+    {
+        oeffnungszeitenRepository.updateArbeitstag(zeit);
+
+        return Response.status(Response.Status.OK).entity(zeit).build();
+    }
+
+    @Override
+    public List getAllZeiten(int restaurant_ID)
+    {
+        return oeffnungszeitenRepository.getAllZeiten(restaurant_ID);
+    }
 }

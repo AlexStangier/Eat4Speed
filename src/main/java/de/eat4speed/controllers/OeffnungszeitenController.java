@@ -12,6 +12,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Path("/Oeffnungszeiten")
 public class OeffnungszeitenController {
@@ -28,5 +29,19 @@ public class OeffnungszeitenController {
 
         return Response.status(Response.Status.CREATED).entity(zeit).build();
     };
+
+    @PUT
+    @Path("updateArbeitstag")
+    public Response updateArbeitstag(Oeffnungszeiten zeit)
+    {
+        return oeffnungszeitenService.updateArbeitstag(zeit);
+    }
+
+    @GET
+    @Path("/getAllZeiten/{id}")
+    public List getAllZeiten(@PathParam("id") int restaurant_id){
+
+        return oeffnungszeitenService.getAllZeiten(restaurant_id);
+    }
 
 }
