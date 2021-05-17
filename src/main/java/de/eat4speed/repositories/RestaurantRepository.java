@@ -22,21 +22,18 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     EntityManager entityManager;
 
     @Transactional
-    public void addRestaurant(Restaurant restaurant)
-    {
+    public void addRestaurant(Restaurant restaurant) {
         persist(restaurant);
     }
 
 
     @Transactional
-    public void updateRestaurant_Verifiziert(int restaurant_ID)
-    {
+    public void updateRestaurant_Verifiziert(int restaurant_ID) {
         update("verifiziert = 1 where restaurant_ID = ?1", restaurant_ID);
     }
 
     @Transactional
-    public List getAllRestaurant()
-    {
+    public List getAllRestaurant() {
         List allRestaurantData;
 
         Query query = entityManager.createQuery(
@@ -52,17 +49,16 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     }
 
     @Transactional
-    public List getRestaurantDataByRestaurantName(String restaurantName)
-    {
+    public List getRestaurantDataByRestaurantName(String restaurantName) {
         List restaurantsData;
 
-        String likeName = "%"+restaurantName+"%";
+        String likeName = "%" + restaurantName + "%";
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID, r.name_des_Restaurants, r.allgemeine_Beschreibung, r.mindestbestellwert, r.bestellradius " +
                         "FROM Restaurant r " +
                         "WHERE r.name_des_Restaurants LIKE ?1 "
-        ).setParameter(1,likeName);
+        ).setParameter(1, likeName);
 
         restaurantsData = query.getResultList();
 
@@ -70,8 +66,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     }
 
     @Transactional
-    public List getAllRestaurantDataByRestaurant_ID(int restaurant_ID)
-    {
+    public List getAllRestaurantDataByRestaurant_ID(int restaurant_ID) {
         List restaurantsData;
 
         Query query = entityManager.createQuery(
@@ -80,7 +75,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
                         "WHERE r.benutzer_ID = b.benutzer_ID " +
                         "AND r.anschrift = a.adress_ID " +
                         "AND r.restaurant_ID = ?1"
-        ).setParameter(1,restaurant_ID);
+        ).setParameter(1, restaurant_ID);
 
         restaurantsData = query.getResultList();
 
@@ -88,8 +83,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     }
 
     @Transactional
-    public List getNotVerifiedRestaurant()
-    {
+    public List getNotVerifiedRestaurant() {
         List notVerifiedRestaurantData;
 
         Query query = entityManager.createQuery(
@@ -106,8 +100,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     }
 
     @Transactional
-    public List getVerifiedRestaurant()
-    {
+    public List getVerifiedRestaurant() {
         List verifiedRestaurantData;
 
         Query query = entityManager.createQuery(
@@ -124,16 +117,19 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     }
 
     @Transactional
-    public int deleteRestaurant(int restaurant_ID)
-    {
+    public int deleteRestaurant(int restaurant_ID) {
         delete("restaurant_ID", restaurant_ID);
 
         return restaurant_ID;
     }
 
 
-    public Restaurant findByRestaurantnummer(int restaurant_ID)
-    {
+    public Restaurant findByRestaurantnummer(int restaurant_ID) {
         return find("restaurant_ID", restaurant_ID).firstResult();
+    }
+
+    @Transactional
+    public void updateRestaurantStammdaten(Restaurant restaurant) {
+        update("name_des_Restaurants = ?1, mindestbestellwert = ?2, bestellradius = ?3 where restaurant_ID = ?4", restaurant.getName_des_Restaurants(), restaurant.getMindestbestellwert(), restaurant.getBestellradius(), restaurant.getRestaurant_ID());
     }
 }

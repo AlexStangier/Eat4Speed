@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 import java.util.Locale;
 
 @ApplicationScoped
@@ -53,7 +54,7 @@ public class BenutzerService implements IBenutzerService {
             //Credentials are correct
             if (currBenutzer.getPasswort().equals(requestedUser.getPasswort())) {
                 return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
-            //Credentails doesn't match
+                //Credentails doesn't match
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Benutzer Daten sind falsch!").build();
             }
@@ -67,4 +68,16 @@ public class BenutzerService implements IBenutzerService {
     public Integer getEmailById(UserEmailDto email) {
         return _benutzer.getBenutzerIdByEmail(email);
     }
+
+    @Override
+    public List getBenutzerByLogin(String email) {
+        return _benutzer.getBenutzerByLogin(email);
+    }
+
+    @Override
+    public Response updateBenutzerRestaurant(Benutzer benutzer) {
+        _benutzer.updateBenutzerRestaurant(benutzer);
+        return Response.status(Response.Status.OK).entity(benutzer).build();
+    }
 }
+

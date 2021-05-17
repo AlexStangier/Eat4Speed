@@ -568,6 +568,17 @@
                     </v-dialog>
                   </v-col>
                 </v-row>
+                <v-btn
+                    @click="executeAll"
+                    class = "mb-2"
+                    color="red"
+                    dark
+                    small
+                    bottom
+                >
+                  Änderungen speichern
+                </v-btn>
+                <v-spacer></v-spacer>
                 <v-dialog
                     :retain-focus="false"
                     v-model="enabledException"
@@ -576,7 +587,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                        color="red"
+                        color="brown"
                         dark
                         v-bind="attrs"
                         v-on="on"
@@ -590,7 +601,7 @@
 
                   <v-card d-flex>
                     <v-col>
-                      <v-date-picker v-model="picker"></v-date-picker>
+                      <v-date-picker></v-date-picker>
                       <v-checkbox align-center label="Ganztägig"></v-checkbox>
 
                       <v-col
@@ -672,7 +683,7 @@
                         <v-btn color="red" dark>
                           Abbruch
                         </v-btn>
-                        <v-btn color="green" dark align-end>
+                        <v-btn color="green" @click="setArbeitstag" dark align-end>
                           Bestätigen
                         </v-btn>
                       </v-row>
@@ -690,9 +701,11 @@
 </template>
 
 <script>
+import axios from "axios";
+
+
 export default {
   name: "RestaurantSchichtplan",
-  methods: {},
   data: () => ({
     times: {
       timePicker: [false, false, false, false, false, false, false],
@@ -716,10 +729,122 @@ export default {
     enabled5: false,
     enabled6: false,
     enabledException: false,
+
+    updated: [false, false, false, false, false, false, false]
   }),
   mounted() {
-
+    console.log("mounted")
+    this.loadZeiten()
   },
+  methods: {
+
+
+    executeAll(){
+      console.log("Es wird was gemacht...")
+      if(this.enabled && !this.updated[0]) this.setArbeitstag(0, "Montag")
+      else if(this.enabled) this.updateArbeitstag(0, "Montag")
+      if(this.enabled1 && !this.updated[1]) this.setArbeitstag(1, "Dienstag")
+      else if(this.enabled) this.updateArbeitstag(1, "Dienstag")
+      if(this.enabled2 && !this.updated[2]) this.setArbeitstag(2, "Mittwoch")
+      else if(this.enabled) this.updateArbeitstag(2, "Mittwoch")
+      if(this.enabled3 && !this.updated[3]) this.setArbeitstag(3, "Donnerstag")
+      else if(this.enabled) this.updateArbeitstag(3, "Donnerstag")
+      if(this.enabled4 && !this.updated[4]) this.setArbeitstag(4, "Freitag")
+      else if(this.enabled) this.updateArbeitstag(4, "Freitag")
+      if(this.enabled5 && !this.updated[5]) this.setArbeitstag(5, "Samstag")
+      else if(this.enabled) this.updateArbeitstag(5, "Samstag")
+      if(this.enabled6 && !this.updated[6]) this.setArbeitstag(6, "Sonntag")
+      else if(this.enabled) this.updateArbeitstag(6, "Sonntag")
+    },
+    async loadZeiten() {
+      console.log("load...")
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      let StammdatenData = ResponseStammdaten.data[0];
+
+
+      const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12]);
+
+      console.log(ResponseZeiten);
+
+      for (let i = 0; i < ResponseZeiten.data.length; i++) {
+        let zeitData = ResponseZeiten.data[i];
+
+        switch (zeitData[2]){
+          case "Montag": this.enabled = true;
+            this.times.timesStart[0] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[0] = zeitData[1].substring(11, 16);
+            this.updated[0] = true;
+                  break;
+          case "Dienstag": this.enabled1 = true;
+            this.times.timesStart[1] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[1] = zeitData[1].substring(11, 16);
+            this.updated[1] = true;
+                  break;
+          case "Mittwoch": this.enabled2 = true;
+            this.times.timesStart[2] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[2] = zeitData[1].substring(11, 16);
+            this.updated[2] = true;
+                  break;
+          case "Donnerstag": this.enabled3 = true;
+            this.times.timesStart[3] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[3] = zeitData[1].substring(11, 16);
+            this.updated[3] = true;
+                  break;
+          case "Freitag": this.enabled4 = true;
+            this.times.timesStart[4] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[4] = zeitData[1].substring(11, 16);
+            this.updated[4] = true;
+                  break;
+          case "Samstag": this.enabled5 = true;
+            this.times.timesStart[5] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[5] = zeitData[1].substring(11, 16);
+            this.updated[5] = true;
+                  break;
+          case "Sonntag": this.enabled6 = true;
+            this.times.timesStart[6] = zeitData[0].substring(11, 16);
+            this.times.timesEnd[6] = zeitData[1].substring(11, 16);
+            this.updated[6] = true;
+                  break;
+        }
+      }
+
+      this.version++;
+    },
+    async setArbeitstag(pos, tag) {
+
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      let StammdatenData = ResponseStammdaten.data[0];
+
+      let time = {
+
+        anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
+        ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
+        wochentag: tag,
+        restaurant_ID: StammdatenData[12]
+      }
+
+      const txt = await axios.post("/Oeffnungszeiten/setArbeitstag", time);
+      console.log(txt)
+    },
+    async updateArbeitstag(pos, tag) {
+
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      let StammdatenData = ResponseStammdaten.data[0];
+
+      let time = {
+
+        anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
+        ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
+        wochentag: tag,
+        restaurant_ID: StammdatenData[12]
+      }
+
+      const txt = await axios.put("/Oeffnungszeiten/updateArbeitstag", time);
+      console.log(txt)
+    },
+
+
+  }
 }
 </script>
 

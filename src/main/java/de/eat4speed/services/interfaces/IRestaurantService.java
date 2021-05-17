@@ -1,5 +1,6 @@
 package de.eat4speed.services.interfaces;
 
+import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
 
 import javax.ws.rs.PathParam;
@@ -23,4 +24,6 @@ public interface IRestaurantService {
     Response updateRestaurant_Verifiziert(int id);
 
     Response deleteRestaurant(int id);
+
+    Response updateRestaurantStammdaten(Restaurant restaurant);
 }

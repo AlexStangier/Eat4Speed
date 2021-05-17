@@ -44,7 +44,7 @@
 
             <v-list-item-content>
               <v-list-item-title>{{ item.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ item.quantity }} item{{ item.quantity > 1 ? 's' : '' }}</v-list-item-subtitle>
+              <v-list-item-subtitle>Anzahl: {{ item.quantity }}</v-list-item-subtitle>
               <v-list-item-subtitle>{{ calculateItemPrice(item.quantity, item.price) }} &euro;</v-list-item-subtitle>
             </v-list-item-content>
 
@@ -93,6 +93,23 @@ export default {
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
       if (this.searchDestination === "Gerichte") {
+        const searchOptions = {
+          gericht_ID: -1,
+          kundennummer: this.loggedInKunde_ID,
+          gerichtName: this.searchString,
+          kategorien: [],
+          excludedAllergene: [],
+          maxMindestbestellwert: 0,
+          maxEntfernung: 0,
+          minBewertung: 0,
+          useName: true,
+          useKategorien: false,
+          useAllergene: false,
+          useMindestbestellwert: false,
+          useEntfernung: false,
+          useBewertung: false
+        }
+        this.$store.commit("changeSearchOptions", searchOptions);
         this.$store.commit("changeSearchType", "Gerichte");
         this.$router.push({name: 'Kunde'});
       } else {
@@ -148,7 +165,7 @@ export default {
           console.log('success');
           this.$store.commit("deleteCartGerichte");
           this.version++;
-          this.$router.push({name: "Startseite"});
+          this.$router.push({name: "BezahlungErfolgreich", params: {cart: this.carts}});
         }
       });
     }

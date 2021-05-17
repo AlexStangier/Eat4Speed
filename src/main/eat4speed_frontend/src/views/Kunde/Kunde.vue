@@ -20,10 +20,11 @@
           </v-col>
           <v-col sm="2" offset-sm="1">
             <v-select
-                v-model="selectedArea"
+                v-model="selectedEntfernung"
                 label="Entfernung"
                 :items="selectArea"
                 clearable="true"
+                @change="applyDistanceFilterAndSearch"
             >
               <template v-slot:selection="data">
                 {{data.item}} {{"km"}}
@@ -93,6 +94,7 @@
                 <v-btn
                     v-bind="attrs"
                     v-on="on"
+                    @mouseenter="loadAllKategorienAndAllergene"
                 >
                   Filter
                 </v-btn>
@@ -102,10 +104,14 @@
                   min-width="400"
 
               >
+                <v-checkbox label="Suche benutzen" v-model="nameOptionActive">
+                </v-checkbox>
+                <v-checkbox label="Mindestbestellwert benutzen" v-model="mindestbestellwertOptionActive">
+                </v-checkbox>
                 <v-subheader>Mindestbestellwert</v-subheader>
                 <v-list-item>
                   <v-slider
-                      v-model="filterCosts"
+                      v-model="selectedMindestbestellwert"
                       min="5"
                       max="100"
                       step="5"
@@ -120,29 +126,37 @@
                 </v-list-item>
                 <v-list-item>
                   <v-container fluid>
-                    <v-select
-                        v-model="filterOptions"
-                        :items="Options"
-                        label="Filteroptionen"
-                        multiple
-                    >
-                      <template v-slot:selection="{ item, index }">
-                        <v-chip v-if="index < 3">
-                          <span>{{ item }}</span>
-                        </v-chip>
-                        <v-chip v-if="index === 3">
-                            <span
-                                class="grey--text caption"
-                            >
-                              (+{{ filterOptions.length - 3 }} weitere)
-                            </span>
-                        </v-chip>
-                      </template>
-                    </v-select>
+                    <v-checkbox label="Kategorien benutzen" v-model="kategorieOptionActive">
+                    </v-checkbox>
+                      <v-select
+                          ref="KategorieSelect"
+                          v-model="selectedKategorien"
+                          :items="kategorien"
+                          chips
+                          label="Kategorien"
+                          multiple
+                          outlined
+                          block
+                          :key="kategorieVersion"
+                      ></v-select>
+                    <v-checkbox label="Allergene benutzen" v-model="allergeneOptionActive">
+                    </v-checkbox>
+                      <v-select
+                          ref="AllergeneSelect"
+                          v-model="selectedAllergene"
+                          :items="allergene"
+                          chips
+                          label="Allergene"
+                          multiple
+                          outlined
+                          block
+                          :key="allergeneVersion"
+                      ></v-select>
                   </v-container>
                 </v-list-item>
                 <v-list-item>
                   <v-btn color="error">Filter löschen</v-btn>
+                  <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -177,9 +191,37 @@
                   </v-list-item-content>
                   <v-list-item-content></v-list-item-content>
                   <v-list-item-group class="text-right">
-                    <v-btn small="true" right icon>
-                      <v-icon>mdi-heart</v-icon>
-                    </v-btn>
+
+                    <div :key="version" v-if="item.isFav === true">
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              @mouseenter="selectItem(item)"  small="true" right
+                              @mousedown="deleteFromFavorites"
+                              v-bind="attrs"
+                              v-on="on"
+                          >
+                            <v-icon>mdi-heart</v-icon>
+                          </v-btn>
+                        </template>
+                          <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                      </v-tooltip>
+                    </div>
+                    <div :key="version" v-else>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              @mouseenter="selectItem(item)"  small="true" right
+                              @mousedown="addToFavorites"
+                              v-bind="attrs"
+                              v-on="on"
+                          >
+                              <v-icon>mdi-heart-outline</v-icon>
+                          </v-btn>
+                        </template>
+                          <span>Zu Favoriten hinzufügen</span>
+                      </v-tooltip>
+                    </div>
                     <br>
                     <v-list-item-content>
                       Preis: {{ item.price +' €'}}
@@ -286,12 +328,17 @@ export default {
   name: "Kunde",
   mounted() {
     this.searchString = this.$store.getters.searchString;
+    this.searchOptions = this.$store.getters.searchOptions;
+
     console.log(this.searchString);
+    //TODO change later!
+    this.loggedInKunde_ID = 6;
 
     this.loadGerichte();
   },
   beforeRouteLeave(to, from, next) {
     this.setStoreGericht_ID();
+    this.setStoreSearchOptions();
     next();
   },
   methods: {
@@ -311,21 +358,37 @@ export default {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
     },
+    setStoreSearchOptions(){
+      this.$store.commit("changeSearchOptions", this.searchOptions);
+    },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     async findAlternatives() {
-      let dishAlternativeOptions = {
+
+      const searchOptions = {
         gericht_ID: this.selectedItem.id,
+        kundennummer: this.loggedInKunde_ID,
         gerichtName: this.selectedItem.name,
         kategorien: this.selectedKategorien,
+        excludedAllergene: [],
+        maxMindestbestellwert: 0,
+        maxEntfernung: 0,
+        minBewertung: 0,
         useName: this.nameOptionActive,
-        useKategorien: this.kategorieOptionActive
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: false,
+        useMindestbestellwert: false,
+        useEntfernung: false,
+        useBewertung: false
       }
+
+      this.searchOptions = searchOptions;
+
       console.log("Before sending get...")
 
-      const responseAlternatives = await axios.post("Gericht/getGerichtAlternatives", dishAlternativeOptions);
+      const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
 
       console.log("After sending get...")
 
@@ -383,10 +446,42 @@ export default {
       this.version++;
 
     },
+    async addToFavorites() {
+      var today = new Date();
+      const gerichtFavorite = {
+        gericht_ID: this.selectedItem.id,
+        kundennummer: this.loggedInKunde_ID,
+        hinzufuegedatum: today,
+        //TODO get anzahl_Bestellungen from Database
+        anzahl_Bestellungen: 0
+      }
+
+      await axios.post("Favoritenliste_Gerichte", gerichtFavorite);
+      this.loadGerichte();
+    },
+    async deleteFromFavorites(){
+      await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+      this.loadGerichte();
+    },
     async loadGerichte() {
-      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
+
+      const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+
+      console.log(ResponseFavoriten);
+      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      {
+        let favData = ResponseFavoriten.data[i];
+        this.favoritenlisteGerichte_IDs[i] = favData[0];
+        this.hinzufuegedaten[i]= favData[7];
+      }
+
+      //const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
+
+      const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
 
       console.log(ResponseGerichte);
+
+      //console.log("Verarbeite ResponseGerichte")
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -407,7 +502,23 @@ export default {
         this.restaurant_IDs[i] = gerichtData[5];
         this.restaurantnamen[i] = gerichtData[6];
         this.minimums[i] = gerichtData[7];
+
+        //console.log("Durchlauf vor Fav");
+        if(this.favoritenlisteGerichte_IDs.includes(gerichtData[0]))
+        {
+          this.isFavorite[i] = true;
+          let index = this.favoritenlisteGerichte_IDs.indexOf(gerichtData[0]);
+          this.hinzufuegedatumAssigned[i] = this.hinzufuegedaten[index];
+        }
+        else
+        {
+          this.isFavorite[i] = false;
+          this.hinzufuegedatumAssigned[i] = null;
+        }
+        //console.log("Durchlauf nach Fav");
       }
+
+      //console.log("Suche nach Bildern");
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
@@ -434,7 +545,20 @@ export default {
         }
 
       }
+
+      //console.log("Verarbeitung abgeschlossen")
       console.log(this.imgs);
+
+      for(let i = 0; i<this.restaurant_IDs.length;i++)
+      {
+        const responseDistance = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_IDs[i])
+
+        console.log(responseDistance);
+
+        this.distances[i] = responseDistance.data[0];
+
+      }
+
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -449,6 +573,87 @@ export default {
       }
       this.kategorien = arrayKategorien;
       this.kategorieVersion++;
+    },
+    async loadAllKategorienAndAllergene() {
+      this.loadAllKategorien();
+      this.loadAllAllergene();
+    },
+    async loadAllKategorien() {
+      const responseGetKategorie = await axios.get("Kategorie");
+
+      let arrayKategorien = [];
+      for(let i = 0; i<responseGetKategorie.data.length;i++)
+      {
+        arrayKategorien[i]=responseGetKategorie.data[i];
+      }
+      this.kategorien = arrayKategorien;
+      this.kategorieVersion++;
+    },
+    async loadAllAllergene() {
+      const responseGetAllergene = await axios.get("Allergene");
+
+      let arrayAllergene = [];
+      for(let i = 0; i<responseGetAllergene.data.length;i++)
+      {
+        arrayAllergene[i]=responseGetAllergene.data[i];
+      }
+      this.allergene = arrayAllergene;
+      this.allergeneVersion++;
+    },
+    async applyFiltersAndSearch() {
+      const searchOptions = {
+        gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
+        gerichtName: this.searchString,
+        kategorien: this.selectedKategorien,
+        excludedAllergene: this.selectedAllergene,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: this.allergeneOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadGerichte();
+    },
+    async applyDistanceFilterAndSearch() {
+
+      if(this.selectedEntfernung>=5)
+      {
+        this.entfernungOptionActive = true;
+      }
+      else
+      {
+        this.entfernungOptionActive = false;
+      }
+      this.nameOptionActive = true;
+
+      const searchOptions = {
+        gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
+        gerichtName: this.searchString,
+        kategorien: this.selectedKategorien,
+        excludedAllergene: this.selectedAllergene,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: this.allergeneOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadGerichte();
     },
     addToCart() {
 
@@ -466,12 +671,15 @@ export default {
     }
   },
   data: () => ({
+    searchOptions: {},
     searchString: "",
+    loggedInKunde_ID: 0,
     amountGerichte: 4,
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
     kategorieVersion: 0,
+    allergeneVersion: 0,
     gericht_IDs: [],
     names: [],
     descriptions: [],
@@ -484,8 +692,21 @@ export default {
     availabilities: [],
     kategorien: [],
     selectedKategorien: [],
+    allergene: [],
+    selectedAllergene: [],
+    selectedMindestbestellwert: 0,
+    selectedBewertung: 0,
+    selectedEntfernung: 0,
+    favoritenlisteGerichte_IDs: [],
+    hinzufuegedaten: [],
+    hinzufuegedatumAssigned: [],
+    isFavorite: [],
     nameOptionActive: false,
     kategorieOptionActive: false,
+    allergeneOptionActive: false,
+    mindestbestellwertOptionActive: false,
+    bewertungOptionActive: false,
+    entfernungOptionActive: false,
     gerichtAnzahl: 1,
     selectRating: [5,4,3,2,1],
     selectArea: [5,10,20,30,40],
@@ -508,6 +729,8 @@ export default {
         const cdistance = this.distances[i]
         const cminimum = this.minimums[i]
         const cavailable = this.availabilities[i]
+        const cisFav = this.isFavorite[i]
+        const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         i++;
 
         return {
@@ -520,7 +743,9 @@ export default {
           restaurant: crestaurantname,
           distance: cdistance,
           minimum: cminimum,
-          available: cavailable
+          available: cavailable,
+          isFav: cisFav,
+          hinzufuegedatum: chinzufuegedatum
         }
       })
     }

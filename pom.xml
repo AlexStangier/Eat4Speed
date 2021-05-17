@@ -180,9 +180,10 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>7.7.3</version>
                 <configuration>
-                    <url>jdbc:mysql://195.90.210.214:3306/eatforspeed?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin</url>
+                    <url>jdbc:mysql://195.90.210.214/eatforspeed?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=Europe/Berlin</url>
                     <user>eatforspeed</user>
                     <password>#eat4Speed!</password>
+                    <target>current</target>
                 </configuration>
             </plugin>
         </plugins>

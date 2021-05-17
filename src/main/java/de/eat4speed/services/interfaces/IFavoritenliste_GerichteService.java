@@ -9,4 +9,5 @@ public interface IFavoritenliste_GerichteService {
 
     Response addFavoritenliste_Gerichte(Favoritenliste_Gerichte favoritenliste_gerichte);
 
+    Response removeFavoritenliste_Gerichte(int gericht_id, int kundennummer);
 }
