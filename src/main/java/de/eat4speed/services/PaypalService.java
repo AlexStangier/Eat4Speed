@@ -55,7 +55,7 @@ public class PaypalService implements IPaypalService {
                 orderRequest.checkoutPaymentIntent("CAPTURE");
                 List<PurchaseUnitRequest> purchaseUnits = new ArrayList<>();
                 purchaseUnits.add(new PurchaseUnitRequest().amountWithBreakdown(new AmountWithBreakdown()
-                        .currencyCode("EUR").value(String.valueOf(rechnung.getBetrag()))));
+                        .currencyCode("EUR").value(String.valueOf(Math.floor(rechnung.getBetrag() * 100) / 100))));
                 orderRequest.purchaseUnits(purchaseUnits);
                 OrdersCreateRequest request = new OrdersCreateRequest().requestBody(orderRequest);
 
