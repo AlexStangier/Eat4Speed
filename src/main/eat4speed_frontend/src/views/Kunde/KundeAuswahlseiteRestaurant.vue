@@ -29,6 +29,74 @@
               <v-list-item-action>
                 {{restaurantRating}}
               </v-list-item-action>
+              <v-list-item-action>
+                <v-dialog
+                    max-width="60%"
+                >
+                  <template v-slot:activator="{ on, attrs}">
+                    <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      Bewertungen
+                    </v-btn>
+                  </template>
+                  <template v-slot:default="dialog">
+                    <v-card>
+                      <v-toolbar>Bewertungen</v-toolbar>
+                        <v-virtual-scroll
+                            :items="reviews"
+                            item-height="100"
+                            max-height="200"
+                        >
+                          <template v-slot:default="{ review }" v-resize>
+                            <v-container>
+                              <v-list-item v-resize>
+                                <v-list-item-content>
+                                  <v-list-item-group>
+                                    <v-list-item-title>{{ review.revUsername}}</v-list-item-title>
+                                    <v-rating readonly half-icon="$ratingHalf" half-increments :value="review.revRating" small></v-rating>
+                                  </v-list-item-group>
+                                </v-list-item-content>
+                                <v-list-item-content>
+                                  <v-textarea
+                                      label="Kommentar"
+                                      readonly="true"
+                                      :value="review.revComment"
+                                  >
+                                  </v-textarea>
+                                </v-list-item-content>
+                              </v-list-item>
+                            </v-container>
+                          </template>
+                        </v-virtual-scroll>
+
+                      <v-divider></v-divider>
+                      <v-card-actions>
+                        <v-rating
+                            half-increments="true"
+                            x-large
+                            v-model="userRating"
+                        >
+                        </v-rating>
+                      </v-card-actions>
+                      <v-card-actions>
+                        <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
+                      </v-card-actions>
+                      <v-card-actions class="justify-end">
+                        <v-btn
+                        @click="dialog.value = false"
+                        >Bewerten</v-btn>
+                        <v-btn
+                            @click="dialog.value = false"
+                        >Schließen</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+
+
+              </v-list-item-action>
             </v-item-group>
 
             <v-list-item-action></v-list-item-action>
@@ -254,7 +322,10 @@ export default {
     restaurantRating:"",
     restaurantPhoneNumber:"",
     restaurantMindestbestellwert:"",
-    restaurantBestellradius:""
+    restaurantBestellradius:"",
+    reviewUsername: ["User1", "User2", "User3"],
+    reviewRating: [3.5,5,2.5],
+    reviewComment: ["Das ist ein Kommentar lul.", "Ich mag Bananeneis", "Ganz OK"],
   }),
   computed: {
 
@@ -278,7 +349,22 @@ export default {
           rating: crating
         }
       })
-    }
+    },
+    reviews(){
+      let j = 0
+      return Array.from({length: 3}, () => {
+        const cReviewUsername = this.reviewUsername[j]
+        const cReviewRating = this.reviewRating[j]
+        const cReviewComment = this.reviewComment[j]
+        j++;
+
+        return{
+          revUsername: cReviewUsername,
+          revRating: cReviewRating,
+          revComment: cReviewComment
+        }
+      })
+    },
   }
 }
 </script>

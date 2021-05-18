@@ -302,7 +302,7 @@
                               >Alternativen</v-btn>
                               <v-btn
                                   @click="dialog.value = false"
-                              >Close</v-btn>
+                              >Schließen</v-btn>
                             </v-card-actions>
                           </v-card>
                         </template>
