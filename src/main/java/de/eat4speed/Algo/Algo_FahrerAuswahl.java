@@ -8,11 +8,13 @@ import de.eat4speed.repositories.FahrerRepository;
 import de.eat4speed.repositories.FahrtenplanRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 import de.eat4speed.repositories.SchichtRepository;
+import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class Algo_FahrerAuswahl {
 
         boolean isRunning = true;
         boolean restart = false;
+
         //fahrernummer 7  4  2  3  8  6  9  5 10 11
         //fahrer      f6 f3 f1 f2 f7 f5 f8 f4 f9 f10
 
@@ -60,7 +63,16 @@ public class Algo_FahrerAuswahl {
                 naheFahrerIDs = getNaheFahrer();
             }
 
-            if (restart)
+            if (AuftragAngenommen(startPunktID))
+            {
+                // evtl anfragen entfernen
+                for (int i = 0; i < count; i++)
+                {
+                    entferne_Auftrag_von_Fahrer(naheFahrerIDs.get(i));
+                }
+                break;
+            }
+            else if (restart)
             {
                 // anfragen entfernen und neustart
                 for (int i = 0; i < count; i++)
@@ -70,9 +82,8 @@ public class Algo_FahrerAuswahl {
                 restart(startPunktID);
                 isRunning = false;
             }
-
             // sende alle 30 sek an nächstbesten Fahrer
-            else if (naheFahrerIDs.size() > 0 && !AuftragAngenommen(startPunktID))
+            else if (naheFahrerIDs.size() > 0 )
             {
                 if (naheFahrerIDs.size() > count && count < maxFahrer)
                 {
@@ -90,12 +101,7 @@ public class Algo_FahrerAuswahl {
                     restart = true;
                 }
             }
-            else if (AuftragAngenommen(startPunktID))
-            {
-                // evtl anfragen entfernen
-                isRunning = false;
-            }
-            else if (naheFahrerIDs.size() == 0)
+            else
             {
                 System.out.println("No Found -> Restarting in 30s " + Thread.currentThread().getId() + " " +
                         " "  +LocalDateTime.now());
@@ -115,7 +121,7 @@ public class Algo_FahrerAuswahl {
 
     public void restart(int startPunktID)
     {
-        System.out.println("Restarting"+ " "  +LocalDateTime.now());
+        System.out.println("Restarting" + " "  + LocalDateTime.now());
         try {
             URL url = new URL("http://localhost:1337/FahrerAuswahl/" + startPunktID);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -126,16 +132,6 @@ public class Algo_FahrerAuswahl {
             http.getInputStream();
 
         } catch (Exception e) {
-
-            /*
-        } catch (MalformedURLException e) {
-
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-            */
         }
     }
 
@@ -152,8 +148,39 @@ public class Algo_FahrerAuswahl {
     public boolean AuftragAngenommen(int id)
     {
         boolean retVal = false;
+        Integer fahrerID = null;
 
-        // TODO
+        try {
+            URL url = new URL("http://localhost:1337/Fahrtenplan/" + id);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(true);
+
+            InputStream ips = http.getInputStream();
+
+            StringBuilder textBuilder = new StringBuilder();
+
+            try (Reader reader = new BufferedReader(
+                    new InputStreamReader(ips, Charset.forName(StandardCharsets.UTF_8.name())))) {
+                int c;
+                while ((c = reader.read()) != -1) {
+                    textBuilder.append((char) c);
+                }
+            }
+
+            fahrerID = (Integer)new JSONObject(textBuilder.toString()).get("Fahrer");
+
+            if (fahrerID != null)
+            {                System.out.println("NOT NULL " + fahrerID);
+                retVal = true;
+            }
+
+        } catch (ClassCastException e) {
+            System.out.println("NULL " + fahrerID);
+            retVal = false;
+        } catch (IOException e){
+            e.printStackTrace();
+        }
 
         return retVal;
     }
@@ -175,26 +202,30 @@ public class Algo_FahrerAuswahl {
 
         System.out.println("Fahrer gefunden: " + fahrer.size());
 
-        for (int i = 0; i < fahrer.size(); i++)
-        {
-            if (!CheckFahrerAvailability(fahrer.get(i))) {
-                fahrer.remove(fahrer.get(i));
-                i--;
-            }
-        }
-
-        System.out.println("zur Verfuegung: " + fahrer.size());
 
         SortByDistanz sortByDistanz = new SortByDistanz(startPunkt);
         List<Fahrer_Distanz> distances;
+
         // sortieren nach nähe zum Startpunkt der Stationen
         if (fahrer.size() > 0)
         {
             //fahrer.sort(sortByDistanz);
             distances =  sortByDistanz.getDistances(fahrer);
+
+            for (int i = 0; i < fahrer.size(); i++)
+            {
+                if (!CheckFahrerAvailability(fahrer.get(i), distances.get(i).getFahrzeit())) {
+                    fahrer.remove(fahrer.get(i));
+                    i--;
+                }
+            }
+
+            System.out.println("zur Verfuegung: " + fahrer.size());
+
             distances.sort( sortByDistanz );
 
             fahrer.clear();
+
             for (int i = 0; i < distances.size(); i++) {
                 naheFahrerIDs.add(distances.get(i).getFahrer_ID());
             }
@@ -202,7 +233,7 @@ public class Algo_FahrerAuswahl {
         return naheFahrerIDs;
     }
 
-    public boolean CheckFahrerAvailability(Fahrer fahrer)
+    public boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit)
     {
         boolean isAvailable = false;
 
@@ -212,7 +243,7 @@ public class Algo_FahrerAuswahl {
             Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
 
             Timestamp time = new Timestamp(new Date().getTime()
-                    + (startPunkt.getGeschaetzte_Fahrtzeit() * 60L * 1000L));
+                    + (startPunkt.getGeschaetzte_Fahrtzeit() * 60L * 1000L) + (Fahrzeit * 1000L));
 
             if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(time) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
             {

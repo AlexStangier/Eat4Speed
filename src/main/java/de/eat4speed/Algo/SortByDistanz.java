@@ -10,8 +10,6 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -131,8 +129,9 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
 
             for (int i = 0; i < jarray.length(); i++)
             {
-                distanzen.add(new Fahrer_Distanz(fahrer.get(i).getFahrernummer() ,
-                        jarray.getJSONArray(i).getJSONObject(0).getLong("distance")));
+                JSONObject info = jarray.getJSONArray(i).getJSONObject(0);
+                distanzen.add(new Fahrer_Distanz(fahrer.get(i).getFahrernummer(),
+                        info.getLong("distance"), info.getLong("time")));
             }
 
             http.disconnect();

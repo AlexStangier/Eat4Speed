@@ -4,10 +4,12 @@ public class Fahrer_Distanz {
 
     private int Fahrer_ID;
     private Long Distanz;
+    private Long Fahrzeit;
 
-    public Fahrer_Distanz(int fahrer_ID, Long distanz) {
+    public Fahrer_Distanz(int fahrer_ID, Long distanz, Long fahrzeit) {
         Fahrer_ID = fahrer_ID;
         Distanz = distanz;
+        Fahrzeit = fahrzeit;
     }
 
     public int getFahrer_ID() {
@@ -27,5 +29,11 @@ public class Fahrer_Distanz {
         Distanz = distzanz;
     }
 
+    public Long getFahrzeit() {
+        return Fahrzeit;
+    }
 
+    public void setFahrzeit(Long fahrzeit) {
+        Fahrzeit = fahrzeit;
+    }
 }

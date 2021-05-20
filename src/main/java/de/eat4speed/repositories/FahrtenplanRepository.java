@@ -19,4 +19,12 @@ public class FahrtenplanRepository implements PanacheRepository<Fahrtenplan_Stat
     {
         return find("Stations_ID", StationsID).firstResult();
     }
+
+    @Transactional
+    public String find_FahrerID_By_StationsID(int StationsID)
+    {
+        Fahrtenplan_Station fahrtenplan_station = find("Stations_ID", StationsID).firstResult();
+        Integer id = fahrtenplan_station.getFahrer();
+        return id.toString();
+    }
 }

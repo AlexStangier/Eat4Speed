@@ -14,7 +14,7 @@ public class Fahrtenplan_Station {
     private int Stations_ID;
     
     private int Auftrag;
-    private int Fahrer;
+    private Integer Fahrer;
     private int Liefer_Abholadresse;
     private int Vorherige_Station;
     private int Naechste_Station;
@@ -38,11 +38,11 @@ public class Fahrtenplan_Station {
         Auftrag = auftrag;
     }
 
-    public int getFahrer() {
+    public Integer getFahrer() {
         return Fahrer;
     }
 
-    public void setFahrer(int fahrer) {
+    public void setFahrer(Integer fahrer) {
         Fahrer = fahrer;
     }
 
@@ -99,7 +99,7 @@ public class Fahrtenplan_Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrtenplan_Station that = (Fahrtenplan_Station) o;
-        return Stations_ID == that.Stations_ID && Auftrag == that.Auftrag && Fahrer == that.Fahrer && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station == that.Vorherige_Station && Naechste_Station == that.Naechste_Station && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
+        return Stations_ID == that.Stations_ID && Auftrag == that.Auftrag && Fahrer.equals(that.Fahrer)  && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station == that.Vorherige_Station && Naechste_Station == that.Naechste_Station && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
     }
 
     @Override
@@ -119,6 +119,20 @@ public class Fahrtenplan_Station {
                 ", Fahrzeit_A_B=" + Fahrzeit_A_B +
                 ", Distanz_zu_naechster_Station=" + Distanz_zu_naechster_Station +
                 ", Geschaetzte_Fahrtzeit=" + Geschaetzte_Fahrtzeit +
+                '}';
+    }
+
+    public String toJSON() {
+        return "{" +
+                "Stations_ID:" + Stations_ID +
+                ", Auftrag:" + Auftrag +
+                ", Fahrer:" + Fahrer +
+                ", Liefer_Abholadresse:" + Liefer_Abholadresse +
+                ", Vorherige_Station:" + Vorherige_Station +
+                ", Naechste_Station:" + Naechste_Station +
+                ", Fahrzeit_A_B:" + Fahrzeit_A_B +
+                ", Distanz_zu_naechster_Station:" + Distanz_zu_naechster_Station +
+                ", Geschaetzte_Fahrtzeit:" + Geschaetzte_Fahrtzeit +
                 '}';
     }
 }
