@@ -71,13 +71,13 @@
               <v-card-actions>
                 <v-container>
                   <v-row>
-                    <v-col cols="12">
-                      <v-btn color="green" dark rounded width="200"
+                    <v-col align="center" justify="center">
+                      <v-btn class="white--text" color="green" depressed tile width="200"
                              @click="acceptDialog = false; verifyBewerbung();">Verifizieren
                       </v-btn>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn color="red" dark rounded width="200" @click="acceptDialog = false">Abbrechen</v-btn>
+                    <v-col align="center" justify="center">
+                      <v-btn class="white--text" color="red" depressed tile width="200" @click="acceptDialog = false">Abbrechen</v-btn>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -104,21 +104,21 @@
               <v-card-actions>
                 <v-container>
                   <v-row>
-                    <v-col cols="12">
-                      <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
+                    <v-col align="center" justify="center">
+                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
+                    <v-col align="center" justify="center">
+                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
+                    <v-col align="center" justify="center">
+                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
+                    <v-col align="center" justify="center">
+                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
                     </v-col>
                     <v-col cols="12"></v-col>
-                    <v-col cols="12">
-                      <v-btn color="blue" dark rounded width="200" @click="deleteDialog = false;">Abbrechen</v-btn>
+                    <v-col align="center" justify="center">
+                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false;">Abbrechen</v-btn>
                     </v-col>
                   </v-row>
                 </v-container>

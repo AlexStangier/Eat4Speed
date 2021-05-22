@@ -9,6 +9,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+                class="ml-2"
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
@@ -24,7 +25,7 @@
                   <h2>Anmeldung</h2>
                 </div>
               </v-toolbar>
-              <v-card-text>
+              <v-card-actions>
                 <v-container>
                       <v-row class="mt-2">
                         <v-col align="center" justify="center">
@@ -44,7 +45,7 @@
                         </v-col>
                       </v-row>
                     </v-container>
-              </v-card-text>
+              </v-card-actions>
               <v-card-actions>
                 <v-btn
                     text
@@ -57,11 +58,11 @@
       </v-col>
     </v-row>
 
-    <div class="d-flex flex-column justify-space-between align-center mt-n15">
+    <div class="d-flex flex-column justify-space-between align-center">
       <v-img
           class="justify-center"
-          max-height="200"
-          max-width="600"
+          max-height="50%"
+          max-width="50%"
           src="@/assets/logo.png"
       ></v-img>
     </div>
@@ -69,7 +70,7 @@
         :src="require(`@/assets/background.mp4`)"
         overlay="linear-gradient(45deg,#2a4ae430,#fb949e6b)"
         :playbackRate=0.8
-        style="height: 600px; width: 100%;"
+        style="height: 600px; max-height: 100%; width: 100%;"
     >
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
@@ -80,7 +81,7 @@
                     v-model="searchString"
                     prepend-inner-icon="mdi-magnify"
                     hide-details
-                    label="Suche nach Gericht"
+                    :label="btnType === 0 ? 'Suche nach Gericht' : 'Suche nach Umgebung'"
                     required
                     single-line
                 >
@@ -97,11 +98,13 @@
 
                 <v-row>
                   <v-col align="center">
-                    <v-btn class="mt-2" ref="GerichtButton" :disabled="!valid" width="200px" color="primary" depressed tile
-                           @click="gerichtFarbe" @mousedown="setDestinationToGerichte">Gericht
+                    <v-btn class="ma-1 white--text" ref="GerichtButton" :disabled="!valid" width="200px" depressed tile
+                           @click="gerichtFarbe" @mousedown="setDestinationToGerichte"
+                           :color="btnType === 0 ? 'primary' : 'blue-grey'">Gericht
                     </v-btn>
-                    <v-btn class="ml-2 mt-2" ref="UmgebungButton" :disabled="!valid" width="200px" color="primary" depressed tile
-                           @click="umbegungFarbe" @mousedown="setDestinationToRestaurants">Umgebung
+                    <v-btn class="ma-1 white--text" ref="UmgebungButton" :disabled="!valid" width="200px" depressed tile
+                           @click="umbegungFarbe" @mousedown="setDestinationToRestaurants"
+                           :color="btnType === 1 ? 'primary' : 'blue-grey'">Umgebung
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -121,6 +124,11 @@ export default {
   mounted() {
     this.searchDestination = "Gerichte";
     this.$store.commit("changeCartGerichte", []);
+  },
+  computed: {
+    isUserLoggedIn() {
+      return this.user !== undefined;
+    },
   },
   methods: {
     setStoreSearchString() {
@@ -163,19 +171,10 @@ export default {
       this.$refs.Anmeldung.class = "px-4 d-flex"
     },
     gerichtFarbe() {
-      this.$refs.GerichtButton.color = "blue"
-      this.$refs.UmgebungButton.color = "red"
-      this.$refs.Suchfeld.label = "Suche nach Gericht"
+      this.btnType = 0;
     },
     umbegungFarbe() {
-      this.$refs.UmgebungButton.color = "blue"
-      this.$refs.GerichtButton.color = "red"
-      this.$refs.Suchfeld.label = "Suche nach Umgebung"
-    },
-    validate() {
-      if (this.$refs.loginForm.validate()) {
-        // submit form to server/API here...
-      }
+      this.btnType = 1;
     },
     reset() {
       this.$refs.form.reset();
@@ -186,36 +185,11 @@ export default {
   },
   data() {
     return {
-
       valid: true,
       searchString: "",
-      salutation: "",
-      firstName: "",
-      lastName: "",
-      street: "",
-      houseNumber: "",
-      place: "",
-      postCode: "",
-      email: "",
-      phoneNumber: "",
-      password: "",
-      verify: "",
-      loginPassword: "",
-      loginEmail: "",
-      searchDestination: "",
-      loginEmailRules: [
-        v => !!v || "Required",
-        v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
-      ],
-      emailRules: [
-        v => !!v || "Required",
-        v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
-      ],
-      show1: false,
-      rules: {
-        required: value => !!value || "Required.",
-        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
-      }
+      searchDestination: "Gerichte",
+      btnType: 0,
+      user: this.$cookies.get('emailAdresse'),
     }
   }
 };

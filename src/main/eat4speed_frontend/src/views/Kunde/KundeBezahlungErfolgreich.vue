@@ -27,7 +27,16 @@
 
             <v-divider></v-divider>
 
-            <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+            <h2 class="py-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+
+            <v-divider></v-divider>
+
+            <v-row class="mt-2">
+              <v-col align="center" justify="center">
+                <v-btn align="center" justify="center" :to="{ name: 'Startseite'}" width="200px" color="primary" depressed tile>Zur Startseite</v-btn>
+              </v-col>
+            </v-row>
+
           </v-card-text>
         </v-flex>
       </v-layout>
