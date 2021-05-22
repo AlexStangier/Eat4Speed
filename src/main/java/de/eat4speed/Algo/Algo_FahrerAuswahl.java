@@ -42,7 +42,6 @@ public class Algo_FahrerAuswahl {
         List<Integer> naheFahrerIDs = null;
         int count = 0;
         startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
-
         anzahlGerichte = AnzahlGerichte(startPunktID);
 
         boolean isRunning = true;
@@ -53,16 +52,6 @@ public class Algo_FahrerAuswahl {
 
         while(isRunning) {
 
-            // start
-            if (count == 0)
-            {
-                if (naheFahrerIDs != null)
-                {
-                    naheFahrerIDs.clear();
-                }
-                naheFahrerIDs = getNaheFahrer();
-            }
-
             if (AuftragAngenommen(startPunktID))
             {
                 // evtl anfragen entfernen
@@ -70,9 +59,22 @@ public class Algo_FahrerAuswahl {
                 {
                     entferne_Auftrag_von_Fahrer(naheFahrerIDs.get(i));
                 }
+                System.out.println("Auftrag wurde angenommen");
                 break;
             }
-            else if (restart)
+
+            // start
+            if (count == 0)
+            {
+                if (naheFahrerIDs != null)
+                {
+                    naheFahrerIDs.clear();
+                }
+                System.out.println("Start");
+                naheFahrerIDs = getNaheFahrer();
+            }
+
+            if (restart)
             {
                 // anfragen entfernen und neustart
                 for (int i = 0; i < count; i++)
@@ -121,9 +123,10 @@ public class Algo_FahrerAuswahl {
 
     public void restart(int startPunktID)
     {
+        URL url;
         System.out.println("Restarting" + " "  + LocalDateTime.now());
         try {
-            URL url = new URL("http://localhost:1337/FahrerAuswahl/" + startPunktID);
+            url = new URL("http://localhost:1337/FahrerAuswahl/" + startPunktID);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
@@ -132,17 +135,34 @@ public class Algo_FahrerAuswahl {
             http.getInputStream();
 
         } catch (Exception e) {
+            System.out.println("Restarted: " + startPunktID + " "  + LocalDateTime.now());
         }
     }
-
 
     public int AnzahlGerichte(int startpunktID)
     {
         int count = 1;
+        int StationsID = startpunktID;
+        boolean hasNext = true;
 
         // TODO anzahlGerichte berechnen
+        while (hasNext)
+        {
+            Fahrtenplan_Station next = fahrtenplanRepository.findByStationsID(StationsID);
+            if (next.getNaechste_Station() != null)
+            {
+                StationsID = next.getNaechste_Station();
+                count++;
+            }
+            else
+            {
+                hasNext = false;
+            }
+        }
 
-        return count;
+        System.out.println("Stationen: " + count);
+
+        return 1;
     }
 
     public boolean AuftragAngenommen(int id)
@@ -226,8 +246,9 @@ public class Algo_FahrerAuswahl {
 
             fahrer.clear();
 
-            for (int i = 0; i < distances.size(); i++) {
-                naheFahrerIDs.add(distances.get(i).getFahrer_ID());
+            for (Fahrer_Distanz D : distances)
+            {
+                naheFahrerIDs.add(D.getFahrer_ID());
             }
         }
         return naheFahrerIDs;

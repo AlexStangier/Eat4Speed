@@ -16,8 +16,8 @@ public class Fahrtenplan_Station {
     private int Auftrag;
     private Integer Fahrer;
     private int Liefer_Abholadresse;
-    private int Vorherige_Station;
-    private int Naechste_Station;
+    private Integer Vorherige_Station;
+    private Integer Naechste_Station;
     private int Fahrzeit_A_B;
     private int Distanz_zu_naechster_Station;
     private int Geschaetzte_Fahrtzeit;
@@ -54,19 +54,19 @@ public class Fahrtenplan_Station {
         Liefer_Abholadresse = liefer_Abholadresse;
     }
 
-    public int getVorherige_Station() {
+    public Integer getVorherige_Station() {
         return Vorherige_Station;
     }
 
-    public void setVorherige_Station(int vorherige_Station) {
+    public void setVorherige_Station(Integer vorherige_Station) {
         Vorherige_Station = vorherige_Station;
     }
 
-    public int getNaechste_Station() {
+    public Integer getNaechste_Station() {
         return Naechste_Station;
     }
 
-    public void setNaechste_Station(int naechste_Station) {
+    public void setNaechste_Station(Integer naechste_Station) {
         Naechste_Station = naechste_Station;
     }
 
@@ -99,7 +99,7 @@ public class Fahrtenplan_Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Fahrtenplan_Station that = (Fahrtenplan_Station) o;
-        return Stations_ID == that.Stations_ID && Auftrag == that.Auftrag && Fahrer.equals(that.Fahrer)  && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station == that.Vorherige_Station && Naechste_Station == that.Naechste_Station && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
+        return Stations_ID == that.Stations_ID && Auftrag == that.Auftrag && Fahrer.equals(that.Fahrer)  && Liefer_Abholadresse == that.Liefer_Abholadresse && Vorherige_Station.equals(that.Vorherige_Station) && Naechste_Station.equals(that.Naechste_Station) && Fahrzeit_A_B == that.Fahrzeit_A_B && Distanz_zu_naechster_Station == that.Distanz_zu_naechster_Station && Geschaetzte_Fahrtzeit == that.Geschaetzte_Fahrtzeit;
     }
 
     @Override
