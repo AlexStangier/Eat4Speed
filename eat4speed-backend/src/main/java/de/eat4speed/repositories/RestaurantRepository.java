@@ -1,18 +1,13 @@
 package de.eat4speed.repositories;
 
-import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
-import de.eat4speed.entities.Kunde;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import org.drools.core.runtime.help.impl.XStreamJSon;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
