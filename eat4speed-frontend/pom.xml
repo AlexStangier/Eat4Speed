@@ -11,7 +11,6 @@
     </parent>
 
     <artifactId>eat4speed-frontend</artifactId>
-    <packaging>war</packaging>
 
     <name>Eat4Speed Frontend</name>
 
