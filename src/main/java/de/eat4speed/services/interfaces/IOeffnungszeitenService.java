@@ -12,4 +12,8 @@ public interface IOeffnungszeitenService {
 
     Response setArbeitstag(Oeffnungszeiten zeit);
 
+    Response updateArbeitstag(Oeffnungszeiten zeit);
+
+    List getAllZeiten(int restaurant_ID);
+
 }

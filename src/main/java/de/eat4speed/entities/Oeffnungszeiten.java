@@ -18,6 +18,7 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     private Timestamp anfang;
     private Timestamp ende;
     private String wochentag;
+    private int restaurant_ID;
 
     public int getOeffnungszeiten_ID() {
         return oeffnungszeiten_ID;
@@ -47,6 +48,9 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     public void setWochentag(String wochentag) {
         this.wochentag = wochentag;
     }
+
+    public int getRestaurant_ID() {return restaurant_ID;}
+    public void setRestaurant_ID(int id) {this.restaurant_ID = id; }
 
     @Override
     public boolean equals(Object o) {
@@ -78,7 +82,7 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
                 "oeffnungszeiten_ID=" + oeffnungszeiten_ID +
                 ", anfang=" + anfang +
                 ", ende=" + ende +
-                ", wochentag='" + wochentag + '\'' +
+                ", wochentag='" + wochentag + ", restaurant_ID='" + restaurant_ID + '\'' +
                 '}';
     }
 }
