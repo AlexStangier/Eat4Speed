@@ -7,26 +7,13 @@
         </v-badge>
         -->
       </v-btn>
-      <v-container>
-        <v-row>
-          <v-text-field placeholder="Suche..." autofocus clearable
-                        v-model="searchString"
-          ></v-text-field>
-          <v-btn @click="setStoreSearchString"
-          >Suchen
-          </v-btn>
-          <v-btn @click="setDestinationToGerichte">Gericht</v-btn>
-          <v-btn @click="setDestinationToRestaurants">Umgebung</v-btn>
-        </v-row>
-      </v-container>
-
     </template>
     <v-card width="400">
       <v-list>
         <v-list-item>
 
           <v-list-item-content>
-            <v-list-item-title class="headline font-weight-bold">Cart</v-list-item-title>
+            <v-list-item-title class="headline font-weight-bold">Warenkorb</v-list-item-title>
           </v-list-item-content>
 
         </v-list-item>
@@ -63,7 +50,7 @@
         <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
 
         <v-card-actions>
-          <v-btn block color="primary" rounded @click="paypalRequest()">
+          <v-btn block color="primary" depressed tile @click="paypalRequest()">
             Checkout
           </v-btn>
         </v-card-actions>
@@ -85,44 +72,7 @@ export default {
   mounted() {
     this.loadGerichteFromStore();
   },
-  beforeRouteLeave(to, from, next) {
-    this.setStoreSearchString();
-    next();
-  },
   methods: {
-    setStoreSearchString() {
-      this.$store.commit("changeSearchString", this.searchString);
-      if (this.searchDestination === "Gerichte") {
-        const searchOptions = {
-          gericht_ID: -1,
-          kundennummer: this.loggedInKunde_ID,
-          gerichtName: this.searchString,
-          kategorien: [],
-          excludedAllergene: [],
-          maxMindestbestellwert: 0,
-          maxEntfernung: 0,
-          minBewertung: 0,
-          useName: true,
-          useKategorien: false,
-          useAllergene: false,
-          useMindestbestellwert: false,
-          useEntfernung: false,
-          useBewertung: false
-        }
-        this.$store.commit("changeSearchOptions", searchOptions);
-        this.$store.commit("changeSearchType", "Gerichte");
-        this.$router.push({name: 'Kunde'});
-      } else {
-        this.$store.commit("changeSearchType", "Restaurants")
-        this.$router.push({path: '/kundeRestaurants'});
-      }
-    },
-    setDestinationToGerichte() {
-      this.searchDestination = "Gerichte";
-    },
-    setDestinationToRestaurants() {
-      this.searchDestination = "Restaurants";
-    },
     selectGericht(item) {
       this.selectedGericht = item;
     },
@@ -174,9 +124,7 @@ export default {
     return {
       carts: [],
       version: 0,
-      selectedGericht: "",
-      searchString: "",
-      searchDestination: ""
+      selectedGericht: ""
     };
   },
 }
