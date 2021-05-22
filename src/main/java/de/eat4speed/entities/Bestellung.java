@@ -24,6 +24,7 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
     private int auftrags_ID;
     private Timestamp timestamp;
     private int rechnung;
+    private String  Gericht_IDs;
 
     public int getBestell_ID() {
         return bestell_ID;
@@ -61,6 +62,10 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
     public void setRechnung(int rechnung) {
         this.rechnung = rechnung;
     }
+
+    public String getGericht_IDs() { return Gericht_IDs; }
+
+    public void setGericht_IDs(String gericht_IDs) { Gericht_IDs = gericht_IDs; }
 
     @Override
     public boolean equals(Object o) {

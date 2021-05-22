@@ -4,6 +4,7 @@ import de.eat4speed.dto.OrderDto;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
+import io.vertx.core.json.Json;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -63,6 +64,7 @@ public class BestellungService implements IBestellungService {
     @Transactional
     public Response createBestellung(OrderDto obj) throws SQLException {
         ArrayList<Gericht> safeItems = new ArrayList<>();
+        ArrayList<Integer> gerichtIDs = new ArrayList<>();
         Benutzer benutzer = null;
         Date date = new Date();
 
@@ -71,6 +73,7 @@ public class BestellungService implements IBestellungService {
             for (int item : obj.items) {
                 //make sure items are valid and not tempered
                 safeItems.add(_gerichtRepository.getGerichtByGerichtID(item));
+                gerichtIDs.add(item);
             }
 
             //get customer by id
@@ -114,6 +117,8 @@ public class BestellungService implements IBestellungService {
                 if (_auftragRepository.isPersistent(auftrag)) {
                     try {
                         bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID());
+                        bestellung.setGericht_IDs(Json.encode(gerichtIDs));
+                        int a = 0;
                     } catch (Exception e) {
                         System.out.println("Failed while creating bestellung:" + e);
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
