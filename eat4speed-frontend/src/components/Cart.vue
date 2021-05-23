@@ -1,0 +1,183 @@
+<template>
+  <v-menu offset-y>
+    <template v-slot:activator="{on}">
+      <v-btn v-on="on" @click="loadGerichteFromStore" icon>
+        <v-icon>mdi-cart</v-icon>
+        <!-- <v-badge v-if="totalItem > 0" :content="totalItem" inline>
+        </v-badge>
+        -->
+      </v-btn>
+      <v-container>
+        <v-row>
+          <v-text-field placeholder="Suche..." autofocus clearable
+                        v-model="searchString"
+          ></v-text-field>
+          <v-btn @click="setStoreSearchString"
+          >Suchen
+          </v-btn>
+          <v-btn @click="setDestinationToGerichte">Gericht</v-btn>
+          <v-btn @click="setDestinationToRestaurants">Umgebung</v-btn>
+        </v-row>
+      </v-container>
+
+    </template>
+    <v-card width="400">
+      <v-list>
+        <v-list-item>
+
+          <v-list-item-content>
+            <v-list-item-title class="headline font-weight-bold">Cart</v-list-item-title>
+          </v-list-item-content>
+
+        </v-list-item>
+      </v-list>
+
+      <v-divider></v-divider>
+      <v-card-text v-if="carts.length > 0">
+
+        <v-list :key="version">
+
+          <v-list-item v-for="(item, idx) in carts" :key="idx">
+            <v-list-item-avatar>
+              <img :src="item.thumbnail">
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle>Anzahl: {{ item.quantity }}</v-list-item-subtitle>
+              <v-list-item-subtitle>{{ calculateItemPrice(item.quantity, item.price) }} &euro;</v-list-item-subtitle>
+            </v-list-item-content>
+
+            <v-list-item-action>
+              <v-btn icon @mouseover="selectGericht(item)" @click="deleteGerichtFromStore" small>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+
+
+        </v-list>
+
+        <v-divider></v-divider>
+
+        <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+
+        <v-card-actions>
+          <v-btn block color="primary" rounded @click="paypalRequest()">
+            Checkout
+          </v-btn>
+        </v-card-actions>
+      </v-card-text>
+
+      <v-card-text v-else>
+        <p>No item</p>
+      </v-card-text>
+
+    </v-card>
+
+  </v-menu>
+
+</template>
+
+<script>
+export default {
+  name: "Cart",
+  mounted() {
+    this.loadGerichteFromStore();
+  },
+  beforeRouteLeave(to, from, next) {
+    this.setStoreSearchString();
+    next();
+  },
+  methods: {
+    setStoreSearchString() {
+      this.$store.commit("changeSearchString", this.searchString);
+      if (this.searchDestination === "Gerichte") {
+        const searchOptions = {
+          gericht_ID: -1,
+          kundennummer: this.loggedInKunde_ID,
+          gerichtName: this.searchString,
+          kategorien: [],
+          excludedAllergene: [],
+          maxMindestbestellwert: 0,
+          maxEntfernung: 0,
+          minBewertung: 0,
+          useName: true,
+          useKategorien: false,
+          useAllergene: false,
+          useMindestbestellwert: false,
+          useEntfernung: false,
+          useBewertung: false
+        }
+        this.$store.commit("changeSearchOptions", searchOptions);
+        this.$store.commit("changeSearchType", "Gerichte");
+        this.$router.push({name: 'Kunde'});
+      } else {
+        this.$store.commit("changeSearchType", "Restaurants")
+        this.$router.push({path: '/kundeRestaurants'});
+      }
+    },
+    setDestinationToGerichte() {
+      this.searchDestination = "Gerichte";
+    },
+    setDestinationToRestaurants() {
+      this.searchDestination = "Restaurants";
+    },
+    selectGericht(item) {
+      this.selectedGericht = item;
+    },
+    loadGerichteFromStore() {
+      this.carts = this.$store.getters.getCartGerichte;
+      this.version++;
+    },
+    deleteGerichtFromStore() {
+      this.$store.commit("removeFromCartGerichte", this.selectedGericht);
+      this.loadGerichteFromStore();
+      this.version++;
+    },
+    calculateItemPrice(price, amount) {
+      return price * amount;
+    },
+    calculateCartPrice() {
+      let cartPrice = 0;
+      this.carts.forEach(value => {
+        cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
+      });
+      return cartPrice;
+    },
+    async getCustomerId() {
+      const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$store.getters.getLoginData.auth.username });
+      return response.data;
+    },
+    async paypalRequest() {
+      const items = [];
+      this.$store.getters.getCartGerichte.forEach(item => {
+        items.push(item.gericht_ID);
+      });
+
+      const customerId = await this.getCustomerId();
+
+      this.$http.post('/Bestellung/add', {
+        items: items,
+        customerId: customerId
+      }).then((response) => {
+        if (response.status === 201) {
+          console.log('success');
+          this.$store.commit("deleteCartGerichte");
+          this.version++;
+          this.$router.push({name: "BezahlungErfolgreich", params: {cart: this.carts}});
+        }
+      });
+    }
+  },
+  data() {
+    return {
+      carts: [],
+      version: 0,
+      selectedGericht: "",
+      searchString: "",
+      searchDestination: ""
+    };
+  },
+}
+</script>
