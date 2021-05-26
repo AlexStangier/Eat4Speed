@@ -9,9 +9,6 @@ import java.util.Objects;
 @Entity
 public class Benutzer extends PanacheEntityBase implements Serializable {
 
-    public Benutzer() {
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int benutzer_ID;

@@ -74,9 +74,16 @@ public class GerichtService implements IGerichtService {
     @Override
     public Response updateGerichtAllData(Gericht gericht)
     {
-        gerichtRepository.updateGerichtAllData(gericht);
+        Response response;
 
-        return Response.status(Response.Status.OK).entity(gericht).build();
+        if (gericht.getVerfuegbar() == 0 || gericht.getVerfuegbar() == 1) {
+            gerichtRepository.updateGerichtAllData(gericht);
+            response = Response.status(Response.Status.OK).entity(gericht).build();
+        } else {
+            response = Response.status(Response.Status.BAD_REQUEST).entity(gericht).build();
+        }
+
+        return response;
     }
 
     @Override

@@ -63,5 +63,12 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return kundeBenutzer;
     }
 
-
+    /**
+     * Should only be used in Test cleanup
+     * @param name name of entities to be deleted
+     */
+    @Transactional
+    public void deleteBenutzerByUsername(String name){
+        delete("Benutzername", name);
+    }
 }
