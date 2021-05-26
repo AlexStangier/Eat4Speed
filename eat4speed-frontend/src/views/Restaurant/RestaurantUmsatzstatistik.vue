@@ -6,30 +6,30 @@
 
 
 
-            <v-row>
-              <v-col
-                  cols="12"
-                  sm="6"
-              >
-                <v-date-picker
-                    v-model="dates"
-                    range
-                    @change="iterateDate"
-                ></v-date-picker>
-              </v-col>
-              <v-col
-                  cols="12"
-                  sm="6"
-              >
-                <v-text-field
-                    v-model="dateRangeText"
-                    label="Date range"
-                    prepend-icon="mdi-calendar"
-                    readonly
-                ></v-text-field>
-                model: {{ dates }}
-              </v-col>
-            </v-row>
+          <v-row>
+            <v-col
+                cols="12"
+                sm="6"
+            >
+              <v-date-picker
+                  v-model="dates"
+                  range
+                  @change="iterateDate"
+              ></v-date-picker>
+            </v-col>
+            <v-col
+                cols="12"
+                sm="6"
+            >
+              <v-text-field
+                  v-model="dateRangeText"
+                  label="Date range"
+                  prepend-icon="mdi-calendar"
+                  readonly
+              ></v-text-field>
+              model: {{ dates }}
+            </v-col>
+          </v-row>
 
 
 
@@ -37,8 +37,8 @@
 
 
 
-          <line-chart :data="{'2017-01-01': 11, '2017-01-02': 6}"></line-chart>
-                <line-chart :data="iteratedDates"></line-chart>
+
+          <line-chart :data="iteratedDates"></line-chart>
 
 
 
@@ -63,8 +63,8 @@ export default {
   data () {
     return{
 
-          value:[ ],
-          dates : ['2021-09-10', '2021-09-20'],
+      value:[ ],
+      dates : ['2021-09-10', '2021-09-20'],
       iteratedDates :{}
     };
   },
@@ -86,9 +86,9 @@ export default {
       //var datesList = [];
       for (var d = date0; d <= date1; d.setDate(d.getDate() + 1)) {
         const date = moment(d, "YYYYMMDD").format("YYYY-MM-DD");
-       // this.iteratedDates.push(date.toString());
+        // this.iteratedDates.push(date.toString());
         this.iteratedDates[date] = Math.random()+1;
-       // this.iteratedDates.push(date.toString(),Math.random());
+        // this.iteratedDates.push(date.toString(),Math.random());
         //this.value.push(Math.random());
       }
       console.log(this.iteratedDates);
