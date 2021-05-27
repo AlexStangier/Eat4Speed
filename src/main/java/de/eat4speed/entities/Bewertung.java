@@ -14,21 +14,21 @@ public class Bewertung {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bewertungs_ID;
+    private int bewertung_ID;
     
     private int kundennummer;
     private int restaurant_ID;
-    private int sterne;
+    private double sterne;
     private String text;
     private Timestamp datum;
     private byte wurde_gemeldet;
 
-    public int getBewertungs_ID() {
-        return bewertungs_ID;
+    public int getBewertung_ID() {
+        return bewertung_ID;
     }
 
-    public void setBewertungs_ID(int bewertungs_ID) {
-        this.bewertungs_ID = bewertungs_ID;
+    public void setBewertung_ID(int bewertung_ID) {
+        this.bewertung_ID = bewertung_ID;
     }
 
     public int getKundennummer() {
@@ -47,7 +47,7 @@ public class Bewertung {
         this.restaurant_ID = restaurant_ID;
     }
 
-    public int getSterne() {
+    public double getSterne() {
         return sterne;
     }
 
@@ -84,18 +84,18 @@ public class Bewertung {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bewertung bewertung = (Bewertung) o;
-        return bewertungs_ID == bewertung.bewertungs_ID && kundennummer == bewertung.kundennummer && restaurant_ID == bewertung.restaurant_ID && sterne == bewertung.sterne && wurde_gemeldet == bewertung.wurde_gemeldet && Objects.equals(text, bewertung.text) && Objects.equals(datum, bewertung.datum);
+        return bewertung_ID == bewertung.bewertung_ID && kundennummer == bewertung.kundennummer && restaurant_ID == bewertung.restaurant_ID && sterne == bewertung.sterne && wurde_gemeldet == bewertung.wurde_gemeldet && Objects.equals(text, bewertung.text) && Objects.equals(datum, bewertung.datum);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bewertungs_ID, kundennummer, restaurant_ID, sterne, text, datum, wurde_gemeldet);
+        return Objects.hash(bewertung_ID, kundennummer, restaurant_ID, sterne, text, datum, wurde_gemeldet);
     }
 
     @Override
     public String toString() {
         return "Bewertung{" +
-                "bewertungs_ID=" + bewertungs_ID +
+                "bewertung_ID=" + bewertung_ID +
                 ", kundennummer=" + kundennummer +
                 ", restaurant_ID=" + restaurant_ID +
                 ", sterne=" + sterne +

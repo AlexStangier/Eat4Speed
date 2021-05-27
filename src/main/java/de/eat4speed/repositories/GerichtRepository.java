@@ -155,7 +155,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
-    public List<Integer> getGericht_IDsByBewertung(int bewertung)
+    public List<Integer> getGericht_IDsByBewertung(double bewertung)
     {
         List<Integer> gerichteData;
 
@@ -164,7 +164,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "FROM Gericht g, Restaurant r, Bewertung b " +
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
                         "AND b.restaurant_ID = r.restaurant_ID " +
-                        "AND AVG(b.sterne) < ?1"
+                        "GROUP BY g.gericht_ID " +
+                        "HAVING AVG(b.sterne) < ?1"
         ).setParameter(1,bewertung);
 
         gerichteData = query.getResultList();

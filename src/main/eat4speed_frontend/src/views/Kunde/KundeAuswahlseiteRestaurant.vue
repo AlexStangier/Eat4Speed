@@ -37,6 +37,7 @@
                     <v-btn
                         v-bind="attrs"
                         v-on="on"
+                        @mouseenter="loadBewertungen"
                     >
                       Bewertungen
                     </v-btn>
@@ -48,14 +49,15 @@
                             :items="reviews"
                             item-height="100"
                             max-height="200"
+                            :key="versionreview"
                         >
-                          <template v-slot:default="{ review }" v-resize>
+                          <template v-slot:default="{ review }">
                             <v-container>
-                              <v-list-item v-resize>
+                              <v-list-item>
                                 <v-list-item-content>
                                   <v-list-item-group>
                                     <v-list-item-title>{{ review.revUsername}}</v-list-item-title>
-                                    <v-rating readonly half-icon="$ratingHalf" half-increments :value="review.revRating" small></v-rating>
+                                    <v-rating readonly half-icon="$ratingHalf" :value="review.revRating" small></v-rating>
                                   </v-list-item-group>
                                 </v-list-item-content>
                                 <v-list-item-content>
@@ -74,7 +76,7 @@
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-rating
-                            half-increments="true"
+                            half-increments="false"
                             x-large
                             v-model="userRating"
                         >
@@ -85,7 +87,8 @@
                       </v-card-actions>
                       <v-card-actions class="justify-end">
                         <v-btn
-                        @click="dialog.value = false"
+                        @click="addBewertung"
+                        @mouseup="dialog.value = false"
                         >Bewerten</v-btn>
                         <v-btn
                             @click="dialog.value = false"
@@ -205,6 +208,7 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   mounted() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
+    this.currentKunde_ID = 6;
     this.loadRestaurant();
     this.displayGetraenke = false;
     this.loadGerichte();
@@ -275,6 +279,49 @@ export default {
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
+    async loadBewertungen() {
+
+      const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
+
+      for (let i = 0; i < responseBewertungen.data.length; i++) {
+        let bewertungData = responseBewertungen.data[i];
+        this.reviewRating[i] = bewertungData[3];
+        this.reviewComment[i] = bewertungData[4];
+        this.reviewUsername[i] = bewertungData[6];
+      }
+
+      const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+
+      if(responseBewertung.data.length>0)
+      {
+        this.userRating = responseBewertung.data[0][3];
+        this.userComment = responseBewertung.data[0][4];
+      }
+
+      console.log(this.reviewUsername);
+      console.log(this.reviewComment);
+      console.log(this.reviewRating);
+
+      this.amountReviews = 0;
+      this.amountReviews = responseBewertungen.data.length;
+      this.versionreview++;
+    },
+    async addBewertung(){
+
+      var today = new Date();
+
+      var bewertung = {
+        kundennummer: this.currentKunde_ID,
+        restaurant_ID: this.selectedRestaurant_ID,
+        sterne: this.userRating,
+        text: this.userComment,
+        datum: today
+      }
+
+      await axios.put("Bewertung",bewertung);
+
+      this.loadBewertungen();
+    },
     changeDisplayGetraenke() {
       if(this.displayGetraenke===false)
       {
@@ -303,6 +350,7 @@ export default {
   },
   data: () => ({
     selectedRestaurant_ID:"",
+    currentKunde_ID:"",
     selectedGericht_ID:"",
     displayGetraenke:"",
     names: [],
@@ -314,8 +362,10 @@ export default {
     minimums: [],
     ratings: [],
     amountGerichte:4,
+    amountReviews:0,
     version:0,
     version2:0,
+    versionreview:0,
     restaurantName:"",
     restaurantDescription:"",
     restaurantAddress:"",
@@ -323,9 +373,12 @@ export default {
     restaurantPhoneNumber:"",
     restaurantMindestbestellwert:"",
     restaurantBestellradius:"",
-    reviewUsername: ["User1", "User2", "User3"],
-    reviewRating: [3.5,5,2.5],
-    reviewComment: ["Das ist ein Kommentar lul.", "Ich mag Bananeneis", "Ganz OK"],
+    bewertung_ID:"",
+    userRating:0,
+    userComment:"",
+    reviewUsername: [],
+    reviewRating: [],
+    reviewComment: [],
   }),
   computed: {
 
@@ -352,7 +405,7 @@ export default {
     },
     reviews(){
       let j = 0
-      return Array.from({length: 3}, () => {
+      return Array.from({length: this.amountReviews}, () => {
         const cReviewUsername = this.reviewUsername[j]
         const cReviewRating = this.reviewRating[j]
         const cReviewComment = this.reviewComment[j]

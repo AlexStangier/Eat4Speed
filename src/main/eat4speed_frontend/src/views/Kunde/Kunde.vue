@@ -5,10 +5,11 @@
         <v-row no-gutters align="center">
           <v-col sm="2">
             <v-select
-                v-model="selectedRating"
+                v-model="selectedBewertung"
                 label="Bewertung"
                 :items="selectRating"
                 clearable="true"
+                @change="applyBewertungFilterAndSearch"
             >
               <template v-slot:selection="data">
                 {{data.item}} {{"Sterne"}}
@@ -631,6 +632,39 @@ export default {
       else
       {
         this.entfernungOptionActive = false;
+      }
+      this.nameOptionActive = true;
+
+      const searchOptions = {
+        gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
+        gerichtName: this.searchString,
+        kategorien: this.selectedKategorien,
+        excludedAllergene: this.selectedAllergene,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: this.allergeneOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadGerichte();
+    },
+    async applyBewertungFilterAndSearch() {
+
+      if(this.selectedBewertung>0)
+      {
+        this.bewertungOptionActive = true;
+      }
+      else
+      {
+        this.bewertungOptionActive = false;
       }
       this.nameOptionActive = true;
 
