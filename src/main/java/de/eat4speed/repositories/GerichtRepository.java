@@ -165,7 +165,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
                         "AND b.restaurant_ID = r.restaurant_ID " +
                         "GROUP BY g.gericht_ID " +
-                        "HAVING AVG(b.sterne) < ?1"
+                        "HAVING AVG(b.sterne) >= ?1"
         ).setParameter(1,bewertung);
 
         gerichteData = query.getResultList();

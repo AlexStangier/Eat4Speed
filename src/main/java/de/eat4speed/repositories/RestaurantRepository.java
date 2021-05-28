@@ -70,7 +70,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List restaurantsData;
 
         Query query = entityManager.createQuery(
-                "SELECT r.restaurant_ID, r.name_des_Restaurants, r.allgemeine_Beschreibung, r.mindestbestellwert, r.bestellradius, a.strasse, a.hausnummer, a.postleitzahl, a.ort, b.telefonnummer " +
+                "SELECT r.restaurant_ID, r.name_des_Restaurants, r.allgemeine_Beschreibung, r.mindestbestellwert, r.bestellradius, a.strasse, a.hausnummer, a.postleitzahl, a.ort, b.telefonnummer, a.lng, a.lat " +
                         "FROM Restaurant r, Adressen a, Benutzer b " +
                         "WHERE r.benutzer_ID = b.benutzer_ID " +
                         "AND r.anschrift = a.adress_ID " +
@@ -114,6 +114,78 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         verifiedRestaurantData = query.getResultList();
 
         return verifiedRestaurantData;
+    }
+
+    @Transactional
+    public List<Integer> getRestaurant_IDsByRestaurantName(String restaurantName)
+    {
+        List<Integer> restaurantData;
+
+        String likeName = "%"+restaurantName+"%";
+
+        Query query = entityManager.createQuery(
+                "SELECT r.restaurant_ID " +
+                        "FROM Restaurant r " +
+                        "WHERE r.name_des_Restaurants LIKE ?1"
+        ).setParameter(1,likeName);
+
+        restaurantData = query.getResultList();
+
+        return restaurantData;
+    }
+
+    @Transactional
+    public List<Integer> getRestaurant_IDsByMindestbestellwertMax(Double mindestbestellwert)
+    {
+        List<Integer> restaurantData;
+
+        Query query = entityManager.createQuery(
+                "SELECT r.restaurant_ID " +
+                        "FROM Restaurant r " +
+                        "WHERE r.mindestbestellwert > ?1"
+        ).setParameter(1,mindestbestellwert);
+
+        restaurantData = query.getResultList();
+
+        return restaurantData;
+    }
+
+    @Transactional
+    public List<Integer> getRestaurant_IDsByBewertung(double bewertung)
+    {
+        List<Integer> restaurantData;
+
+        Query query = entityManager.createQuery(
+                "SELECT r.restaurant_ID " +
+                        "FROM Restaurant r, Bewertung b " +
+                        "WHERE b.restaurant_ID = r.restaurant_ID " +
+                        "GROUP BY r.restaurant_ID " +
+                        "HAVING AVG(b.sterne) >= ?1"
+        ).setParameter(1,bewertung);
+
+        restaurantData = query.getResultList();
+
+        return restaurantData;
+    }
+
+    @Transactional
+    public List<Integer> getRestaurant_IDsByDistance(int kundennummer, Double distance)
+    {
+        List<Integer> restaurantData;
+        System.out.println(distance);
+
+        Query query = entityManager.createQuery(
+                "SELECT r.restaurant_ID " +
+                        "FROM Kunde k, Restaurant r, EntfernungKundeRestaurant ekr " +
+                        "WHERE r.restaurant_ID = ekr.restaurant_ID " +
+                        "AND k.kundennummer = ekr.kundennummer " +
+                        "AND k.kundennummer = ?1 " +
+                        "AND ekr.entfernung > ?2"
+        ).setParameter(1,kundennummer).setParameter(2,distance);
+
+        restaurantData = query.getResultList();
+
+        return restaurantData;
     }
 
     @Transactional

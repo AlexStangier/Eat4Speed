@@ -355,6 +355,9 @@ export default {
     getStoreSeachString() {
       this.searchString = this.$store.getters.searchString;
     },
+    getStoreSearchOptions() {
+      this.searchOptions = this.$store.getters.searchOptions;
+    },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
@@ -785,8 +788,8 @@ export default {
     }
   },
   watch:{
-    '$store.state.searchString': function() {
-      this.getStoreSeachString();
+    '$store.state.searchOptions': function() {
+      this.getStoreSearchOptions();
       this.loadGerichte();
     }
   }

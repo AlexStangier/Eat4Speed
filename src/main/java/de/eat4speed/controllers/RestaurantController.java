@@ -4,6 +4,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
 import de.eat4speed.entities.Fahrzeug;
+import de.eat4speed.searchOptions.RestaurantSearchOptions;
 import de.eat4speed.services.interfaces.IRestaurantService;
 import org.hibernate.annotations.Parameter;
 
@@ -52,6 +53,12 @@ public class RestaurantController {
                 break;
         }
         return restaurantData;
+    }
+
+    @POST
+    @Path("searchRestaurants")
+    public List searchRestaurants(RestaurantSearchOptions options){
+        return _restaurant.searchRestaurants(options);
     }
 
     @GET
