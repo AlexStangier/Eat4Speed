@@ -25,4 +25,5 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
     {
         update("status = ?1 where id = ?2",status,id);
     }
+
 }

@@ -24,4 +24,8 @@ public interface IFahrerService {
     Response deleteFahrer(int id);
 
     List get_Fahrer_Fzg_Pos();
+
+    List get_Restaurant_Lng_Lat();
+
+    List get_Kunde_Lng_Lat();
 }

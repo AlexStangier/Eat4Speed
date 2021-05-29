@@ -27,9 +27,24 @@ public class RoutingService implements IRoutingService {
     public JSONObject db_test() {
 
         ArrayList<String> results = (ArrayList<String>) _fahrer.get_Fahrer_Fzg_Pos();
+        ArrayList<String> results1 = (ArrayList<String>) _fahrer.get_Restaurant_Lng_Lat();
+        ArrayList<String> results2 = (ArrayList<String>) _fahrer.get_Kunde_Lng_Lat();
+        System.out.println(results);
+        System.out.println(results1);
+        System.out.println(results2);
+
 
         JSONObject info = new JSONObject().put("mode", results.get(0)).put("start_location", new JSONArray().put(results.get(1)).put(results.get(2)));
         return info;
+    }
+
+    public JSONObject create_Request_Body(){
+        ArrayList<String> mode_and_driver = (ArrayList<String>) _fahrer.get_Fahrer_Fzg_Pos();
+        ArrayList<String> restaurant_koords = (ArrayList<String>) _fahrer.get_Restaurant_Lng_Lat();
+        ArrayList<String> kunde_koords = (ArrayList<String>) _fahrer.get_Kunde_Lng_Lat();
+
+        return null;
+
     }
 
     public JSONObject add_shipment(String id, double src_lng, double src_lat, double dest_lng, double dest_lat, boolean assigned) {

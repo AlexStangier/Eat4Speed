@@ -76,5 +76,17 @@ public class FahrerService implements IFahrerService {
         return fahrerRepository.get_Fahrer_Fzg_Pos();
     }
 
+    @Override
+    public List get_Restaurant_Lng_Lat() {
+        return fahrerRepository.get_Restautant_Lng_Lat();
+    }
+
+    @Override
+    public List get_Kunde_Lng_Lat() {
+        return fahrerRepository.get_Kunde_Lng_Lat();
+    }
+
+
+
 
 }
