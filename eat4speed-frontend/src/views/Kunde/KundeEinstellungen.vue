@@ -10,20 +10,20 @@
         >
           <v-row no-gutters>
             <v-col>
-          <v-text-field
-              v-model="firstname"
-              :rules="[v => !!v || 'Vorname wird benötigt']"
-              label="Vorname"
-              required
-          ></v-text-field>
+              <v-text-field
+                  v-model="firstname"
+                  :rules="[v => !!v || 'Vorname wird benötigt']"
+                  label="Vorname"
+                  required
+              ></v-text-field>
             </v-col>
             <v-col>
-          <v-text-field
-              v-model="lastname"
-              :rules="[v => !!v || 'Nachname wird benötigt']"
-              label="Nachname"
-              required
-          ></v-text-field>
+              <v-text-field
+                  v-model="lastname"
+                  :rules="[v => !!v || 'Nachname wird benötigt']"
+                  label="Nachname"
+                  required
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row no-gutters>
@@ -82,25 +82,63 @@
             </v-col>
           </v-row>
 
+          <div class="text-right">
+            <v-dialog
+                v-model="dialog"
+                width="25%"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                    color="green"
+                    v-bind="attrs"
+                    v-on="on"
+                    :disabled="!valid"
+                >
+                  Ändern
+                </v-btn>
+              </template>
 
-          <v-btn
-              :disabled="!valid"
-              @click="validate"
-          >
-            Ändern
-          </v-btn>
+              <v-card>
+                <v-card-title>
+                  Einstellungen ändern
+                </v-card-title>
 
-          <v-btn
-              @click="reset"
-          >
-            Reset Form
-          </v-btn>
+                <v-card-text>
+                  Sind Sie sicher, dass Sie die Einstellungen ändern wollen?
+                </v-card-text>
 
-          <v-btn
-              color="error"
-          >
-            Konto löschen
-          </v-btn>
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                      color="green"
+                      text
+                      @click="validate"
+
+
+                  >
+                    Ja
+                  </v-btn>
+                  <v-btn
+                      color="red"
+                      text
+                      @click="closeDialog"
+
+                  >
+                    Nein
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-btn
+                color="error"
+            >
+              Konto löschen
+            </v-btn>
+          </div>
+
+
         </v-form>
       </v-container>
     </v-container>
@@ -115,13 +153,14 @@ export default {
   mounted() {
     this.loadEinstellungen();
   },
+
   methods: {
     async loadEinstellungen() {
 
       const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$store.getters.getLoginData.auth.username);
       let EinstellungenData = ResponseEinstellungen.data[0];
 
-       console.log(ResponseEinstellungen);
+      console.log(ResponseEinstellungen);
 
       this.firstname = EinstellungenData[0];
       this.lastname = EinstellungenData[1];
@@ -142,7 +181,7 @@ export default {
       // console.log(this.restaurant_ID);
       // console.log(this.adress_ID);
     },
-    async validate () {
+    async validate() {
       if (this.$refs.form.validate()) {
         this.snackbar = true
 
@@ -176,12 +215,13 @@ export default {
         console.log(responseAdresseToAlter);
         console.log(responseKundeToAlter);
       }
+      this.closeDialog();
     },
-    reset () {
-      this.$refs.form.reset()
-    },
-    resetValidation () {
+    resetValidation() {
       this.$refs.form.resetValidation()
+    },
+    closeDialog: function () {
+      this.dialog = false;
     }
   },
   data: () => ({
@@ -210,7 +250,8 @@ export default {
       v => !!v || 'E-mail wird benötigt',
       v => /.+@.+/.test(v) || 'E-mail muss korrekt sein'
     ],
-    phone: ''
+    phone: '',
+    dialog: false
   })
 
 }
