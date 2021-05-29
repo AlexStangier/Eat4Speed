@@ -2,6 +2,7 @@ package de.eat4speed.repositories;
 
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Kunde;
+import de.eat4speed.entities.Restaurant;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -14,6 +15,11 @@ public class KundeRepository implements PanacheRepository<Kunde> {
     public void addKunde(Kunde kunde)
     {
         persist(kunde);
+    }
+
+    @Transactional
+    public void updateKundeEinstellungen(Kunde kunde) {
+        update("name = ?1, vorname = ?2 where kundennummer = ?3", kunde.getName(), kunde.getVorname(), kunde.getKundennummer());
     }
 
 }

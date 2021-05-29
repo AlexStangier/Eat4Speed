@@ -52,4 +52,8 @@ public class BenutzerController {
         return _benutzer.updateBenutzerRestaurant(benutzer);
     }
 
+    @GET
+    @Path("getBenutzerKundeEinstellungenByLogin/{email}")
+    public List getBenutzerKundeEinstellungenByLogin(@PathParam("email") String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
+
 }

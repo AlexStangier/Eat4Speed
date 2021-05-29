@@ -8,27 +8,24 @@
             v-model="valid"
             lazy-validation
         >
-          <v-select
-              v-model="select"
-              :items="anrede"
-              :rules="[v => !!v || 'Wählen Sie eine Anrede']"
-              label="Anrede"
-              required
-          ></v-select>
-
+          <v-row no-gutters>
+            <v-col>
           <v-text-field
               v-model="firstname"
               :rules="[v => !!v || 'Vorname wird benötigt']"
               label="Vorname"
               required
           ></v-text-field>
-
+            </v-col>
+            <v-col>
           <v-text-field
               v-model="lastname"
               :rules="[v => !!v || 'Nachname wird benötigt']"
               label="Nachname"
               required
           ></v-text-field>
+            </v-col>
+          </v-row>
           <v-row no-gutters>
             <v-col>
               <v-text-field
@@ -111,8 +108,82 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "CustomerSettings",
+  mounted() {
+    this.loadEinstellungen();
+  },
+  methods: {
+    async loadEinstellungen() {
+
+      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$store.getters.getLoginData.auth.username);
+      let EinstellungenData = ResponseEinstellungen.data[0];
+
+       console.log(ResponseEinstellungen);
+
+      this.firstname = EinstellungenData[0];
+      this.lastname = EinstellungenData[1];
+      this.email = EinstellungenData[2];
+      this.phone = EinstellungenData[3];
+      this.street = EinstellungenData[4];
+      this.town = EinstellungenData[5];
+      this.zip = EinstellungenData[6];
+      this.houseNumber = EinstellungenData[7];
+
+
+      // For Update
+      this.benutzer_ID = EinstellungenData[8];
+      this.adress_ID = EinstellungenData[9];
+      this.kundennummer = EinstellungenData[10];
+
+      // console.log(this.benutzer_ID);
+      // console.log(this.restaurant_ID);
+      // console.log(this.adress_ID);
+    },
+    async validate () {
+      if (this.$refs.form.validate()) {
+        this.snackbar = true
+
+        let benutzer = {
+          vorname: this.firstname,
+          nachname: this.lastname,
+          emailAdresse: this.email,
+          telefonnummer: this.phone,
+          benutzer_ID: this.benutzer_ID
+        }
+
+        let adresse = {
+          strasse: this.street,
+          ort: this.town,
+          postleitzahl: this.zip,
+          hausnummer: this.houseNumber,
+          adress_ID: this.adress_ID
+        }
+
+        let kunde = {
+          name: this.lastname,
+          vorname: this.firstname,
+          kundennummer: this.kundennummer
+        }
+
+        const responseBenutzerKundeToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer);
+        const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse);
+        const responseKundeToAlter = await axios.put("/Kunde/updateKundeEinstellungen", kunde);
+
+        console.log(responseBenutzerKundeToAlter);
+        console.log(responseAdresseToAlter);
+        console.log(responseKundeToAlter);
+      }
+    },
+    reset () {
+      this.$refs.form.reset()
+    },
+    resetValidation () {
+      this.$refs.form.resetValidation()
+    }
+  },
   data: () => ({
     valid: true,
     select: null,
@@ -123,6 +194,9 @@ export default {
     ],
     firstname: '',
     lastname: '',
+    benutzer_ID: "",
+    adress_ID: "",
+    kundennummer: "",
     street: '',
     houseNumber: '',
     houseNumberRules: [
@@ -137,20 +211,8 @@ export default {
       v => /.+@.+/.test(v) || 'E-mail muss korrekt sein'
     ],
     phone: ''
-  }),
-  methods: {
-    validate () {
-      if (this.$refs.form.validate()) {
-        this.snackbar = true
-      }
-    },
-    reset () {
-      this.$refs.form.reset()
-    },
-    resetValidation () {
-      this.$refs.form.resetValidation()
-    }
-  }
+  })
+
 }
 </script>
 

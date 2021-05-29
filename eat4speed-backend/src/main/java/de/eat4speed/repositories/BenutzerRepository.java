@@ -51,4 +51,17 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     }
 
 
+    @Transactional
+    public List getBenutzerKundeEinstellungenByLogin(String email) {
+        List kundeBenutzer;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.vorname, b.nachname, b.emailAdresse, b.telefonnummer, a.strasse, a.ort, a.postleitzahl, a.hausnummer, b.benutzer_ID, a.adress_ID, k.kundennummer from Benutzer b, Kunde k, Adressen a where b.emailAdresse LIKE ?1 and b.benutzer_ID = k.benutzer_ID and k.anschrift = a.adress_ID"
+        ).setParameter(1, email);
+
+        kundeBenutzer = query.getResultList();
+        return kundeBenutzer;
+    }
+
+
 }

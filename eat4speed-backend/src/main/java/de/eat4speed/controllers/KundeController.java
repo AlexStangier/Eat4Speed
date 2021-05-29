@@ -3,7 +3,10 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.entities.Kunde;
+import de.eat4speed.entities.Restaurant;
 import de.eat4speed.repositories.KundeRepository;
+import de.eat4speed.services.interfaces.IKundeService;
+import de.eat4speed.services.interfaces.IRestaurantService;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -17,6 +20,8 @@ import java.sql.Timestamp;
 @Produces(MediaType.APPLICATION_JSON)
 public class KundeController {
 
+    @Inject
+    IKundeService _kunde;
 
     @Inject
     KundeRepository kundeRepository;
@@ -35,6 +40,10 @@ public class KundeController {
         return kundeRepository.listAll().toString();
     }
 
-
+    @PUT
+    @Path("updateKundeEinstellungen")
+    public Response updateKundeEinstellungen(Kunde kunde) {
+        return _kunde.updateKundeEinstellungen(kunde);
+    }
 
 }
