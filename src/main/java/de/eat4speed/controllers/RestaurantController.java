@@ -73,6 +73,13 @@ public class RestaurantController {
         return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
     }
 
+    @GET
+    @Path("getRestaurantDataByKundennummer_Favoriten/{kundennummer}")
+    public List getRestaurantDataByKundennummer_Favoriten(@PathParam("kundennummer") int kundennummer)
+    {
+        return _restaurant.getRestaurantDataByKundennummer_Favoriten(kundennummer);
+    }
+
     @DELETE
     @Path("{id}")
     public Response deleteRestaurant(@PathParam("id") int id) {
@@ -84,6 +91,5 @@ public class RestaurantController {
     public Response updateRestaurantStammdaten(Restaurant restaurant) {
         return _restaurant.updateRestaurantStammdaten(restaurant);
     }
-
 
 }

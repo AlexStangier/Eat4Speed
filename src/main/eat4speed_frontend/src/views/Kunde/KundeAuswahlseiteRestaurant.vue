@@ -57,14 +57,14 @@
                                 <v-list-item-content>
                                   <v-list-item-group>
                                     <v-list-item-title>{{ review.revUsername}}</v-list-item-title>
-                                    <v-rating readonly half-icon="$ratingHalf" :value="review.revRating" small></v-rating>
+                                    <v-rating readonly half-icon="$ratingHalf" v-model="review.revRating" small></v-rating>
                                   </v-list-item-group>
                                 </v-list-item-content>
                                 <v-list-item-content>
                                   <v-textarea
                                       label="Kommentar"
                                       readonly="true"
-                                      :value="review.revComment"
+                                      value="review.revComment"
                                   >
                                   </v-textarea>
                                 </v-list-item-content>
@@ -76,7 +76,6 @@
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-rating
-                            half-increments="false"
                             x-large
                             v-model="userRating"
                         >
@@ -190,7 +189,35 @@
               <v-list-item-content></v-list-item-content>
               <v-list-item-group align="left">
                 <v-list-item-content>{{ item.price }}</v-list-item-content>
-                <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Bestellen</v-btn>
+                <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Details</v-btn>
+                <v-menu
+                    bottom
+                    offset-y
+                    :close-on-content-click="false"
+                >
+                  <template v-slot:activator="{ on, attrs}">
+                    <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        small="true"
+                        bottom="bottom"
+                        @mouseover="selectItem(item)"
+                        @click="gerichtAnzahl=0"
+                    >
+                      Bestellen
+                    </v-btn>
+                  </template>
+                  <v-list
+                      max-width="200"
+                      min-width="250"
+                      class="text-center"
+                  >
+                    <v-list-item>
+                      <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
+                    </v-list-item>
+                    <v-btn @click="addToCart()" small="small">Zum Warenkorb hinzufügen</v-btn>
+                  </v-list>
+                </v-menu>
               </v-list-item-group>
             </v-list-item>
             <v-divider></v-divider>
@@ -347,11 +374,30 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
+    selectItem(item) {
+      this.selectedItem = item;
+    },
+    addToCart() {
+
+      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      let cartGericht = {
+        gericht_ID: this.selectedItem.id,
+        name: this.selectedItem.name,
+        thumbnail: this.selectedItem.img,
+        quantity: this.gerichtAnzahl,
+        price: this.selectedItem.price
+      }
+
+      this.$store.commit("addToCartGerichte", cartGericht);
+      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    }
   },
   data: () => ({
     selectedRestaurant_ID:"",
     currentKunde_ID:"",
     selectedGericht_ID:"",
+    selectedItem: "",
+    gerichtAnzahl: 0,
     displayGetraenke:"",
     names: [],
     descriptions: [],
@@ -379,6 +425,10 @@ export default {
     reviewUsername: [],
     reviewRating: [],
     reviewComment: [],
+    countMinMaxRule:[
+      v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
+      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+    ],
   }),
   computed: {
 

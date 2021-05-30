@@ -24,6 +24,8 @@ public interface IRestaurantService {
 
     List searchRestaurants(RestaurantSearchOptions options);
 
+    List getRestaurantDataByKundennummer_Favoriten(int kundennummer);
+
     Response updateRestaurant_Verifiziert(int id);
 
     Response deleteRestaurant(int id);

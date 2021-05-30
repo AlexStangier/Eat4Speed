@@ -191,14 +191,15 @@
                     </v-list-item-group>
                   </v-list-item-content>
                   <v-list-item-content></v-list-item-content>
-                  <v-list-item-group class="text-right">
+                  <v-list-item-group :key="version" class="text-right">
 
-                    <div :key="version" v-if="item.isFav === true">
+                    <div v-if="item.isFav === true">
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                               @mouseenter="selectItem(item)"  small="true" right
                               @mousedown="deleteFromFavorites"
+                              @mouseup="()=>{this.amountGerichte=0;version++}"
                               v-bind="attrs"
                               v-on="on"
                           >
@@ -208,12 +209,13 @@
                           <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
                       </v-tooltip>
                     </div>
-                    <div :key="version" v-else>
+                    <div v-else>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                               @mouseenter="selectItem(item)"  small="true" right
                               @mousedown="addToFavorites"
+                              @mouseup="()=>{this.amountGerichte=0;version++}"
                               v-bind="attrs"
                               v-on="on"
                           >
@@ -232,6 +234,7 @@
                     <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                     <br>
                     <v-btn small="true" bottom="bottom" :to="{name: 'Gericht'}" @mouseover="selectGericht(item)">Details</v-btn>
+                    <v-btn small="true" bottom="bottom" @mouseenter="selectItem(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
                     <v-menu
                         bottom
                         offset-y
@@ -369,6 +372,10 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
+    setStoreRestaurant_ID() {
+      this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurantid);
+      this.$router.push({name: "KundeAuswahlseiteRestaurant"});
+    },
     async findAlternatives() {
 
       const searchOptions = {
@@ -469,6 +476,9 @@ export default {
     },
     async loadGerichte() {
 
+      this.favoritenlisteGerichte_IDs=[];
+      this.hinzufuegedaten=[];
+
       const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
 
       console.log(ResponseFavoriten);
@@ -479,13 +489,9 @@ export default {
         this.hinzufuegedaten[i]= favData[7];
       }
 
-      //const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
-
       const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
 
       console.log(ResponseGerichte);
-
-      //console.log("Verarbeite ResponseGerichte")
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -507,7 +513,6 @@ export default {
         this.restaurantnamen[i] = gerichtData[6];
         this.minimums[i] = gerichtData[7];
 
-        //console.log("Durchlauf vor Fav");
         if(this.favoritenlisteGerichte_IDs.includes(gerichtData[0]))
         {
           this.isFavorite[i] = true;
@@ -519,10 +524,8 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
-        //console.log("Durchlauf nach Fav");
       }
 
-      //console.log("Suche nach Bildern");
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {

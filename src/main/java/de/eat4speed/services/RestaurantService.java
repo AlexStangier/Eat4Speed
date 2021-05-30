@@ -168,6 +168,11 @@ public class RestaurantService implements IRestaurantService {
     }
 
     @Override
+    public List getRestaurantDataByKundennummer_Favoriten(int kundennummer) {
+        return _restaurant.getRestaurantDataByKundennummer_Favoriten(kundennummer);
+    }
+
+    @Override
     public Response updateRestaurant_Verifiziert(int id) {
         _restaurant.updateRestaurant_Verifiziert(id);
 
@@ -186,5 +191,7 @@ public class RestaurantService implements IRestaurantService {
         _restaurant.updateRestaurantStammdaten(restaurant);
         return Response.status(Response.Status.OK).entity(restaurant).build();
     }
+
+
 
 }

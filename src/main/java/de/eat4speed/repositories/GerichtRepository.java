@@ -252,10 +252,11 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List gerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, g.restaurant_ID, fg.anzahl_Bestellungen, fg.hinzufuegedatum " +
-                        "FROM Gericht g, Kunde k, Favoritenliste_Gerichte fg " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, g.restaurant_ID, fg.anzahl_Bestellungen, fg.hinzufuegedatum, r.restaurant_ID, r.name_des_Restaurants " +
+                        "FROM Gericht g, Kunde k, Restaurant r, Favoritenliste_Gerichte fg " +
                         "WHERE g.gericht_ID = fg.gericht_ID " +
                         "AND k.kundennummer = fg.kundennummer " +
+                        "AND g.restaurant_ID = r.restaurant_ID " +
                         "AND k.kundennummer = ?1"
         ).setParameter(1,kundennummer);
 

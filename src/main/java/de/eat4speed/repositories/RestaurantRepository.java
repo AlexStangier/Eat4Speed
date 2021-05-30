@@ -189,6 +189,25 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
     }
 
     @Transactional
+    public List getRestaurantDataByKundennummer_Favoriten(int kundennummer)
+    {
+        List restaurantData;
+
+        Query query = entityManager.createQuery(
+                "SELECT r.restaurant_ID, r.name_des_Restaurants, r.allgemeine_Beschreibung, r.mindestbestellwert, r.bestellradius, a.strasse, a.hausnummer, a.postleitzahl, a.ort, a.lng, a.lat, fr.anzahl_Bestellungen, fr.hinzufuegedatum " +
+                        "FROM Restaurant r, Kunde k, Favoritenliste_Restaurants fr, Adressen a " +
+                        "WHERE r.restaurant_ID = fr.restaurant_ID " +
+                        "AND k.kundennummer = fr.kundennummer " +
+                        "AND a.adress_ID = r.anschrift " +
+                        "AND k.kundennummer = ?1"
+        ).setParameter(1,kundennummer);
+
+        restaurantData = query.getResultList();
+
+        return restaurantData;
+    }
+
+    @Transactional
     public int deleteRestaurant(int restaurant_ID) {
         delete("restaurant_ID", restaurant_ID);
 

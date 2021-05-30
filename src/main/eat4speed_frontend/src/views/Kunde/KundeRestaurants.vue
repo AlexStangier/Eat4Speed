@@ -113,9 +113,38 @@
                 </v-list-item-content>
                 <v-list-item-content></v-list-item-content>
                 <v-list-item-group class="text-right">
-                  <v-btn small="true" right>
-                    <v-icon>mdi-heart</v-icon>
-                  </v-btn>
+                  <div v-if="item.isFav === true">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            @mouseenter="selectRestaurant(item)"  small="true" right
+                            @mousedown="deleteFromFavorites"
+                            @mouseup="()=>{this.amountRestaurants=0;version++}"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                          <v-icon>mdi-heart</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                    </v-tooltip>
+                  </div>
+                  <div v-else>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            @mouseenter="selectRestaurant(item)"  small="true" right
+                            @mousedown="addToFavorites"
+                            @mouseup="()=>{this.amountRestaurants=0;version++}"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                          <v-icon>mdi-heart-outline</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Zu Favoriten hinzufügen</span>
+                    </v-tooltip>
+                  </div>
                   <br>
                   <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                   <br>
@@ -174,6 +203,20 @@ export default {
       this.$router.push({name: "KundeAuswahlseiteRestaurant"});
     },
     async loadRestaurants() {
+
+      this.favoritenlisteRestaurants_IDs = [];
+      this.hinzufuegedaten = [];
+
+      const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+
+      console.log(ResponseFavoriten);
+      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      {
+        let favData = ResponseFavoriten.data[i];
+        this.favoritenlisteRestaurants_IDs[i] = favData[0];
+        this.hinzufuegedaten[i]= favData[12];
+      }
+
       const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
 
       console.log(ResponseRestaurants);
@@ -188,6 +231,18 @@ export default {
         this.bestellradius[i] = restaurantData[4];
         this.lng[i] = restaurantData[10];
         this.lat[i] = restaurantData[11];
+
+        if(this.favoritenlisteRestaurants_IDs.includes(restaurantData[0]))
+        {
+          this.isFavorite[i] = true;
+          let index = this.favoritenlisteRestaurants_IDs.indexOf(restaurantData[0]);
+          this.hinzufuegedatumAssigned[i] = this.hinzufuegedaten[index];
+        }
+        else
+        {
+          this.isFavorite[i] = false;
+          this.hinzufuegedatumAssigned[i] = null;
+        }
       }
       //TODO
       /*for (let i = 0; i < ResponseRestaurants.data.length; i++)
@@ -293,6 +348,24 @@ export default {
 
       this.loadRestaurants();
     },
+    async addToFavorites() {
+      var today = new Date();
+      const restaurantFavorite = {
+        restaurant_ID: this.selectedRestaurant,
+        kundennummer: this.loggedInKunde_ID,
+        hinzufuegedatum: today,
+        //TODO get anzahl_Bestellungen from Database
+        anzahl_Bestellungen: 0
+      }
+
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      this.loadRestaurants();
+    },
+    async deleteFromFavorites(){
+      await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedRestaurant);
+      this.loadRestaurants();
+    },
+
   },
   data: () => ({
     searchOptions: {},
@@ -309,6 +382,10 @@ export default {
     minimums: [],
     lng: [],
     lat: [],
+    favoritenlisteRestaurants_IDs: [],
+    hinzufuegedaten: [],
+    hinzufuegedatumAssigned: [],
+    isFavorite: [],
     selectRating: [5,4,3,2,1],
     selectArea: [5,10,20,30,40],
     selectedMindestbestellwert: 0,
@@ -332,6 +409,8 @@ export default {
         const cbestellradius = this.bestellradius[i]
         const clng = this.lng[i]
         const clat = this.lat[i]
+        const cisFav = this.isFavorite[i]
+        const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         i++;
 
         return {
@@ -342,7 +421,9 @@ export default {
           mindestbestellwert: cminimum,
           bestellradius: cbestellradius,
           lng: clng,
-          lat: clat
+          lat: clat,
+          isFav: cisFav,
+          hinzufuegedatum: chinzufuegedatum
         }
       })
     }
