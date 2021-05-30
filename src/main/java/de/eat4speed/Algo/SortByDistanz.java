@@ -3,10 +3,10 @@ package de.eat4speed.Algo;
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrtenplan_Station;
-import de.eat4speed.entities.Fahrzeug;
-import de.eat4speed.repositories.AdressenRepository;
 
+import de.eat4speed.repositories.AdressenRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -170,7 +170,6 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
                 }
 
             }
-
 
             String data =
                     "{" +

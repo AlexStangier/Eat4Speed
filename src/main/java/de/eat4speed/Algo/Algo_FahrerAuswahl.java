@@ -1,16 +1,11 @@
 package de.eat4speed.Algo;
 
-import de.eat4speed.entities.Fahrer;
-import de.eat4speed.entities.Fahrtenplan_Station;
-import de.eat4speed.entities.Fahrzeug;
-import de.eat4speed.entities.Schicht;
-import de.eat4speed.repositories.FahrerRepository;
-import de.eat4speed.repositories.FahrtenplanRepository;
-import de.eat4speed.repositories.FahrzeugRepository;
-import de.eat4speed.repositories.SchichtRepository;
+import de.eat4speed.entities.*;
+import de.eat4speed.repositories.*;
 import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
@@ -31,18 +26,21 @@ public class Algo_FahrerAuswahl {
 
     private Fahrtenplan_Station startPunkt;
     private final int sekunden = 30;
-    private final int maxFahrer = 5;
+    private final int maxFahrer =2;// 5;
     private int anzahlGerichte;
+
 
     // Sende Auftrag an besten Fahrer, falls nach 30 sekunden nicht angenommen
     // sende zusätzlich an nächstbesten fahrer falls keine fahrer mehr da oder 5min vergangen sind
     // -> neustart
     public void Fahrtenvergabe(int startPunktID) {
 
-        List<Integer> naheFahrerIDs = null;
         int count = 0;
         startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
         anzahlGerichte = AnzahlGerichte(startPunktID);
+
+        List<Integer> naheFahrerIDs = null;
+        List<Integer> BenachrichtigungsIDs = new ArrayList<>();
 
         boolean isRunning = true;
         boolean restart = false;
@@ -57,7 +55,7 @@ public class Algo_FahrerAuswahl {
                 // evtl anfragen entfernen
                 for (int i = 0; i < count; i++)
                 {
-                    entferne_Auftrag_von_Fahrer(naheFahrerIDs.get(i));
+                    entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, startPunkt.getAuftrag());
                 }
                 System.out.println("Auftrag wurde angenommen");
                 break;
@@ -77,10 +75,8 @@ public class Algo_FahrerAuswahl {
             if (restart)
             {
                 // anfragen entfernen und neustart
-                for (int i = 0; i < count; i++)
-                {
-                    entferne_Auftrag_von_Fahrer(naheFahrerIDs.get(i));
-                }
+                entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, startPunkt.getAuftrag());
+
                 restart(startPunktID);
                 isRunning = false;
             }
@@ -93,7 +89,7 @@ public class Algo_FahrerAuswahl {
                     System.out.println(count + " Schicke an Fahrer mit ID: "+naheFahrerIDs.get(count)
                     + " "  +LocalDateTime.now());
                     Schicht schicht = schichtRepository.getSchichtHeute(naheFahrerIDs.get(count));
-                    sende_Auftrag_an_Fahrer(naheFahrerIDs.get(count));
+                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrerIDs.get(count), startPunkt.getAuftrag()));
                     count++;
                 }
                 else
@@ -121,7 +117,7 @@ public class Algo_FahrerAuswahl {
         }
     }
 
-    public void restart(int startPunktID)
+    private void restart(int startPunktID)
     {
         URL url;
         System.out.println("Restarting" + " "  + LocalDateTime.now());
@@ -134,12 +130,13 @@ public class Algo_FahrerAuswahl {
 
             http.getInputStream();
 
+            http.disconnect();
         } catch (Exception e) {
             System.out.println("Restarted: " + startPunktID + " "  + LocalDateTime.now());
         }
     }
 
-    public int AnzahlGerichte(int startpunktID)
+    private int AnzahlGerichte(int startpunktID)
     {
         int count = 1;
         int StationsID = startpunktID;
@@ -165,7 +162,7 @@ public class Algo_FahrerAuswahl {
         return 1;
     }
 
-    public boolean AuftragAngenommen(int id)
+    private boolean AuftragAngenommen(int id)
     {
         boolean retVal = false;
         Integer fahrerID = null;
@@ -205,23 +202,150 @@ public class Algo_FahrerAuswahl {
         return retVal;
     }
 
-    public void sende_Auftrag_an_Fahrer(int fahrerID)
+    private int sende_Auftrag_an_Fahrer(int fahrerID, int auftragID)
     {
-        // TODO
+        String benachrichtigung = "Auftrag Anfrage " + auftragID;
+        Benachrichtigung_Fahrer benachrichtigung_fahrer = new Benachrichtigung_Fahrer();
+        benachrichtigung_fahrer.setBenachrichtigungs_ID(0);
+        benachrichtigung_fahrer.setFahrernummer(fahrerID);
+        benachrichtigung_fahrer.setBenachrichtigung(benachrichtigung);
+        benachrichtigung_fahrer.setTimestamp(new Timestamp(new Date().getTime()));
+
+        try {
+
+            URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("POST");
+            http.setDoOutput(true);
+            http.setRequestProperty("Content-Type", "application/json");
+
+            String data = benachrichtigung_fahrer.toJSON().toString();
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+
+            OutputStream stream = http.getOutputStream();
+            stream.write(out);
+
+            http.getInputStream();
+            http.disconnect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        int id = getBenachrichtigungID(benachrichtigung, fahrerID);
+
+        BenachrichtigungFahrerAuftrag anfrage = new BenachrichtigungFahrerAuftrag();
+        anfrage.setBenachrichtigungs_ID(id);
+        anfrage.setAuftrags_ID(auftragID);
+
+        try {
+
+            URL url = new URL("http://localhost:1337/BenachrichtigungFahrerAuftrag/");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("PUT");
+            http.setDoOutput(true);
+            http.setRequestProperty("Content-Type", "application/json");
+
+            String data = anfrage.toJSON().toString();
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+
+            OutputStream stream = http.getOutputStream();
+            stream.write(out);
+
+            http.getInputStream();
+
+            http.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 
-    public void entferne_Auftrag_von_Fahrer(int fahrerID)
+    private int getBenachrichtigungID(String benachrichtigung, int fahrernummer)
     {
-        // TODO
+        int id = 0;
+
+        try {
+            URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/id");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("POST");
+            http.setDoOutput(true);
+            http.setRequestProperty("Content-Type", "application/json");
+
+            JSONObject json = new JSONObject()
+                    .put("benachrichtigung", benachrichtigung)
+                    .put("fahrernummer", fahrernummer);
+
+            String data = json.toString();
+
+            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+
+            OutputStream stream = http.getOutputStream();
+            stream.write(out);
+
+            http.getInputStream();
+            InputStream ips = http.getInputStream();
+
+            StringBuilder textBuilder = new StringBuilder();
+            try (Reader reader = new BufferedReader(
+                    new InputStreamReader(ips, Charset.forName(StandardCharsets.UTF_8.name())))) {
+                int c;
+                while ((c = reader.read()) != -1) {
+                    textBuilder.append((char) c);
+                }
+            }
+
+            id = new JSONObject(textBuilder.toString()).getInt("id");
+
+            http.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 
-    public List<Integer> getNaheFahrer()
+    private void entferne_Auftrag_von_Fahrer(List<Integer> BenachrichtigungsIDs, int auftragID)
+    {
+        for (int i = 0; i < BenachrichtigungsIDs.size(); i++)
+        {
+            try {
+                URL url = new URL("http://localhost:1337/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + BenachrichtigungsIDs.get(i));
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod("DELETE");
+                http.setDoOutput(false);
+
+                http.getInputStream();
+                InputStream ips = http.getInputStream();
+
+                http.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/" + BenachrichtigungsIDs.get(i));
+                HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                http.setRequestMethod("DELETE");
+                http.setDoOutput(false);
+                http.getInputStream();
+                http.disconnect();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private List<Integer> getNaheFahrer()
     {
         List<Fahrer> fahrer = fahrerRepository.getEveryVerifiedFahrer();
         List<Integer> naheFahrerIDs = new ArrayList<>();
 
         System.out.println("Fahrer gefunden: " + fahrer.size());
-
 
         SortByDistanz sortByDistanz = new SortByDistanz(startPunkt);
         List<Fahrer_Distanz> distances;
@@ -254,7 +378,7 @@ public class Algo_FahrerAuswahl {
         return naheFahrerIDs;
     }
 
-    public boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit)
+    private boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit)
     {
         boolean isAvailable = false;
 

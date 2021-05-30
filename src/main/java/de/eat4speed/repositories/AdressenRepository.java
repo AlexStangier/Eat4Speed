@@ -18,7 +18,7 @@ public class AdressenRepository implements PanacheRepository<Adressen> {
     @Transactional
     public Adressen getAdresseByID(int id)
     {
-        return find("Adress_ID", id).list().get(0);
+        return find("Adress_ID", id).firstResult();
     }
 
 }

@@ -93,7 +93,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List getEveryVerifiedFahrer()
+    public List<Fahrer> getEveryVerifiedFahrer()
     {
         byte b = 1;
         return find("verifiziert", b ).list();
