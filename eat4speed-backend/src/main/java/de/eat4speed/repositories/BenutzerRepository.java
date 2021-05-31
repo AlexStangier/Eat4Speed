@@ -63,5 +63,37 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return kundeBenutzer;
     }
 
+    @Transactional
+    public List getRestaurantBestellungen(String email) {
+        List restaurantBestellungen;
+
+        Query query = entityManager.createNativeQuery(
+                "SELECT a.auftrags_ID, k.name, a.status, r.Betrag, Artikel.Produkte, Artikel.Gesamtanzahl " +
+                        "FROM Auftrag a, " +
+                        "Bestellung b, " +
+                        "Kunde k, " +
+                        "Rechnung r, " +
+                        "Bestellzuordnung bz, " +
+                        "Gericht g, " +
+                        "Benutzer be, " +
+                        "Restaurant re, " +
+                        "(SELECT bz.Bestell_ID, GROUP_CONCAT(g.NAME) AS Produkte, GROUP_CONCAT(bz.Anzahl) as Gesamtanzahl " +
+                            "FROM Bestellzuordnung bz, Gericht g " +
+                            "WHERE bz.Gericht_ID = g.Gericht_ID " +
+                            "GROUP BY bz.Bestell_ID ) AS Artikel " +
+                        "WHERE a.Auftrags_ID = b.Auftrags_ID " +
+                        "AND a.Kundennummer = k.Kundennummer " +
+                        "AND b.Rechnung = r.Rechnungs_ID " +
+                        "AND b.Bestell_ID = bz.Bestell_ID " +
+                        "AND b.Gericht_IDs IS NOT NULL " +
+                        "AND Artikel.Bestell_ID = b.Bestell_ID " +
+                        "AND a.Auftragnehmer = re.Restaurant_ID " +
+                        "AND re.Benutzer_ID = be.Benutzer_ID " +
+                        "AND be.EmailAdresse like ?1 " +
+                        "GROUP BY a.Auftrags_ID, k.NAME, a.STATUS, r.Betrag, Artikel.Produkte, Artikel.Gesamtanzahl").setParameter(1, email);
+
+        restaurantBestellungen = query.getResultList();
+        return restaurantBestellungen;
+    }
 
 }

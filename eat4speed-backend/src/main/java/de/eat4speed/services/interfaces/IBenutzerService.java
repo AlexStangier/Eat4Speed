@@ -28,4 +28,6 @@ public interface IBenutzerService {
     Response updateBenutzerRestaurant(Benutzer benutzer);
 
     List getBenutzerKundeEinstellungenByLogin(String email);
+
+    List getRestaurantBestellungen(String email);
 }
