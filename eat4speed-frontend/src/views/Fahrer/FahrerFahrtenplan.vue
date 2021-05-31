@@ -6,7 +6,6 @@
           :headers="headers"
           :items="data"
           :items-per-page="10"
-          :search="search"
           :single-select="false"
           class="elevation-1 pa-6"
           item-key="name"
@@ -25,33 +24,34 @@
           </v-container>
         </template>
 
-        <template v-slot:item.map="{ }">
-          <GmapMap
-              :center="{lat:10, lng:10}"
+        <template v-slot:item.map="{ item }">
+          <div class="pa-2">
+            <GmapMap
+                :center="{ lat: 47.98, lng: 7.89 }"
+                :options="{
+                zoomControl: true,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: true,
+                disableDefaultUi: false
+                }"
               :zoom="7"
-              map-type-id="terrain"
-              style="width: 250px; height: 200px"
-          >
-            <GmapMarker
-                :key="index"
-                v-for="(m, index) in markers"
-                :position="m.position"
-                :clickable="true"
-                :draggable="true"
-                @click="center=m.position"
-            />
-          </GmapMap>
+            >
+              <DirectionsRenderer :destination="item.end" :origin="item.start" travelMode="DRIVING"/>
+            </GmapMap>
+          </div>
         </template>
 
         <template v-slot:item.actions="{ item }">
           <v-btn
-              v-bind="attrs"
-              v-on="on"
               color="blue"
               dark
               rounded
               @click="abholungBestätigen(item)"
-          >Bestätigen</v-btn>
+          >Bestätigen
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -59,8 +59,13 @@
 </template>
 
 <script>
+import DirectionsRenderer from "@/utils/DirectionsRenderer";
+
 export default {
   name: "FahrerFahrtenplan",
+  components: {
+    DirectionsRenderer
+  },
   methods: {
     abholungBestätigen(id) {
       id;
@@ -73,7 +78,7 @@ export default {
     },
     convertToKM(meters) {
       return meters / 1000;
-    }
+    },
   },
   mounted() {
     this.data = [
@@ -81,12 +86,16 @@ export default {
         station: "1",
         beschreibung: "Kurzbeschreibung 1",
         restaurantname: "Restaurant 1",
-        entfernung: "1 km"
+        entfernung: "1 km",
+        start: {lat: 36.85, lng: -87.65},
+        end: {lat: 45.85, lng: -87.65}
       },
       {
         station: "2",
         beschreibung: "Kurzbeschreibung 1",
-        entfernung: "2 km"
+        entfernung: "2 km",
+        start: {lat: 38.85, lng: -87.65},
+        end: {lat: 45.85, lng: -87.65}
       }
     ]
   },
@@ -132,3 +141,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.vue-map-container {
+  height: 300px;
+  width: 300px;
+}
+</style>
