@@ -60,6 +60,7 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
+import axios from "axios";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -80,25 +81,12 @@ export default {
       return meters / 1000;
     },
   },
-  mounted() {
-    this.data = [
-      {
-        station: "1",
-        beschreibung: "Kurzbeschreibung 1",
-        restaurantname: "Restaurant 1",
-        entfernung: "1 km",
-        start: {lat: 36.85, lng: -87.65},
-        end: {lat: 45.85, lng: -87.65}
-      },
-      {
-        station: "2",
-        beschreibung: "Kurzbeschreibung 1",
-        entfernung: "2 km",
-        start: {lat: 38.85, lng: -87.65},
-        end: {lat: 45.85, lng: -87.65}
-      }
-    ]
-  },
+  async mounted() {
+
+    await axios.get("http://localhost:1337/route")
+        .then(response => this.data = response.data.total);
+
+    },
   data() {
     return {
       data: [],
