@@ -10,7 +10,18 @@ import java.util.Objects;
 @Entity
 public class Auftrag extends PanacheEntityBase implements Serializable {
 
-    public Auftrag(){}
+    public Auftrag() {
+    }
+
+    public Auftrag(int auftragnehmer, Timestamp timestamp, int anschrift, Double lieferdistanz, int kundennummer, String status, int geschaetzte_fahrtzeit_restaurant_ziel) {
+        this.auftragnehmer = auftragnehmer;
+        this.timestamp = new Timestamp(timestamp.getTime() + 300000);
+        this.anschrift = anschrift;
+        this.lieferdistanz = lieferdistanz;
+        this.kundennummer = kundennummer;
+        this.status = status;
+        this.geschaetzte_fahrtzeit_restaurant_ziel = geschaetzte_fahrtzeit_restaurant_ziel;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
