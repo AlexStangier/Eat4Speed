@@ -82,7 +82,7 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
                             "WHERE bz.Gericht_ID = g.Gericht_ID " +
                             "GROUP BY bz.Bestell_ID ) AS Artikel " +
                         "WHERE a.Auftrags_ID = b.Auftrags_ID " +
-                        "AND a.Kundennummer = k.Kundennummer " +
+                        "AND a.Kundennummer = k.Benutzer_ID " +
                         "AND b.Rechnung = r.Rechnungs_ID " +
                         "AND b.Bestell_ID = bz.Bestell_ID " +
                         "AND b.Gericht_IDs IS NOT NULL " +
