@@ -129,7 +129,6 @@ public class RoutingService implements IRoutingService {
         }
 
         String output = textBuilder.toString();
-        System.out.println(output);
         JSONObject props = new JSONObject(output).getJSONArray("features").getJSONObject(0).getJSONObject("properties");
 
         JSONArray waypoints = props.getJSONArray("waypoints");
@@ -137,7 +136,6 @@ public class RoutingService implements IRoutingService {
         JSONArray actions = props.getJSONArray("actions");
         JSONArray list_waypoints = new JSONArray();
 
-        System.out.println(waypoints);
 
         for (int i = 0; i < legs.length(); i++) {
             StringBuilder beschreibung = new StringBuilder();

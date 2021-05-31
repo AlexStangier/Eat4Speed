@@ -60,7 +60,6 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
-import axios from "axios";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -82,10 +81,7 @@ export default {
     },
   },
   async mounted() {
-
-    await axios.get("http://localhost:1337/route")
-        .then(response => this.data = response.data.total);
-
+      await this.$http.get('/route').then(response => this.data = response.data)
     },
   data() {
     return {
