@@ -12,9 +12,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 @ApplicationScoped
 public class BestellungService implements IBestellungService {
@@ -69,7 +67,7 @@ public class BestellungService implements IBestellungService {
         Date date = new Date();
 
         try {
-            //get items by id
+            //get items by id¡
             for (int item : obj.items) {
                 //make sure items are valid and not tempered
                 safeItems.add(_gerichtRepository.getGerichtByGerichtID(item));
@@ -118,12 +116,29 @@ public class BestellungService implements IBestellungService {
                     try {
                         bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID());
                         bestellung.setGericht_IDs(Json.encode(gerichtIDs));
-                        int a = 0;
                     } catch (Exception e) {
                         System.out.println("Failed while creating bestellung:" + e);
                         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
                     }
                     _bestellungRepository.persist(bestellung);
+
+                    if (_bestellungRepository.isPersistent(bestellung)) {
+                        Map<Integer, Integer> amountMap = new HashMap<Integer, Integer>();
+                        for (int id : gerichtIDs) {
+                            if (amountMap.containsKey(id)) {
+                                int currVal = amountMap.get(id);
+                                amountMap.replace(id, currVal + 1);
+                            } else amountMap.put(id, 1);
+                        }
+                        for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
+                            try {
+                                _bestellzuordnungRepository.addBestellzuordnung(new Bestellzuordnung(bestellung.getBestell_ID(), entry.getKey(), entry.getValue()));
+                            } catch (Exception e) {
+                                System.out.println("Something went wrong persisting bestellzuordnung: " + e);
+                            }
+                        }
+                        int a = 0;
+                    }
                 }
             }
 
