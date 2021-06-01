@@ -1,5 +1,6 @@
 import FahrerAnmeldung from '@/views/Fahrer/FahrerAnmeldung.vue'
 import FahrerFahrtenplan from '@/views/Fahrer/FahrerFahrtenplan.vue'
+import FahrerSchichtplan from "@/views/Fahrer/FahrerSchichtplan";
 
 export default [
     {
@@ -12,4 +13,9 @@ export default [
         name: 'FahrerFahrtenplan',
         component: FahrerFahrtenplan
     },
+    {
+        path: '/fahrer/schichtplan',
+        name: 'FahrerSchichtplan',
+        component: FahrerSchichtplan
+    }
 ]
