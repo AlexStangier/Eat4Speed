@@ -148,7 +148,7 @@
                   <br>
                   <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                   <br>
-                  <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
+                  <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreSearchOptions">Zur Speisekarte</v-btn>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -175,11 +175,6 @@ export default {
 
     this.loadRestaurants();
   },
-  beforeRouteLeave(to, from, next) {
-    this.setStoreRestaurant_ID();
-    this.setStoreSearchOptions();
-    next();
-  },
   methods: {
     selectRestaurant(item) {
       console.log("Restaurant selected "+item.restaurantid);
@@ -197,6 +192,7 @@ export default {
     },
     setStoreSearchOptions(){
       this.$store.commit("changeSearchOptionsRestaurant", this.searchOptions);
+      this.setStoreRestaurant_ID();
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedRestaurant);
