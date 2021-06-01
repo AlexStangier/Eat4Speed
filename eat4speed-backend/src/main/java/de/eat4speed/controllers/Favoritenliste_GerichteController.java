@@ -1,10 +1,6 @@
 package de.eat4speed.controllers;
 
-import de.eat4speed.entities.Benutzer;
 import de.eat4speed.entities.Favoritenliste_Gerichte;
-import de.eat4speed.repositories.BenutzerRepository;
-import de.eat4speed.repositories.Favoritenliste_GerichteRepository;
-import de.eat4speed.services.BenutzerService;
 import de.eat4speed.services.interfaces.IFavoritenliste_GerichteService;
 
 import javax.inject.Inject;

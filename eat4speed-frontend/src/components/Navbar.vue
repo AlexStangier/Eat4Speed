@@ -111,7 +111,19 @@ export default {
         this.$store.commit("changeSearchType", "Gerichte");
         this.$router.push({name: 'Kunde'});
       } else {
-        this.$store.commit("changeSearchType", "Restaurants")
+        this.$store.commit("changeSearchType", "Restaurants");
+        const searchOptionsRestaurant = {
+          kundennummer: this.loggedInKunde_ID,
+          restaurantName: this.searchString,
+          maxMindestbestellwert: 0,
+          maxEntfernung: 0,
+          minBewertung: 0,
+          useName: true,
+          useMindestbestellwert: false,
+          useEntfernung: false,
+          useBewertung: false
+        }
+        this.$store.commit("changeSearchOptionsRestaurant", searchOptionsRestaurant)
         this.$router.push({path: '/kundeRestaurants'});
       }
     },

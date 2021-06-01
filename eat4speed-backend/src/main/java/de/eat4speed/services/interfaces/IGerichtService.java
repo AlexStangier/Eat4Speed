@@ -1,8 +1,7 @@
 package de.eat4speed.services.interfaces;
 
-import de.eat4speed.dishAlternatives.DishAlternativesOptions;
+import de.eat4speed.searchOptions.DishSearchOptions;
 import de.eat4speed.entities.Gericht;
-import de.eat4speed.multipart.MultipartBody;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -25,11 +24,9 @@ public interface IGerichtService {
 
     List getGerichtDataByGericht_ID(int gericht_ID);
 
-    List getGerichtAlternatives(DishAlternativesOptions options);
-
     List getGerichtDataByKundennummer_Favoriten(int kundennummer);
 
-    List searchGerichte(DishAlternativesOptions options);
+    List searchGerichte(DishSearchOptions options);
 
     Response updateGerichtAllData(Gericht gericht);
 

@@ -2,6 +2,7 @@ package de.eat4speed.services.interfaces;
 
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
+import de.eat4speed.searchOptions.RestaurantSearchOptions;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -19,7 +20,11 @@ public interface IRestaurantService {
 
     List getRestaurantDataByRestaurantName(String restaurantName);
 
-    public List getAllRestaurantDataByRestaurant_ID(int restaurant_ID);
+    List getAllRestaurantDataByRestaurant_ID(int restaurant_ID);
+
+    List searchRestaurants(RestaurantSearchOptions options);
+
+    List getRestaurantDataByKundennummer_Favoriten(int kundennummer);
 
     Response updateRestaurant_Verifiziert(int id);
 

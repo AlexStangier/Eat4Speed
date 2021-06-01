@@ -105,4 +105,104 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     {
         return find("fahrernummer", fahrernummer).firstResult();
     }
+
+    @Transactional
+    public List get_Fahrer_Fzg_Pos() {
+
+        List <Object[]> fahrer_fzg;
+
+        Query query = entityManager.createQuery(
+                "SELECT fz.fahrzeugtyp, ad.lng, ad.lat, fz.kapazitaet_Gerichte " +
+                        "from Fahrzeug fz ,Fahrer fa,Benutzer b, Adressen ad " +
+                        "where fz.fahrzeug_ID = fa.fahrzeug " +
+                        "AND fa.benutzer_ID = b.benutzer_ID " +
+                        "AND ad.adress_ID = fa.aktueller_Standort " +
+                        "AND b.emailAdresse " +
+                        "like 'arturs@arturs.de'"
+        );
+
+
+        fahrer_fzg = query.getResultList();
+        List<String> results = new ArrayList<>(fahrer_fzg.size());
+
+        for(Object[] objects : fahrer_fzg){
+            results.add(new String((String) objects[0]));
+            results.add(new String((String) objects[1]));
+            results.add(new String((String) objects[2]));
+            results.add(new String((String) objects[3].toString()));
+        }
+
+        if(results.get(0).equals("Fahrrad")){
+            results.set(0,"bycicle");
+        }
+        else{
+            results.set(0,"drive");
+        }
+
+        return results;
+    }
+
+    @Transactional
+    public List get_Restautant_Lng_Lat(){
+
+        List <Object[]> restaurant_lng_lat;
+
+
+        Query query = entityManager.createQuery(
+                "select lng, lat " +
+                        "from Adressen " +
+                        "where adress_ID " +
+                        "IN (select anschrift from Restaurant where restaurant_ID " +
+                        "IN (select auftragnehmer from Auftrag)) "
+        );
+
+
+
+
+        restaurant_lng_lat = query.getResultList();
+        List<String> results = new ArrayList<>(restaurant_lng_lat.size());
+
+        int i = 0;
+        for(Object[] objects : restaurant_lng_lat){
+            while(i < objects.length){
+                results.add(new String((String) objects[i]));
+                i++;
+            }
+            i = 0;
+        }
+
+        return results;
+
+    }
+
+    @Transactional
+    public List get_Kunde_Lng_Lat(){
+
+        List <Object[]> kunde_lng_lat;
+
+        Query query = entityManager.createQuery(
+                "select lng, lat " +
+                        "from Adressen " +
+                        "where adress_ID " +
+                        "IN (select anschrift from Kunde where kundennummer " +
+                        "IN (select kundennummer from Auftrag) )"
+        );
+
+
+
+        kunde_lng_lat = query.getResultList();
+        List<String> results = new ArrayList<>(kunde_lng_lat.size());
+
+        int i = 0;
+        for(Object[] objects : kunde_lng_lat){
+            while(i < objects.length){
+                results.add(new String((String) objects[i]));
+                i++;
+            }
+            i = 0;
+        }
+
+        return results;
+
+    }
 }

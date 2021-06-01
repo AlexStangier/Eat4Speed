@@ -5,10 +5,11 @@
         <v-row no-gutters>
           <v-col sm="2">
             <v-select
-                v-model="selectedRating"
+                v-model="selectedBewertung"
                 label="Bewertung"
                 :items="selectRating"
                 clearable="true"
+                @change="applyBewertungFilterAndSearch"
             >
               <template v-slot:selection="data">
                 {{data.item}} {{"Sterne"}}
@@ -20,10 +21,11 @@
           </v-col>
           <v-col sm="2" offset-sm="1">
             <v-select
-                v-model="selectedArea"
+                v-model="selectedEntfernung"
                 label="Entfernung"
                 :items="selectArea"
                 clearable="true"
+                @change="applyDistanceFilterAndSearch"
             >
               <template v-slot:selection="data">
                 {{data.item}} {{"km"}}
@@ -55,10 +57,14 @@
                   min-width="400"
 
               >
+                <v-checkbox label="Suche benutzen" v-model="nameOptionActive">
+                </v-checkbox>
+                <v-checkbox label="Mindestbestellwert benutzen" v-model="mindestbestellwertOptionActive">
+                </v-checkbox>
                 <v-subheader>Mindestbestellwert</v-subheader>
                 <v-list-item>
                   <v-slider
-                      v-model="filterCosts"
+                      v-model="selectedMindestbestellwert"
                       min="5"
                       max="100"
                       step="5"
@@ -72,30 +78,8 @@
                   </v-slider>
                 </v-list-item>
                 <v-list-item>
-                  <v-container fluid>
-                    <v-select
-                        v-model="filterOptions"
-                        :items="Options"
-                        label="Filteroptionen"
-                        multiple
-                    >
-                      <template v-slot:selection="{ item, index }">
-                        <v-chip v-if="index < 3">
-                          <span>{{ item }}</span>
-                        </v-chip>
-                        <v-chip v-if="index === 3">
-                            <span
-                                class="grey--text caption"
-                            >
-                              (+{{ filterOptions.length - 3 }} weitere)
-                            </span>
-                        </v-chip>
-                      </template>
-                    </v-select>
-                  </v-container>
-                </v-list-item>
-                <v-list-item>
                   <v-btn color="error">Filter löschen</v-btn>
+                  <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
                 </v-list-item>
               </v-list>
             </v-menu>
@@ -129,13 +113,42 @@
                 </v-list-item-content>
                 <v-list-item-content></v-list-item-content>
                 <v-list-item-group class="text-right">
-                  <v-btn small="true" right>
-                    <v-icon>mdi-heart</v-icon>
-                  </v-btn>
+                  <div v-if="item.isFav === true">
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            @mouseenter="selectRestaurant(item)"  small="true" right
+                            @mousedown="deleteFromFavorites"
+                            @mouseup="()=>{this.amountRestaurants=0;version++}"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                          <v-icon>mdi-heart</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                    </v-tooltip>
+                  </div>
+                  <div v-else>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            @mouseenter="selectRestaurant(item)"  small="true" right
+                            @mousedown="addToFavorites"
+                            @mouseup="()=>{this.amountRestaurants=0;version++}"
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                          <v-icon>mdi-heart-outline</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>Zu Favoriten hinzufügen</span>
+                    </v-tooltip>
+                  </div>
                   <br>
                   <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                   <br>
-                  <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
+                  <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreSearchOptions">Zur Speisekarte</v-btn>
                 </v-list-item-group>
               </v-list-item>
               <v-divider></v-divider>
@@ -154,7 +167,11 @@ export default {
   name: "KundeRestaurants",
   mounted() {
     this.searchString = this.$store.getters.searchString;
+    this.searchOptions = this.$store.getters.searchOptionsRestaurant;
+
     console.log(this.searchString);
+    //TODO change later!
+    this.loggedInKunde_ID = 6;
 
     this.loadRestaurants();
   },
@@ -166,16 +183,37 @@ export default {
     getStoreSeachString() {
       this.searchString = this.$store.getters.searchString;
     },
+    getStoreSearchOptionsRestaurant() {
+      this.searchOptions = this.$store.getters.searchOptionsRestaurant;
+    },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
+    },
+    setStoreSearchOptions(){
+      this.$store.commit("changeSearchOptionsRestaurant", this.searchOptions);
+      this.setStoreRestaurant_ID();
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedRestaurant);
       this.$router.push({name: "KundeAuswahlseiteRestaurant"});
     },
     async loadRestaurants() {
-      const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByRestaurantName/" + this.searchString);
+
+      this.favoritenlisteRestaurants_IDs = [];
+      this.hinzufuegedaten = [];
+
+      const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+
+      console.log(ResponseFavoriten);
+      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      {
+        let favData = ResponseFavoriten.data[i];
+        this.favoritenlisteRestaurants_IDs[i] = favData[0];
+        this.hinzufuegedaten[i]= favData[12];
+      }
+
+      const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
 
       console.log(ResponseRestaurants);
 
@@ -187,6 +225,20 @@ export default {
         this.descriptions[i] = restaurantData[2];
         this.minimums[i] = restaurantData[3];
         this.bestellradius[i] = restaurantData[4];
+        this.lng[i] = restaurantData[10];
+        this.lat[i] = restaurantData[11];
+
+        if(this.favoritenlisteRestaurants_IDs.includes(restaurantData[0]))
+        {
+          this.isFavorite[i] = true;
+          let index = this.favoritenlisteRestaurants_IDs.indexOf(restaurantData[0]);
+          this.hinzufuegedatumAssigned[i] = this.hinzufuegedaten[index];
+        }
+        else
+        {
+          this.isFavorite[i] = false;
+          this.hinzufuegedatumAssigned[i] = null;
+        }
       }
       //TODO
       /*for (let i = 0; i < ResponseRestaurants.data.length; i++)
@@ -219,9 +271,102 @@ export default {
       this.amountRestaurants = ResponseRestaurants.data.length;
       this.version++;
     },
+    async applyBewertungFilterAndSearch() {
+
+      if(this.selectedBewertung>0)
+      {
+        this.bewertungOptionActive = true;
+      }
+      else
+      {
+        this.bewertungOptionActive = false;
+      }
+      this.nameOptionActive = true;
+
+      const searchOptions = {
+        kundennummer: this.loggedInKunde_ID,
+        restaurantName: this.searchString,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadRestaurants();
+    },
+    async applyDistanceFilterAndSearch() {
+
+      if(this.selectedEntfernung>=5)
+      {
+        this.entfernungOptionActive = true;
+      }
+      else
+      {
+        this.entfernungOptionActive = false;
+      }
+      this.nameOptionActive = true;
+
+      const searchOptions = {
+        kundennummer: this.loggedInKunde_ID,
+        restaurantName: this.searchString,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadRestaurants();
+    },
+    async applyFiltersAndSearch() {
+      const searchOptions = {
+        kundennummer: this.loggedInKunde_ID,
+        restaurantName: this.searchString,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadRestaurants();
+    },
+    async addToFavorites() {
+      var today = new Date();
+      const restaurantFavorite = {
+        restaurant_ID: this.selectedRestaurant,
+        kundennummer: this.loggedInKunde_ID,
+        hinzufuegedatum: today,
+        //TODO get anzahl_Bestellungen from Database
+        anzahl_Bestellungen: 0
+      }
+
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      this.loadRestaurants();
+    },
+    async deleteFromFavorites(){
+      await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedRestaurant);
+      this.loadRestaurants();
+    },
+
   },
   data: () => ({
+    searchOptions: {},
     searchString: "",
+    loggedInKunde_ID: 0,
     amountRestaurants: 4,
     selectedRestaurant: "",
     version: 0,
@@ -231,7 +376,22 @@ export default {
     restaurantnamen:[],
     distances: [],
     minimums: [],
-    bestellradius: []
+    lng: [],
+    lat: [],
+    favoritenlisteRestaurants_IDs: [],
+    hinzufuegedaten: [],
+    hinzufuegedatumAssigned: [],
+    isFavorite: [],
+    selectRating: [5,4,3,2,1],
+    selectArea: [5,10,20,30,40],
+    selectedMindestbestellwert: 0,
+    selectedBewertung: 0,
+    selectedEntfernung: 0,
+    bestellradius: [],
+    nameOptionActive: false,
+    mindestbestellwertOptionActive: false,
+    bewertungOptionActive: false,
+    entfernungOptionActive: false
   }),
   computed: {
     items(){
@@ -243,6 +403,10 @@ export default {
         const crestaurantname = this.restaurantnamen[i]
         const cminimum = this.minimums[i]
         const cbestellradius = this.bestellradius[i]
+        const clng = this.lng[i]
+        const clat = this.lat[i]
+        const cisFav = this.isFavorite[i]
+        const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         i++;
 
         return {
@@ -251,14 +415,18 @@ export default {
           restaurantid: crestaurantid,
           restaurant: crestaurantname,
           mindestbestellwert: cminimum,
-          cbestellradius: cbestellradius
+          bestellradius: cbestellradius,
+          lng: clng,
+          lat: clat,
+          isFav: cisFav,
+          hinzufuegedatum: chinzufuegedatum
         }
       })
     }
   },
   watch:{
-    '$store.state.searchString': function() {
-      this.getStoreSeachString();
+    '$store.state.searchOptionsRestaurant': function() {
+      this.getStoreSearchOptionsRestaurant();
       this.loadRestaurants();
     }
   }

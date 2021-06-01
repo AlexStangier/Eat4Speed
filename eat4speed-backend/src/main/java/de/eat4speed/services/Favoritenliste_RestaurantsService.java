@@ -29,4 +29,10 @@ public class Favoritenliste_RestaurantsService implements IFavoritenliste_Restau
         return Response.status(Response.Status.CREATED).entity(favoritenliste_restaurants).build();
     }
 
+    @Override
+    public Response removeFavoritenliste_Restaurants(int restaurant_ID, int kundennummer) {
+        favoritenliste_restaurantsRepository.removeFavoritenliste_Restaurants(restaurant_ID, kundennummer);
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

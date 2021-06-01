@@ -155,7 +155,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
     }
 
     @Transactional
-    public List<Integer> getGericht_IDsByBewertung(int bewertung)
+    public List<Integer> getGericht_IDsByBewertung(double bewertung)
     {
         List<Integer> gerichteData;
 
@@ -164,7 +164,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "FROM Gericht g, Restaurant r, Bewertung b " +
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
                         "AND b.restaurant_ID = r.restaurant_ID " +
-                        "AND AVG(b.sterne) < ?1"
+                        "GROUP BY g.gericht_ID " +
+                        "HAVING AVG(b.sterne) >= ?1"
         ).setParameter(1,bewertung);
 
         gerichteData = query.getResultList();
@@ -251,10 +252,11 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List gerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, g.restaurant_ID, fg.anzahl_Bestellungen, fg.hinzufuegedatum " +
-                        "FROM Gericht g, Kunde k, Favoritenliste_Gerichte fg " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, g.restaurant_ID, fg.anzahl_Bestellungen, fg.hinzufuegedatum, r.restaurant_ID, r.name_des_Restaurants " +
+                        "FROM Gericht g, Kunde k, Restaurant r, Favoritenliste_Gerichte fg " +
                         "WHERE g.gericht_ID = fg.gericht_ID " +
                         "AND k.kundennummer = fg.kundennummer " +
+                        "AND g.restaurant_ID = r.restaurant_ID " +
                         "AND k.kundennummer = ?1"
         ).setParameter(1,kundennummer);
 

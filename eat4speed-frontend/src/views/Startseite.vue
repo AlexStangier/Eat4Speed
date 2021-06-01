@@ -27,24 +27,24 @@
               </v-toolbar>
               <v-card-actions>
                 <v-container>
-                      <v-row class="mt-2">
-                        <v-col align="center" justify="center">
-                          <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'KundeAnmeldung'}" width="200px" color="primary" depressed tile
-                                 @click="gerichtFarbe">Kunde
-                          </v-btn>
-                        </v-col>
-                        <v-col align="center" justify="center">
-                          <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'RestaurantAnmeldung'}" width="200px" color="primary" depressed tile
-                                 @click="gerichtFarbe">Restaurant
-                          </v-btn>
-                        </v-col>
-                        <v-col align="center" justify="center">
-                          <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'FahrerAnmeldung'}" width="200px" color="primary" depressed tile
-                                 @click="gerichtFarbe">Fahrer
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-container>
+                  <v-row class="mt-2">
+                    <v-col align="center" justify="center">
+                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'KundeAnmeldung'}" width="200px" color="primary" depressed tile
+                             @click="gerichtFarbe">Kunde
+                      </v-btn>
+                    </v-col>
+                    <v-col align="center" justify="center">
+                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'RestaurantAnmeldung'}" width="200px" color="primary" depressed tile
+                             @click="gerichtFarbe">Restaurant
+                      </v-btn>
+                    </v-col>
+                    <v-col align="center" justify="center">
+                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'FahrerAnmeldung'}" width="200px" color="primary" depressed tile
+                             @click="gerichtFarbe">Fahrer
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </v-card-actions>
               <v-card-actions>
                 <v-btn
@@ -155,6 +155,19 @@ export default {
         this.$store.commit("changeSearchType", "Gerichte");
         this.$router.push({name: 'Kunde'});
       } else {
+        this.$store.commit("changeSearchType", "Restaurants");
+        const searchOptionsRestaurant = {
+          kundennummer: this.loggedInKunde_ID,
+          restaurantName: this.searchString,
+          maxMindestbestellwert: 0,
+          maxEntfernung: 0,
+          minBewertung: 0,
+          useName: true,
+          useMindestbestellwert: false,
+          useEntfernung: false,
+          useBewertung: false
+        }
+        this.$store.commit("changeSearchOptionsRestaurant", searchOptionsRestaurant)
         this.$store.commit("changeSearchType", "Restaurants");
         console.log("To Restaurants");
         this.$router.push({path: '/kundeRestaurants'});
