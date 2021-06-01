@@ -1,7 +1,7 @@
 package de.eat4speed.services.interfaces;
 
 import de.eat4speed.entities.Auftrag;
-import de.eat4speed.entities.Gericht;
+
 
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
@@ -14,4 +14,6 @@ public interface IAuftragService {
     Response deleteAuftag(int id);
 
     Response updateAuftragStatus(int id, String status);
+
+    Response updateAuftragStatusRestaurant(Auftrag auftrag);
 }

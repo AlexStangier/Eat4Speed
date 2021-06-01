@@ -5,38 +5,37 @@
         <v-flex md6 sm6 xs12>
           <h1 class="mb-5">Offene Bestellungen</h1>
           <v-list>
-            <v-list-item class="mb-12" v-for="item in shoppingItems" v-bind:key="item.name">
-                <v-card class="mr-10" color="red" dark>
-                  <v-col >
-                    <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
-                    <v-card-text>- {{ item.artikel }}</v-card-text>
-                    {{ item.price }} €
-                  </v-col>
-                </v-card>
+            <v-list-item class="mb-12" v-for="item in eingegangeneBestellungen" v-bind:key="item.id">
+              <v-card class="mr-10" color="red" dark>
+                <v-col >
+                  <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
+                  <v-card-text>- {{ item.artikel }}</v-card-text>
+                  {{ item.price }} €
+                </v-col>
+              </v-card>
               <v-slider
+                  :value="statusNummer"
                   :tick-labels="bestellstati"
-                  :max="2"
+                  :max="3"
                   step="1"
                   ticks="always"
                   tick-size="0"
                   thumb-size="100"
+                  @change="changeAuftragStatus(item.id, item.status)"
+
+
               >
                 <template v-slot:thumb-color="{ value }">
                   {{ bestellstatifarben[value] }}
                 </template>
                 <template v-slot:thumb-label="{ value }">
-                  {{ bestellstati[value] }}
+                  {{ item.status = bestellstati[value] }}
                 </template>
               </v-slider>
             </v-list-item>
 
           </v-list>
         </v-flex>
-        <div>
-          <ul>
-
-          </ul>
-        </div>
       </v-layout>
     </v-container>
   </v-main>
@@ -57,48 +56,62 @@ export default {
       const ResponseBestellungen = await axios.get("Benutzer/getRestaurantBestellungen/" + this.$store.getters.getLoginData.auth.username);
 
       let anzahl = ResponseBestellungen.data.length.toString();
-      console.log(anzahl); // Anzahl der Ausgaben
 
+      let item;
       for(let i = 0; i < anzahl; i++) { // outer loop
-        this.shoppingItems[i].id = (ResponseBestellungen.data[i][0]);
-        this.shoppingItems[i].name = (ResponseBestellungen.data[i][1]);
-        this.shoppingItems[i].price = parseFloat(ResponseBestellungen.data[i][3]).toFixed(2);
-        this.shoppingItems[i].artikel = (ResponseBestellungen.data[i][4]);
+        if((ResponseBestellungen.data[i][2]) == 'bezahlt'){
+          this.statusNummer = 1;
+        }
+        if((ResponseBestellungen.data[i][2]) == 'bearbeitung'){
+          this.statusNummer = 2;
+        }
+        if((ResponseBestellungen.data[i][2]) == 'abholbereit'){
+          this.statusNummer = 3;
+        }
+
+        item = {id: (ResponseBestellungen.data[i][0]), name: (ResponseBestellungen.data[i][1]),
+          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          artikel: (ResponseBestellungen.data[i][4]), status: this.statusNummer}
+
+        this.eingegangeneBestellungen.push( item )
 
       }
-      let BestellungenData = ResponseBestellungen.data[0];
-      let BestellungenData1 = ResponseBestellungen.data[1];
 
-      console.log(BestellungenData[1]);
-      console.log(BestellungenData1);
+    },
+    async changeAuftragStatus(bestellID, zustand){
 
+      if(zustand == 'stornieren'){
+        zustand = 'storniert';
+      }
+      if(zustand == 'Bereit'){
+        zustand = 'bezahlt';
+      }
+      if(zustand == 'In Zubereitung'){
+        zustand = 'bearbeitung';
+      }
+      if(zustand == 'Abholbereit'){
+        zustand = 'abholbereit';
+      }
+
+      let auftrag = {
+        status: zustand,
+        auftrags_ID: bestellID
+      }
+
+      await axios.put("/Auftrag/updateAuftragStatusRestaurant", auftrag);
+
+      if(zustand == 'storniert'){
+        window.location.reload();
+      }
 
     }
   },
   data () {
     return {
-      bestellstati: ['Bereit', 'In Zubereitung', 'Abholbereit'],
+      bestellstati: ['stornieren', 'Bereit', 'In Zubereitung', 'Abholbereit'],
       bestellstatifarben: ['red', 'yellow', 'green'],
-      bestellungen: [
-        {
-          name: 'Bestellung 1',
-          offen: false,
-          inZubereitung: true,
-          abholBereit: false,
-        },
-        {
-          name: 'Bestellung 2',
-          offen:  true,
-          inZubereitung: false,
-          abholBereit: false,
-        },
-
-      ],
-      shoppingItems: [
-        { id: '', name: '', price: '', artikel: '' },
-        { id: '', name: '', price: '', artikel: ''  },
-        { id: '', name: '', price: '', artikel: ''  }
-      ]
+      eingegangeneBestellungen: [],
+      statusNummer: '',
     }
   },
 }

@@ -1,6 +1,7 @@
 package de.eat4speed.services;
 
 import de.eat4speed.entities.Auftrag;
+import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.AuftragRepository;
 import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.services.interfaces.IAuftragService;
@@ -41,6 +42,12 @@ public class AuftragService implements IAuftragService {
         auftragRepository.updateAuftragStatus(id, status);
 
         return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
+    public Response updateAuftragStatusRestaurant(Auftrag auftrag) {
+        auftragRepository.updateAuftragStatusRestaurant(auftrag);
+        return Response.status(Response.Status.OK).entity(auftrag).build();
     }
 
 }

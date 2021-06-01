@@ -89,6 +89,7 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
                         "AND Artikel.Bestell_ID = b.Bestell_ID " +
                         "AND a.Auftragnehmer = re.Restaurant_ID " +
                         "AND re.Benutzer_ID = be.Benutzer_ID " +
+                        "AND a.Status != 'storniert'" +
                         "AND be.EmailAdresse like ?1 " +
                         "GROUP BY a.Auftrags_ID, k.NAME, a.STATUS, r.Betrag, Artikel.Produkte, Artikel.Gesamtanzahl").setParameter(1, email);
 

@@ -2,7 +2,6 @@ package de.eat4speed.repositories;
 
 import de.eat4speed.entities.Auftrag;
 
-import de.eat4speed.entities.Benutzer;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -35,5 +34,10 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
     @Transactional
     public Auftrag getAuftragByID(int id) {
         return find("Auftrags_ID", id).firstResult();
+    }
+
+    @Transactional
+    public void updateAuftragStatusRestaurant(Auftrag auftrag) {
+        update("status = ?1 where auftrags_ID = ?2", auftrag.getStatus(), auftrag.getAuftrags_ID());
     }
 }

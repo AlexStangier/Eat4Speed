@@ -3,13 +3,12 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Auftrag;
 import de.eat4speed.repositories.AuftragRepository;
+import de.eat4speed.services.interfaces.IAuftragService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.sql.Timestamp;
 
 @Path("/Auftrag")
@@ -18,6 +17,9 @@ public class AuftragController {
 
     @Inject
     AuftragRepository auftragRepository;
+
+    @Inject
+    IAuftragService _auftrag;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -41,6 +43,12 @@ public class AuftragController {
     @Produces(MediaType.TEXT_PLAIN)
     public String get(@PathParam("id") long id) {
         return auftragRepository.findById(id).toString();
+    }
+
+    @PUT
+    @Path("updateAuftragStatusRestaurant")
+    public Response updateAuftragStatusRestaurant(Auftrag auftrag) {
+        return _auftrag.updateAuftragStatusRestaurant(auftrag);
     }
 
 }
