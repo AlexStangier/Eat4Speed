@@ -5,10 +5,11 @@
         <v-row no-gutters align="center">
           <v-col sm="2">
             <v-select
-                v-model="selectedRating"
+                v-model="selectedBewertung"
                 label="Bewertung"
                 :items="selectRating"
                 clearable="true"
+                @change="applyBewertungFilterAndSearch"
             >
               <template v-slot:selection="data">
                 {{data.item}} {{"Sterne"}}
@@ -128,30 +129,30 @@
                   <v-container fluid>
                     <v-checkbox label="Kategorien benutzen" v-model="kategorieOptionActive">
                     </v-checkbox>
-                      <v-select
-                          ref="KategorieSelect"
-                          v-model="selectedKategorien"
-                          :items="kategorien"
-                          chips
-                          label="Kategorien"
-                          multiple
-                          outlined
-                          block
-                          :key="kategorieVersion"
-                      ></v-select>
+                    <v-select
+                        ref="KategorieSelect"
+                        v-model="selectedKategorien"
+                        :items="kategorien"
+                        chips
+                        label="Kategorien"
+                        multiple
+                        outlined
+                        block
+                        :key="kategorieVersion"
+                    ></v-select>
                     <v-checkbox label="Allergene benutzen" v-model="allergeneOptionActive">
                     </v-checkbox>
-                      <v-select
-                          ref="AllergeneSelect"
-                          v-model="selectedAllergene"
-                          :items="allergene"
-                          chips
-                          label="Allergene"
-                          multiple
-                          outlined
-                          block
-                          :key="allergeneVersion"
-                      ></v-select>
+                    <v-select
+                        ref="AllergeneSelect"
+                        v-model="selectedAllergene"
+                        :items="allergene"
+                        chips
+                        label="Allergene"
+                        multiple
+                        outlined
+                        block
+                        :key="allergeneVersion"
+                    ></v-select>
                   </v-container>
                 </v-list-item>
                 <v-list-item>
@@ -190,36 +191,38 @@
                     </v-list-item-group>
                   </v-list-item-content>
                   <v-list-item-content></v-list-item-content>
-                  <v-list-item-group class="text-right">
+                  <v-list-item-group :key="version" class="text-right">
 
-                    <div :key="version" v-if="item.isFav === true">
+                    <div v-if="item.isFav === true">
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                               @mouseenter="selectItem(item)"  small="true" right
                               @mousedown="deleteFromFavorites"
+                              @mouseup="()=>{this.amountGerichte=0;version++}"
                               v-bind="attrs"
                               v-on="on"
                           >
                             <v-icon>mdi-heart</v-icon>
                           </v-btn>
                         </template>
-                          <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                        <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
                       </v-tooltip>
                     </div>
-                    <div :key="version" v-else>
+                    <div v-else>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
                               @mouseenter="selectItem(item)"  small="true" right
                               @mousedown="addToFavorites"
+                              @mouseup="()=>{this.amountGerichte=0;version++}"
                               v-bind="attrs"
                               v-on="on"
                           >
-                              <v-icon>mdi-heart-outline</v-icon>
+                            <v-icon>mdi-heart-outline</v-icon>
                           </v-btn>
                         </template>
-                          <span>Zu Favoriten hinzufügen</span>
+                        <span>Zu Favoriten hinzufügen</span>
                       </v-tooltip>
                     </div>
                     <br>
@@ -231,6 +234,7 @@
                     <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                     <br>
                     <v-btn small="true" bottom="bottom" :to="{name: 'Gericht'}" @mouseover="selectGericht(item)">Details</v-btn>
+                    <v-btn small="true" bottom="bottom" @mouseenter="selectItem(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
                     <v-menu
                         bottom
                         offset-y
@@ -302,7 +306,7 @@
                               >Alternativen</v-btn>
                               <v-btn
                                   @click="dialog.value = false"
-                              >Close</v-btn>
+                              >Schließen</v-btn>
                             </v-card-actions>
                           </v-card>
                         </template>
@@ -354,6 +358,9 @@ export default {
     getStoreSeachString() {
       this.searchString = this.$store.getters.searchString;
     },
+    getStoreSearchOptions() {
+      this.searchOptions = this.$store.getters.searchOptions;
+    },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
       console.log("changed searchString to "+this.$store.getters.searchString);
@@ -364,6 +371,10 @@ export default {
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+    },
+    setStoreRestaurant_ID() {
+      this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurantid);
+      this.$router.push({name: "KundeAuswahlseiteRestaurant"});
     },
     async findAlternatives() {
 
@@ -465,6 +476,9 @@ export default {
     },
     async loadGerichte() {
 
+      this.favoritenlisteGerichte_IDs=[];
+      this.hinzufuegedaten=[];
+
       const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
 
       console.log(ResponseFavoriten);
@@ -475,13 +489,9 @@ export default {
         this.hinzufuegedaten[i]= favData[7];
       }
 
-      //const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGerichtName/" + this.searchString);
-
       const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
 
       console.log(ResponseGerichte);
-
-      //console.log("Verarbeite ResponseGerichte")
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -503,7 +513,6 @@ export default {
         this.restaurantnamen[i] = gerichtData[6];
         this.minimums[i] = gerichtData[7];
 
-        //console.log("Durchlauf vor Fav");
         if(this.favoritenlisteGerichte_IDs.includes(gerichtData[0]))
         {
           this.isFavorite[i] = true;
@@ -515,10 +524,8 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
-        //console.log("Durchlauf nach Fav");
       }
 
-      //console.log("Suche nach Bildern");
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
@@ -655,6 +662,39 @@ export default {
 
       this.loadGerichte();
     },
+    async applyBewertungFilterAndSearch() {
+
+      if(this.selectedBewertung>0)
+      {
+        this.bewertungOptionActive = true;
+      }
+      else
+      {
+        this.bewertungOptionActive = false;
+      }
+      this.nameOptionActive = true;
+
+      const searchOptions = {
+        gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
+        gerichtName: this.searchString,
+        kategorien: this.selectedKategorien,
+        excludedAllergene: this.selectedAllergene,
+        maxMindestbestellwert: this.selectedMindestbestellwert,
+        maxEntfernung: this.selectedEntfernung,
+        minBewertung: this.selectedBewertung,
+        useName: this.nameOptionActive,
+        useKategorien: this.kategorieOptionActive,
+        useAllergene: this.allergeneOptionActive,
+        useMindestbestellwert: this.mindestbestellwertOptionActive,
+        useEntfernung: this.entfernungOptionActive,
+        useBewertung: this.bewertungOptionActive
+      }
+
+      this.searchOptions = searchOptions;
+
+      this.loadGerichte();
+    },
     addToCart() {
 
       console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
@@ -751,8 +791,8 @@ export default {
     }
   },
   watch:{
-    '$store.state.searchString': function() {
-      this.getStoreSeachString();
+    '$store.state.searchOptions': function() {
+      this.getStoreSearchOptions();
       this.loadGerichte();
     }
   }

@@ -1,18 +1,12 @@
 package de.eat4speed.services;
 
-import de.eat4speed.dishAlternatives.DishAlternativesOptions;
 import de.eat4speed.entities.EntfernungKundeRestaurant;
-import de.eat4speed.entities.Gericht;
 import de.eat4speed.repositories.EntfernungKundeRestaurantRepository;
-import de.eat4speed.repositories.GerichtRepository;
 import de.eat4speed.services.interfaces.IEntfernungKundeRestaurantService;
-import de.eat4speed.services.interfaces.IGerichtService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @ApplicationScoped

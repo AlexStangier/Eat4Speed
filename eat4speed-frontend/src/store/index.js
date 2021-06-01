@@ -32,6 +32,16 @@ export default new Vuex.Store({
       useMindestbestellwert: false,
       useEntfernung: false,
       useBewertung: false
+    },
+    searchOptionsRestaurant: {
+      restaurantName: "",
+      maxMindestbestellwert: 0,
+      maxEntfernung: 0,
+      minBewertung: 0,
+      useName: true,
+      useMindestbestellwert: false,
+      useEntfernung: false,
+      useBewertung: false
     }
   },
   plugins: [vuexLocal.plugin],
@@ -41,6 +51,9 @@ export default new Vuex.Store({
     },
     changeSearchOptions: (state, payload) => {
       state.searchOptions = payload;
+    },
+    changeSearchOptionsRestaurant: (state, payload) => {
+      state.searchOptionsRestaurant = payload;
     },
     changeSelectedRestaurant_ID: (state, payload) => {
       state.selectedRestaurant_ID = payload;
@@ -64,7 +77,7 @@ export default new Vuex.Store({
         }
       }
 
-      },
+    },
     changeCartGerichte: (state, payload) => {
       state.cartGerichte = payload;
     },
@@ -88,6 +101,9 @@ export default new Vuex.Store({
     },
     searchOptions: state => {
       return state.searchOptions;
+    },
+    searchOptionsRestaurant: state => {
+      return state.searchOptionsRestaurant;
     },
     selectedRestaurant_ID: state => {
       return state.selectedRestaurant_ID;

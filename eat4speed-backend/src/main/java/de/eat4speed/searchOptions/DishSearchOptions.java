@@ -1,9 +1,9 @@
-package de.eat4speed.dishAlternatives;
+package de.eat4speed.searchOptions;
 
 import java.util.List;
 import java.util.Objects;
 
-public class DishAlternativesOptions {
+public class DishSearchOptions {
     private int gericht_ID;
     private String gerichtName = "";
     private int kundennummer;
@@ -135,7 +135,7 @@ public class DishAlternativesOptions {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        DishAlternativesOptions that = (DishAlternativesOptions) o;
+        DishSearchOptions that = (DishSearchOptions) o;
         return gericht_ID == that.gericht_ID && kundennummer == that.kundennummer && Double.compare(that.maxMindestbestellwert, maxMindestbestellwert) == 0 && Double.compare(that.maxEntfernung, maxEntfernung) == 0 && minBewertung == that.minBewertung && useName == that.useName && useKategorien == that.useKategorien && useAllergene == that.useAllergene && useMindestbestellwert == that.useMindestbestellwert && useEntfernung == that.useEntfernung && useBewertung == that.useBewertung && Objects.equals(gerichtName, that.gerichtName) && Objects.equals(kategorien, that.kategorien) && Objects.equals(excludedAllergene, that.excludedAllergene);
     }
 
