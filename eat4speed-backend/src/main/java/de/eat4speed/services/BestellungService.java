@@ -137,7 +137,6 @@ public class BestellungService implements IBestellungService {
                                 System.out.println("Something went wrong persisting bestellzuordnung: " + e);
                             }
                         }
-                        int a = 0;
                     }
                 }
             }
