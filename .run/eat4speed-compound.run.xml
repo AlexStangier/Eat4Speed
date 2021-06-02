@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="eat4speed-compound" type="CompoundRunConfigurationType">
+        <toRun name="eat4speed-frontend" type="js.build_tools.npm" />
+        <toRun name="eat4speed-backend" type="QuarkusRunConfigurationType" />
+        <method v="2" />
+    </configuration>
+</component>
