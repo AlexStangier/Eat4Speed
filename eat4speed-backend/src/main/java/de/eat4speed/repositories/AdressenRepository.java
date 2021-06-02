@@ -61,4 +61,8 @@ public class AdressenRepository implements PanacheRepository<Adressen> {
         return restaurantData;
     }
 
+    @Transactional
+    public Adressen getAdresseByCustomerId(int id){
+        return find("Adress_ID", id).firstResult();
+    }
 }
