@@ -1,12 +1,52 @@
 <template>
   <v-main>
     <v-container fill-height fluid>
-      <v-layout align-center justify-center>
+      <v-layout  justify-center>
         <v-flex md6 sm6 xs12>
           <template>
             <h1>Schichtplan</h1>
             <v-card class="px-4">
-
+              <v-card-title>Bitte wählen Sie Ihre Schicht</v-card-title>
+              <v-spacer></v-spacer>
+              <v-row align="center"
+                     justify="space-around"
+                      class="mb-10">
+                <v-btn
+                @click="executeAll"
+                class = "mb-2"
+                color="red"
+                dark
+                bottom
+                height="100"
+                >
+                  Frühschicht
+                  <v-spacer></v-spacer>
+                  von 7:00 - 15:00
+                </v-btn>
+                <v-btn
+                    @click="executeAll"
+                    class = "mb-2"
+                    color="red"
+                    dark
+                    height="100"
+                    bottom
+                >
+                  Spätschicht
+                  <v-spacer></v-spacer>
+                  von 15:00 - 22:00
+                </v-btn>
+              </v-row>
+              <v-row>
+              <v-btn
+                  @click="executeAll"
+                  class = "mb-2 mr-2"
+                  color="red"
+                  dark
+              >
+                Pause beginnen...
+              </v-btn>
+                <h4>Übrige Zeit: 1:00h</h4>
+              </v-row>
             </v-card>
           </template>
         </v-flex>
