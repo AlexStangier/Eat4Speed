@@ -78,9 +78,9 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
                         "Benutzer be, " +
                         "Restaurant re, " +
                         "(SELECT bz.Bestell_ID, GROUP_CONCAT(g.NAME) AS Produkte, GROUP_CONCAT(bz.Anzahl) as Gesamtanzahl " +
-                            "FROM Bestellzuordnung bz, Gericht g " +
-                            "WHERE bz.Gericht_ID = g.Gericht_ID " +
-                            "GROUP BY bz.Bestell_ID ) AS Artikel " +
+                        "FROM Bestellzuordnung bz, Gericht g " +
+                        "WHERE bz.Gericht_ID = g.Gericht_ID " +
+                        "GROUP BY bz.Bestell_ID ) AS Artikel " +
                         "WHERE a.Auftrags_ID = b.Auftrags_ID " +
                         "AND a.Kundennummer = k.Benutzer_ID " +
                         "AND b.Rechnung = r.Rechnungs_ID " +
@@ -89,9 +89,10 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
                         "AND Artikel.Bestell_ID = b.Bestell_ID " +
                         "AND a.Auftragnehmer = re.Restaurant_ID " +
                         "AND re.Benutzer_ID = be.Benutzer_ID " +
-                        "AND a.Status != 'storniert'" +
+                        "AND a.Status IN ('bezahlt','bearbeitung','abholbereit')" +
                         "AND be.EmailAdresse like ?1 " +
-                        "GROUP BY a.Auftrags_ID, k.NAME, a.STATUS, r.Betrag, Artikel.Produkte, Artikel.Gesamtanzahl").setParameter(1, email);
+                        "GROUP BY a.Auftrags_ID, k.NAME, a.STATUS, r.Betrag, Artikel.Produkte, Artikel.Gesamtanzahl " +
+                        "ORDER BY a.Auftrags_ID asc").setParameter(1, email);
 
         restaurantBestellungen = query.getResultList();
         return restaurantBestellungen;
