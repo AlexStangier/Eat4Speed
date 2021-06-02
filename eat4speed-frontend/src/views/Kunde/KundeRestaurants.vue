@@ -57,8 +57,6 @@
                   min-width="400"
 
               >
-                <v-checkbox label="Suche benutzen" v-model="nameOptionActive">
-                </v-checkbox>
                 <v-checkbox label="Mindestbestellwert benutzen" v-model="mindestbestellwertOptionActive">
                 </v-checkbox>
                 <v-subheader>Mindestbestellwert</v-subheader>
@@ -78,7 +76,7 @@
                   </v-slider>
                 </v-list-item>
                 <v-list-item>
-                  <v-btn color="error">Filter löschen</v-btn>
+                  <v-btn color="error" @click="()=>{this.mindestbestellwertOptionActive=false;this.selectedMindestbestellwert=0;}">Filter löschen</v-btn>
                   <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
                 </v-list-item>
               </v-list>
@@ -146,7 +144,7 @@
                     </v-tooltip>
                   </div>
                   <br>
-                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
+                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
                   <br>
                   <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreSearchOptions">Zur Speisekarte</v-btn>
                 </v-list-item-group>
@@ -239,7 +237,14 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
+
       }
+      for(let i = 0; i < ResponseRestaurants.data.length; i++)
+      {
+        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.restaurant_IDs[i]);
+        this.ratings[i] = ResponseBewertung.data[0][0];
+      }
+
       //TODO
       /*for (let i = 0; i < ResponseRestaurants.data.length; i++)
       {
@@ -273,13 +278,14 @@ export default {
     },
     async applyBewertungFilterAndSearch() {
 
-      if(this.selectedBewertung>0)
+      if(this.selectedBewertung!==null)
       {
         this.bewertungOptionActive = true;
       }
       else
       {
         this.bewertungOptionActive = false;
+        this.selectedBewertung = 0;
       }
       this.nameOptionActive = true;
 
@@ -301,13 +307,14 @@ export default {
     },
     async applyDistanceFilterAndSearch() {
 
-      if(this.selectedEntfernung>=5)
+      if(this.selectedEntfernung!==null)
       {
         this.entfernungOptionActive = true;
       }
       else
       {
         this.entfernungOptionActive = false;
+        this.selectedEntfernung = 0;
       }
       this.nameOptionActive = true;
 
@@ -378,6 +385,7 @@ export default {
     minimums: [],
     lng: [],
     lat: [],
+    ratings: [],
     favoritenlisteRestaurants_IDs: [],
     hinzufuegedaten: [],
     hinzufuegedatumAssigned: [],
@@ -388,7 +396,7 @@ export default {
     selectedBewertung: 0,
     selectedEntfernung: 0,
     bestellradius: [],
-    nameOptionActive: false,
+    nameOptionActive: true,
     mindestbestellwertOptionActive: false,
     bewertungOptionActive: false,
     entfernungOptionActive: false
@@ -407,6 +415,7 @@ export default {
         const clat = this.lat[i]
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
+        const crating = this.ratings[i]
         i++;
 
         return {
@@ -419,7 +428,8 @@ export default {
           lng: clng,
           lat: clat,
           isFav: cisFav,
-          hinzufuegedatum: chinzufuegedatum
+          hinzufuegedatum: chinzufuegedatum,
+          rating: crating
         }
       })
     }

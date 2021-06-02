@@ -21,7 +21,7 @@
 
             <v-item-group>
               <v-list-item-action>
-                Bewertung(12)
+                Bewertung({{ restaurantBewertungCount }})
               </v-list-item-action>
               <v-list-item-action>
                 <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small :value="restaurantRating"></v-rating>
@@ -47,17 +47,16 @@
                       <v-toolbar>Bewertungen</v-toolbar>
                       <v-virtual-scroll
                           :items="reviews"
-                          item-height="100"
+                          item-height="200"
                           max-height="200"
                           :key="versionreview"
                       >
                         <template v-slot:default="{ review }">
-                          <v-container>
                             <v-list-item>
                               <v-list-item-content>
                                 <v-list-item-group>
                                   <v-list-item-title>{{ review.revUsername}}</v-list-item-title>
-                                  <v-rating readonly half-icon="$ratingHalf" v-model="review.revRating" small></v-rating>
+                                  <v-rating readonly v-model="review.revRating" small></v-rating>
                                 </v-list-item-group>
                               </v-list-item-content>
                               <v-list-item-content>
@@ -69,7 +68,6 @@
                                 </v-textarea>
                               </v-list-item-content>
                             </v-list-item>
-                          </v-container>
                         </template>
                       </v-virtual-scroll>
 
@@ -250,6 +248,14 @@ export default {
       this.restaurantBestellradius = restaurantData[4];
       this.restaurantAddress=restaurantData[5]+" "+restaurantData[6]+" "+ restaurantData[7]+" "+restaurantData[8];
       this.restaurantPhoneNumber=restaurantData[9]
+
+      const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
+      if(ResponseBewertung.data.length>0)
+      {
+        this.restaurantRating = ResponseBewertung.data[0][0];
+        this.restaurantBewertungCount = ResponseBewertung.data[0][1];
+      }
+
       this.version2++;
     },
     async loadGerichte() {
@@ -398,6 +404,7 @@ export default {
     selectedGericht_ID:"",
     selectedItem: "",
     gerichtAnzahl: 0,
+    restaurantBewertungCount:0,
     displayGetraenke:"",
     names: [],
     descriptions: [],
@@ -408,14 +415,14 @@ export default {
     minimums: [],
     ratings: [],
     amountGerichte:4,
-    amountReviews:0,
+    amountReviews:4,
     version:0,
     version2:0,
     versionreview:0,
     restaurantName:"",
     restaurantDescription:"",
     restaurantAddress:"",
-    restaurantRating:"",
+    restaurantRating:0,
     restaurantPhoneNumber:"",
     restaurantMindestbestellwert:"",
     restaurantBestellradius:"",

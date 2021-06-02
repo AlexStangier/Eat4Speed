@@ -43,4 +43,9 @@ public class BewertungService implements IBewertungService {
     public List getBewertungDataByRestaurant_ID(int restaurant_ID) {
         return bewertungRepository.getBewertungDataByRestaurant_ID(restaurant_ID);
     }
+
+    @Override
+    public List getAverageBewertungAndCountBewertungByRestaurant_ID(int restaurant_ID) {
+        return bewertungRepository.getAverageBewertungAndCountBewertungByRestaurant_ID(restaurant_ID);
+    }
 }
