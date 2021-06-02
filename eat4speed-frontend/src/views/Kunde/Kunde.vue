@@ -156,7 +156,7 @@
                   </v-container>
                 </v-list-item>
                 <v-list-item>
-                  <v-btn color="error">Filter löschen</v-btn>
+                  <v-btn color="error" @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}">Filter löschen</v-btn>
                   <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
                 </v-list-item>
               </v-list>
@@ -186,6 +186,9 @@
                       <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                       <br>
                       <v-list-item-content>{{item.restaurant}}</v-list-item-content>
+                      <v-list-item-content>
+                        <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
+                      </v-list-item-content>
                       <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
                       <v-list-item-content>Verfügbar: {{item.available}}</v-list-item-content>
                     </v-list-item-group>
@@ -231,7 +234,6 @@
                       <br>
                       Mindestbestellwert: {{item.minimum}} €
                     </v-list-item-content>
-                    <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
                     <br>
                     <v-btn small="true" bottom="bottom" :to="{name: 'Gericht'}" @mouseover="selectGericht(item)">Details</v-btn>
                     <v-btn small="true" bottom="bottom" @mouseenter="selectItem(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
@@ -526,6 +528,20 @@ export default {
         }
       }
 
+      for(let i = 0; i < ResponseGerichte.data.length; i++)
+      {
+        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.restaurant_IDs[i]);
+        if(ResponseBewertung.data[0][0]!==null)
+        {
+          this.restaurantBewertungen[i] = ResponseBewertung.data[0][0];
+        }
+        else
+        {
+          this.restaurantBewertungen[i] = 0;
+        }
+
+      }
+      console.log("Bewertungen "+this.restaurantBewertungen);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
@@ -608,6 +624,11 @@ export default {
       this.allergeneVersion++;
     },
     async applyFiltersAndSearch() {
+      if(this.mindestbestellwertOptionActive===true || this.allergeneOptionActive===true)
+      {
+        this.nameOptionActive = true
+      }
+
       const searchOptions = {
         gericht_ID: -1,
         kundennummer: this.loggedInKunde_ID,
@@ -631,13 +652,14 @@ export default {
     },
     async applyDistanceFilterAndSearch() {
 
-      if(this.selectedEntfernung>=5)
+      if(this.selectedEntfernung!==null)
       {
         this.entfernungOptionActive = true;
       }
       else
       {
         this.entfernungOptionActive = false;
+        this.selectedEntfernung = 0;
       }
       this.nameOptionActive = true;
 
@@ -664,15 +686,17 @@ export default {
     },
     async applyBewertungFilterAndSearch() {
 
-      if(this.selectedBewertung>0)
+      if(this.selectedBewertung!==null)
       {
         this.bewertungOptionActive = true;
       }
       else
       {
         this.bewertungOptionActive = false;
+        this.selectedBewertung = 0;
       }
       this.nameOptionActive = true;
+      console.log(this.selectedBewertung);
 
       const searchOptions = {
         gericht_ID: -1,
@@ -741,7 +765,8 @@ export default {
     hinzufuegedaten: [],
     hinzufuegedatumAssigned: [],
     isFavorite: [],
-    nameOptionActive: false,
+    restaurantBewertungen: [],
+    nameOptionActive: true,
     kategorieOptionActive: false,
     allergeneOptionActive: false,
     mindestbestellwertOptionActive: false,
@@ -771,6 +796,7 @@ export default {
         const cavailable = this.availabilities[i]
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
+        const crestaurantbewertung = this.restaurantBewertungen[i]
         i++;
 
         return {
@@ -785,7 +811,8 @@ export default {
           minimum: cminimum,
           available: cavailable,
           isFav: cisFav,
-          hinzufuegedatum: chinzufuegedatum
+          hinzufuegedatum: chinzufuegedatum,
+          rating: crestaurantbewertung
         }
       })
     }

@@ -13,4 +13,6 @@ public interface IBewertungService {
 
     List getBewertungDataByRestaurant_ID(int restaurant_ID);
 
+    List getAverageBewertungAndCountBewertungByRestaurant_ID(int restaurant_ID);
+
 }
