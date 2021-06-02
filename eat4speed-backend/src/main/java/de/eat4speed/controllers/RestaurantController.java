@@ -4,6 +4,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
 import de.eat4speed.entities.Fahrzeug;
+import de.eat4speed.searchOptions.RestaurantSearchOptions;
 import de.eat4speed.services.interfaces.IRestaurantService;
 import org.hibernate.annotations.Parameter;
 
@@ -54,6 +55,12 @@ public class RestaurantController {
         return restaurantData;
     }
 
+    @POST
+    @Path("searchRestaurants")
+    public List searchRestaurants(RestaurantSearchOptions options){
+        return _restaurant.searchRestaurants(options);
+    }
+
     @GET
     @Path("getRestaurantDataByRestaurantName/{name}")
     public List getRestaurantDataByRestaurantName(@PathParam("name") String restaurantName) {
@@ -64,6 +71,13 @@ public class RestaurantController {
     @Path("getAllRestaurantDataByRestaurant_ID/{id}")
     public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID) {
         return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
+    }
+
+    @GET
+    @Path("getRestaurantDataByKundennummer_Favoriten/{kundennummer}")
+    public List getRestaurantDataByKundennummer_Favoriten(@PathParam("kundennummer") int kundennummer)
+    {
+        return _restaurant.getRestaurantDataByKundennummer_Favoriten(kundennummer);
     }
 
     @DELETE
@@ -77,6 +91,5 @@ public class RestaurantController {
     public Response updateRestaurantStammdaten(Restaurant restaurant) {
         return _restaurant.updateRestaurantStammdaten(restaurant);
     }
-
 
 }

@@ -79,5 +79,8 @@ public class BenutzerService implements IBenutzerService {
         _benutzer.updateBenutzerRestaurant(benutzer);
         return Response.status(Response.Status.OK).entity(benutzer).build();
     }
+
+    @Override
+    public List getBenutzerKundeEinstellungenByLogin(String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
 }
 

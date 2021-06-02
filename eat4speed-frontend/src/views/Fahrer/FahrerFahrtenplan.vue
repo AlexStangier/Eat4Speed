@@ -80,25 +80,9 @@ export default {
       return meters / 1000;
     },
   },
-  mounted() {
-    this.data = [
-      {
-        station: "1",
-        beschreibung: "Kurzbeschreibung 1",
-        restaurantname: "Restaurant 1",
-        entfernung: "1 km",
-        start: {lat: 36.85, lng: -87.65},
-        end: {lat: 45.85, lng: -87.65}
-      },
-      {
-        station: "2",
-        beschreibung: "Kurzbeschreibung 1",
-        entfernung: "2 km",
-        start: {lat: 38.85, lng: -87.65},
-        end: {lat: 45.85, lng: -87.65}
-      }
-    ]
-  },
+  async mounted() {
+      await this.$http.get('/route').then(response => this.data = response.data)
+    },
   data() {
     return {
       data: [],

@@ -26,4 +26,6 @@ public interface IBenutzerService {
     List getBenutzerByLogin(String email);
 
     Response updateBenutzerRestaurant(Benutzer benutzer);
+
+    List getBenutzerKundeEinstellungenByLogin(String email);
 }

@@ -21,13 +21,81 @@
 
             <v-item-group>
               <v-list-item-action>
-                Bewertung(12)
+                Bewertung({{ restaurantBewertungCount }})
               </v-list-item-action>
               <v-list-item-action>
                 <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small :value="restaurantRating"></v-rating>
               </v-list-item-action>
               <v-list-item-action>
                 {{restaurantRating}}
+              </v-list-item-action>
+              <v-list-item-action>
+                <v-dialog
+                    max-width="60%"
+                >
+                  <template v-slot:activator="{ on, attrs}">
+                    <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        @mouseenter="loadBewertungen"
+                    >
+                      Bewertungen
+                    </v-btn>
+                  </template>
+                  <template v-slot:default="dialog">
+                    <v-card>
+                      <v-toolbar>Bewertungen</v-toolbar>
+                      <v-virtual-scroll
+                          :items="reviews"
+                          item-height="200"
+                          max-height="200"
+                          :key="versionreview"
+                      >
+                        <template v-slot:default="{ review }">
+                            <v-list-item>
+                              <v-list-item-content>
+                                <v-list-item-group>
+                                  <v-list-item-title>{{ review.revUsername}}</v-list-item-title>
+                                  <v-rating readonly v-model="review.revRating" small></v-rating>
+                                </v-list-item-group>
+                              </v-list-item-content>
+                              <v-list-item-content>
+                                <v-textarea
+                                    label="Kommentar"
+                                    readonly="true"
+                                    value="review.revComment"
+                                >
+                                </v-textarea>
+                              </v-list-item-content>
+                            </v-list-item>
+                        </template>
+                      </v-virtual-scroll>
+
+                      <v-divider></v-divider>
+                      <v-card-actions>
+                        <v-rating
+                            x-large
+                            v-model="userRating"
+                        >
+                        </v-rating>
+                      </v-card-actions>
+                      <v-card-actions>
+                        <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
+                      </v-card-actions>
+                      <v-card-actions class="justify-end">
+                        <v-btn
+                            @click="addBewertung"
+                            @mouseup="dialog.value = false"
+                        >Bewerten</v-btn>
+                        <v-btn
+                            @click="dialog.value = false"
+                        >Schließen</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+
+
               </v-list-item-action>
             </v-item-group>
 
@@ -119,7 +187,35 @@
               <v-list-item-content></v-list-item-content>
               <v-list-item-group align="left">
                 <v-list-item-content>{{ item.price }}</v-list-item-content>
-                <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Bestellen</v-btn>
+                <v-btn small="true" bottom="bottom" @mouseover="selectGericht(item)" :to="{name: 'Gericht'}">Details</v-btn>
+                <v-menu
+                    bottom
+                    offset-y
+                    :close-on-content-click="false"
+                >
+                  <template v-slot:activator="{ on, attrs}">
+                    <v-btn
+                        v-bind="attrs"
+                        v-on="on"
+                        small="true"
+                        bottom="bottom"
+                        @mouseover="selectItem(item)"
+                        @click="gerichtAnzahl=0"
+                    >
+                      Bestellen
+                    </v-btn>
+                  </template>
+                  <v-list
+                      max-width="200"
+                      min-width="250"
+                      class="text-center"
+                  >
+                    <v-list-item>
+                      <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
+                    </v-list-item>
+                    <v-btn @click="addToCart()" small="small">Zum Warenkorb hinzufügen</v-btn>
+                  </v-list>
+                </v-menu>
               </v-list-item-group>
             </v-list-item>
             <v-divider></v-divider>
@@ -137,6 +233,7 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   mounted() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
+    this.currentKunde_ID = 6;
     this.loadRestaurant();
     this.displayGetraenke = false;
     this.loadGerichte();
@@ -151,6 +248,14 @@ export default {
       this.restaurantBestellradius = restaurantData[4];
       this.restaurantAddress=restaurantData[5]+" "+restaurantData[6]+" "+ restaurantData[7]+" "+restaurantData[8];
       this.restaurantPhoneNumber=restaurantData[9]
+
+      const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
+      if(ResponseBewertung.data.length>0)
+      {
+        this.restaurantRating = ResponseBewertung.data[0][0];
+        this.restaurantBewertungCount = ResponseBewertung.data[0][1];
+      }
+
       this.version2++;
     },
     async loadGerichte() {
@@ -207,6 +312,49 @@ export default {
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
+    async loadBewertungen() {
+
+      const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
+
+      for (let i = 0; i < responseBewertungen.data.length; i++) {
+        let bewertungData = responseBewertungen.data[i];
+        this.reviewRating[i] = bewertungData[3];
+        this.reviewComment[i] = bewertungData[4];
+        this.reviewUsername[i] = bewertungData[6];
+      }
+
+      const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+
+      if(responseBewertung.data.length>0)
+      {
+        this.userRating = responseBewertung.data[0][3];
+        this.userComment = responseBewertung.data[0][4];
+      }
+
+      console.log(this.reviewUsername);
+      console.log(this.reviewComment);
+      console.log(this.reviewRating);
+
+      this.amountReviews = 0;
+      this.amountReviews = responseBewertungen.data.length;
+      this.versionreview++;
+    },
+    async addBewertung(){
+
+      var today = new Date();
+
+      var bewertung = {
+        kundennummer: this.currentKunde_ID,
+        restaurant_ID: this.selectedRestaurant_ID,
+        sterne: this.userRating,
+        text: this.userComment,
+        datum: today
+      }
+
+      await axios.put("Bewertung",bewertung);
+
+      this.loadBewertungen();
+    },
     changeDisplayGetraenke() {
       if(this.displayGetraenke===false)
       {
@@ -232,10 +380,31 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
+    selectItem(item) {
+      this.selectedItem = item;
+    },
+    addToCart() {
+
+      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      let cartGericht = {
+        gericht_ID: this.selectedItem.id,
+        name: this.selectedItem.name,
+        thumbnail: this.selectedItem.img,
+        quantity: this.gerichtAnzahl,
+        price: this.selectedItem.price
+      }
+
+      this.$store.commit("addToCartGerichte", cartGericht);
+      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    }
   },
   data: () => ({
     selectedRestaurant_ID:"",
+    currentKunde_ID:"",
     selectedGericht_ID:"",
+    selectedItem: "",
+    gerichtAnzahl: 0,
+    restaurantBewertungCount:0,
     displayGetraenke:"",
     names: [],
     descriptions: [],
@@ -246,15 +415,27 @@ export default {
     minimums: [],
     ratings: [],
     amountGerichte:4,
+    amountReviews:4,
     version:0,
     version2:0,
+    versionreview:0,
     restaurantName:"",
     restaurantDescription:"",
     restaurantAddress:"",
-    restaurantRating:"",
+    restaurantRating:0,
     restaurantPhoneNumber:"",
     restaurantMindestbestellwert:"",
-    restaurantBestellradius:""
+    restaurantBestellradius:"",
+    bewertung_ID:"",
+    userRating:0,
+    userComment:"",
+    reviewUsername: [],
+    reviewRating: [],
+    reviewComment: [],
+    countMinMaxRule:[
+      v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
+      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+    ],
   }),
   computed: {
 
@@ -278,7 +459,22 @@ export default {
           rating: crating
         }
       })
-    }
+    },
+    reviews(){
+      let j = 0
+      return Array.from({length: this.amountReviews}, () => {
+        const cReviewUsername = this.reviewUsername[j]
+        const cReviewRating = this.reviewRating[j]
+        const cReviewComment = this.reviewComment[j]
+        j++;
+
+        return{
+          revUsername: cReviewUsername,
+          revRating: cReviewRating,
+          revComment: cReviewComment
+        }
+      })
+    },
   }
 }
 </script>

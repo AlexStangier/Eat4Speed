@@ -9,4 +9,5 @@ public interface IFavoritenliste_RestaurantsService {
 
     Response addFavoritenliste_Restaurants(Favoritenliste_Restaurants favoritenliste_restaurants);
 
+    Response removeFavoritenliste_Restaurants(int restaurant_ID, int kundennummer);
 }
