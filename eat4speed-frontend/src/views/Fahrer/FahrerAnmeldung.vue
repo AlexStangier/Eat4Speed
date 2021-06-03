@@ -6,13 +6,13 @@
           <v-card>
             <v-tabs
                 v-model="tab"
-                background-color="red"
+                background-color="primary"
                 dark
                 grow
                 icons-and-text
                 show-arrows
             >
-              <v-tabs-slider color="red"></v-tabs-slider>
+              <v-tabs-slider color="blue-grey"></v-tabs-slider>
               <v-tab v-for="(tab, idx) in tabs" :key="idx">
                 <v-icon large>{{ tab.icon }}</v-icon>
                 <div class="caption py-1">{{ tab.name }}</div>
@@ -41,7 +41,7 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn color="red" dark rounded @click="login">Login</v-btn>
+                          <v-btn color="primary" depressed tile @click="login">Login</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -165,9 +165,9 @@
                         <v-col>
                           <v-btn
                               :disabled="!validateRegistration"
-                              color="red"
-                              dark
-                              rounded
+                              color="primary"
+                              depressed
+                              tile
                               @click="validateRegistration"
                           >Weiter zur Fahrzeug-Auswahl
                           </v-btn
@@ -196,12 +196,6 @@
                               required
                           ></v-combobox>
                         </v-col>
-                        <v-col>
-                          <v-btn color="blue" dark rounded @click="linkPaypal"
-                          >Paypal Konto verknüpfen
-                          </v-btn
-                          >
-                        </v-col>
                         <v-spacer></v-spacer>
                         <v-col cols="12">
                           <v-checkbox
@@ -211,9 +205,9 @@
                         </v-col>
                         <v-col class="text-left">
                           <v-btn
-                              color="red"
-                              dark
-                              rounded
+                              color="primary"
+                              depressed
+                              tile
                               @click="validateVerification"
                           >Fahrerkonto erstellen
                           </v-btn
