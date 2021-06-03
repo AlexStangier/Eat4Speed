@@ -153,4 +153,24 @@ public class BestellungService implements IBestellungService {
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
     }
+
+    /**
+     * Updates Auftragsstatus to 'bezahlt'
+     *
+     * @param AuftragsId auftrag to be updated
+     * @return success or error
+     */
+    @Override
+    @Transactional
+    public String payForOrder(Integer AuftragsId) throws SQLException {
+        try {
+            Auftrag auftrag = _auftragRepository.getAuftragByID(AuftragsId);
+            auftrag.setStatus("bezahlt");
+            _auftragRepository.persist(auftrag);
+        } catch (Exception e) {
+            System.out.println(e);
+            return "error";
+        }
+        return "success";
+    }
 }

@@ -19,4 +19,11 @@ public interface IBestellungService {
      * @return HTTP Response
      */
     Response createBestellung(OrderDto obj) throws SQLException;
+
+    /**
+     * Updates Auftragsstatus to 'bezahlt'
+     * @param AuftragsId auftrag to be updated
+     * @return success or error
+     */
+    String payForOrder(Integer AuftragsId) throws SQLException;
 }
