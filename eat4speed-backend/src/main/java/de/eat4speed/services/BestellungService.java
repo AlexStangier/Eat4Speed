@@ -1,6 +1,8 @@
 package de.eat4speed.services;
-//im a diff
+
 import de.eat4speed.dto.OrderDto;
+import de.eat4speed.dto.PayDto;
+import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
@@ -12,7 +14,10 @@ import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @ApplicationScoped
 public class BestellungService implements IBestellungService {
@@ -89,7 +94,7 @@ public class BestellungService implements IBestellungService {
             Bestellung bestellung = null;
 
             try {
-                rechnung = new Rechnung((safeItems.stream().mapToDouble(Gericht::getPreis).sum() * 1.07 + 2.00), new Timestamp(date.getTime()), (byte) 0);
+                rechnung = new Rechnung(((safeItems.stream().mapToDouble(Gericht::getPreis).sum() * 1.07) + (2 * 1.07)), new Timestamp(date.getTime()), (byte) 0);
             } catch (Exception e) {
                 System.out.println("Failed while creating rechnung:" + e);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -145,6 +150,40 @@ public class BestellungService implements IBestellungService {
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
     }
-}
 
-//im a diff
+    /**
+     * Updates Auftragsstatus to 'bezahlt'
+     *
+     * @param AuftragsId auftrag to be updated
+     * @return success or error
+     */
+    @Override
+    @Transactional
+    public PaymentDto payForOrder(PayDto AuftragsId) throws SQLException {
+        Auftrag auftrag = null;
+        Bestellung bestellung = null;
+        Rechnung rechnung = null;
+
+        try {
+            auftrag = _auftragRepository.getAuftragByID(AuftragsId.getJobId());
+            if (auftrag != null) {
+                auftrag.setStatus("bezahlt");
+            } else {
+                System.out.println("no entity found");
+                return new PaymentDto(0, "error");
+            }
+            bestellung = _bestellungRepository.getBestellungByAuftragsId((int) auftrag.getAuftrags_ID());
+            if (bestellung != null) {
+                rechnung = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
+            } else {
+                System.out.println("no entity found");
+                return new PaymentDto(0, "error");
+            }
+            _auftragRepository.persist(auftrag);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new PaymentDto(0, "error");
+        }
+        return new PaymentDto(rechnung.getBetrag(), "success");
+    }
+}
