@@ -1,5 +1,6 @@
 package de.eat4speed.services;
 //im a diff
+
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
@@ -25,6 +26,7 @@ public class BestellungService implements IBestellungService {
     private GerichtRepository _gerichtRepository;
     private BenutzerRepository _benutzerRepository;
     private AdressenRepository _adressenRepository;
+    private KundeRepository _kundeRepository;
 
     @Inject
     public BestellungService(BestellungRepository bestellungRepository,
@@ -34,7 +36,9 @@ public class BestellungService implements IBestellungService {
                              BestellzuordnungRepository bestellzuordnungRepository,
                              GerichtRepository gerichtRepository,
                              BenutzerRepository benutzerRepository,
-                             AdressenRepository adressenRepository) {
+                             AdressenRepository adressenRepository,
+                             KundeRepository kundeRepository
+    ) {
         _bestellungRepository = bestellungRepository;
         _rechnungRepository = rechnungRepository;
         _auftragRepository = auftragRepository;
@@ -43,6 +47,7 @@ public class BestellungService implements IBestellungService {
         _gerichtRepository = gerichtRepository;
         _benutzerRepository = benutzerRepository;
         _adressenRepository = adressenRepository;
+        _kundeRepository = kundeRepository;
     }
 
     @Override
@@ -64,6 +69,7 @@ public class BestellungService implements IBestellungService {
         ArrayList<Gericht> safeItems = new ArrayList<>();
         ArrayList<Integer> gerichtIDs = new ArrayList<>();
         Benutzer benutzer = null;
+        Kunde kunde = null;
         Date date = new Date();
 
         try {
@@ -80,6 +86,8 @@ public class BestellungService implements IBestellungService {
             System.out.println("Failed while creating order:" + e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
+
+        kunde = _kundeRepository.getKundeByBenutzerID(benutzer.getBenutzer_ID());
 
         if (!safeItems.isEmpty() && benutzer != null) {
             //create new rechnung
@@ -105,7 +113,7 @@ public class BestellungService implements IBestellungService {
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
                 }
                 try {
-                    auftrag = new Auftrag(safeItems.get(0).getRestaurant_ID(), new Timestamp(date.getTime()), adresse.getAdress_ID(), 23.00, benutzer.getBenutzer_ID(), "offen", 10);
+                    auftrag = new Auftrag(safeItems.get(0).getRestaurant_ID(), new Timestamp(date.getTime()), adresse.getAdress_ID(), 23.00, kunde.getKundennummer(), "offen", 10);
                 } catch (Exception e) {
                     System.out.println("Failed while creating auftrag:" + e);
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();

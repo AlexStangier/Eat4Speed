@@ -11,6 +11,15 @@ public class Kunde extends PanacheEntityBase implements Serializable {
 
     public Kunde(){}
 
+    public Kunde(int kundennummer, int benutzer_ID, String name, String vorname, String anrede, int anschrift) {
+        this.kundennummer = kundennummer;
+        this.benutzer_ID = benutzer_ID;
+        this.name = name;
+        this.vorname = vorname;
+        this.anrede = anrede;
+        this.anschrift = anschrift;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int kundennummer;
