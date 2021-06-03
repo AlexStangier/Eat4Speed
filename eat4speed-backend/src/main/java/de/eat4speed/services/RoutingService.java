@@ -22,13 +22,13 @@ public class RoutingService implements IRoutingService {
     @Inject
     FahrerService _fahrer;
 
-    @Override
-    @Default
-    public JSONObject db_test() {
 
-        ArrayList<String> results = (ArrayList<String>) _fahrer.get_Fahrer_Fzg_Pos();
-        ArrayList<String> results1 = (ArrayList<String>) _fahrer.get_Restaurant_Lng_Lat();
-        ArrayList<String> results2 = (ArrayList<String>) _fahrer.get_Kunde_Lng_Lat();
+    @Override
+    public JSONObject db_test(String email) {
+
+        ArrayList<String> results = (ArrayList<String>) _fahrer.get_Fahrer_Fzg_Pos(email);
+        ArrayList<String> results1 = (ArrayList<String>) _fahrer.get_Restaurant_Lng_Lat(email);
+        ArrayList<String> results2 = (ArrayList<String>) _fahrer.get_Kunde_Lng_Lat(email);
         System.out.println(results);
         System.out.println(results1);
         System.out.println(results2);
@@ -39,9 +39,7 @@ public class RoutingService implements IRoutingService {
     }
 
     public JSONObject create_Request_Body() {
-        ArrayList<String> mode_and_driver = (ArrayList<String>) _fahrer.get_Fahrer_Fzg_Pos();
-        ArrayList<String> restaurant_koords = (ArrayList<String>) _fahrer.get_Restaurant_Lng_Lat();
-        ArrayList<String> kunde_koords = (ArrayList<String>) _fahrer.get_Kunde_Lng_Lat();
+
 
         return null;
 
@@ -130,7 +128,7 @@ public class RoutingService implements IRoutingService {
 
         String output = textBuilder.toString();
         JSONObject props = new JSONObject(output).getJSONArray("features").getJSONObject(0).getJSONObject("properties");
-
+        System.out.println(output);
         JSONArray waypoints = props.getJSONArray("waypoints");
         JSONArray legs = props.getJSONArray("legs");
         JSONArray actions = props.getJSONArray("actions");
@@ -150,6 +148,7 @@ public class RoutingService implements IRoutingService {
 
             }
             list_waypoints.put(new JSONObject()
+                    .put("count_stations", waypoints.length())
                     .put("station", i + 1)
                     .put("beschreibung", beschreibung)
                     .put("restaurantname", "TODO")

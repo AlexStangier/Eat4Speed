@@ -71,18 +71,18 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
-    public List get_Fahrer_Fzg_Pos() {
-        return fahrerRepository.get_Fahrer_Fzg_Pos();
+    public List get_Fahrer_Fzg_Pos(String email) {
+        return fahrerRepository.get_Fahrer_Fzg_Pos(email);
     }
 
     @Override
-    public List get_Restaurant_Lng_Lat() {
-        return fahrerRepository.get_Restautant_Lng_Lat();
+    public List get_Restaurant_Lng_Lat(String email) {
+        return fahrerRepository.get_Restautant_Lng_Lat(email);
     }
 
     @Override
-    public List get_Kunde_Lng_Lat() {
-        return fahrerRepository.get_Kunde_Lng_Lat();
+    public List get_Kunde_Lng_Lat(String email) {
+        return fahrerRepository.get_Kunde_Lng_Lat(email);
     }
 
 

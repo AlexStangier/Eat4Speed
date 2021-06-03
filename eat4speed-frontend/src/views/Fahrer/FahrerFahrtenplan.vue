@@ -60,6 +60,7 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
+import axios from "axios";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -67,21 +68,30 @@ export default {
     DirectionsRenderer
   },
   methods: {
+    async get_user(){
+      {
+        //const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$store.getters.getLoginData.auth.username);
+        //let EinstellungenData = ResponseEinstellungen.data[0];
+
+        console.log(this.$store.getters.getLoginData.auth.username);
+      }
+    },
     abholungBestätigen(id) {
       id;
     },
     getTermin() {
-      return '12.12.2021';
+      return '31.05.2021';
     },
     getStationen() {
-      return 2;
+      return 7;
     },
     convertToKM(meters) {
       return meters / 1000;
     },
   },
   async mounted() {
-      await this.$http.get('/route').then(response => this.data = response.data)
+      await this.$http.get('/route/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
+      await this.get_user();
     },
   data() {
     return {
@@ -119,6 +129,10 @@ export default {
           value: 'actions',
           sortable: false,
           align: 'end'
+        },
+        {
+          value: 'count_stations',
+          sortable: false
         },
       ],
     };

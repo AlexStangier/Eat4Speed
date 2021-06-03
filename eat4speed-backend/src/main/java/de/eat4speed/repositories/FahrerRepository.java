@@ -107,7 +107,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Fahrer_Fzg_Pos() {
+    public List get_Fahrer_Fzg_Pos(String email) {
 
         List <Object[]> fahrer_fzg;
 
@@ -118,8 +118,8 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
                         "AND fa.benutzer_ID = b.benutzer_ID " +
                         "AND ad.adress_ID = fa.aktueller_Standort " +
                         "AND b.emailAdresse " +
-                        "like 'arturs@arturs.de'"
-        );
+                        "like ?1"
+        ).setParameter(1, email);
 
 
         fahrer_fzg = query.getResultList();
@@ -143,18 +143,27 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Restautant_Lng_Lat(){
+    public List get_Restautant_Lng_Lat(String email){
 
         List <Object[]> restaurant_lng_lat;
 
 
-        Query query = entityManager.createQuery(
-                "select lng, lat " +
-                        "from Adressen " +
-                        "where adress_ID " +
-                        "IN (select anschrift from Restaurant where restaurant_ID " +
-                        "IN (select auftragnehmer from Auftrag)) "
-        );
+        Query query = entityManager.createNativeQuery(
+                "SELECT auftrags_ID,lng, lat, name_des_Restaurants " +
+                        "FROM Adressen, Auftrag, Fahrtenplan_Station, Restaurant " +
+                        "WHERE adress_ID IN (" +
+                        "SELECT Restaurant.anschrift " +
+                        "WHERE restaurant_ID IN ( " +
+                        "SELECT auftragnehmer " +
+                        "FROM Auftrag) AND Restaurant.restaurant_ID = Auftrag.auftragnehmer ) AND Fahrtenplan_Station.Fahrer IN ( " +
+                        "SELECT fahrernummer " +
+                        "FROM Fahrer " +
+                        "WHERE benutzer_ID = (" +
+                        "SELECT benutzer_ID " +
+                        "FROM Benutzer " +
+                        "WHERE emailAdresse like ?1) AND Fahrtenplan_Station.Auftrag = Auftrag.auftrags_ID)"
+        ).setParameter(1, email);
+
 
 
 
@@ -165,7 +174,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         int i = 0;
         for(Object[] objects : restaurant_lng_lat){
             while(i < objects.length){
-                results.add(new String((String) objects[i]));
+                results.add( objects[i].toString());
                 i++;
             }
             i = 0;
@@ -176,17 +185,26 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Kunde_Lng_Lat(){
+    public List get_Kunde_Lng_Lat(String email){
 
         List <Object[]> kunde_lng_lat;
 
-        Query query = entityManager.createQuery(
-                "select lng, lat " +
-                        "from Adressen " +
-                        "where adress_ID " +
-                        "IN (select anschrift from Kunde where kundennummer " +
-                        "IN (select kundennummer from Auftrag) )"
-        );
+        Query query = entityManager.createNativeQuery(
+                "SELECT auftrags_ID, lng, lat " +
+                        "FROM Adressen, Auftrag, Fahrtenplan_Station " +
+                        "WHERE adress_ID IN ( " +
+                        "SELECT anschrift " +
+                        "FROM Kunde " +
+                        "WHERE kundennummer IN ( " +
+                        "SELECT kundennummer " +
+                        "FROM Auftrag ) AND Kunde.kundennummer = Auftrag.kundennummer ) AND Fahrtenplan_Station.Fahrer IN ( " +
+                        "SELECT fahrernummer " +
+                        "FROM Fahrer " +
+                        "WHERE benutzer_ID = ( " +
+                        "SELECT benutzer_ID " +
+                        "FROM Benutzer " +
+                        "WHERE emailAdresse like ?1 ) AND Fahrtenplan_Station.auftrag = Auftrag.auftrags_ID )"
+        ).setParameter(1, email);
 
 
 
@@ -196,7 +214,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         int i = 0;
         for(Object[] objects : kunde_lng_lat){
             while(i < objects.length){
-                results.add(new String((String) objects[i]));
+                results.add(objects[i].toString());
                 i++;
             }
             i = 0;
