@@ -1,6 +1,5 @@
 <template>
   <v-main>
-    <h1 class="subheading">Fahrer Fahrtenplan</h1>
     <v-card class="mx-5 my-5">
       <v-data-table
           :headers="headers"
@@ -46,9 +45,9 @@
 
         <template v-slot:item.actions="{ item }">
           <v-btn
-              color="blue"
-              dark
-              rounded
+              color="primary"
+              depressed
+              tile
               @click="abholungBestätigen(item)"
           >Bestätigen
           </v-btn>

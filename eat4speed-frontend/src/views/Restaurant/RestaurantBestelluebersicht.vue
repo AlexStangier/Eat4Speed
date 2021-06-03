@@ -40,7 +40,7 @@
 
 <script>
 export default {
-  name: "RestaurantBestellübersicht",
+  name: "RestaurantBestelluebersicht",
   methods: {
     openLogin(){
       this.$refs.Anmeldung.class="px-4 d-flex"

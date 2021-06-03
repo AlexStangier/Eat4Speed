@@ -1,9 +1,9 @@
 import RestaurantAnmeldung from '@/views/Restaurant/RestaurantAnmeldung.vue'
 import RestaurantControlPanel from '@/views/Restaurant/RestaurantControlPanel.vue'
 import RestaurantSpeisekarteGerichte from '@/views/Restaurant/RestaurantSpeisekarteGerichte.vue'
-import RestaurantSpeisekarteGetränke from '@/views/Restaurant/RestaurantSpeisekarteGetränke.vue'
+import RestaurantSpeisekarteGetraenke from '@/views/Restaurant/RestaurantSpeisekarteGetraenke.vue'
 import RestaurantBestellungen from '@/views/Restaurant/RestaurantBestellungen.vue'
-import RestaurantBestellübersicht from '@/views/Restaurant/RestaurantBestellübersicht.vue'
+import RestaurantBestelluebersicht from '@/views/Restaurant/RestaurantBestelluebersicht.vue'
 import RestaurantStammdaten from '@/views/Restaurant/RestaurantStammdaten.vue'
 import RestaurantSchichtplan from '@/views/Restaurant/RestaurantSchichtplan.vue'
 import RestaurantUmsatzstatistik from "@/views/Restaurant/RestaurantUmsatzstatistik";
@@ -26,8 +26,8 @@ export default [
     },
     {
         path: '/restaurant/speisekarteGetraenke',
-        name: 'RestaurantSpeisekarteGetränke',
-        component: RestaurantSpeisekarteGetränke
+        name: 'RestaurantSpeisekarteGetraenke',
+        component: RestaurantSpeisekarteGetraenke
     },
     {
         path: '/restaurant/bestellungen',
@@ -36,8 +36,8 @@ export default [
     },
     {
         path: '/restaurant/bestelluebersicht',
-        name: 'RestaurantBestellübersicht',
-        component: RestaurantBestellübersicht
+        name: 'RestaurantBestelluebersicht',
+        component: RestaurantBestelluebersicht
     },
     {
         path: '/restaurant/stammdaten',

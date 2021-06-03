@@ -3,7 +3,7 @@ module.exports = {
     "vuetify",
     'vuex-persist'
   ],
-  outputDir: '../resources/META-INF/resources',
+  outputDir: '../eat4speed-backend/src/main/resources/META-INF/resources',
   publicPath: '',
   devServer: {
     proxy: 'http://localhost:1337',
