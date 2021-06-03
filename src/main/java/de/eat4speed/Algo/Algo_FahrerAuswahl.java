@@ -2,10 +2,10 @@ package de.eat4speed.Algo;
 
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.transaction.Transactional;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
@@ -26,7 +26,7 @@ public class Algo_FahrerAuswahl {
 
     private Fahrtenplan_Station startPunkt;
     private final int sekunden = 30;
-    private final int maxFahrer =2;// 5;
+    private final int maxFahrer = 5;
     private int anzahlGerichte;
 
 
@@ -45,9 +45,6 @@ public class Algo_FahrerAuswahl {
         boolean isRunning = true;
         boolean restart = false;
 
-        //fahrernummer 7  4  2  3  8  6  9  5 10 11
-        //fahrer      f6 f3 f1 f2 f7 f5 f8 f4 f9 f10
-
         while(isRunning) {
 
             if (AuftragAngenommen(startPunktID))
@@ -64,10 +61,6 @@ public class Algo_FahrerAuswahl {
             // start
             if (count == 0)
             {
-                if (naheFahrerIDs != null)
-                {
-                    naheFahrerIDs.clear();
-                }
                 System.out.println("Start");
                 naheFahrerIDs = getNaheFahrer();
             }
@@ -105,7 +98,6 @@ public class Algo_FahrerAuswahl {
                         " "  +LocalDateTime.now());
                 restart = true;
             }
-
             try
             {
                 Thread.sleep(sekunden * 1000);
@@ -127,7 +119,6 @@ public class Algo_FahrerAuswahl {
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
             http.setReadTimeout(5 * 1000);
-
             http.getInputStream();
 
             http.disconnect();
@@ -138,18 +129,20 @@ public class Algo_FahrerAuswahl {
 
     private int AnzahlGerichte(int startpunktID)
     {
-        int count = 1;
+        int count = 0;
         int StationsID = startpunktID;
+        List<Integer> AuftragIDs = new ArrayList<>();
+        AuftragIDs.add(startPunkt.getAuftrag());
+
         boolean hasNext = true;
 
-        // TODO anzahlGerichte berechnen
         while (hasNext)
         {
             Fahrtenplan_Station next = fahrtenplanRepository.findByStationsID(StationsID);
             if (next.getNaechste_Station() != null)
             {
                 StationsID = next.getNaechste_Station();
-                count++;
+                AuftragIDs.add(next.getAuftrag());
             }
             else
             {
@@ -157,9 +150,33 @@ public class Algo_FahrerAuswahl {
             }
         }
 
-        System.out.println("Stationen: " + count);
+        for (Integer i : AuftragIDs)
+        {
+            count += getGerichte(i).length();
+        }
 
-        return 1;
+        System.out.println("Gerichte: " + count);
+
+        return count;
+    }
+
+    private JSONArray getGerichte(int AuftragID)
+    {
+        JSONArray jsonArray = null;
+
+        try {
+            URL url = new URL("http://localhost:1337/Bestellung/" + AuftragID);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(true);
+
+            jsonArray = new JSONArray(getResponse(http.getInputStream()));
+
+        } catch (IOException | ClassCastException e){
+            e.printStackTrace();
+        }
+
+        return jsonArray;
     }
 
     private boolean AuftragAngenommen(int id)
@@ -173,19 +190,7 @@ public class Algo_FahrerAuswahl {
             http.setRequestMethod("GET");
             http.setDoOutput(true);
 
-            InputStream ips = http.getInputStream();
-
-            StringBuilder textBuilder = new StringBuilder();
-
-            try (Reader reader = new BufferedReader(
-                    new InputStreamReader(ips, Charset.forName(StandardCharsets.UTF_8.name())))) {
-                int c;
-                while ((c = reader.read()) != -1) {
-                    textBuilder.append((char) c);
-                }
-            }
-
-            fahrerID = (Integer)new JSONObject(textBuilder.toString()).get("Fahrer");
+            fahrerID = (Integer)new JSONObject(getResponse(http.getInputStream())).get("Fahrer");
 
             if (fahrerID != null)
             {                System.out.println("NOT NULL " + fahrerID);
@@ -286,19 +291,7 @@ public class Algo_FahrerAuswahl {
             OutputStream stream = http.getOutputStream();
             stream.write(out);
 
-            http.getInputStream();
-            InputStream ips = http.getInputStream();
-
-            StringBuilder textBuilder = new StringBuilder();
-            try (Reader reader = new BufferedReader(
-                    new InputStreamReader(ips, Charset.forName(StandardCharsets.UTF_8.name())))) {
-                int c;
-                while ((c = reader.read()) != -1) {
-                    textBuilder.append((char) c);
-                }
-            }
-
-            id = new JSONObject(textBuilder.toString()).getInt("id");
+            id = new JSONObject(getResponse(http.getInputStream())).getInt("id");
 
             http.disconnect();
         } catch (IOException e) {
@@ -308,26 +301,37 @@ public class Algo_FahrerAuswahl {
         return id;
     }
 
+    public static String getResponse(InputStream ips) throws IOException {
+
+        StringBuilder textBuilder = new StringBuilder();
+        try (Reader reader = new BufferedReader(
+                new InputStreamReader(ips, Charset.forName(StandardCharsets.UTF_8.name())))) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                textBuilder.append((char) c);
+            }
+        }
+        return textBuilder.toString();
+    }
+
     private void entferne_Auftrag_von_Fahrer(List<Integer> BenachrichtigungsIDs, int auftragID)
     {
-        for (int i = 0; i < BenachrichtigungsIDs.size(); i++)
+        for (int i : BenachrichtigungsIDs)
         {
             try {
-                URL url = new URL("http://localhost:1337/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + BenachrichtigungsIDs.get(i));
+                URL url = new URL("http://localhost:1337/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + i);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
                 http.setDoOutput(false);
-
                 http.getInputStream();
-                InputStream ips = http.getInputStream();
-
                 http.disconnect();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
             try {
-                URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/" + BenachrichtigungsIDs.get(i));
+                URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/" + i);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
                 http.setDoOutput(false);
@@ -353,13 +357,13 @@ public class Algo_FahrerAuswahl {
         // sortieren nach nähe zum Startpunkt der Stationen
         if (fahrer.size() > 0)
         {
-            //fahrer.sort(sortByDistanz);
-            distances =  sortByDistanz.getDistances(fahrer);
+            distances = sortByDistanz.getDistances(fahrer);
 
             for (int i = 0; i < fahrer.size(); i++)
             {
                 if (!CheckFahrerAvailability(fahrer.get(i), distances.get(i).getFahrzeit())) {
-                    fahrer.remove(fahrer.get(i));
+                    distances.remove(i);
+                    fahrer.remove(i);
                     i--;
                 }
             }
@@ -382,11 +386,14 @@ public class Algo_FahrerAuswahl {
     {
         boolean isAvailable = false;
 
+        //TODO
+        // fahrer anuahl aktueller Aufträge
         if (fahrer.getAnzahl_Aktueller_Auftraege() < 1 && fahrer.getIst_in_Pause() == 0)
         {
             Schicht schicht = schichtRepository.getSchichtHeute(fahrer.getFahrernummer());
             Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
 
+            //System.out.println(schicht);
             Timestamp time = new Timestamp(new Date().getTime()
                     + (startPunkt.getGeschaetzte_Fahrtzeit() * 60L * 1000L) + (Fahrzeit * 1000L));
 
