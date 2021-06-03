@@ -25,4 +25,12 @@ public class BestellungController {
         return _bestellungen.createBestellung(obj);
     }
 
+    @POST
+    @PermitAll
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Path("pay")
+    public String pay(Integer jobId) throws SQLException {
+        return _bestellungen.payForOrder(jobId);
+    }
+
 }
