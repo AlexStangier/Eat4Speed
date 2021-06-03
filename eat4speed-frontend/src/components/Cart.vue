@@ -45,8 +45,9 @@
 
         </v-list>
 
+        <h3>Steuer: {{ ((calculateCartPrice() * 0.93) * 0.07).toFixed(2) }} &euro; (7% Mwst.)</h3>
+        <h3 class="pb-1">Lieferkosten: 2 &euro;</h3>
         <v-divider></v-divider>
-
         <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
 
         <v-card-actions>
@@ -73,6 +74,9 @@ export default {
     this.loadGerichteFromStore();
   },
   methods: {
+    roundToTwo(num) {
+      return +(Math.round(num + "e+2")  + "e-2");
+    },
     selectGericht(item) {
       this.selectedGericht = item;
     },
@@ -93,7 +97,7 @@ export default {
       this.carts.forEach(value => {
         cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
       });
-      return cartPrice;
+      return this.roundToTwo((cartPrice + 2) * 1.07).toFixed(2);
     },
     async getCustomerId() {
       const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$store.getters.getLoginData.auth.username });
@@ -112,10 +116,17 @@ export default {
         customerId: customerId
       }).then((response) => {
         if (response.status === 201) {
-          console.log('success');
-          this.$store.commit("deleteCartGerichte");
-          this.version++;
-          this.$router.push({name: "BezahlungErfolgreich", params: {cart: this.carts}});
+
+          this.$http.post('/Bestellung/pay', {
+            jobId: response.data.auftrags_ID
+          }).then((response) => {
+            console.log(JSON.stringify(response.data))
+            if (response.status === 200) {
+              this.$store.commit("deleteCartGerichte");
+              this.version++;
+              this.$router.push({name: "BezahlungErfolgreich", params: { cart: this.carts, payment: response.data }});
+            }
+          });
         }
       });
     }

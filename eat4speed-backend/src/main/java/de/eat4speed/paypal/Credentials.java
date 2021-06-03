@@ -2,6 +2,7 @@ package de.eat4speed.paypal;
 
 import com.paypal.core.PayPalEnvironment;
 import com.paypal.core.PayPalHttpClient;
+import io.quarkus.runtime.CleanableExecutor;
 
 public class Credentials {
     static String clientId = "AXRp-5L-rrysXqpsxXS5QMJqEFOixV1DafUMDKhAcweRhtclldIahvz8zEv2zona25US6wtILhLdEwBt";
@@ -11,5 +12,5 @@ public class Credentials {
     private static PayPalEnvironment environment = new PayPalEnvironment.Sandbox(clientId, secret);
 
     // Creating a client for the environment
-    static PayPalHttpClient client = new PayPalHttpClient(environment);
+    public static PayPalHttpClient client = new PayPalHttpClient(environment);
 }

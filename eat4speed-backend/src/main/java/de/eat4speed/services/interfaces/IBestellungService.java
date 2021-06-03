@@ -1,6 +1,8 @@
 package de.eat4speed.services.interfaces;
 
 import de.eat4speed.dto.OrderDto;
+import de.eat4speed.dto.PayDto;
+import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
 
@@ -19,4 +21,11 @@ public interface IBestellungService {
      * @return HTTP Response
      */
     Response createBestellung(OrderDto obj) throws SQLException;
+
+    /**
+     * Updates Auftragsstatus to 'bezahlt'
+     * @param AuftragsId auftrag to be updated
+     * @return success or error
+     */
+    PaymentDto payForOrder(PayDto AuftragsId) throws SQLException;
 }

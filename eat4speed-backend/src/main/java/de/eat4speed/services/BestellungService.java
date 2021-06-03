@@ -1,9 +1,12 @@
 package de.eat4speed.services;
 
 import de.eat4speed.dto.OrderDto;
+import de.eat4speed.dto.PayDto;
+import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
+import io.vertx.core.json.Json;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,7 +16,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 @ApplicationScoped
 public class BestellungService implements IBestellungService {
@@ -63,72 +67,123 @@ public class BestellungService implements IBestellungService {
     @Transactional
     public Response createBestellung(OrderDto obj) throws SQLException {
         ArrayList<Gericht> safeItems = new ArrayList<>();
-        Benutzer orderer = null;
+        ArrayList<Integer> gerichtIDs = new ArrayList<>();
+        Benutzer benutzer = null;
         Date date = new Date();
 
         try {
-            //get items by id
+            //get items by id¡
             for (int item : obj.items) {
                 //make sure items are valid and not tempered
                 safeItems.add(_gerichtRepository.getGerichtByGerichtID(item));
+                gerichtIDs.add(item);
             }
 
             //get customer by id
-            orderer = _benutzerRepository.getBenutzerByID(obj.getCustomerId());
+            benutzer = _benutzerRepository.getBenutzerByID(obj.getCustomerId());
         } catch (Exception e) {
             System.out.println("Failed while creating order:" + e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
         }
 
-        if (!safeItems.isEmpty() && orderer != null) {
-            //create new bill
-            Rechnung bill = new Rechnung();
+        if (!safeItems.isEmpty() && benutzer != null) {
+            //create new rechnung
+            Rechnung rechnung = null;
+            Adressen adresse = null;
+            Auftrag auftrag = null;
+            Bestellung bestellung = null;
 
-            bill.setBetrag(safeItems.stream().mapToDouble(Gericht::getPreis).sum());
-            //TODO add delivery cost
-            //add tax
-            bill.setBetrag(bill.getBetrag() * 1.07);
-            bill.setRechnungsdatum(new Timestamp(date.getTime()));
-            bill.setZahlungseingang((byte) 0);
-            _rechnungRepository.persist(bill);
+            try {
+                rechnung = new Rechnung(((safeItems.stream().mapToDouble(Gericht::getPreis).sum() * 1.07) + (2 * 1.07)), new Timestamp(date.getTime()), (byte) 0);
+            } catch (Exception e) {
+                System.out.println("Failed while creating rechnung:" + e);
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+            }
 
-            //make sure changes have been applied
-            _rechnungRepository.flush();
+            _rechnungRepository.persist(rechnung);
+            if (_rechnungRepository.isPersistent(rechnung)) {
 
-            //set Status
-            Status status = new Status();
-            status.setStatus_Name("offen");
-            status.setRechnungs_ID(bill.getRechnungs_ID());
+                try {
+                    adresse = _adressenRepository.getAdresseByCustomerId(benutzer.getBenutzer_ID());
+                } catch (Exception e) {
+                    System.out.println("Failed while querying address:" + e);
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+                }
+                try {
+                    auftrag = new Auftrag(safeItems.get(0).getRestaurant_ID(), new Timestamp(date.getTime()), adresse.getAdress_ID(), 23.00, benutzer.getBenutzer_ID(), "offen", 10);
+                } catch (Exception e) {
+                    System.out.println("Failed while creating auftrag:" + e);
+                    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+                }
 
-            //create Auftrag
-            Auftrag order = new Auftrag();
-            order.setKundennummer(orderer.getBenutzer_ID());
-            //TODO set different ids if order is composit of mutiple restaurants
-            order.setAuftragnehmer(safeItems.get(0).getRestaurant_ID());
-            order.setTimestamp(new Timestamp(date.getTime()));
-            //TODO fix Anschrift key
-            order.setAnschrift(1);
-            order.setStatus(status.getStatus_Name().toLowerCase(Locale.ROOT));
+                _auftragRepository.persist(auftrag);
+                if (_auftragRepository.isPersistent(auftrag)) {
+                    try {
+                        bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID());
+                        bestellung.setGericht_IDs(Json.encode(gerichtIDs));
+                    } catch (Exception e) {
+                        System.out.println("Failed while creating bestellung:" + e);
+                        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
+                    }
+                    _bestellungRepository.persist(bestellung);
 
-            //TODO add algorithm result here
-            order.setLieferdistanz(23.0);
-            order.setGeschaetzte_fahrtzeit_restaurant_ziel(15);
+                    if (_bestellungRepository.isPersistent(bestellung)) {
+                        Map<Integer, Integer> amountMap = new HashMap<Integer, Integer>();
+                        for (int id : gerichtIDs) {
+                            if (amountMap.containsKey(id)) {
+                                int currVal = amountMap.get(id);
+                                amountMap.replace(id, currVal + 1);
+                            } else amountMap.put(id, 1);
+                        }
+                        for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
+                            try {
+                                _bestellzuordnungRepository.addBestellzuordnung(new Bestellzuordnung(bestellung.getBestell_ID(), entry.getKey(), entry.getValue()));
+                            } catch (Exception e) {
+                                System.out.println("Something went wrong persisting bestellzuordnung: " + e);
+                            }
+                        }
+                    }
+                }
+            }
 
-            _auftragRepository.addAuftrag(order);
-
-            //make sure changes have been applied
-            _auftragRepository.flush();
-
-            //bestellung
-            Bestellung bestellung = new Bestellung();
-            bestellung.setRechnung(bill.getRechnungs_ID());
-            bestellung.setTimestamp(new Timestamp(date.getTime()));
-            bestellung.setAuftrags_ID((int) order.getAuftrags_ID());
-            _bestellungRepository.persist(bestellung);
-
-            //_bestellhistorieRepository.addBestellhistorie(orderHistoryEntry);
-            return Response.status(Response.Status.CREATED).entity(order).build();
+            return Response.status(Response.Status.CREATED).entity(auftrag).build();
         }
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(null).build();
+    }
+
+    /**
+     * Updates Auftragsstatus to 'bezahlt'
+     *
+     * @param AuftragsId auftrag to be updated
+     * @return success or error
+     */
+    @Override
+    @Transactional
+    public PaymentDto payForOrder(PayDto AuftragsId) throws SQLException {
+        Auftrag auftrag = null;
+        Bestellung bestellung = null;
+        Rechnung rechnung = null;
+
+        try {
+            auftrag = _auftragRepository.getAuftragByID(AuftragsId.getJobId());
+            if (auftrag != null) {
+                auftrag.setStatus("bezahlt");
+            } else {
+                System.out.println("no entity found");
+                return new PaymentDto(0, "error");
+            }
+            bestellung = _bestellungRepository.getBestellungByAuftragsId((int) auftrag.getAuftrags_ID());
+            if (bestellung != null) {
+                rechnung = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
+            } else {
+                System.out.println("no entity found");
+                return new PaymentDto(0, "error");
+            }
+            _auftragRepository.persist(auftrag);
+        } catch (Exception e) {
+            System.out.println(e);
+            return new PaymentDto(0, "error");
+        }
+        return new PaymentDto(rechnung.getBetrag(), "success");
     }
 }
