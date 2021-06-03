@@ -180,9 +180,6 @@ export default {
       console.log("Changed Destination to Restaurants");
       this.searchDestination = "Restaurants";
     },
-    openLogin() {
-      this.$refs.Anmeldung.class = "px-4 d-flex"
-    },
     gerichtFarbe() {
       this.btnType = 0;
     },

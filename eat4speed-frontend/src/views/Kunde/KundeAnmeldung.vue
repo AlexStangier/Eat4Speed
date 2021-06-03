@@ -4,8 +4,8 @@
       <v-layout align-center justify-center>
         <v-flex md3 sm6 xs12>
           <v-card>
-            <v-tabs v-model="tab" background-color="red" dark grow icons-and-text show-arrows>
-              <v-tabs-slider color="red"></v-tabs-slider>
+            <v-tabs v-model="tab" background-color="primary" dark grow icons-and-text show-arrows>
+              <v-tabs-slider color="blue-grey"></v-tabs-slider>
               <v-tab v-for="i in tabs" :key="i">
                 <v-icon large>{{ i.icon }}</v-icon>
                 <div class="caption py-1">{{ i.name }}</div>
@@ -34,7 +34,7 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn color="red" dark rounded @click="login">Login</v-btn>
+                          <v-btn color="primary" depressed tile @click="login">Login</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -107,7 +107,7 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn color="red" dark rounded @click="validate">Register</v-btn>
+                          <v-btn color="primary" depressed tile @click="validate">Register</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
