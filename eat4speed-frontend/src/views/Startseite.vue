@@ -9,6 +9,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+                v-if="!isUserLoggedIn"
                 class="ml-2"
                 color="primary"
                 v-bind="attrs"
@@ -127,7 +128,7 @@ export default {
   },
   computed: {
     isUserLoggedIn() {
-      return this.user !== undefined;
+      return this.$cookies.get('emailAdresse') !== undefined;
     },
   },
   methods: {
