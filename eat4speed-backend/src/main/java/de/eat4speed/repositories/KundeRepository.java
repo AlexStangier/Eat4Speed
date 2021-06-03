@@ -1,6 +1,7 @@
 package de.eat4speed.repositories;
 
 import de.eat4speed.entities.Adressen;
+import de.eat4speed.entities.Gericht;
 import de.eat4speed.entities.Kunde;
 import de.eat4speed.entities.Restaurant;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -15,6 +16,12 @@ public class KundeRepository implements PanacheRepository<Kunde> {
     public void addKunde(Kunde kunde)
     {
         persist(kunde);
+    }
+
+    @Transactional
+    public Kunde getKundeByBenutzerID(int benutzer_ID)
+    {
+        return find("Benutzer_ID", benutzer_ID).firstResult();
     }
 
     @Transactional
