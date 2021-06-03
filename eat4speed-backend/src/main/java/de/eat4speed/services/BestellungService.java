@@ -14,10 +14,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @ApplicationScoped
 public class BestellungService implements IBestellungService {
@@ -30,6 +27,7 @@ public class BestellungService implements IBestellungService {
     private GerichtRepository _gerichtRepository;
     private BenutzerRepository _benutzerRepository;
     private AdressenRepository _adressenRepository;
+    private RestaurantRepository _restaurantRepository;
 
     @Inject
     public BestellungService(BestellungRepository bestellungRepository,
@@ -39,7 +37,8 @@ public class BestellungService implements IBestellungService {
                              BestellzuordnungRepository bestellzuordnungRepository,
                              GerichtRepository gerichtRepository,
                              BenutzerRepository benutzerRepository,
-                             AdressenRepository adressenRepository) {
+                             AdressenRepository adressenRepository,
+                             RestaurantRepository restaurantRepository) {
         _bestellungRepository = bestellungRepository;
         _rechnungRepository = rechnungRepository;
         _auftragRepository = auftragRepository;
@@ -48,6 +47,7 @@ public class BestellungService implements IBestellungService {
         _gerichtRepository = gerichtRepository;
         _benutzerRepository = benutzerRepository;
         _adressenRepository = adressenRepository;
+        _restaurantRepository = restaurantRepository;
     }
 
     @Override
@@ -68,15 +68,22 @@ public class BestellungService implements IBestellungService {
     public Response createBestellung(OrderDto obj) throws SQLException {
         ArrayList<Gericht> safeItems = new ArrayList<>();
         ArrayList<Integer> gerichtIDs = new ArrayList<>();
+        HashSet<Restaurant> restaurantList = new HashSet<>();
         Benutzer benutzer = null;
         Date date = new Date();
 
         try {
-            //get items by id¡
+            //get items by id
             for (int item : obj.items) {
                 //make sure items are valid and not tempered
-                safeItems.add(_gerichtRepository.getGerichtByGerichtID(item));
+                Gericht gericht = _gerichtRepository.getGerichtByGerichtID(item);
+                safeItems.add(gericht);
                 gerichtIDs.add(item);
+                try {
+                    restaurantList.add(_restaurantRepository.findByRestaurantnummer(gericht.getRestaurant_ID()));
+                } catch (Exception e) {
+                    System.out.println("Failed while retrieving gericht:" + e);
+                }
             }
 
             //get customer by id
@@ -87,7 +94,6 @@ public class BestellungService implements IBestellungService {
         }
 
         if (!safeItems.isEmpty() && benutzer != null) {
-            //create new rechnung
             Rechnung rechnung = null;
             Adressen adresse = null;
             Auftrag auftrag = null;
