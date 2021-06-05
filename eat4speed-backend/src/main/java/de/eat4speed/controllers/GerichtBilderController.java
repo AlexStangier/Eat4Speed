@@ -31,7 +31,7 @@ import java.util.Map;
 @RegisterRestClient
 public class GerichtBilderController {
 
-    private final String path = "src\\main\\java\\de\\eat4speed\\gerichtBilder\\";
+    private final String path = "src/main/resources/Bilder/gerichtBilder/";
 
     private final String projectDirectory = System.getProperty("user.dir");
 
