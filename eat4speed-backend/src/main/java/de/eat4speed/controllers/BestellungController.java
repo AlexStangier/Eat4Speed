@@ -27,7 +27,7 @@ public class BestellungController {
 
     @POST
     @PermitAll
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Path("pay")
     public String pay(Integer jobId) throws SQLException {
         return _bestellungen.payForOrder(jobId);
