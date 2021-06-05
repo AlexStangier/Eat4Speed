@@ -68,10 +68,7 @@ export default {
   computed: {
     hideSearchBar() {
       const path = this.$route.path;
-      if (path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path === '/') {
-        return true;
-      }
-      return true;
+      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path === '/';
     },
     isUserLoggedIn() {
       return this.user !== undefined;
