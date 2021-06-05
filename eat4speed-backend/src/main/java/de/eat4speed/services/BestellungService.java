@@ -1,6 +1,7 @@
 package de.eat4speed.services;
 
 import de.eat4speed.dto.OrderDto;
+import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
@@ -177,15 +178,26 @@ public class BestellungService implements IBestellungService {
      */
     @Override
     @Transactional
-    public String payForOrder(Integer AuftragsId) throws SQLException {
+    public PaymentDto payForOrder(Integer AuftragsId) throws SQLException {
+        Double total = 0.0;
+        Date date = new Date();
         try {
             Auftrag auftrag = _auftragRepository.getAuftragByID(AuftragsId);
             auftrag.setStatus("bezahlt");
+            List<Bestellung> bestellungen = _bestellungRepository.getAllBestellungenByAuftragsId(auftrag.getAuftrags_ID());
             _auftragRepository.persist(auftrag);
+
+            for (Bestellung best : bestellungen) {
+                Rechnung rechnung = _rechnungRepository.getRechnungByID(best.getRechnung());
+                rechnung.setZahlungseingang((byte) 1);
+                rechnung.setDatum_Zahlungseingang(new Timestamp(date.getTime()));
+                total += rechnung.getBetrag();
+                _rechnungRepository.persist(rechnung);
+            }
         } catch (Exception e) {
             System.out.println(e);
-            return "error";
+            return new PaymentDto(total, "error");
         }
-        return "success";
+        return new PaymentDto(total, "success");
     }
 }
