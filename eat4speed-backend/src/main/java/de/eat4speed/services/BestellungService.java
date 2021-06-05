@@ -1,5 +1,4 @@
 package de.eat4speed.services;
-//im a diff
 
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.entities.*;
@@ -190,5 +189,3 @@ public class BestellungService implements IBestellungService {
         return "success";
     }
 }
-
-//im a diff

@@ -2,6 +2,9 @@ package de.eat4speed.dto;
 
 public class PayDto {
 
+    public PayDto() {
+    }
+
     public int jobId;
 
     public void setJobId(int jobId) {
@@ -12,6 +15,5 @@ public class PayDto {
         return jobId;
     }
 
-    public PayDto() {
-    }
+
 }
