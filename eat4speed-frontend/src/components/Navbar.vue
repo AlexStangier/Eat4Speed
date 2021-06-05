@@ -10,6 +10,7 @@
       <v-spacer></v-spacer>
 
       <v-text-field
+          v-if="!hideSearchBar"
           v-model="searchString"
           prepend-inner-icon="mdi-magnify"
           hide-details
@@ -65,6 +66,13 @@ export default {
     }
   },
   computed: {
+    hideSearchBar() {
+      const path = this.$route.path;
+      if (path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path === '/') {
+        return true;
+      }
+      return true;
+    },
     isUserLoggedIn() {
       return this.user !== undefined;
     },
