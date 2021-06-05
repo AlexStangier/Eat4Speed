@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     roundToTwo(num) {
-      return (Math.round(num + "e+2")  + "e-2");
+      return +(Math.round(num + "e+2")  + "e-2");
     },
     selectGericht(item) {
       this.selectedGericht = item;
