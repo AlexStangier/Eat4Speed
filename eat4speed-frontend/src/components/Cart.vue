@@ -58,7 +58,7 @@
       </v-card-text>
 
       <v-card-text v-else>
-        <p>No item</p>
+        <p>Keine Artikel</p>
       </v-card-text>
 
     </v-card>
@@ -105,8 +105,11 @@ export default {
     },
     async paypalRequest() {
       const items = [];
+
       this.$store.getters.getCartGerichte.forEach(item => {
-        items.push(item.gericht_ID);
+        for (let i = 0; i < item.quantity; i++) {
+          items.push(item.gericht_ID);
+        }
       });
 
       const customerId = await this.getCustomerId();
@@ -120,7 +123,6 @@ export default {
           this.$http.post('/Bestellung/pay', {
             jobId: response.data.auftrags_ID
           }).then((response) => {
-            console.log(JSON.stringify(response.data))
             if (response.status === 200) {
               this.$store.commit("deleteCartGerichte");
               this.version++;
