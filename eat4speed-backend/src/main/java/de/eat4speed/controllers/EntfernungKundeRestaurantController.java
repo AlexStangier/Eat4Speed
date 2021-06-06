@@ -32,4 +32,18 @@ public class EntfernungKundeRestaurantController {
         return entfernungKundeRestaurantService.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
     }
 
+    @DELETE
+    @Path("/deleteEntfernungByKundennummer/{kundennummer}")
+    public Response deleteEntfernungByKundennummer(@PathParam("kundennummer") int kundennummer)
+    {
+        return entfernungKundeRestaurantService.deleteEntfernungByKundennummer(kundennummer);
+    }
+
+    @DELETE
+    @Path("/deleteEntfernungByRestaurant_ID/{restaurant_ID}")
+    public Response deleteEntfernungByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
+    {
+        return entfernungKundeRestaurantService.deleteEntfernungByRestaurant_ID(restaurant_ID);
+    }
+
 }
