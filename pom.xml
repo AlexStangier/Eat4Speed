@@ -6,7 +6,7 @@
 
     <groupId>de.eat4speed</groupId>
     <artifactId>eat4speed</artifactId>
-    <version>0.0.1</version>
+    <version>0.8</version>
 
     <packaging>pom</packaging>
     <name>Eat4Speed</name>

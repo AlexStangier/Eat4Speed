@@ -2,26 +2,16 @@ package de.eat4speed.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 public class Auftrag extends PanacheEntityBase implements Serializable {
-
-    public Auftrag() {
-    }
-
-    public Auftrag(int auftragnehmer, Timestamp timestamp, int anschrift, Double lieferdistanz, int kundennummer, String status, int geschaetzte_fahrtzeit_restaurant_ziel) {
-        this.auftragnehmer = auftragnehmer;
-        this.timestamp = new Timestamp(timestamp.getTime() + 300000);
-        this.anschrift = anschrift;
-        this.lieferdistanz = lieferdistanz;
-        this.kundennummer = kundennummer;
-        this.status = status;
-        this.geschaetzte_fahrtzeit_restaurant_ziel = geschaetzte_fahrtzeit_restaurant_ziel;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +24,17 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
     private int kundennummer;
     private String status;
     private int geschaetzte_fahrtzeit_restaurant_ziel;
+    public Auftrag() {
+    }
+    public Auftrag(int auftragnehmer, Timestamp timestamp, int anschrift, Double lieferdistanz, int kundennummer, String status, int geschaetzte_fahrtzeit_restaurant_ziel) {
+        this.auftragnehmer = auftragnehmer;
+        this.timestamp = new Timestamp(timestamp.getTime() + 300000);
+        this.anschrift = anschrift;
+        this.lieferdistanz = lieferdistanz;
+        this.kundennummer = kundennummer;
+        this.status = status;
+        this.geschaetzte_fahrtzeit_restaurant_ziel = geschaetzte_fahrtzeit_restaurant_ziel;
+    }
 
     public int getAuftragnehmer() {
         return auftragnehmer;
@@ -131,7 +132,6 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
                 ", lieferdistanz=" + lieferdistanz +
                 ", kundennummer=" + kundennummer +
                 ", status='" + status + '\'' +
-                ", geschaetzte_fahrzeit_restaurant_ziel=" + geschaetzte_fahrtzeit_restaurant_ziel +
-                '}';
+                ", geschaetzte_fahrzeit_restaurant_ziel=" + geschaetzte_fahrtzeit_restaurant_ziel + '}';
     }
 }

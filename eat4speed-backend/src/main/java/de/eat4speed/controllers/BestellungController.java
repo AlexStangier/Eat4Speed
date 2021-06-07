@@ -1,6 +1,8 @@
 package de.eat4speed.controllers;
 
 import de.eat4speed.dto.OrderDto;
+import de.eat4speed.dto.PayDto;
+import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -23,6 +25,14 @@ public class BestellungController {
     @Path("add")
     public Response add(OrderDto obj) throws SQLException {
         return _bestellungen.createBestellung(obj);
+    }
+
+    @POST
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("pay")
+    public PaymentDto pay(PayDto jobId) throws SQLException {
+        return _bestellungen.payForOrder(jobId.getJobId());
     }
 
 }
