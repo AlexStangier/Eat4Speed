@@ -32,6 +32,7 @@ public class BestellungController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("pay")
     public PaymentDto pay(PayDto jobId) throws SQLException {
-        return _bestellungen.payForOrder(jobId);
+        return _bestellungen.payForOrder(jobId.getJobId());
     }
+
 }

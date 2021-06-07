@@ -11,5 +11,5 @@ export default [
         path: '/fahrer/fahrtenplan',
         name: 'FahrerFahrtenplan',
         component: FahrerFahrtenplan
-    },
+    }
 ]

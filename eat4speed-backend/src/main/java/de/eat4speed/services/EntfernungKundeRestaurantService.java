@@ -31,4 +31,18 @@ public class EntfernungKundeRestaurantService implements IEntfernungKundeRestaur
     public List getEntfernungByKundennummerRestaurant_ID(int kundennummer, int restaurant_ID) {
         return entfernungKundeRestaurantRepository.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
     }
+
+    @Override
+    public Response deleteEntfernungByKundennummer(int kundennummer) {
+        entfernungKundeRestaurantRepository.deleteEntfernungByKundennummer(kundennummer);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
+    public Response deleteEntfernungByRestaurant_ID(int restaurant_ID) {
+        entfernungKundeRestaurantRepository.deleteEntfernungByRestaurant_ID(restaurant_ID);
+        return Response.status(Response.Status.OK).build();
+    }
+
+
 }
