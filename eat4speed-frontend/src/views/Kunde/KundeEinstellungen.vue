@@ -147,7 +147,6 @@
 
 <script>
 import axios from "axios";
-import {eventBus} from '@/event/event';
 
 export default {
   name: "CustomerSettings",
