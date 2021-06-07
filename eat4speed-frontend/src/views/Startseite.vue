@@ -75,7 +75,7 @@
     >
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
-          <v-flex md6 sm6 xs12>
+          <v-flex md3 sm6 xs12>
             <v-card>
               <v-card class="px-4 pb-4">
                 <v-text-field
