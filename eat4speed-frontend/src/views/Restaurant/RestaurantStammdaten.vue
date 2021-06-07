@@ -54,8 +54,7 @@
                 <v-btn @click="validate(); artDialog = false"
                        color="red"
                        dark
-                       :disabled="!valid"
-                       class="justify-center">Speichern
+                       :disabled="!valid">Speichern
                 </v-btn>
               </v-col>
             </v-row>

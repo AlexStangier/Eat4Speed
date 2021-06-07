@@ -12,7 +12,7 @@
             <v-col>
               <v-text-field
                   v-model="firstname"
-                  :rules="[v => !!v || 'Vorname wird benötigt']"
+                  :rules="[rules.required]"
                   label="Vorname"
                   required
               ></v-text-field>
@@ -20,7 +20,7 @@
             <v-col>
               <v-text-field
                   v-model="lastname"
-                  :rules="[v => !!v || 'Nachname wird benötigt']"
+                  :rules="[rules.required]"
                   label="Nachname"
                   required
               ></v-text-field>
@@ -30,7 +30,7 @@
             <v-col>
               <v-text-field
                   v-model="street"
-                  :rules="[v => !!v || 'Strasse wird benötigt']"
+                  :rules="[rules.required]"
                   label="Strasse"
                   required
               ></v-text-field>
@@ -38,7 +38,7 @@
             <v-col>
               <v-text-field
                   v-model="houseNumber"
-                  :rules="[v => !!v || 'Hausnummer wird benötigt']"
+                  :rules="[rules.required]"
                   label="Hausnummer"
                   required
               ></v-text-field>
@@ -48,7 +48,7 @@
             <v-col>
               <v-text-field
                   v-model="place"
-                  :rules="[v => !!v || 'Ort wird benötigt']"
+                  :rules="[rules.required]"
                   label="Ort"
                   required
               ></v-text-field>
@@ -56,7 +56,7 @@
             <v-col>
               <v-text-field
                   v-model="zip"
-                  :rules="[v => !!v || 'Postleitzahl wird benötigt']"
+                  :rules="[rules.required]"
                   label="Postleitzahl"
                   required
               ></v-text-field>
@@ -75,7 +75,7 @@
             <v-col>
               <v-text-field
                   v-model="phone"
-                  :rules="[v => !!v || 'Telefonnummer wird benötigt']"
+                  :rules="[rules.required]"
                   label="Telefonnummer"
                   required
               ></v-text-field>
@@ -147,6 +147,7 @@
 
 <script>
 import axios from "axios";
+import {eventBus} from '@/event/event';
 
 export default {
   name: "CustomerSettings",
@@ -287,7 +288,7 @@ export default {
           console.log(responseAdresseToAlter);
           console.log(responseKundeToAlter);
         } else {
-          this.openSnackbar("Bitte gültiga Adresse eingeben!")
+          this.openSnackbar("Bitte gültige Adresse eingeben!")
 
         }
       // }
@@ -336,6 +337,11 @@ export default {
       v => !!v || 'Hausnummer wird benötigt',
       v => /.number/.test(v) || 'Nummer muss eine Zahl sein'
     ],
+    show1: false,
+    rules: {
+      required: value => !!value || "Required.",
+      min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+    },
     place: '',
     zip: '',
     email: '',

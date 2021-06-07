@@ -118,7 +118,10 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn :disabled="!valid" color="primary" depressed tile @click="validate">Register</v-btn>
+                          <v-btn :disabled="!valid"
+                                 color="primary"
+                                 depressed tile
+                                 @click="validate">Register</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
