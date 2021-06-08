@@ -128,12 +128,7 @@ public class BestellungService implements IBestellungService {
                         }
                         restaurantOrderMapper.put(rest.getRestaurant_ID(), gerichteForRestaurant);
                         try {
-                            float sum = (float) gerichteForRestaurant.stream().mapToDouble(Gericht::getPreis).sum();
-                            sum = round(sum, 2);
-                            sum *= 1.07;
-                            sum += 2;
-
-                            rechnung = new Rechnung(sum, new Timestamp(date.getTime()), (byte) 0);
+                            rechnung = new Rechnung((gerichteForRestaurant.stream().mapToDouble(Gericht::getPreis).sum() * 1.07 + 2.00), new Timestamp(date.getTime()), (byte) 0);
                         } catch (Exception e) {
                             System.out.println("Failed while creating rechnung:" + e);
                             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -200,9 +195,21 @@ public class BestellungService implements IBestellungService {
 
             for (Bestellung best : bestellungen) {
                 Rechnung rechnung = _rechnungRepository.getRechnungByID(best.getRechnung());
+
+                String idsString = best.getGericht_IDs();
+                idsString = idsString.replaceAll("[\\[\\]\\(\\)]", "");
+                String[] ids = idsString.split("\\,");
+
+                for (String s : ids) {
+                    try {
+                        Gericht gericht = _gerichtRepository.getGerichtByGerichtID(Integer.parseInt(s.trim()));
+                        total += gericht.getPreis();
+                    } catch (Exception e) {
+                        System.out.println("Failed to retrieve Gericht: " + e);
+                    }
+                }
                 rechnung.setZahlungseingang((byte) 1);
                 rechnung.setDatum_Zahlungseingang(new Timestamp(date.getTime()));
-                total += rechnung.getBetrag();
                 _rechnungRepository.persist(rechnung);
             }
         } catch (Exception e) {
