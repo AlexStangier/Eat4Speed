@@ -1,8 +1,6 @@
 package de.eat4speed.controllers;
 
-import de.eat4speed.dto.OrderDto;
-import de.eat4speed.dto.PayDto;
-import de.eat4speed.dto.PaymentDto;
+import de.eat4speed.dto.*;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -35,4 +33,11 @@ public class BestellungController {
         return _bestellungen.payForOrder(jobId.getJobId());
     }
 
+    @POST
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("getStatistic")
+    public StatisticDtoWrapper getStatistic(StatisticRequestDto req) throws SQLException {
+        return _bestellungen.getStatistic(req.restaurantId, req.start, req.end);
+    }
 }
