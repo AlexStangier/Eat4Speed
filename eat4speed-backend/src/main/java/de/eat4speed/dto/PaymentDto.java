@@ -18,7 +18,7 @@ public class PaymentDto {
     public PaymentDto(double amount, String state) {
         this.amount = df.format(amount);
         this.state = state;
-        this.amountTax = df.format((amount * 0.93) * 0.07);
+        this.amountTax = df.format(((amount - 2) * 0.93) * 0.07);
         this.shipping = 2;
     }
 

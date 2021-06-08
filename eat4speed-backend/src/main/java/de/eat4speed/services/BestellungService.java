@@ -11,10 +11,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class BestellungService implements IBestellungService {
@@ -52,6 +52,12 @@ public class BestellungService implements IBestellungService {
         _adressenRepository = adressenRepository;
         _kundeRepository = kundeRepository;
         _restaurantRepository = restaurantRepository;
+    }
+
+    public static float round(float d, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.floatValue();
     }
 
     @Override
@@ -122,7 +128,12 @@ public class BestellungService implements IBestellungService {
                         }
                         restaurantOrderMapper.put(rest.getRestaurant_ID(), gerichteForRestaurant);
                         try {
-                            rechnung = new Rechnung((gerichteForRestaurant.stream().mapToDouble(Gericht::getPreis).sum() * 1.07 + 2.00), new Timestamp(date.getTime()), (byte) 0);
+                            float sum = (float) gerichteForRestaurant.stream().mapToDouble(Gericht::getPreis).sum();
+                            sum = round(sum, 2);
+                            sum *= 1.07;
+                            sum += 2;
+
+                            rechnung = new Rechnung(sum, new Timestamp(date.getTime()), (byte) 0);
                         } catch (Exception e) {
                             System.out.println("Failed while creating rechnung:" + e);
                             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
