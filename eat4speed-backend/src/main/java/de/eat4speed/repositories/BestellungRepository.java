@@ -32,6 +32,11 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     }
 
     @Transactional
+    public List<Bestellung> getAllBestellungByAuftragsId(int id) {
+        return find("Auftrags_ID", id).list();
+    }
+
+    @Transactional
     public List<Bestellung> getAllBestellungenByAuftragsId(long id) {
         List<Bestellung> result = find("Auftrags_ID", id).list();
         return result;

@@ -2,6 +2,8 @@ package de.eat4speed.services;
 
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.dto.PaymentDto;
+import de.eat4speed.dto.StatisticDto;
+import de.eat4speed.dto.StatisticDtoWrapper;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
@@ -217,5 +219,50 @@ public class BestellungService implements IBestellungService {
             return new PaymentDto(total, "error");
         }
         return new PaymentDto(total, "success");
+    }
+
+    /**
+     * Creates a statistic for all previous orders
+     *
+     * @param restaurantId
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public StatisticDtoWrapper getStatistic(Long restaurantId, long startTime, long endTime) throws SQLException {
+
+        StatisticDtoWrapper wrapper = new StatisticDtoWrapper();
+
+        try {
+            List<Auftrag> aufträge = _auftragRepository.getAllAuftragByRestaurant(restaurantId);
+            for (Auftrag auftrag : aufträge) {
+                try {
+                    List<Bestellung> bestellungen = _bestellungRepository.getAllBestellungenByAuftragsId(auftrag.getAuftrags_ID());
+                    for (Bestellung bestellung : bestellungen) {
+                        if (bestellung.getTimestamp().getTime() >= startTime && bestellung.getTimestamp().getTime() <= endTime) {
+                            try {
+                                Rechnung rechnungen = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
+
+                                byte c = rechnungen.getZahlungseingang();
+
+                                if (rechnungen.getZahlungseingang() == 1) {
+                                    wrapper.data.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
+                                }
+
+                            } catch (Exception e) {
+                                System.out.println("Failed to retrieve Rechnung: " + e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Failed to retrieve Bestellung: " + e);
+                }
+            }
+        } catch (Exception s) {
+            System.out.println("Failed to retrieve Auftrag: " + s);
+        }
+        return wrapper;
     }
 }
