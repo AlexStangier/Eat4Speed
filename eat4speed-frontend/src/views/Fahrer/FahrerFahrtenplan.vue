@@ -59,7 +59,6 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
-import axios from "axios";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -67,30 +66,23 @@ export default {
     DirectionsRenderer
   },
   methods: {
-    async get_user(){
-      {
-        //const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$store.getters.getLoginData.auth.username);
-        //let EinstellungenData = ResponseEinstellungen.data[0];
-
-        console.log(this.$store.getters.getLoginData.auth.username);
-      }
-    },
     abholungBestätigen(id) {
       id;
     },
     getTermin() {
-      return '31.05.2021';
+      return '07.06.2021';
     },
     getStationen() {
-      return 7;
+      return this.data.length;
     },
     convertToKM(meters) {
       return meters / 1000;
     },
+
   },
   async mounted() {
       await this.$http.get('/route/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
-      await this.get_user();
+
     },
   data() {
     return {
@@ -110,8 +102,18 @@ export default {
           sortable: false
         },
         {
+          text: 'Auftrags_ID',
+          value: 'auftrags_id',
+          sortable: false
+        },
+        {
           text: 'Beschreibung',
           value: 'beschreibung',
+          sortable: false
+        },
+        {
+          text: 'Kundenanschrift',
+          value: 'kunde',
           sortable: false
         },
         {
@@ -122,16 +124,12 @@ export default {
         {
           text: 'Entfernung',
           value: 'entfernung',
-          sortable: false
+          sortable: false,
         },
         {
           value: 'actions',
           sortable: false,
           align: 'end'
-        },
-        {
-          value: 'count_stations',
-          sortable: false
         },
       ],
     };

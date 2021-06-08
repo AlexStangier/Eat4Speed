@@ -10,9 +10,9 @@ public interface IRoutingService {
 
     //public JSONObject add_mode_and_agent(String mode, double start_long, double start_lat, double end_long, double end_lat, int capacity);
 
-    JSONArray get_best_Route() throws Exception;
+    abstract JSONArray  get_best_Route() throws Exception;
 
-    JSONObject db_test(String email);
+    //JSONObject db_test(String email);
 
 
 }

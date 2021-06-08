@@ -107,7 +107,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Fahrer_Fzg_Pos(String email) {
+    public ArrayList<String> get_Fahrer_Fzg_Pos(String email) {
 
         List <Object[]> fahrer_fzg;
 
@@ -123,7 +123,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
 
         fahrer_fzg = query.getResultList();
-        List<String> results = new ArrayList<>(fahrer_fzg.size());
+        ArrayList<String> results = new ArrayList<>(fahrer_fzg.size());
 
         for(Object[] objects : fahrer_fzg){
             results.add(new String((String) objects[0]));
@@ -142,8 +142,9 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         return results;
     }
 
+
     @Transactional
-    public List get_Restautant_Lng_Lat(String email){
+    public ArrayList<String> get_Restautant_Lng_Lat(String email){
 
         List <Object[]> restaurant_lng_lat;
 
@@ -169,7 +170,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
 
         restaurant_lng_lat = query.getResultList();
-        List<String> results = new ArrayList<>(restaurant_lng_lat.size());
+        ArrayList<String> results = new ArrayList<>(restaurant_lng_lat.size());
 
         int i = 0;
         for(Object[] objects : restaurant_lng_lat){
@@ -185,12 +186,12 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Kunde_Lng_Lat(String email){
+    public ArrayList<String> get_Kunde_Lng_Lat(String email){
 
         List <Object[]> kunde_lng_lat;
 
         Query query = entityManager.createNativeQuery(
-                "SELECT auftrags_ID, lng, lat " +
+                "SELECT auftrags_ID, lng, lat, strasse, hausnummer, postleitzahl, ort " +
                         "FROM Adressen, Auftrag, Fahrtenplan_Station " +
                         "WHERE adress_ID IN ( " +
                         "SELECT anschrift " +
@@ -209,7 +210,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
 
         kunde_lng_lat = query.getResultList();
-        List<String> results = new ArrayList<>(kunde_lng_lat.size());
+        ArrayList<String> results = new ArrayList<>(kunde_lng_lat.size());
 
         int i = 0;
         for(Object[] objects : kunde_lng_lat){

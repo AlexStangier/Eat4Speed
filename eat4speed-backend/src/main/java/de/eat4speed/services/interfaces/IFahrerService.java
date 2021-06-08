@@ -5,6 +5,7 @@ import de.eat4speed.entities.Fahrzeug;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IFahrerService {
@@ -24,9 +25,9 @@ public interface IFahrerService {
     Response deleteFahrer(int id);
 
 
-    List get_Fahrer_Fzg_Pos(String email);
+    ArrayList<String> get_Fahrer_Fzg_Pos(String email);
 
-    List get_Restaurant_Lng_Lat(String email);
+    ArrayList<String> get_Restaurant_Lng_Lat(String email);
 
-    List get_Kunde_Lng_Lat(String email);
+    ArrayList<String> get_Kunde_Lng_Lat(String email);
 }
