@@ -4,10 +4,23 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
 
 @Entity
 public class Benutzer extends PanacheEntityBase implements Serializable {
+
+    public enum UserRole {
+        KUNDE,
+        RESTAURANT,
+        ADMIN,
+        FAHRER;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

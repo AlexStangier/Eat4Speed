@@ -20,14 +20,14 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import javax.transaction.Transactional;
 import java.net.URL;
 
 import static io.restassured.RestAssured.given;
 
-@Transactional
 @QuarkusTest
 public class GerichtControllerTest {
+
+    private static final String TEST_USER_NAME = "test-user";
 
     private int dummyAddressId;
     private int dummyRestaurantId;
@@ -51,7 +51,7 @@ public class GerichtControllerTest {
 
     @BeforeEach
     void setup() {
-        Benutzer dummyRestaurantOwner = new Benutzer("test-user", "Eugene", "Krabs",
+        Benutzer dummyRestaurantOwner = new Benutzer(TEST_USER_NAME, "Eugene", "Krabs",
                 "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "", "", 0);
         this._benutzerRepository.addBenutzer(dummyRestaurantOwner);
 
@@ -104,6 +104,6 @@ public class GerichtControllerTest {
         this._gerichtRepository.deleteGericht(this.dummyGerichtId);
         this._restaurantRepository.deleteRestaurant(this.dummyRestaurantId);
         this._adressenRepository.deleteAdresse(this.dummyAddressId);
-        this._benutzerRepository.deleteBenutzerByUsername("test-user");
+        this._benutzerRepository.deleteBenutzerByUsername(TEST_USER_NAME);
     }
 }

@@ -3,74 +3,133 @@ package de.eat4speed.systemTests;
 import de.eat4speed.controllers.BenutzerController;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
-import de.eat4speed.services.interfaces.IBenutzerService;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.AfterAll;
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.ws.rs.core.Response;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
-@Transactional
+import static io.restassured.RestAssured.given;
+
 @QuarkusTest
 public class BenutzerControllerTest {
 
-    private static BenutzerRepository _benutzerRepository;
-
-    @Inject
-    public BenutzerControllerTest(BenutzerRepository benutzer) {
-        this._benutzerRepository = benutzer;
-    }
+    private static final String TEST_USER_NAME = "test-user";
 
     @TestHTTPEndpoint(BenutzerController.class)
-    @TestHTTPResource("Benutzer/add")
-    URL benutzerEndpointAdd;
-
-    @TestHTTPEndpoint(BenutzerController.class)
-    @TestHTTPResource("Benutzer/get")
-    URL benutzerEndpointGet;
+    @TestHTTPResource()
+    URL benutzerEndpoint;
 
     @Inject
-    IBenutzerService _benutzerService;
+    BenutzerRepository _benutzerRepository;
 
-    Benutzer dummyBenutzer = new Benutzer("deleteMe", "Test", "Test", "Test", "Test", "", "Test", 123);
-
-    /*  TST001  */
-
-    @Test
+    @Test  // TST001 (1)
     void tryRegisterAsUser() {
-        dummyBenutzer.setRolle("user");
-        Assertions.assertTrue(_benutzerService.addBenutzer(dummyBenutzer).getStatusInfo().equals(Response.Status.CREATED));
+        Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
+                "Test", Benutzer.UserRole.KUNDE.toString(), "Test", 123);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        int userId = given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(mockUser))
+                .when().post(this.benutzerEndpoint)
+                .then().statusCode(201)
+                .extract().path("benutzer_ID");
+
+        // Check if the new user entry made it into the database
+        Benutzer actualUser = _benutzerRepository.getBenutzerByID(userId);
+        Assertions.assertNotNull(actualUser);
     }
 
-    /*@Test
-    void tryRegisterAsUserWhichAlreadyExists() {
-        dummyBenutzer.setRolle("user");
-        Response.StatusType res = _benutzerService.addBenutzer(dummyBenutzer).getStatusInfo();
-        System.out.println(res);
-        Assertions.assertTrue(_benutzerService.addBenutzer(dummyBenutzer).getStatusInfo().equals(Response.Status.CREATED));
-    }*/
-
-    @Test
+    @Test  // TST001 (1)
     void tryRegisterAsRestaurant() {
-        dummyBenutzer.setRolle("restaurant");
-        Assertions.assertTrue(_benutzerService.addBenutzer(dummyBenutzer).getStatusInfo().equals(Response.Status.CREATED));
+        Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
+                "Test", Benutzer.UserRole.RESTAURANT.toString(), "Test", 123);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        int userId = given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(mockUser))
+                .when().post(this.benutzerEndpoint)
+                .then().statusCode(201)
+                .extract().path("benutzer_ID");
+
+        // Check if the new user entry made it into the database
+        Benutzer actualUser = _benutzerRepository.getBenutzerByID(userId);
+        Assertions.assertNotNull(actualUser);
     }
 
-    @Test
+    @Test  // TST001 (1)
     void tryRegisterAsAdmin() {
-        dummyBenutzer.setRolle("admin");
-        Assertions.assertTrue(_benutzerService.addBenutzer(dummyBenutzer).getStatusInfo().equals(Response.Status.CREATED));
+        Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
+                "Test", Benutzer.UserRole.ADMIN.toString(), "Test", 123);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        int userId = given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(mockUser))
+                .when().post(this.benutzerEndpoint)
+                .then().statusCode(201)
+                .extract().path("benutzer_ID");
+
+        // Check if the new user entry made it into the database
+        Benutzer actualUser = _benutzerRepository.getBenutzerByID(userId);
+        Assertions.assertNotNull(actualUser);
     }
 
-    @AfterAll
-    static void deleteAllUsersFromTest(){
-        _benutzerRepository.deleteBenutzerByUsername("deleteMe");
+    @Test  // TST001 (2)
+    void tryRegisterAsUserWhichAlreadyExists() {
+        Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
+                "Test", Benutzer.UserRole.KUNDE.toString(), "Test", 123);
+        mockUser.setPasswort(Base64.getEncoder().encodeToString(mockUser.getPasswort().getBytes(StandardCharsets.UTF_8)));
+        _benutzerRepository.addBenutzer(mockUser);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(mockUser))
+                .when().post(this.benutzerEndpoint)
+                .then().statusCode(400);
+    }
+
+    @Test  // TST001 (3)
+    void tryRegisterAsUserWithIncompleteInfo() {
+        Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "",
+                "Test", Benutzer.UserRole.KUNDE.toString(), "", 123);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(mockUser))
+                .when().post(this.benutzerEndpoint)
+                .then().statusCode(400);
+    }
+
+    @Test  // TST001 (3)
+    void tryRegisterAsUserWithInvalidRole() {
+        Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
+                "Test", "invalid", "Test", 123);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(mockUser))
+                .when().post(this.benutzerEndpoint)
+                .then().statusCode(400);
+    }
+
+    @AfterEach
+    void cleanup() {
+        this._benutzerRepository.deleteBenutzerByUsername(TEST_USER_NAME);
     }
 
     //https://www.baeldung.com/java-quarkus-testing
