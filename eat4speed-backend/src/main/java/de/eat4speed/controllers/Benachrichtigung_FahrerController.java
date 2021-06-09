@@ -1,7 +1,11 @@
 package de.eat4speed.controllers;
 
+
 import de.eat4speed.entities.Benachrichtigung_Fahrer;
+import de.eat4speed.entities.Gericht;
 import de.eat4speed.repositories.Benachrichtigung_FahrerRepository;
+import de.eat4speed.repositories.FahrzeugRepository;
+import de.eat4speed.services.interfaces.IBenachrichtigung_FahrerService;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
@@ -10,19 +14,38 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
 @Path("/Benachrichtigung_Fahrer")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class Benachrichtigung_FahrerController {
 
 
     @Inject
-    Benachrichtigung_FahrerRepository benachrichtigung_FahrerRepository;
+    IBenachrichtigung_FahrerService benachrichtigung_fahrerService;
+
+    @PUT
+    @Path("/markAsGelesen/{benachrichtigungs_ID}")
+    public void markAsGelesen(@PathParam("benachrichtigungs_ID") int benachrichtigungs_ID)
+    {
+        benachrichtigung_fahrerService.markAsGelesen(benachrichtigungs_ID);
+    }
+
+    @GET
+    @Path("/getAllBenachrichtigungFahrerUngelesen/{fahrernummer}")
+    public List getAllBenachrichtigung_Fahrer_ungelesen(@PathParam("fahrernummer") int fahrernummer)
+    {
+        return benachrichtigung_fahrerService.getAllBenachrichtigung_Fahrer_ungelesen(fahrernummer);
+    }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String get(){
-        return benachrichtigung_FahrerRepository.listAll().toString();
+        return benachrichtigung_fahrerService.listAll().toString();
     }
 
     @POST
@@ -40,7 +63,7 @@ public class Benachrichtigung_FahrerController {
             reader.close();
 
             Benachrichtigung_Fahrer benachrichtigung_fahrer = Benachrichtigung_Fahrer.fromJSON(out.toString());
-            benachrichtigung_FahrerRepository.addBenachrichtigung_Fahrer(benachrichtigung_fahrer);
+            benachrichtigung_fahrerService.addBenachrichtigung_Fahrer(benachrichtigung_fahrer);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,7 +91,7 @@ public class Benachrichtigung_FahrerController {
             reader.close();
 
             JSONObject json = new JSONObject(out.toString());
-            id = benachrichtigung_FahrerRepository.findIDByNachricht(
+            id = benachrichtigung_fahrerService.findIDByNachricht(
                     json.getString("benachrichtigung"), json.getInt("fahrernummer"));
 
         } catch (Exception e) {
@@ -82,7 +105,7 @@ public class Benachrichtigung_FahrerController {
     @Path("/{Benachrichtigungs_ID}")
     public Response delete(@PathParam("Benachrichtigungs_ID") int benachrichtigungs_ID) {
 
-        benachrichtigung_FahrerRepository.deleteBenachrichtigungFahrer(benachrichtigungs_ID);
+        benachrichtigung_fahrerService.deleteBenachrichtigungFahrer(benachrichtigungs_ID);
         return Response.ok().build();
     }
 
