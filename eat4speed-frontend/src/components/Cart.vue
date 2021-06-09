@@ -45,10 +45,10 @@
 
         </v-list>
 
-        <h3>Steuer: {{ calculateCartTax() }} &euro; (7% Mwst.)</h3>
+        <h3>Steuer: {{ parseFloat(calculateCartTax()).toFixed(2) }} &euro; (7% Mwst.)</h3>
         <h3 class="pb-1">Lieferkosten: 2 &euro;</h3>
         <v-divider></v-divider>
-        <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+        <h2 class="pt-2">Endpreis: {{ parseFloat(calculateCartPrice()).toFixed(2) }} &euro;</h2>
 
         <v-card-actions>
           <v-btn block color="primary" depressed tile @click="paypalRequest()">
