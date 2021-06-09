@@ -30,22 +30,19 @@ public class FahrerController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(Fahrer fahrer)
-    {
+    public Response add(Fahrer fahrer) {
         return _fahrer.addFahrer(fahrer);
     }
 
     @PUT
     @Path("updateFahrzeugId/{id}")
-    public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug)
-    {
+    public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug) {
         return _fahrer.updateFahrer_Fahrzeug_Id(id, fahrzeug);
     }
 
     @PUT
     @Path("updateVerifiziert/{id}")
-    public Response updateFahrer_Verifiziert(@PathParam("id") int id)
-    {
+    public Response updateFahrer_Verifiziert(@PathParam("id") int id) {
         return _fahrer.updateFahrer_Verifiziert(id);
     }
 
@@ -53,19 +50,17 @@ public class FahrerController {
     @GET
     @Path("getAll")
     @RolesAllowed("admin")
-    public List getAllDrivers(){
+    public List getAllDrivers() {
         return _fahrer.getAllFahrer();
     }
 
     @GET
     @Path("{selection}")
     @PermitAll
-    public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung)
-    {
+    public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung) {
         List fahrerData = null;
 
-        switch(fahrerSelectionVerifizierung)
-        {
+        switch (fahrerSelectionVerifizierung) {
             case "ALL":
                 fahrerData = _fahrer.getAllFahrer();
                 break;
@@ -81,12 +76,15 @@ public class FahrerController {
 
     @DELETE
     @Path("{id}")
-    public Response deleteFahrer(@PathParam("id") int id)
-    {
+    public Response deleteFahrer(@PathParam("id") int id) {
         return _fahrer.deleteFahrer(id);
     }
 
-
+    @GET
+    @Path("getFahrerByBenutzerID/{id}")
+    public Integer getFahrerByBenutzer(@PathParam("id") int id) {
+        return _fahrer.getFahrerByBenutzerId(id);
+    }
 
 
 }

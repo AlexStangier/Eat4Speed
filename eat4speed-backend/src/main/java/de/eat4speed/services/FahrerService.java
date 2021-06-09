@@ -21,53 +21,51 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
-    public Response addFahrer(Fahrer fahrer)
-    {
+    public Response addFahrer(Fahrer fahrer) {
         fahrerRepository.addFahrer(fahrer);
 
         return Response.status(Response.Status.CREATED).entity(fahrer).build();
     }
 
     @Override
-    public List getAllFahrer()
-    {
+    public List getAllFahrer() {
         return fahrerRepository.getAllFahrer();
     }
 
     @Override
-    public List getNotVerifiedFahrer()
-    {
+    public List getNotVerifiedFahrer() {
         return fahrerRepository.getNotVerifiedFahrer();
     }
 
     @Override
-    public List getVerifiedFahrer()
-    {
+    public List getVerifiedFahrer() {
         return fahrerRepository.getVerifiedFahrer();
     }
 
     @Override
-    public Response updateFahrer_Fahrzeug_Id(int id, Fahrzeug fahrzeug)
-    {
+    public Response updateFahrer_Fahrzeug_Id(int id, Fahrzeug fahrzeug) {
         fahrerRepository.updateFahrer_Fahrzeug_id(id, fahrzeug.getFahrzeug_ID());
 
         return Response.status(Response.Status.OK).entity(fahrzeug).build();
     }
 
     @Override
-    public Response updateFahrer_Verifiziert(int id)
-    {
+    public Response updateFahrer_Verifiziert(int id) {
         fahrerRepository.updateFahrer_Verifiziert(id);
 
         return Response.status(Response.Status.OK).build();
     }
 
     @Override
-    public Response deleteFahrer(int id)
-    {
+    public Response deleteFahrer(int id) {
         fahrerRepository.deleteFahrer(id);
 
         return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
+    public int getFahrerByBenutzerId(int id) {
+        return fahrerRepository.findByBenutzerId(id).getFahrernummer();
     }
 
     @Override

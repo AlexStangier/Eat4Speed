@@ -23,6 +23,7 @@ public interface IFahrerService {
 
     Response deleteFahrer(int id);
 
+    int getFahrerByBenutzerId(int id);
 
     List get_Fahrer_Fzg_Pos();
 

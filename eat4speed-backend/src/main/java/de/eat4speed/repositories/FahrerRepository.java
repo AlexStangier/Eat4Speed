@@ -5,7 +5,6 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
@@ -19,8 +18,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     EntityManager entityManager;
 
     @Transactional
-    public void addFahrer(Fahrer fahrer)
-    {
+    public void addFahrer(Fahrer fahrer) {
         entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
         persist(fahrer);
         entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
@@ -28,37 +26,33 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public void updateFahrer_Fahrzeug_id(int fahrernummer, int fahrzeug_Id)
-    {
+    public void updateFahrer_Fahrzeug_id(int fahrernummer, int fahrzeug_Id) {
         update("fahrzeug = ?1 where fahrernummer = ?2", fahrzeug_Id, fahrernummer);
     }
 
     @Transactional
-    public void updateFahrer_Verifiziert(int fahrernummer)
-    {
+    public void updateFahrer_Verifiziert(int fahrernummer) {
         update("verifiziert = 1 where fahrernummer = ?1", fahrernummer);
     }
 
     @Transactional
-    public List getAllFahrer()
-    {
+    public List getAllFahrer() {
         List allFahrerData;
 
-                Query query = entityManager.createQuery(
+        Query query = entityManager.createQuery(
                 "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
                         "WHERE f.fahrzeug = fz.fahrzeug_ID " +
                         "AND f.benutzer_ID = b.benutzer_ID "
 
         );
-                allFahrerData = query.getResultList();
+        allFahrerData = query.getResultList();
 
         return allFahrerData;
     }
 
     @Transactional
-    public List getNotVerifiedFahrer()
-    {
+    public List getNotVerifiedFahrer() {
         List notVerifiedFahrerData;
 
         Query query = entityManager.createQuery(
@@ -75,8 +69,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List getVerifiedFahrer()
-    {
+    public List getVerifiedFahrer() {
         List verifiedFahrerData;
 
         Query query = entityManager.createQuery(
@@ -93,23 +86,21 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public int deleteFahrer(int fahrernummer)
-    {
+    public int deleteFahrer(int fahrernummer) {
         delete("fahrernummer", fahrernummer);
 
         return fahrernummer;
     }
 
 
-    public Fahrer findByFahrernummer(int fahrernummer)
-    {
+    public Fahrer findByFahrernummer(int fahrernummer) {
         return find("fahrernummer", fahrernummer).firstResult();
     }
 
     @Transactional
     public List get_Fahrer_Fzg_Pos() {
 
-        List <Object[]> fahrer_fzg;
+        List<Object[]> fahrer_fzg;
 
         Query query = entityManager.createQuery(
                 "SELECT fz.fahrzeugtyp, ad.lng, ad.lat, fz.kapazitaet_Gerichte " +
@@ -125,27 +116,26 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         fahrer_fzg = query.getResultList();
         List<String> results = new ArrayList<>(fahrer_fzg.size());
 
-        for(Object[] objects : fahrer_fzg){
+        for (Object[] objects : fahrer_fzg) {
             results.add(new String((String) objects[0]));
             results.add(new String((String) objects[1]));
             results.add(new String((String) objects[2]));
             results.add(new String((String) objects[3].toString()));
         }
 
-        if(results.get(0).equals("Fahrrad")){
-            results.set(0,"bycicle");
-        }
-        else{
-            results.set(0,"drive");
+        if (results.get(0).equals("Fahrrad")) {
+            results.set(0, "bycicle");
+        } else {
+            results.set(0, "drive");
         }
 
         return results;
     }
 
     @Transactional
-    public List get_Restautant_Lng_Lat(){
+    public List get_Restautant_Lng_Lat() {
 
-        List <Object[]> restaurant_lng_lat;
+        List<Object[]> restaurant_lng_lat;
 
 
         Query query = entityManager.createQuery(
@@ -157,14 +147,12 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         );
 
 
-
-
         restaurant_lng_lat = query.getResultList();
         List<String> results = new ArrayList<>(restaurant_lng_lat.size());
 
         int i = 0;
-        for(Object[] objects : restaurant_lng_lat){
-            while(i < objects.length){
+        for (Object[] objects : restaurant_lng_lat) {
+            while (i < objects.length) {
                 results.add(new String((String) objects[i]));
                 i++;
             }
@@ -176,9 +164,15 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Kunde_Lng_Lat(){
+    public Fahrer findByBenutzerId(int id) {
+        return find("Benutzer_ID", id).firstResult();
+    }
 
-        List <Object[]> kunde_lng_lat;
+
+    @Transactional
+    public List get_Kunde_Lng_Lat() {
+
+        List<Object[]> kunde_lng_lat;
 
         Query query = entityManager.createQuery(
                 "select lng, lat " +
@@ -189,13 +183,12 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         );
 
 
-
         kunde_lng_lat = query.getResultList();
         List<String> results = new ArrayList<>(kunde_lng_lat.size());
 
         int i = 0;
-        for(Object[] objects : kunde_lng_lat){
-            while(i < objects.length){
+        for (Object[] objects : kunde_lng_lat) {
+            while (i < objects.length) {
                 results.add(new String((String) objects[i]));
                 i++;
             }

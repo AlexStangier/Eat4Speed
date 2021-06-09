@@ -2,7 +2,9 @@ package de.eat4speed.services;
 
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
+import de.eat4speed.entities.Fahrer;
 import de.eat4speed.repositories.BenutzerRepository;
+import de.eat4speed.repositories.FahrerRepository;
 import de.eat4speed.services.interfaces.IBenutzerService;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -18,10 +20,15 @@ import java.util.Locale;
 public class BenutzerService implements IBenutzerService {
 
     private BenutzerRepository _benutzer;
+    private FahrerRepository _fahrerRepository;
 
     @Inject
-    public BenutzerService(BenutzerRepository benutzer) {
+    public BenutzerService(BenutzerRepository benutzer,
+                           FahrerRepository fahrerRepository) {
+
         this._benutzer = benutzer;
+        _fahrerRepository = fahrerRepository;
+
     }
 
     @Override
@@ -81,6 +88,33 @@ public class BenutzerService implements IBenutzerService {
     }
 
     @Override
-    public List getBenutzerKundeEinstellungenByLogin(String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
+    public List getBenutzerKundeEinstellungenByLogin(String email) {
+        return _benutzer.getBenutzerKundeEinstellungenByLogin(email);
+    }
+
+    @Override
+    public Integer getFahrerIdByBenutzerId(int id) {
+        Benutzer benutzer = null;
+
+        try {
+            benutzer = _benutzer.getBenutzerByID(id);
+        } catch (Exception e) {
+            System.out.println("Couldn't find Benutzer to retreive Fahrer Id: " + e);
+        }
+
+        Fahrer fahrer = null;
+        if (benutzer != null) {
+            try {
+                fahrer = _fahrerRepository.findByBenutzerId(benutzer.getBenutzer_ID());
+            } catch (Exception e) {
+                System.out.println("Couldn't find Benutzer to retreive Fahrer Id: " + e);
+            }
+        }
+        if (fahrer != null) {
+            return fahrer.getFahrernummer();
+        } else {
+            return 0;
+        }
+    }
 }
 

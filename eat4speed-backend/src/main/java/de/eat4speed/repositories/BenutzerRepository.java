@@ -45,6 +45,7 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return restaurantBenutzer;
     }
 
+
     @Transactional
     public void updateBenutzerRestaurant(Benutzer benutzer) {
         update("emailAdresse = ?1, vorname = ?2, nachname = ?3, telefonnummer = ?4 where benutzer_ID = ?5", benutzer.getEmailAdresse(), benutzer.getVorname(), benutzer.getNachname(), benutzer.getTelefonnummer(), benutzer.getBenutzer_ID());
