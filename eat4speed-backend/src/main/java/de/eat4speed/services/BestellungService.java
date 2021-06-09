@@ -137,7 +137,7 @@ public class BestellungService implements IBestellungService {
                         }
                         _rechnungRepository.persist(rechnung);
 
-                        bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID());
+                        bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID(), "offen", rest.getRestaurant_ID());
 
                         List<Integer> relevantGerichte = new ArrayList<>();
                         for (Gericht ger : restaurantOrderMapper.get(rest.getRestaurant_ID())) {
@@ -213,6 +213,9 @@ public class BestellungService implements IBestellungService {
                 rechnung.setZahlungseingang((byte) 1);
                 rechnung.setDatum_Zahlungseingang(new Timestamp(date.getTime()));
                 _rechnungRepository.persist(rechnung);
+
+                best.setStatus("bezahlt");
+                _bestellungRepository.persist(best);
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -244,24 +247,21 @@ public class BestellungService implements IBestellungService {
                         if (bestellung.getTimestamp().getTime() >= startTime && bestellung.getTimestamp().getTime() <= endTime) {
                             try {
                                 Rechnung rechnungen = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
-
-                                byte c = rechnungen.getZahlungseingang();
-
                                 if (rechnungen.getZahlungseingang() == 1) {
                                     wrapper.data.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
                                 }
 
                             } catch (Exception e) {
-                                System.out.println("Failed to retrieve Rechnung: " + e);
+                                System.out.println("@Get Stat Failed to retrieve Rechnung: " + e);
                             }
                         }
                     }
                 } catch (Exception e) {
-                    System.out.println("Failed to retrieve Bestellung: " + e);
+                    System.out.println("@Get Stat Failed to retrieve Bestellung: " + e);
                 }
             }
         } catch (Exception s) {
-            System.out.println("Failed to retrieve Auftrag: " + s);
+            System.out.println("@Get Stat Failed to retrieve Auftrag: " + s);
         }
         return wrapper;
     }
