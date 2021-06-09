@@ -16,6 +16,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+// Algo_FahrerAuswahl
+// SchichtRepository, FahrerRepository, FahrtenplanRepository, FahrzeugRepository
+// Schicht, Fahrer, Fahrtenplan_Station, Fahrzeug, Benachrichtigung_Fahrer, BenachrichtigungFahrerAuftrag
+// Urlaub, UrlaubRepsitory
+
+// SortByDistanz
+// AdressenRepository, FahrzeugRepository
+// Adresse, Fahrzeug, Fahrtenplan_Station
+
+//AdressenRepository, FahrzeugRepository, FahrerRepository, FahrtenplanRepository, SchichtRepository
+//Adresse, Fahrzeug, Fahrer, Fahrtenplan, Schicht
+// BestellungController, BestellungRepository, FahrtenplanController, FahrtenplanRepository,
+// BenachrichtigungFahrerAuftragController, BenachrichtigungFahrerAuftragRepository, Benachrichtigung_FahrerController,
+// Benachrichtigung_FahrerRepository,
+
 @ApplicationScoped
 public class Algo_FahrerAuswahl {
 
@@ -23,12 +38,15 @@ public class Algo_FahrerAuswahl {
     private FahrerRepository fahrerRepository = new FahrerRepository();
     private FahrtenplanRepository fahrtenplanRepository = new FahrtenplanRepository();
     private FahrzeugRepository fahrzeugRepository = new FahrzeugRepository();
+    private UrlaubRepository urlaubRepository = new UrlaubRepository();
+    private AuftragRepository auftragRepository = new AuftragRepository();
+    private BestellungRepository bestellungRepository = new BestellungRepository();
 
     private Fahrtenplan_Station startPunkt;
+    private Auftrag start;
     private final int sekunden = 30;
     private final int maxFahrer = 5;
     private int anzahlGerichte;
-
 
     // Sende Auftrag an besten Fahrer, falls nach 30 sekunden nicht angenommen
     // sende zusätzlich an nächstbesten fahrer falls keine fahrer mehr da oder 5min vergangen sind
@@ -36,12 +54,18 @@ public class Algo_FahrerAuswahl {
     public void Fahrtenvergabe(int startPunktID) {
 
         int count = 0;
-        startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
-        anzahlGerichte = AnzahlGerichte(startPunktID);
+        System.out.println(startPunktID);
+        start = auftragRepository.getByID(startPunktID);
+        //startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
+        //anzahlGerichte = AnzahlGerichte(startPunktID);
 
+        List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", startPunktID).list();
         List<Integer> naheFahrerIDs = null;
         List<Integer> BenachrichtigungsIDs = new ArrayList<>();
 
+        System.out.println(bestellungen);
+        if(true)
+        return;
         boolean isRunning = true;
         boolean restart = false;
 
@@ -387,17 +411,20 @@ public class Algo_FahrerAuswahl {
         boolean isAvailable = false;
 
         //TODO
-        // fahrer anuahl aktueller Aufträge
+        // fahrer anzahl aktueller Aufträge
+        //TODO
+        // Schicht nur Uhrzeit, Urlaub nur Datum
         if (fahrer.getAnzahl_Aktueller_Auftraege() < 1 && fahrer.getIst_in_Pause() == 0)
         {
+            //Urlaub urlaub = urlaubRepository.find("fahrernummer", fahrer.getFahrernummer()).firstResult();
+
             Schicht schicht = schichtRepository.getSchichtHeute(fahrer.getFahrernummer());
             Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
 
-            //System.out.println(schicht);
-            Timestamp time = new Timestamp(new Date().getTime()
+            Timestamp now = new Timestamp(new Date().getTime()
                     + (startPunkt.getGeschaetzte_Fahrtzeit() * 60L * 1000L) + (Fahrzeit * 1000L));
-
-            if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(time) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
+            //urlaub.getAnfang();
+            if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(now) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
             {
                 isAvailable = true;
             }

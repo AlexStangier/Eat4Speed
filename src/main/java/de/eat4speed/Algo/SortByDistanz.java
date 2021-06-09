@@ -96,7 +96,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
             for (int i = 0; i < jarray.length(); i++)
             {
                 JSONObject info = jarray.getJSONArray(i).getJSONObject(0);
-                distanzen.add(new Fahrer_Distanz(fahrer.get(i).getFahrernummer(),
+                distanzen.add(new Fahrer_Distanz(fahrer.get(i).getFahrernummer(),0,
                         info.getLong("distance"), info.getLong("time")));
             }
 
