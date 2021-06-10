@@ -29,6 +29,11 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
+    public List getFahrerByID(int benutzer_Id) {
+        return fahrerRepository.getFahrer(benutzer_Id);
+    }
+
+    @Override
     public List getAllFahrer()
     {
         return fahrerRepository.getAllFahrer();

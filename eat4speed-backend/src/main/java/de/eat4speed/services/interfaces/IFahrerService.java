@@ -11,6 +11,8 @@ public interface IFahrerService {
 
     Response addFahrer(Fahrer obj);
 
+    List getFahrerByID(int id);
+
     List<String> getAllFahrer();
 
     List<String> getNotVerifiedFahrer();

@@ -8,25 +8,27 @@
             <v-card class="px-4">
               <v-card-title>Bitte wählen Sie Ihre Schicht</v-card-title>
               <v-spacer></v-spacer>
-              <v-row align="center"
-                     justify="space-around"
+              <v-col align="center"
+
                       class="mb-10">
                 <v-btn
-                @click="executeAll"
-                class = "mb-2"
-                color="red"
-                dark
-                bottom
-                height="100"
+                   @click="morgenFarbe"
+                   :color="btnType === 0 ? 'primary' : 'blue-grey'"
+                    class = "mb-2"
+
+                    dark
+                    bottom
+                   height="100"
                 >
                   Frühschicht
                   <v-spacer></v-spacer>
                   von 7:00 - 15:00
                 </v-btn>
                 <v-btn
-                    @click="executeAll"
+                    @click="nachmittagFarbe"
+                    :color="btnType === 1 ? 'primary' : 'blue-grey'"
                     class = "mb-2"
-                    color="red"
+
                     dark
                     height="100"
                     bottom
@@ -35,10 +37,31 @@
                   <v-spacer></v-spacer>
                   von 15:00 - 22:00
                 </v-btn>
-              </v-row>
+                <v-btn
+                    @click="nachtFarbe"
+                    :color="btnType === 2 ? 'primary' : 'blue-grey'"
+                    class = "mb-2"
+
+                    dark
+                    height="100"
+                    bottom
+                >
+                  Nachtschicht
+                  <v-spacer></v-spacer>
+                  von 22:00 - 22:00
+                </v-btn>
+              </v-col>
+              <v-btn
+                  @click="setSchicht(btnType)"
+                  color= "primary"
+                  class = "mb-2"
+                  dark
+                  bottom
+              >
+                Auswahl bestätigen
+              </v-btn>
               <v-row>
               <v-btn
-                  @click="executeAll"
                   class = "mb-2 mr-2"
                   color="red"
                   dark
@@ -57,7 +80,7 @@
 
 <script>
 import axios from "axios";
-import moment from "moment";
+
 
 
 export default {
@@ -73,132 +96,66 @@ export default {
       timesStart: [null, null, null, null, null, null, null],
       timesEnd: [null, null, null, null, null, null, null],
     },
-    timeException: {
-      timePicker: false,
-      timePickerEnd: false,
 
-      timesStart: null,
-      timesEnd: null
-    },
-    enabled: false,
-    enabled1: false,
-    enabled2: false,
-    enabled3: false,
-    enabled4: false,
-    enabled5: false,
-    enabled6: false,
-    enabledException: false,
+    morning: false,
+    afternoon: false,
+    night: false,
+    btnType: 0
 
-    updated: [false, false, false, false, false, false, false]
   }),
   mounted() {
-    this.loadZeiten()
+    //this.loadZeiten()
   },
   methods: {
-
-
-    executeAll(){
-
-      if(this.enabled && !this.updated[0]) this.setArbeitstag(0, "Montag")
-      else if(this.enabled) this.updateArbeitstag(0, "Montag")
-      if(this.enabled1 && !this.updated[1]) this.setArbeitstag(1, "Dienstag")
-      else if(this.enabled1) this.updateArbeitstag(1, "Dienstag")
-      if(this.enabled2 && !this.updated[2]) this.setArbeitstag(2, "Mittwoch")
-      else if(this.enabled2) this.updateArbeitstag(2, "Mittwoch")
-      if(this.enabled3 && !this.updated[3]) this.setArbeitstag(3, "Donnerstag")
-      else if(this.enabled3) this.updateArbeitstag(3, "Donnerstag")
-      if(this.enabled4 && !this.updated[4]) this.setArbeitstag(4, "Freitag")
-      else if(this.enabled4) this.updateArbeitstag(4, "Freitag")
-      if(this.enabled5 && !this.updated[5]) this.setArbeitstag(5, "Samstag")
-      else if(this.enabled5) this.updateArbeitstag(5, "Samstag")
-      if(this.enabled6 && !this.updated[6]) this.setArbeitstag(6, "Sonntag")
-      else if(this.enabled6) this.updateArbeitstag(6, "Sonntag")
+    morgenFarbe(){
+      this.btnType=0
     },
-    async loadZeiten() {
+    nachmittagFarbe(){
+      this.btnType=1
+    },
+    nachtFarbe(){
+      this.btnType=2
+    },
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
-      let StammdatenData = ResponseStammdaten.data[0];
+    async setSchicht(tag) {
 
-      const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12]);
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
+      const fahrer_id = await axios.get("Fahrer/get/" + response.data);
+      console.log(response.data)
+      console.log(fahrer_id.data[0])
 
-      for (let i = 0; i < ResponseZeiten.data.length; i++) {
-        let zeitData = ResponseZeiten.data[i];
-
-        switch (zeitData[2]){
-
-          case "Montag": this.enabled = true;
-            this.times.timesStart[0] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[0] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[0] = true;
-            break;
-          case "Dienstag": this.enabled1 = true;
-            this.times.timesStart[1] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[1] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[1] = true;
-            break;
-          case "Mittwoch": this.enabled2 = true;
-            this.times.timesStart[2] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[2] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[2] = true;
-            break;
-          case "Donnerstag": this.enabled3 = true;
-            this.times.timesStart[3] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[3] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[3] = true;
-            break;
-          case "Freitag": this.enabled4 = true;
-            this.times.timesStart[4] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[4] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[4] = true;
-            break;
-          case "Samstag": this.enabled5 = true;
-            this.times.timesStart[5] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[5] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[5] = true;
-            break;
-          case "Sonntag": this.enabled6 = true;
-            this.times.timesStart[6] = moment(zeitData[0].substring(0, 19)+"+00:00").format("HH:mm")
-            this.times.timesEnd[6] = moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm")
-            this.updated[6] = true;
-            break;
+      let anfang;
+      let ende;
+      switch (tag){
+        case 0: {
+          anfang = "7:00"
+          ende = "15:00"
+          break
+        }
+        case 1: {
+          anfang = "15:00"
+          ende = "23:00"
+          break
+        }
+        case 2: {
+          anfang = "23:00"
+          ende = "7:00"
+          break
         }
       }
 
-      this.version++;
-    },
-    async setArbeitstag(pos, tag) {
-
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
-      let StammdatenData = ResponseStammdaten.data[0];
-
       let time = {
 
-        anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
-        ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
-        wochentag: tag,
-        restaurant_ID: StammdatenData[12]
+        anfang: new Date('January 1, 2000 ' + anfang + ':00'),
+        ende: new Date('January 1, 2000 ' + ende + ':00'),
+        fahrernummer: fahrer_id.data[0],
+
       }
 
-      await axios.post("/Oeffnungszeiten/setArbeitstag", time);
+      console.log(time)
+
+      await axios.post("/Schichten/setSchicht", time);
     },
-    async updateArbeitstag(pos, tag) {
-
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
-      let StammdatenData = ResponseStammdaten.data[0];
-
-      let time = {
-
-        anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
-        ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
-        wochentag: tag,
-        restaurant_ID: StammdatenData[12]
-      }
-
-      await axios.put("/Oeffnungszeiten/updateArbeitstag", time);
-
-    },
-
-
   }
 }
 </script>

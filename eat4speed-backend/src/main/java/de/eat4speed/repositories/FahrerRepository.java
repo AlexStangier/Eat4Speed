@@ -40,6 +40,20 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public List getFahrer(int benutzer_Id)
+    {
+        List fahrer;
+
+        Query query = entityManager.createQuery(
+                "SELECT f.fahrernummer  " +
+                        "FROM Fahrer f " +
+                        "WHERE f.benutzer_ID = " + benutzer_Id + " "
+        );
+        fahrer =  query.getResultList();
+        return fahrer;
+    }
+
+    @Transactional
     public List getAllFahrer()
     {
         List allFahrerData;

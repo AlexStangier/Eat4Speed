@@ -3,6 +3,7 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrzeug;
+import de.eat4speed.entities.Gericht;
 import de.eat4speed.services.interfaces.IFahrerService;
 
 import javax.annotation.security.PermitAll;
@@ -55,6 +56,13 @@ public class FahrerController {
     @RolesAllowed("admin")
     public List getAllDrivers(){
         return _fahrer.getAllFahrer();
+    }
+
+    @GET
+    @Path("get/{id}")
+    public List getFahrerByID(@PathParam("id") int benutzer_ID)
+    {
+        return _fahrer.getFahrerByID(benutzer_ID);
     }
 
     @GET
