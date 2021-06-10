@@ -24,6 +24,8 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
     private int kundennummer;
     private String status;
     private int geschaetzte_fahrtzeit_restaurant_ziel;
+    private Timestamp timestamp_Lieferung;
+
     public Auftrag() {
     }
     public Auftrag(int auftragnehmer, Timestamp timestamp, int anschrift, Double lieferdistanz, int kundennummer, String status, int geschaetzte_fahrtzeit_restaurant_ziel) {
@@ -34,6 +36,14 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
         this.kundennummer = kundennummer;
         this.status = status;
         this.geschaetzte_fahrtzeit_restaurant_ziel = geschaetzte_fahrtzeit_restaurant_ziel;
+    }
+
+    public long getAuftrags_ID() {
+        return auftrags_ID;
+    }
+
+    public void setAuftrags_ID(long auftrags_ID) {
+        this.auftrags_ID = auftrags_ID;
     }
 
     public int getAuftragnehmer() {
@@ -52,6 +62,14 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
         this.timestamp = timestamp;
     }
 
+    public Timestamp getTimestamp_On_Customer_Demand() {
+        return timestamp_On_Customer_Demand;
+    }
+
+    public void setTimestamp_On_Customer_Demand(Timestamp timestamp_On_Customer_Demand) {
+        this.timestamp_On_Customer_Demand = timestamp_On_Customer_Demand;
+    }
+
     public int getAnschrift() {
         return anschrift;
     }
@@ -66,14 +84,6 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
 
     public void setLieferdistanz(Double lieferdistanz) {
         this.lieferdistanz = lieferdistanz;
-    }
-
-    public long getAuftrags_ID() {
-        return auftrags_ID;
-    }
-
-    public void setAuftrags_ID(long auftrags_ID) {
-        this.auftrags_ID = auftrags_ID;
     }
 
     public int getKundennummer() {
@@ -96,16 +106,16 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
         return geschaetzte_fahrtzeit_restaurant_ziel;
     }
 
-    public void setGeschaetzte_fahrtzeit_restaurant_ziel(int geschaetzte_fahrzeit_restaurant_ziel) {
-        this.geschaetzte_fahrtzeit_restaurant_ziel = geschaetzte_fahrzeit_restaurant_ziel;
+    public void setGeschaetzte_fahrtzeit_restaurant_ziel(int geschaetzte_fahrtzeit_restaurant_ziel) {
+        this.geschaetzte_fahrtzeit_restaurant_ziel = geschaetzte_fahrtzeit_restaurant_ziel;
     }
 
-    public Timestamp getTimestamp_On_Customer_Demand() {
-        return timestamp_On_Customer_Demand;
+    public Timestamp getTimestamp_Lieferung() {
+        return timestamp_Lieferung;
     }
 
-    public void setTimestamp_On_Customer_Demand(Timestamp timestamp_On_Customer_Demand) {
-        this.timestamp_On_Customer_Demand = timestamp_On_Customer_Demand;
+    public void setTimestamp_Lieferung(Timestamp timestamp_Lieferung) {
+        this.timestamp_Lieferung = timestamp_Lieferung;
     }
 
     @Override
@@ -113,12 +123,12 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Auftrag auftrag = (Auftrag) o;
-        return auftrags_ID == auftrag.auftrags_ID && auftragnehmer == auftrag.auftragnehmer && anschrift == auftrag.anschrift && kundennummer == auftrag.kundennummer && geschaetzte_fahrtzeit_restaurant_ziel == auftrag.geschaetzte_fahrtzeit_restaurant_ziel && Objects.equals(timestamp, auftrag.timestamp) && Objects.equals(timestamp_On_Customer_Demand, auftrag.timestamp_On_Customer_Demand) && Objects.equals(lieferdistanz, auftrag.lieferdistanz) && Objects.equals(status, auftrag.status);
+        return auftrags_ID == auftrag.auftrags_ID && auftragnehmer == auftrag.auftragnehmer && anschrift == auftrag.anschrift && kundennummer == auftrag.kundennummer && geschaetzte_fahrtzeit_restaurant_ziel == auftrag.geschaetzte_fahrtzeit_restaurant_ziel && Objects.equals(timestamp, auftrag.timestamp) && Objects.equals(timestamp_On_Customer_Demand, auftrag.timestamp_On_Customer_Demand) && Objects.equals(lieferdistanz, auftrag.lieferdistanz) && Objects.equals(status, auftrag.status) && Objects.equals(timestamp_Lieferung, auftrag.timestamp_Lieferung);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(auftrags_ID, auftragnehmer, timestamp, timestamp_On_Customer_Demand, anschrift, lieferdistanz, kundennummer, status, geschaetzte_fahrtzeit_restaurant_ziel);
+        return Objects.hash(auftrags_ID, auftragnehmer, timestamp, timestamp_On_Customer_Demand, anschrift, lieferdistanz, kundennummer, status, geschaetzte_fahrtzeit_restaurant_ziel, timestamp_Lieferung);
     }
 
     @Override
@@ -132,6 +142,8 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
                 ", lieferdistanz=" + lieferdistanz +
                 ", kundennummer=" + kundennummer +
                 ", status='" + status + '\'' +
-                ", geschaetzte_fahrzeit_restaurant_ziel=" + geschaetzte_fahrtzeit_restaurant_ziel + '}';
+                ", geschaetzte_fahrtzeit_restaurant_ziel=" + geschaetzte_fahrtzeit_restaurant_ziel +
+                ", timestamp_Lieferung=" + timestamp_Lieferung +
+                '}';
     }
 }

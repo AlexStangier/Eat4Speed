@@ -2,6 +2,8 @@ package de.eat4speed.services;
 
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.dto.PaymentDto;
+import de.eat4speed.dto.StatisticDto;
+import de.eat4speed.dto.StatisticDtoWrapper;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
@@ -128,19 +130,14 @@ public class BestellungService implements IBestellungService {
                         }
                         restaurantOrderMapper.put(rest.getRestaurant_ID(), gerichteForRestaurant);
                         try {
-                            float sum = (float) gerichteForRestaurant.stream().mapToDouble(Gericht::getPreis).sum();
-                            sum = round(sum, 2);
-                            sum *= 1.07;
-                            sum += 2;
-
-                            rechnung = new Rechnung(sum, new Timestamp(date.getTime()), (byte) 0);
+                            rechnung = new Rechnung((gerichteForRestaurant.stream().mapToDouble(Gericht::getPreis).sum() * 1.07 + 2.00), new Timestamp(date.getTime()), (byte) 0);
                         } catch (Exception e) {
                             System.out.println("Failed while creating rechnung:" + e);
                             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
                         }
                         _rechnungRepository.persist(rechnung);
 
-                        bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID());
+                        bestellung = new Bestellung((int) auftrag.getAuftrags_ID(), new Timestamp(date.getTime()), rechnung.getRechnungs_ID(), "offen", rest.getRestaurant_ID());
 
                         List<Integer> relevantGerichte = new ArrayList<>();
                         for (Gericht ger : restaurantOrderMapper.get(rest.getRestaurant_ID())) {
@@ -200,15 +197,72 @@ public class BestellungService implements IBestellungService {
 
             for (Bestellung best : bestellungen) {
                 Rechnung rechnung = _rechnungRepository.getRechnungByID(best.getRechnung());
+
+                String idsString = best.getGericht_IDs();
+                idsString = idsString.replaceAll("[\\[\\]\\(\\)]", "");
+                String[] ids = idsString.split("\\,");
+
+                for (String s : ids) {
+                    try {
+                        Gericht gericht = _gerichtRepository.getGerichtByGerichtID(Integer.parseInt(s.trim()));
+                        total += gericht.getPreis();
+                    } catch (Exception e) {
+                        System.out.println("Failed to retrieve Gericht: " + e);
+                    }
+                }
                 rechnung.setZahlungseingang((byte) 1);
                 rechnung.setDatum_Zahlungseingang(new Timestamp(date.getTime()));
-                total += rechnung.getBetrag();
                 _rechnungRepository.persist(rechnung);
+
+                best.setStatus("bezahlt");
+                _bestellungRepository.persist(best);
             }
         } catch (Exception e) {
             System.out.println(e);
             return new PaymentDto(total, "error");
         }
         return new PaymentDto(total, "success");
+    }
+
+    /**
+     * Creates a statistic for all previous orders
+     *
+     * @param restaurantId
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws SQLException
+     */
+    @Override
+    public StatisticDtoWrapper getStatistic(Long restaurantId, long startTime, long endTime) throws SQLException {
+
+        StatisticDtoWrapper wrapper = new StatisticDtoWrapper();
+
+        try {
+            List<Auftrag> aufträge = _auftragRepository.getAllAuftragByRestaurant(restaurantId);
+            for (Auftrag auftrag : aufträge) {
+                try {
+                    List<Bestellung> bestellungen = _bestellungRepository.getAllBestellungenByAuftragsId(auftrag.getAuftrags_ID());
+                    for (Bestellung bestellung : bestellungen) {
+                        if (bestellung.getTimestamp().getTime() >= startTime && bestellung.getTimestamp().getTime() <= endTime) {
+                            try {
+                                Rechnung rechnungen = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
+                                if (rechnungen.getZahlungseingang() == 1) {
+                                    wrapper.data.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
+                                }
+
+                            } catch (Exception e) {
+                                System.out.println("@Get Stat Failed to retrieve Rechnung: " + e);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("@Get Stat Failed to retrieve Bestellung: " + e);
+                }
+            }
+        } catch (Exception s) {
+            System.out.println("@Get Stat Failed to retrieve Auftrag: " + s);
+        }
+        return wrapper;
     }
 }

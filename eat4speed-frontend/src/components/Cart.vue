@@ -45,10 +45,10 @@
 
         </v-list>
 
-        <h3>Steuer: {{ (((calculateCartPrice() - 2) * 0.93) * 0.07).toFixed(2) }} &euro; (7% Mwst.)</h3>
+        <h3>Steuer: {{ parseFloat(calculateCartTax()).toFixed(2) }} &euro; (7% Mwst.)</h3>
         <h3 class="pb-1">Lieferkosten: 2 &euro;</h3>
         <v-divider></v-divider>
-        <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+        <h2 class="pt-2">Endpreis: {{ parseFloat(calculateCartPrice()).toFixed(2) }} &euro;</h2>
 
         <v-card-actions>
           <v-btn block color="primary" depressed tile @click="paypalRequest()">
@@ -97,7 +97,14 @@ export default {
       this.carts.forEach(value => {
         cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
       });
-      return this.roundToTwo((cartPrice * 1.07) + 2).toFixed(2);
+      return this.roundToTwo((cartPrice * 1.07) + 2);
+    },
+    calculateCartTax() {
+      let cartPrice = 0;
+      this.carts.forEach(value => {
+        cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
+      });
+      return this.roundToTwo(cartPrice * 0.07);
     },
     async getCustomerId() {
       const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$cookies.get('emailAdresse') });
