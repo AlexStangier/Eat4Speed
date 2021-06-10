@@ -113,7 +113,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
         Query query = entityManager.createQuery(
                 "SELECT fz.fahrzeugtyp, ad.lng, ad.lat, fz.kapazitaet_Gerichte " +
-                        "from Fahrzeug fz ,Fahrer fa,Benutzer b, Adressen ad " +
+                        "from Fahrzeug fz ,Fahrer fa,Benutzer b, Adressen ad, Auftrag" +
                         "where fz.fahrzeug_ID = fa.fahrzeug " +
                         "AND fa.benutzer_ID = b.benutzer_ID " +
                         "AND ad.adress_ID = fa.aktueller_Standort " +
@@ -150,7 +150,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
 
         Query query = entityManager.createNativeQuery(
-                "SELECT auftrags_ID,lng, lat, name_des_Restaurants " +
+                "SELECT auftrags_ID,lng, lat, name_des_Restaurants, timestamp_On_Customer_Demand" +
                         "FROM Adressen, Auftrag, Fahrtenplan_Station, Restaurant " +
                         "WHERE adress_ID IN (" +
                         "SELECT Restaurant.anschrift " +
