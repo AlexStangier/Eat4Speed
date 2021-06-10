@@ -7,6 +7,7 @@ import de.eat4speed.entities.Fahrtenplan_Station;
 import de.eat4speed.repositories.AdressenRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 
+import de.eat4speed.repositories.RestaurantRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -22,7 +23,6 @@ import java.util.List;
 public class SortByDistanz implements Comparator<Fahrer_Distanz> {
 
     private Adressen startAdresse;
-
     private AdressenRepository adressenRepository;
     private FahrzeugRepository fahrzeugRepository;
 
@@ -30,7 +30,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
     {
         this.adressenRepository = new AdressenRepository();
         this.fahrzeugRepository = new FahrzeugRepository();
-        this.startAdresse = adressenRepository.getAdresseByCustomerId(startPunktAuftrag.getLiefer_Abholadresse());
+        //this.startAdresse = adressenRepository.getAdresseByCustomerId(startPunktAuftrag.getLiefer_Abholadresse());
     }
 
     @Override
@@ -38,7 +38,22 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
         return Long.compare( f1.getDistanz(), f2.getDistanz());
     }
 
-    public List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer)
+    public List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, List<Integer> restaurantIDs)
+    {
+        List<Fahrer_Distanz> distanzen = new ArrayList<>();
+        RestaurantRepository restaurantRepository = new RestaurantRepository();
+
+        for (Integer restaurant : restaurantIDs)
+        {
+            startAdresse = adressenRepository.getAdresseByCustomerId(restaurantRepository.findAnschriftIDFromRestaurant(restaurant));
+            System.out.println(startAdresse);
+            distanzen.addAll(getDistances(fahrer, restaurant));
+        }
+
+        return distanzen;
+    }
+
+    private List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, int restaurant)
     {
         List<Fahrer_Distanz> distanzen = new ArrayList<>();
 
@@ -66,7 +81,6 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
                 {
                     fahrerPositionen.append(",");
                 }
-
             }
 
             String data =
@@ -96,7 +110,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
             for (int i = 0; i < jarray.length(); i++)
             {
                 JSONObject info = jarray.getJSONArray(i).getJSONObject(0);
-                distanzen.add(new Fahrer_Distanz(fahrer.get(i).getFahrernummer(),0,
+                distanzen.add(new Fahrer_Distanz(fahrer.get(i).getFahrernummer(), restaurant,
                         info.getLong("distance"), info.getLong("time")));
             }
 

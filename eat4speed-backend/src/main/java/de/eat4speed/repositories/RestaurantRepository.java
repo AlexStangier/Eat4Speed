@@ -218,6 +218,11 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         return find("restaurant_ID", restaurant_ID).firstResult();
     }
 
+    public int findAnschriftIDFromRestaurant(int restaurant_ID)
+    {
+        return find("restaurant_ID", restaurant_ID).firstResult().getAnschrift();
+    }
+
     @Transactional
     public void updateRestaurantStammdaten(Restaurant restaurant) {
         update("name_des_Restaurants = ?1, mindestbestellwert = ?2, bestellradius = ?3 where restaurant_ID = ?4", restaurant.getName_des_Restaurants(), restaurant.getMindestbestellwert(), restaurant.getBestellradius(), restaurant.getRestaurant_ID());

@@ -3,14 +3,14 @@ package de.eat4speed.Algo;
 public class Fahrer_Distanz {
 
     private int Fahrer_ID;
-    private int Auftrag_ID;
+    private int Restaurant_ID;
     private Long Distanz;
     private Long Fahrzeit;
 
-    public Fahrer_Distanz(int fahrer_ID, int auftrag_ID, Long distanz, Long fahrzeit)
+    public Fahrer_Distanz(int fahrer_ID, int restaurant_ID, Long distanz, Long fahrzeit)
     {
         Fahrer_ID = fahrer_ID;
-        Auftrag_ID = auftrag_ID;
+        Restaurant_ID = restaurant_ID;
         Distanz = distanz;
         Fahrzeit = fahrzeit;
     }
@@ -21,9 +21,9 @@ public class Fahrer_Distanz {
         Fahrer_ID = fahrer_ID;
     }
 
-    public int getAuftrag_ID() { return Auftrag_ID; }
+    public int getRestaurant_ID() { return Restaurant_ID; }
 
-    public void setAuftrag_ID(int auftrag_ID) { Auftrag_ID = auftrag_ID; }
+    public void setRestaurant_ID(int restaurant_ID) { Restaurant_ID = restaurant_ID; }
 
     public Long getDistanz() {
         return Distanz;

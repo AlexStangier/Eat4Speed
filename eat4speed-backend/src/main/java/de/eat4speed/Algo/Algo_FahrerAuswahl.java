@@ -16,21 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-// Algo_FahrerAuswahl
-// SchichtRepository, FahrerRepository, FahrtenplanRepository, FahrzeugRepository
-// Schicht, Fahrer, Fahrtenplan_Station, Fahrzeug, Benachrichtigung_Fahrer, BenachrichtigungFahrerAuftrag
-// Urlaub, UrlaubRepsitory
-
-// SortByDistanz
-// AdressenRepository, FahrzeugRepository
-// Adresse, Fahrzeug, Fahrtenplan_Station
-
-//AdressenRepository, FahrzeugRepository, FahrerRepository, FahrtenplanRepository, SchichtRepository
-//Adresse, Fahrzeug, Fahrer, Fahrtenplan, Schicht
-// BestellungController, BestellungRepository, FahrtenplanController, FahrtenplanRepository,
-// BenachrichtigungFahrerAuftragController, BenachrichtigungFahrerAuftragRepository, Benachrichtigung_FahrerController,
-// Benachrichtigung_FahrerRepository,
-
 @ApplicationScoped
 public class Algo_FahrerAuswahl {
 
@@ -47,6 +32,7 @@ public class Algo_FahrerAuswahl {
     private final int sekunden = 30;
     private final int maxFahrer = 5;
     private int anzahlGerichte;
+    private List<Integer> RestaurantIDs = new ArrayList<>();
 
     // Sende Auftrag an besten Fahrer, falls nach 30 sekunden nicht angenommen
     // sende zusätzlich an nächstbesten fahrer falls keine fahrer mehr da oder 5min vergangen sind
@@ -54,24 +40,24 @@ public class Algo_FahrerAuswahl {
     public void Fahrtenvergabe(int startPunktID) {
 
         int count = 0;
-        System.out.println(startPunktID);
         start = auftragRepository.getAuftragByID(startPunktID);
         //startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
         //anzahlGerichte = AnzahlGerichte(startPunktID);
 
-        List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", startPunktID).list();
-        List<Integer> naheFahrerIDs = null;
+        System.out.println(startPunktID);
+        anzahlGerichte = AnzahlGerichte(startPunktID);
+        List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
         List<Integer> BenachrichtigungsIDs = new ArrayList<>();
 
-        System.out.println(bestellungen);
-        if(true)
-        return;
+        //if(true)
+        //return;
         boolean isRunning = true;
         boolean restart = false;
 
         while(isRunning) {
 
-            if (AuftragAngenommen(startPunktID))
+            if (false)
+            //if (AuftragAngenommen(startPunktID))
             {
                 // evtl anfragen entfernen
                 for (int i = 0; i < count; i++)
@@ -86,7 +72,9 @@ public class Algo_FahrerAuswahl {
             if (count == 0)
             {
                 System.out.println("Start");
-                naheFahrerIDs = getNaheFahrer();
+                naheFahrer = getNaheFahrer();
+                if(true)
+                    return;
             }
 
             if (restart)
@@ -98,15 +86,15 @@ public class Algo_FahrerAuswahl {
                 isRunning = false;
             }
             // sende alle 30 sek an nächstbesten Fahrer
-            else if (naheFahrerIDs.size() > 0 )
+            else if (naheFahrer.size() > 0 )
             {
-                if (naheFahrerIDs.size() > count && count < maxFahrer)
+                if (naheFahrer.size() > count && count < maxFahrer)
                 {
                     // wenn noch an unter maxFahrer gesendet
-                    System.out.println(count + " Schicke an Fahrer mit ID: "+naheFahrerIDs.get(count)
+                    System.out.println(count + " Schicke an Fahrer mit ID: "+naheFahrer.get(count)
                     + " "  +LocalDateTime.now());
-                    Schicht schicht = schichtRepository.getSchichtHeute(naheFahrerIDs.get(count));
-                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrerIDs.get(count), startPunkt.getAuftrag()));
+                    Schicht schicht = schichtRepository.getSchichtHeute(naheFahrer.get(count).getFahrer_ID());
+                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer_ID(), startPunkt.getAuftrag(), naheFahrer.get(count).getRestaurant_ID()));
                     count++;
                 }
                 else
@@ -151,11 +139,19 @@ public class Algo_FahrerAuswahl {
         }
     }
 
-    private int AnzahlGerichte(int startpunktID)
+    private int AnzahlGerichte(int auftragsID)
     {
         int count = 0;
-        int StationsID = startpunktID;
-        List<Integer> AuftragIDs = new ArrayList<>();
+        //int StationsID = startpunktID;
+        //List<Integer> AuftragIDs = new ArrayList<>();
+
+        List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", auftragsID).list();
+        for (Bestellung b : bestellungen)
+        {
+            count += new JSONArray(b.getGericht_IDs()).length();
+            RestaurantIDs.add(b.getRestaurant_ID());
+        }
+        /*
         AuftragIDs.add(startPunkt.getAuftrag());
 
         boolean hasNext = true;
@@ -178,31 +174,13 @@ public class Algo_FahrerAuswahl {
         {
             count += getGerichte(i).length();
         }
-
+*/
         System.out.println("Gerichte: " + count);
 
         return count;
     }
 
-    private JSONArray getGerichte(int AuftragID)
-    {
-        JSONArray jsonArray = null;
-
-        try {
-            URL url = new URL("http://localhost:1337/Bestellung/" + AuftragID);
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("GET");
-            http.setDoOutput(true);
-
-            jsonArray = new JSONArray(getResponse(http.getInputStream()));
-
-        } catch (IOException | ClassCastException e){
-            e.printStackTrace();
-        }
-
-        return jsonArray;
-    }
-
+    //TODO
     private boolean AuftragAngenommen(int id)
     {
         boolean retVal = false;
@@ -231,12 +209,14 @@ public class Algo_FahrerAuswahl {
         return retVal;
     }
 
-    private int sende_Auftrag_an_Fahrer(int fahrerID, int auftragID)
+    private int sende_Auftrag_an_Fahrer(int fahrerID, int auftragID, int restaurantID)
     {
         String benachrichtigung = "Auftrag Anfrage " + auftragID;
         Benachrichtigung_Fahrer benachrichtigung_fahrer = new Benachrichtigung_Fahrer();
         benachrichtigung_fahrer.setBenachrichtigungs_ID(0);
         benachrichtigung_fahrer.setFahrernummer(fahrerID);
+        benachrichtigung_fahrer.setRestaurant_ID(restaurantID);
+        benachrichtigung_fahrer.setGelesen((byte)0);
         benachrichtigung_fahrer.setBenachrichtigung(benachrichtigung);
         benachrichtigung_fahrer.setTimestamp(new Timestamp(new Date().getTime()));
 
@@ -368,10 +348,10 @@ public class Algo_FahrerAuswahl {
         }
     }
 
-    private List<Integer> getNaheFahrer()
+    private List<Fahrer_Distanz> getNaheFahrer()
     {
         List<Fahrer> fahrer = fahrerRepository.getEveryVerifiedFahrer();
-        List<Integer> naheFahrerIDs = new ArrayList<>();
+        List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
 
         System.out.println("Fahrer gefunden: " + fahrer.size());
 
@@ -381,7 +361,7 @@ public class Algo_FahrerAuswahl {
         // sortieren nach nähe zum Startpunkt der Stationen
         if (fahrer.size() > 0)
         {
-            distances = sortByDistanz.getDistances(fahrer);
+            distances = sortByDistanz.getDistances(fahrer, RestaurantIDs);
 
             for (int i = 0; i < fahrer.size(); i++)
             {
@@ -396,16 +376,21 @@ public class Algo_FahrerAuswahl {
 
             distances.sort( sortByDistanz );
 
-            fahrer.clear();
-
-            for (Fahrer_Distanz D : distances)
+            List<Integer> da = new ArrayList<>();
+            for (int i = 0; i < distances.size() && i < maxFahrer; i++)
             {
-                naheFahrerIDs.add(D.getFahrer_ID());
+                if(!da.contains(distances.get(i).getFahrer_ID()))
+                {
+                    da.add(distances.get(i).getFahrer_ID());
+                    naheFahrer.add(distances.get(i));
+                }
             }
+
         }
-        return naheFahrerIDs;
+        return naheFahrer;
     }
 
+    //TODO
     private boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit)
     {
         boolean isAvailable = false;
