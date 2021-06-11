@@ -124,7 +124,6 @@ export default {
   name: 'Startseite',
   mounted() {
     this.searchDestination = "Gerichte";
-    this.$store.commit("changeCartGerichte", []);
   },
   computed: {
     isUserLoggedIn() {

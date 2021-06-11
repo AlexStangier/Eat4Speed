@@ -107,8 +107,18 @@ export default {
       return this.roundToTwo(cartPrice * 0.07);
     },
     async getCustomerId() {
-      const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$cookies.get('emailAdresse') });
-      return response.data;
+      let id;
+      await this.$http.post('/Benutzer/getIdByEmail', {
+        email: this.$cookies.get('emailAdresse')
+      }).then((response) => {
+        if (response.status === 200) {
+          id = response.data;
+        }
+      }, () => {
+        this.$router.push({name: "KundeAnmeldung"});
+      });
+
+      return id;
     },
     async paypalRequest() {
       const items = [];
@@ -120,6 +130,8 @@ export default {
       });
 
       const customerId = await this.getCustomerId();
+
+      console.log(customerId);
 
       this.$http.post('/Bestellung/add', {
         items: items,

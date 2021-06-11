@@ -19,6 +19,10 @@ const routes = [
     props: true,
     component: () => import('../views/Kunde/KundeBezahlungErfolgreich.vue')
   },
+  {
+    path: '*',
+    component: () => import('../components/NotFoundPage.vue')
+  },
   ...adminRoutes,
   ...fahrerRoutes,
   ...kundeRoutes,

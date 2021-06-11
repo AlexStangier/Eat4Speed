@@ -10,6 +10,10 @@ import Navbar from '@/components/Navbar.vue';
 
 export default {
   name: 'App',
+  metaInfo: {
+    title: 'Eat 4 Speed',
+    titleTemplate: '%s'
+  },
   components: {
     Navbar
   }
