@@ -27,4 +27,10 @@ public class FahrtenplanRepository implements PanacheRepository<Fahrtenplan_Stat
         Integer id = fahrtenplan_station.getFahrer();
         return id.toString();
     }
+
+    @Transactional
+    public Boolean doesFahrtenPlanExistFromAuftrag(int Auftrag)
+    {
+        return Boolean.valueOf(String.valueOf(find("Auftrag", Auftrag).count()));
+    }
 }

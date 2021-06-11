@@ -56,7 +56,6 @@ public class Algo_FahrerAuswahl {
 
         while(isRunning) {
 
-            if (false)
             if (AuftragAngenommen(auftragID))
             {
                 // evtl anfragen entfernen
@@ -180,28 +179,18 @@ public class Algo_FahrerAuswahl {
         return count;
     }
 
-    //TODO
     private boolean AuftragAngenommen(int id)
     {
         boolean retVal = false;
-        Integer fahrerID = null;
 
         try {
-            URL url = new URL("http://localhost:1337/Fahrtenplan/" + id);
+            URL url = new URL("http://localhost:1337/Fahrtenplan/exist/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
             http.setDoOutput(true);
 
-            fahrerID = (Integer)new JSONObject(getResponse(http.getInputStream())).get("Fahrer");
+            retVal = Boolean.getBoolean(getResponse(http.getInputStream()));
 
-            if (fahrerID != null)
-            {                System.out.println("NOT NULL " + fahrerID);
-                retVal = true;
-            }
-
-        } catch (ClassCastException e) {
-            System.out.println("NULL " + fahrerID);
-            retVal = false;
         } catch (IOException e){
             e.printStackTrace();
         }
