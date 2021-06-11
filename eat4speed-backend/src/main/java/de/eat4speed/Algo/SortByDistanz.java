@@ -4,9 +4,11 @@ import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrtenplan_Station;
 
+import de.eat4speed.entities.Kunde;
 import de.eat4speed.repositories.AdressenRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 
+import de.eat4speed.repositories.KundeRepository;
 import de.eat4speed.repositories.RestaurantRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,6 +27,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
     private Adressen startAdresse;
     private AdressenRepository adressenRepository;
     private FahrzeugRepository fahrzeugRepository;
+    private List<Adressen> RestaurantAdressen;
 
     SortByDistanz(Fahrtenplan_Station startPunktAuftrag)
     {
@@ -41,16 +44,61 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
     public List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, List<Integer> restaurantIDs)
     {
         List<Fahrer_Distanz> distanzen = new ArrayList<>();
+        RestaurantAdressen = new ArrayList<>();
         RestaurantRepository restaurantRepository = new RestaurantRepository();
 
         for (Integer restaurant : restaurantIDs)
         {
             startAdresse = adressenRepository.getAdresseByCustomerId(restaurantRepository.findAnschriftIDFromRestaurant(restaurant));
-            System.out.println(startAdresse);
+            RestaurantAdressen.add(startAdresse);
             distanzen.addAll(getDistances(fahrer, restaurant));
         }
 
         return distanzen;
+    }
+
+    protected double getFahrzeit(int kundennummer)
+    {
+        Adressen kundenAdresse = adressenRepository.getAdresseByCustomerId(new KundeRepository().find("Kundennummer", kundennummer).firstResult().getAnschrift());
+
+        double zeit = 0L;
+
+        StringBuilder request = new StringBuilder();
+        request.append("https://api.geoapify.com/v1/routing?waypoints=");
+
+        for ( Adressen adresse : RestaurantAdressen)
+        {
+            request.append(adresse.getLat());
+            request.append(",");
+            request.append(adresse.getLng());
+            request.append("|");
+        }
+
+        request.append(kundenAdresse.getLat());
+        request.append(",");
+        request.append(kundenAdresse.getLng());
+        request.append("&mode=drive&apiKey=e15f70e37a39423cbe921dc88a1ded04");
+
+        try
+        {
+            URL url = new URL(request.toString());
+            HttpURLConnection http = (HttpURLConnection)url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(true);
+            http.setRequestProperty("Content-Type", "application/json");
+
+            StringBuilder fahrerPositionen = new StringBuilder();
+
+            JSONObject json = new JSONObject(Algo_FahrerAuswahl.getResponse(http.getInputStream()));
+
+            zeit = json.getJSONArray("features").getJSONObject(0).getJSONObject("properties").getDouble("time");
+
+            http.disconnect();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return zeit;
     }
 
     private List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, int restaurant)

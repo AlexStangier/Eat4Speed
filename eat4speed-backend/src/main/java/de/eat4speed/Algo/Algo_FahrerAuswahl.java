@@ -37,15 +37,15 @@ public class Algo_FahrerAuswahl {
     // Sende Auftrag an besten Fahrer, falls nach 30 sekunden nicht angenommen
     // sende zusätzlich an nächstbesten fahrer falls keine fahrer mehr da oder 5min vergangen sind
     // -> neustart
-    public void Fahrtenvergabe(int startPunktID) {
+    public void Fahrtenvergabe(int auftragID) {
 
         int count = 0;
-        start = auftragRepository.getAuftragByID(startPunktID);
+        start = auftragRepository.getAuftragByID(auftragID);
         //startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
         //anzahlGerichte = AnzahlGerichte(startPunktID);
 
-        System.out.println(startPunktID);
-        anzahlGerichte = AnzahlGerichte(startPunktID);
+        System.out.println(auftragID);
+        anzahlGerichte = AnzahlGerichte(auftragID);
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
         List<Integer> BenachrichtigungsIDs = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class Algo_FahrerAuswahl {
         while(isRunning) {
 
             if (false)
-            //if (AuftragAngenommen(startPunktID))
+            if (AuftragAngenommen(auftragID))
             {
                 // evtl anfragen entfernen
                 for (int i = 0; i < count; i++)
@@ -82,7 +82,7 @@ public class Algo_FahrerAuswahl {
                 // anfragen entfernen und neustart
                 entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, startPunkt.getAuftrag());
 
-                restart(startPunktID);
+                restart(auftragID);
                 isRunning = false;
             }
             // sende alle 30 sek an nächstbesten Fahrer
@@ -362,10 +362,11 @@ public class Algo_FahrerAuswahl {
         if (fahrer.size() > 0)
         {
             distances = sortByDistanz.getDistances(fahrer, RestaurantIDs);
+            double getGeschaetzte_Fahrtzeit = sortByDistanz.getFahrzeit(start.getKundennummer());
 
             for (int i = 0; i < fahrer.size(); i++)
             {
-                if (!CheckFahrerAvailability(fahrer.get(i), distances.get(i).getFahrzeit())) {
+                if (!CheckFahrerAvailability(fahrer.get(i), distances.get(i).getFahrzeit(), getGeschaetzte_Fahrtzeit)) {
                     distances.remove(i);
                     fahrer.remove(i);
                     i--;
@@ -391,7 +392,7 @@ public class Algo_FahrerAuswahl {
     }
 
     //TODO
-    private boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit)
+    private boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit, double getGeschaetzte_Fahrtzeit)
     {
         boolean isAvailable = false;
 
@@ -407,7 +408,7 @@ public class Algo_FahrerAuswahl {
             Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
 
             Timestamp now = new Timestamp(new Date().getTime()
-                    + (startPunkt.getGeschaetzte_Fahrtzeit() * 60L * 1000L) + (Fahrzeit * 1000L));
+                    + (long)(getGeschaetzte_Fahrtzeit * 60L * 1000L) + (Fahrzeit * 1000L));
             //urlaub.getAnfang();
             if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(now) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
             {
