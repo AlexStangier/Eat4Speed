@@ -59,6 +59,7 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
+import axios from "axios";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -66,6 +67,31 @@ export default {
     DirectionsRenderer
   },
   methods: {
+    async getBenachrichtigung()
+    {
+      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/"+this.fahrernummer);
+      if(responseBenachrichtigung.data.length>0)
+      {
+        this.benachrichtigungs_ID = responseBenachrichtigung.data[0][0];
+
+        let index = this.auftrags_IDs.length;
+        this.auftrags_IDs[index] = responseBenachrichtigung.data[0][1];
+
+        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/"+this.benachrichtigungs_ID);
+      }
+    },
+    async setAuftragFahrernummer()
+    {
+      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[this.auftrags_IDs_index])
+      if(response.data[0]===null)
+      {
+        await axios.put("Auftrag/updateAuftragFahrernummer/"+this.auftrags_IDs[this.auftrags_IDs_index]+"/"+this.fahrernummer);
+      }
+      else
+      {
+        alert("Auftrag bereits verteilt.");
+      }
+    },
     abholungBestätigen(id) {
       id;
     },
@@ -81,10 +107,16 @@ export default {
   },
   async mounted() {
       await this.$http.get('/route').then(response => this.data = response.data)
+
+      //todo this fahrernummer = aktuelle Fahrernummer
     },
   data() {
     return {
       data: [],
+      fahrernummer: 0,
+      auftrags_IDs: [],
+      auftrags_IDs_index: 0,
+      benachrichtigungs_ID: 0,
       acceptDialog: false,
       deleteDialog: false,
       headers: [
