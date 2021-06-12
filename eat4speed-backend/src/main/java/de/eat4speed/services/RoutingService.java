@@ -7,6 +7,7 @@ import de.eat4speed.services.interfaces.IFahrerService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.net.HttpURLConnection;
@@ -16,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@ApplicationScoped
 public class RoutingService implements IRoutingService {
 
     @Inject
@@ -89,10 +90,8 @@ public class RoutingService implements IRoutingService {
 
 
     @Override
-    @Default
-    public JSONArray get_best_Route() throws Exception {
-
-
+    //@Default
+    public JSONArray get_best_Route(String email) throws Exception {
         URL url = new URL("https://api.geoapify.com/v1/routeplanner?apiKey=e15f70e37a39423cbe921dc88a1ded04");
         HttpURLConnection http = (HttpURLConnection) url.openConnection();
         http.setRequestMethod("POST");

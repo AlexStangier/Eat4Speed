@@ -23,7 +23,7 @@ public class RoutingController {
     @Produces(MediaType.APPLICATION_JSON)
     public String get_Sorted_Waypoints_test() throws Exception {
 
-        return _router.get_best_Route().toString();
+        return _router.get_best_Route("test").toString();
         //return "{\"sorted_waypoints\":[[7.84529,47.993263],[7.862707,48.01426],[7.862707,48.01426],[7.857937,48.011837],[7.819171,48.017708],[7.823581,48.01125],[7.827899,48.010338],[7.830039,48.009247],[7.840162,48.018658],[7.840162,48.018658]]}";
     }
 
