@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,8 +67,6 @@ public class Algo_FahrerAuswahl {
             {
                 System.out.println("Start");
                 naheFahrer = getNaheFahrer();
-                if(true)
-                    return;
             }
 
             if (restart)
@@ -88,7 +87,7 @@ public class Algo_FahrerAuswahl {
                     System.out.println(count + " Schicke an Fahrer mit ID: " + naheFahrer.get(count)
                     + " "  + LocalDateTime.now());
 
-                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer_ID(),
+                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer().getFahrernummer(),
                             (int)start.getAuftrags_ID(), naheFahrer.get(count).getRestaurant_ID()));
 
                     count++;
@@ -96,15 +95,14 @@ public class Algo_FahrerAuswahl {
                 else
                 {
                     // wenn Liste durch und nicht angenommen
-                    System.out.println("Restarting in 30s " + Thread.currentThread().getId() + " "  + LocalDateTime.now());
+                    System.out.println("Restarting in 30s | " + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
 
                     restart = true;
                 }
             }
             else
             {
-                System.out.println("No Found -> Restarting in 30s " + Thread.currentThread().getId() + " " +
-                        " "  + LocalDateTime.now());
+                System.out.println("No Found -> Restarting in 30s | "  + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
 
                 restart = true;
             }
@@ -140,8 +138,6 @@ public class Algo_FahrerAuswahl {
     private int AnzahlGerichte(int auftragsID)
     {
         int count = 0;
-        //int StationsID = startpunktID;
-        //List<Integer> AuftragIDs = new ArrayList<>();
 
         List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", auftragsID).list();
         for (Bestellung b : bestellungen)
@@ -149,30 +145,7 @@ public class Algo_FahrerAuswahl {
             count += new JSONArray(b.getGericht_IDs()).length();
             RestaurantIDs.add(b.getRestaurant_ID());
         }
-        /*
-        AuftragIDs.add(startPunkt.getAuftrag());
 
-        boolean hasNext = true;
-
-        while (hasNext)
-        {
-            Fahrtenplan_Station next = fahrtenplanRepository.findByStationsID(StationsID);
-            if (next.getNaechste_Station() != null)
-            {
-                StationsID = next.getNaechste_Station();
-                AuftragIDs.add(next.getAuftrag());
-            }
-            else
-            {
-                hasNext = false;
-            }
-        }
-
-        for (Integer i : AuftragIDs)
-        {
-            count += getGerichte(i).length();
-        }
-*/
         System.out.println("Gerichte: " + count);
 
         return count;
@@ -353,25 +326,25 @@ public class Algo_FahrerAuswahl {
             distances = sortByDistanz.getDistances(fahrer, RestaurantIDs);
             double getGeschaetzte_Fahrtzeit = sortByDistanz.getFahrzeit(start.getKundennummer());
 
-            for (int i = 0; i < fahrer.size(); i++)
+            for (int i = 0; i < distances.size(); i++)
             {
-                if (!CheckFahrerAvailability(fahrer.get(i), distances.get(i).getFahrzeit(), getGeschaetzte_Fahrtzeit)) {
+                if (!CheckFahrerAvailability(distances.get(i).getFahrer(), distances.get(i).getFahrzeit(), getGeschaetzte_Fahrtzeit))
+                {
                     distances.remove(i);
-                    fahrer.remove(i);
                     i--;
                 }
             }
 
-            System.out.println("zur Verfuegung: " + fahrer.size());
+            System.out.println("zur Verfuegung: " + distances.size());
 
             distances.sort( sortByDistanz );
 
             List<Integer> da = new ArrayList<>();
             for (int i = 0; i < distances.size() && i < maxFahrer; i++)
             {
-                if(!da.contains(distances.get(i).getFahrer_ID()))
+                if(!da.contains(distances.get(i).getFahrer().getFahrernummer()))
                 {
-                    da.add(distances.get(i).getFahrer_ID());
+                    da.add(distances.get(i).getFahrer().getFahrernummer());
                     naheFahrer.add(distances.get(i));
                 }
             }

@@ -1,24 +1,26 @@
 package de.eat4speed.FahrerAuswahl_FahrtenVergabe;
 
+import de.eat4speed.entities.Fahrer;
+
 public class Fahrer_Distanz {
 
-    private int Fahrer_ID;
+    private Fahrer fahrer;
     private int Restaurant_ID;
     private Long Distanz;
     private Long Fahrzeit;
 
-    public Fahrer_Distanz(int fahrer_ID, int restaurant_ID, Long distanz, Long fahrzeit)
+    public Fahrer_Distanz(Fahrer fahrer, int restaurant_ID, Long distanz, Long fahrzeit)
     {
-        Fahrer_ID = fahrer_ID;
+        this.fahrer = fahrer;
         Restaurant_ID = restaurant_ID;
         Distanz = distanz;
         Fahrzeit = fahrzeit;
     }
 
-    public int getFahrer_ID() { return Fahrer_ID; }
+    public Fahrer getFahrer() { return fahrer; }
 
-    public void setFahrer_ID(int fahrer_ID) {
-        Fahrer_ID = fahrer_ID;
+    public void setFahrer(Fahrer fahrer) {
+        this.fahrer = fahrer;
     }
 
     public int getRestaurant_ID() { return Restaurant_ID; }
