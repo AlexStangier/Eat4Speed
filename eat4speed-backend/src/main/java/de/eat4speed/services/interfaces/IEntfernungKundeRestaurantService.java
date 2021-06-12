@@ -12,4 +12,8 @@ public interface IEntfernungKundeRestaurantService {
     public Response addEntfernungKundeRestaurant(EntfernungKundeRestaurant entfernungKundeRestaurant);
 
     List getEntfernungByKundennummerRestaurant_ID(int kundennummer, int restaurant_ID);
+
+    public Response deleteEntfernungByKundennummer(int kundennummer);
+
+    public Response deleteEntfernungByRestaurant_ID(int restaurant_ID);
 }

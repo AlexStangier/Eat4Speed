@@ -1,6 +1,8 @@
 package de.eat4speed.services.interfaces;
 
 import de.eat4speed.dto.OrderDto;
+import de.eat4speed.dto.PaymentDto;
+import de.eat4speed.dto.StatisticDtoWrapper;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
 
@@ -25,5 +27,16 @@ public interface IBestellungService {
      * @param AuftragsId auftrag to be updated
      * @return success or error
      */
-    String payForOrder(Integer AuftragsId) throws SQLException;
+    PaymentDto payForOrder(Integer AuftragsId) throws SQLException;
+
+
+    /**
+     * Creates a statistic for all previous orders
+     * @param restaurantId
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws SQLException
+     */
+    StatisticDtoWrapper getStatistic(Long restaurantId, long startTime, long endTime) throws SQLException;
 }

@@ -45,10 +45,10 @@
 
         </v-list>
 
-        <h3>Steuer: {{ ((calculateCartPrice() * 0.93) * 0.07).toFixed(2) }} &euro; (7% Mwst.)</h3>
+        <h3>Steuer: {{ parseFloat(calculateCartTax()).toFixed(2) }} &euro; (7% Mwst.)</h3>
         <h3 class="pb-1">Lieferkosten: 2 &euro;</h3>
         <v-divider></v-divider>
-        <h2 class="pt-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+        <h2 class="pt-2">Endpreis: {{ parseFloat(calculateCartPrice()).toFixed(2) }} &euro;</h2>
 
         <v-card-actions>
           <v-btn block color="primary" depressed tile @click="paypalRequest()">
@@ -58,7 +58,7 @@
       </v-card-text>
 
       <v-card-text v-else>
-        <p>No item</p>
+        <p>Keine Artikel</p>
       </v-card-text>
 
     </v-card>
@@ -97,19 +97,41 @@ export default {
       this.carts.forEach(value => {
         cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
       });
-      return this.roundToTwo((cartPrice + 2) * 1.07).toFixed(2);
+      return this.roundToTwo((cartPrice * 1.07) + 2);
+    },
+    calculateCartTax() {
+      let cartPrice = 0;
+      this.carts.forEach(value => {
+        cartPrice = cartPrice + this.calculateItemPrice(value.quantity, value.price);
+      });
+      return this.roundToTwo(cartPrice * 0.07);
     },
     async getCustomerId() {
-      const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$store.getters.getLoginData.auth.username });
-      return response.data;
+      let id;
+      await this.$http.post('/Benutzer/getIdByEmail', {
+        email: this.$cookies.get('emailAdresse')
+      }).then((response) => {
+        if (response.status === 200) {
+          id = response.data;
+        }
+      }, () => {
+        this.$router.push({name: "KundeAnmeldung"});
+      });
+
+      return id;
     },
     async paypalRequest() {
       const items = [];
+
       this.$store.getters.getCartGerichte.forEach(item => {
-        items.push(item.gericht_ID);
+        for (let i = 0; i < item.quantity; i++) {
+          items.push(item.gericht_ID);
+        }
       });
 
       const customerId = await this.getCustomerId();
+
+      console.log(customerId);
 
       this.$http.post('/Bestellung/add', {
         items: items,
@@ -120,7 +142,6 @@ export default {
           this.$http.post('/Bestellung/pay', {
             jobId: response.data.auftrags_ID
           }).then((response) => {
-            console.log(JSON.stringify(response.data))
             if (response.status === 200) {
               this.$store.commit("deleteCartGerichte");
               this.version++;

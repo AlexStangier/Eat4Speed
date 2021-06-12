@@ -7,6 +7,7 @@ import de.eat4speed.services.interfaces.IGerichtService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.swing.plaf.synth.SynthTabbedPaneUI;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,24 +94,29 @@ public class GerichtService implements IGerichtService {
 
     @Override
     public List searchGerichte(DishSearchOptions options){
+
+        long start = System.currentTimeMillis();
+
         List<Integer> search_IDs = new ArrayList<>();
         List<String> nameParts;
 
         Integer excluded_ID = options.getGericht_ID();
 
-        System.out.println("Alternativen: ");
+        //System.out.println("Alternativen: ");
+
+        long nameStart = System.currentTimeMillis();
 
         if(options.isUseName())
         {
             nameParts = Arrays.asList(options.getGerichtName().split(" "));
-            System.out.println("Name Parts: "+ nameParts);
+            //System.out.println("Name Parts: "+ nameParts);
 
             List<Integer> search_IDsByName = gerichtRepository.getGericht_IDsByGerichtName(options.getGerichtName());
 
             for (int e = 0; e < search_IDsByName.size(); e++)
             {
                 search_IDs.add(search_IDsByName.get(e));
-                System.out.println(search_IDsByName.get(e).toString());
+                //System.out.println(search_IDsByName.get(e).toString());
             }
 
             for (int i = 0; i < nameParts.size(); i++)
@@ -122,14 +128,17 @@ public class GerichtService implements IGerichtService {
                     if(!search_IDs.contains(search_IDsByNamePart.get(e)))
                     {
                         search_IDs.add(search_IDsByNamePart.get(e));
-                        System.out.println(search_IDsByNamePart.get(e).toString());
+                        //System.out.println(search_IDsByNamePart.get(e).toString());
                     }
                 }
             }
         }
+        long nameEnd = System.currentTimeMillis();
+        long filterStart = System.currentTimeMillis();
+
         if(options.isUseKategorien())
         {
-            System.out.println(options.getKategorien().toString());
+            //System.out.println(options.getKategorien().toString());
             for(int i = 0; i < options.getKategorien().size(); i++)
             {
                 List<Integer> gericht_IDsByKategorie = gerichtRepository.getGericht_IDsByGerichtKategorie(options.getKategorien().get(i));
@@ -139,7 +148,7 @@ public class GerichtService implements IGerichtService {
                     if(!search_IDs.contains(gericht_IDsByKategorie.get(e)))
                     {
                         search_IDs.add(gericht_IDsByKategorie.get(e));
-                        System.out.println(gericht_IDsByKategorie.get(e).toString());
+                        //System.out.println(gericht_IDsByKategorie.get(e).toString());
                     }
                 }
             }
@@ -163,7 +172,7 @@ public class GerichtService implements IGerichtService {
                     if(!gericht_IDsByAllergeneAll.contains(gericht_IDsByAllergene.get(e)))
                     {
                         gericht_IDsByAllergeneAll.add(gericht_IDsByAllergene.get(e));
-                        System.out.println(gericht_IDsByAllergene.get(e).toString());
+                        //System.out.println(gericht_IDsByAllergene.get(e).toString());
                     }
                 }
             }
@@ -209,20 +218,20 @@ public class GerichtService implements IGerichtService {
                 }
             }
         }
-        //todo Entfernungen
+
         List<Integer> gericht_IDsByEntfernungAll = null;
 
-        System.out.println(search_IDs);
+        //System.out.println(search_IDs);
         if(options.isUseEntfernung())
         {
             gericht_IDsByEntfernungAll = gerichtRepository.getGericht_IDsByDistance(options.getKundennummer(), options.getMaxEntfernung());
 
-            System.out.println("Entfernung:");
-            System.out.println(gericht_IDsByEntfernungAll);
+            //System.out.println("Entfernung:");
+            //System.out.println(gericht_IDsByEntfernungAll);
 
             for(int i = 0; i < search_IDs.size(); i++)
             {
-                System.out.println(search_IDs.get(i));
+                //System.out.println(search_IDs.get(i));
                 if(gericht_IDsByEntfernungAll.contains(search_IDs.get(i)))
                 {
                     search_IDs.remove(search_IDs.get(i));
@@ -230,7 +239,9 @@ public class GerichtService implements IGerichtService {
                 }
             }
         }
-        System.out.println(search_IDs);
+
+        long filterEnd = System.currentTimeMillis();
+        //System.out.println(search_IDs);
 
         List foundGerichte = null;
 
@@ -238,6 +249,8 @@ public class GerichtService implements IGerichtService {
         {
             search_IDs.remove(excluded_ID);
         }
+
+        long idStart = System.currentTimeMillis();
 
         if(search_IDs.size()>0)
         {
@@ -254,6 +267,16 @@ public class GerichtService implements IGerichtService {
             }
 
         }
+
+        long idEnd = System.currentTimeMillis();
+
+        long end = System.currentTimeMillis();
+
+        System.out.println("Time "+Long.toString(end - start));
+        System.out.println("ID Time "+Long.toString(idEnd - idStart));
+        System.out.println("Filter Time "+Long.toString(filterEnd - filterStart));
+        System.out.println("Name Time "+Long.toString(nameEnd - nameStart));
+
 
         return foundGerichte;
     }

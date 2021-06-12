@@ -1,5 +1,74 @@
 <template>
   <v-main>
+
+    <v-app-bar color="blue"  dark>
+      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+      <v-toolbar-title>Bestellübersicht</v-toolbar-title>
+    </v-app-bar>
+    <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        temporary
+    >
+      <v-list
+          nav
+          dense
+      >
+        <v-list-item-group
+            v-model="group"
+            active-class="deep-purple--text text--accent-4"
+        >
+          <router-link  to="/restaurant/controlpanel">
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-home</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>ControlPanel</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-silverware</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Speisekarte bearbeiten</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/bestellungen"><v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-view-headline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Offene Bestellungen</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link to="/restaurant/schichtplan">
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-watch</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Schichtplan</v-list-item-title>
+            </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/stammdaten"><v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Stammdaten</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/umsatzstatistik">
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-margin</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Umsatzstatistik</v-list-item-title>
+            </v-list-item>
+          </router-link>
+
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
+
+
     <v-container fill-height fluid>
       <v-layout align-center justify-center>
         <v-flex md6 sm6 xs12>
@@ -67,6 +136,9 @@ export default {
     }
   },
   data: () => ({
+    drawer: false,
+    group: null,
+    switch1: true,
     names: ['Burger','Pizza','Sushi','McNuggets'],
     descriptions: ['Es ist ein Burger','Krosse Krabe Pizza','Fischig','Mit Szechuan Sauce'],
     prices: ['5,50 €', '100 €','4,99 €', '3,99 €'],

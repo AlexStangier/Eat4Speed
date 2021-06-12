@@ -9,6 +9,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @ApplicationScoped
 public class AuftragService implements IAuftragService {
@@ -41,6 +42,18 @@ public class AuftragService implements IAuftragService {
         auftragRepository.updateAuftragStatus(id, status);
 
         return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
+    public Response updateAuftragFahrernummer(int auftrags_ID, int fahrernummer) {
+        auftragRepository.updateAuftragFahrernummer(auftrags_ID, fahrernummer);
+
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
+    public List getAuftragFahrernummerByAuftrags_ID(int auftrags_ID) {
+        return auftragRepository.getAuftragFahrernummerByAuftrags_ID(auftrags_ID);
     }
 
 }

@@ -528,21 +528,6 @@ export default {
         }
       }
 
-      for(let i = 0; i < ResponseGerichte.data.length; i++)
-      {
-        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.restaurant_IDs[i]);
-        if(ResponseBewertung.data[0][0]!==null)
-        {
-          this.restaurantBewertungen[i] = ResponseBewertung.data[0][0];
-        }
-        else
-        {
-          this.restaurantBewertungen[i] = 0;
-        }
-
-      }
-      console.log("Bewertungen "+this.restaurantBewertungen);
-
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
         const config = { responseType:"arraybuffer" };
@@ -796,7 +781,6 @@ export default {
         const cavailable = this.availabilities[i]
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
-        const crestaurantbewertung = this.restaurantBewertungen[i]
         i++;
 
         return {
@@ -812,7 +796,6 @@ export default {
           available: cavailable,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
-          rating: crestaurantbewertung
         }
       })
     }
