@@ -40,6 +40,12 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public void updateFahrer_anzahl_aktueller_Auftraege(int fahrernummer, int anzahl)
+    {
+        update("anzahl_Aktueller_Auftraege = ?1 where fahrernummer = ?2",anzahl, fahrernummer);
+    }
+
+    @Transactional
     public List getAllFahrer()
     {
         List allFahrerData;

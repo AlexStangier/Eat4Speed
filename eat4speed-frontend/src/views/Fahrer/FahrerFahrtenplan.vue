@@ -10,6 +10,45 @@
           item-key="name"
           multi-sort
       >
+        <template v-slot:item.map="{ item }">
+          <div class="pa-2">
+            <GmapMap
+                :center="{ lat: 47.98, lng: 7.89 }"
+                :options="{
+                zoomControl: true,
+                mapTypeControl: false,
+                scaleControl: false,
+                streetViewControl: false,
+                rotateControl: false,
+                fullscreenControl: true,
+                disableDefaultUi: false
+                }"
+                :zoom="7"
+            >
+              <DirectionsRenderer :destination="item.end" :origin="item.start" travelMode="DRIVING"/>
+            </GmapMap>
+          </div>
+        </template>
+
+        <template v-slot:item.actions="{ item }">
+          <v-btn
+              color="primary"
+              depressed
+              tile
+              @click="abholungBestätigen(item)"
+          >Bestätigen
+          </v-btn>
+        </template>
+      </v-data-table>
+      <v-data-table
+          :headers="headers"
+          :items="data"
+          :items-per-page="10"
+          :single-select="false"
+          class="elevation-1 pa-6"
+          item-key="name"
+          multi-sort
+      >
         <template v-slot:top>
           <v-container fluid>
             <v-col cols="6">
@@ -67,29 +106,48 @@ export default {
     DirectionsRenderer
   },
   methods: {
+    async pollData() {
+      this.polling = setInterval(() => {
+        this.getBenachrichtigung();
+        this.checkAuftraegeforFahrernummer();
+      },3000);
+    },
     async getBenachrichtigung()
     {
       const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/"+this.fahrernummer);
-      if(responseBenachrichtigung.data.length>0)
+      for(let i = 0; i<responseBenachrichtigung.data.length; i++)
       {
-        this.benachrichtigungs_ID = responseBenachrichtigung.data[0][0];
+        let benachrichtigungs_ID = responseBenachrichtigung.data[i][0];
 
-        let index = this.auftrags_IDs.length;
-        this.auftrags_IDs[index] = responseBenachrichtigung.data[0][1];
+        this.auftrags_IDs.push(responseBenachrichtigung.data[i][1]);
 
-        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/"+this.benachrichtigungs_ID);
+        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/"+benachrichtigungs_ID);
       }
+
     },
     async setAuftragFahrernummer()
     {
       const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[this.auftrags_IDs_index])
-      if(response.data[0]===null)
+      if(response.data[0]>=0)
       {
-        await axios.put("Auftrag/updateAuftragFahrernummer/"+this.auftrags_IDs[this.auftrags_IDs_index]+"/"+this.fahrernummer);
+        alert("Auftrag bereits verteilt.");
       }
       else
       {
-        alert("Auftrag bereits verteilt.");
+        await axios.put("Auftrag/updateAuftragFahrernummer/"+this.auftrags_IDs[this.auftrags_IDs_index]+"/"+this.fahrernummer);
+        this.active_auftrags_IDs.push(this.auftrags_IDs[this.auftrags_IDs_index]);
+        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/"+this.fahrernummer+"/"+this.active_auftrags_IDs.length);
+        this.auftrags_IDs.splice(this.auftrags_IDs_index,1);
+      }
+    },
+    async checkAuftraegeforFahrernummer(){
+      for(let i = 0; i<this.auftrags_IDs.length;i++)
+      {
+        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[i])
+        if(response.data[0]>=0)
+        {
+          this.auftrags_IDs.splice(i,1);
+        }
       }
     },
     abholungBestätigen(id) {
@@ -106,17 +164,22 @@ export default {
     },
   },
   async mounted() {
-      await this.$http.get('/route').then(response => this.data = response.data)
-
+      await this.$http.get('/route').then(response => this.data = response.data);
+      this.pollData();
       //todo this fahrernummer = aktuelle Fahrernummer
     },
+  beforeDestroy() {
+    clearInterval(this.polling);
+  },
   data() {
     return {
       data: [],
       fahrernummer: 0,
       auftrags_IDs: [],
+      active_auftrags_IDs: [],
       auftrags_IDs_index: 0,
       benachrichtigungs_ID: 0,
+      polling: null,
       acceptDialog: false,
       deleteDialog: false,
       headers: [

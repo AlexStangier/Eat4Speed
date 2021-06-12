@@ -71,6 +71,12 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
+    public Response updateFahrer_anzahl_aktueller_Auftraege(int fahrernummer, int anzahl) {
+        fahrerRepository.updateFahrer_anzahl_aktueller_Auftraege(fahrernummer, anzahl);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @Override
     public List get_Fahrer_Fzg_Pos() {
         return fahrerRepository.get_Fahrer_Fzg_Pos();
     }
