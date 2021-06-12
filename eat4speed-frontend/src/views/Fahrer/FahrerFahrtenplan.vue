@@ -45,6 +45,7 @@
 
         <template v-slot:item.actions="{ item }">
           <v-btn
+              :disabled="item.hideButton"
               color="primary"
               depressed
               tile
@@ -67,7 +68,8 @@ export default {
   },
   methods: {
     abholungBestätigen(id) {
-      id;
+      console.log(id.station);
+      id.hidebutton=true;
     },
     getTermin() {
       return '07.06.2021';

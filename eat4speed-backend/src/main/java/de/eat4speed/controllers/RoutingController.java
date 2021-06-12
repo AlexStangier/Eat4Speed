@@ -12,37 +12,35 @@ import org.json.JSONObject;
 public class RoutingController {
 
     @Inject
-    IRoutingService _router;
-
-    /**
-     * @Daniel Zum Testen mit mehr / weniger Wegpunkten, den Return unten auskommentieren, den darüber wieder zulassen und in der Klasse "RoutingService.java",
-     * in der Funktion "get_best_route()", noch ein "add_shipment()" hinzufügen oder wegmachen.
-     * Bitte auf richitge Koordianten im Bereich um Freiburg herum achten.
-     */
+    private IRoutingService _router;
 
     @GET
     @Path("/{email}")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public String get_Sorted_Waypoints_test(@PathParam("email") String email) throws Exception {
 
         //_router.db_test(email);
         //System.out.println(email);
-
-        return _router.get_best_Route().toString();
+        try{
+            return _router.get_best_Route(email).toString();
+        }catch (Exception e){
+            System.out.println("Null was returned: " + e.getMessage());
+            return null;
+        }
         //return "{\"sorted_waypoints\":[[7.84529,47.993263],[7.862707,48.01426],[7.862707,48.01426],[7.857937,48.011837],[7.819171,48.017708],[7.823581,48.01125],[7.827899,48.010338],[7.830039,48.009247],[7.840162,48.018658],[7.840162,48.018658]]}";
     }
 
-    /**
-    @GET
-    @Path("/test")
+
+    @PUT
+    @Path("/confirm")
     @Produces(MediaType.APPLICATION_JSON)
-    public String get_Sorted_Waypoints() throws Exception {
+    public String get_Sorted_Waypoints(@QueryParam("auftraege") String auftraege, @QueryParam("data") String data) throws Exception {
 
 
 
 
 
-        return "okay";
+        return data;
     }
-    */
 }

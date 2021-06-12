@@ -30,4 +30,6 @@ public interface IFahrerService {
     ArrayList<String> get_Restaurant_Lng_Lat(String email);
 
     ArrayList<String> get_Kunde_Lng_Lat(String email);
+
+    void set_auftrags_zeit(long auftr_id, java.sql.Timestamp dt);
 }

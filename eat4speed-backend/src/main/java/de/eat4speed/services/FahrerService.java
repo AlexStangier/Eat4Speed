@@ -86,5 +86,8 @@ public class FahrerService implements IFahrerService {
         return fahrerRepository.get_Kunde_Lng_Lat(email);
     }
 
+    @Override
+    public void set_auftrags_zeit(long auftr_id, java.sql.Timestamp dt){ fahrerRepository.set_auftrags_zeit(auftr_id, dt);}
+
 
 }
