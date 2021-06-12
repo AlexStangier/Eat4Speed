@@ -1,4 +1,4 @@
-package de.eat4speed.Algo;
+package de.eat4speed.FahrerAuswahl_FahrtenVergabe;
 
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
@@ -21,13 +21,11 @@ public class Algo_FahrerAuswahl {
 
     private SchichtRepository schichtRepository = new SchichtRepository();
     private FahrerRepository fahrerRepository = new FahrerRepository();
-    private FahrtenplanRepository fahrtenplanRepository = new FahrtenplanRepository();
     private FahrzeugRepository fahrzeugRepository = new FahrzeugRepository();
     private UrlaubRepository urlaubRepository = new UrlaubRepository();
     private AuftragRepository auftragRepository = new AuftragRepository();
     private BestellungRepository bestellungRepository = new BestellungRepository();
 
-    private Fahrtenplan_Station startPunkt;
     private Auftrag start;
     private final int sekunden = 30;
     private final int maxFahrer = 5;
@@ -41,16 +39,12 @@ public class Algo_FahrerAuswahl {
 
         int count = 0;
         start = auftragRepository.getAuftragByID(auftragID);
-        //startPunkt = fahrtenplanRepository.findByStationsID(startPunktID);
-        //anzahlGerichte = AnzahlGerichte(startPunktID);
 
-        System.out.println(auftragID);
         anzahlGerichte = AnzahlGerichte(auftragID);
+
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
         List<Integer> BenachrichtigungsIDs = new ArrayList<>();
 
-        //if(true)
-        //return;
         boolean isRunning = true;
         boolean restart = false;
 
@@ -58,10 +52,10 @@ public class Algo_FahrerAuswahl {
 
             if (AuftragAngenommen(auftragID))
             {
-                // evtl anfragen entfernen
+                // eventuelle Anfragen entfernen
                 for (int i = 0; i < count; i++)
                 {
-                    entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, startPunkt.getAuftrag());
+                    entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, (int)start.getAuftrags_ID());
                 }
                 System.out.println("Auftrag wurde angenommen");
                 break;
@@ -79,9 +73,10 @@ public class Algo_FahrerAuswahl {
             if (restart)
             {
                 // anfragen entfernen und neustart
-                entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, startPunkt.getAuftrag());
+                entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, (int)start.getAuftrags_ID());
 
                 restart(auftragID);
+
                 isRunning = false;
             }
             // sende alle 30 sek an nächstbesten Fahrer
@@ -90,23 +85,27 @@ public class Algo_FahrerAuswahl {
                 if (naheFahrer.size() > count && count < maxFahrer)
                 {
                     // wenn noch an unter maxFahrer gesendet
-                    System.out.println(count + " Schicke an Fahrer mit ID: "+naheFahrer.get(count)
-                    + " "  +LocalDateTime.now());
-                    Schicht schicht = schichtRepository.getSchichtHeute(naheFahrer.get(count).getFahrer_ID());
-                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer_ID(), startPunkt.getAuftrag(), naheFahrer.get(count).getRestaurant_ID()));
+                    System.out.println(count + " Schicke an Fahrer mit ID: " + naheFahrer.get(count)
+                    + " "  + LocalDateTime.now());
+
+                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer_ID(),
+                            (int)start.getAuftrags_ID(), naheFahrer.get(count).getRestaurant_ID()));
+
                     count++;
                 }
                 else
                 {
                     // wenn Liste durch und nicht angenommen
-                    System.out.println("Restarting in 30s " + Thread.currentThread().getId()+ " "  +LocalDateTime.now());
+                    System.out.println("Restarting in 30s " + Thread.currentThread().getId() + " "  + LocalDateTime.now());
+
                     restart = true;
                 }
             }
             else
             {
                 System.out.println("No Found -> Restarting in 30s " + Thread.currentThread().getId() + " " +
-                        " "  +LocalDateTime.now());
+                        " "  + LocalDateTime.now());
+
                 restart = true;
             }
             try
@@ -129,7 +128,7 @@ public class Algo_FahrerAuswahl {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
-            http.setReadTimeout(5 * 1000);
+            http.setReadTimeout(1000);
             http.getInputStream();
 
             http.disconnect();
@@ -209,8 +208,8 @@ public class Algo_FahrerAuswahl {
         benachrichtigung_fahrer.setBenachrichtigung(benachrichtigung);
         benachrichtigung_fahrer.setTimestamp(new Timestamp(new Date().getTime()));
 
-        try {
-
+        try
+        {
             URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("POST");
@@ -237,8 +236,8 @@ public class Algo_FahrerAuswahl {
         anfrage.setBenachrichtigungs_ID(id);
         anfrage.setAuftrags_ID(auftragID);
 
-        try {
-
+        try
+        {
             URL url = new URL("http://localhost:1337/BenachrichtigungFahrerAuftrag/");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
@@ -258,7 +257,6 @@ public class Algo_FahrerAuswahl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return id;
     }
 
@@ -266,7 +264,8 @@ public class Algo_FahrerAuswahl {
     {
         int id = 0;
 
-        try {
+        try
+        {
             URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/id");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("POST");
@@ -290,12 +289,11 @@ public class Algo_FahrerAuswahl {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return id;
     }
 
-    public static String getResponse(InputStream ips) throws IOException {
-
+    public static String getResponse(InputStream ips) throws IOException
+    {
         StringBuilder textBuilder = new StringBuilder();
         try (Reader reader = new BufferedReader(
                 new InputStreamReader(ips, Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -311,7 +309,8 @@ public class Algo_FahrerAuswahl {
     {
         for (int i : BenachrichtigungsIDs)
         {
-            try {
+            try
+            {
                 URL url = new URL("http://localhost:1337/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + i);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
@@ -323,7 +322,8 @@ public class Algo_FahrerAuswahl {
                 e.printStackTrace();
             }
 
-            try {
+            try
+            {
                 URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/" + i);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
@@ -344,7 +344,7 @@ public class Algo_FahrerAuswahl {
 
         System.out.println("Fahrer gefunden: " + fahrer.size());
 
-        SortByDistanz sortByDistanz = new SortByDistanz(startPunkt);
+        SortByDistanz sortByDistanz = new SortByDistanz();
         List<Fahrer_Distanz> distances;
 
         // sortieren nach nähe zum Startpunkt der Stationen

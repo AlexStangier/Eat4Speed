@@ -1,4 +1,4 @@
-package de.eat4speed.Algo;
+package de.eat4speed.FahrerAuswahl_FahrtenVergabe;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;

@@ -1,15 +1,11 @@
-package de.eat4speed.Algo;
+package de.eat4speed.FahrerAuswahl_FahrtenVergabe;
 
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Fahrer;
-import de.eat4speed.entities.Fahrtenplan_Station;
-
-import de.eat4speed.entities.Kunde;
 import de.eat4speed.repositories.AdressenRepository;
-import de.eat4speed.repositories.FahrzeugRepository;
-
 import de.eat4speed.repositories.KundeRepository;
 import de.eat4speed.repositories.RestaurantRepository;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,14 +22,11 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
 
     private Adressen startAdresse;
     private AdressenRepository adressenRepository;
-    private FahrzeugRepository fahrzeugRepository;
     private List<Adressen> RestaurantAdressen;
 
-    SortByDistanz(Fahrtenplan_Station startPunktAuftrag)
+    SortByDistanz()
     {
         this.adressenRepository = new AdressenRepository();
-        this.fahrzeugRepository = new FahrzeugRepository();
-        //this.startAdresse = adressenRepository.getAdresseByCustomerId(startPunktAuftrag.getLiefer_Abholadresse());
     }
 
     @Override
@@ -41,7 +34,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
         return Long.compare( f1.getDistanz(), f2.getDistanz());
     }
 
-    public List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, List<Integer> restaurantIDs)
+    protected List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, List<Integer> restaurantIDs)
     {
         List<Fahrer_Distanz> distanzen = new ArrayList<>();
         RestaurantAdressen = new ArrayList<>();
@@ -87,8 +80,6 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
             http.setDoOutput(true);
             http.setRequestProperty("Content-Type", "application/json");
 
-            StringBuilder fahrerPositionen = new StringBuilder();
-
             JSONObject json = new JSONObject(Algo_FahrerAuswahl.getResponse(http.getInputStream()));
 
             zeit = json.getJSONArray("features").getJSONObject(0).getJSONObject("properties").getDouble("time");
@@ -101,7 +92,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
         return zeit;
     }
 
-    private List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, int restaurant)
+    protected List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, int restaurant)
     {
         List<Fahrer_Distanz> distanzen = new ArrayList<>();
 
