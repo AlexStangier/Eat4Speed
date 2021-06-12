@@ -25,14 +25,31 @@ public class BenutzerService implements IBenutzerService {
     }
 
     @Override
-    public Response addBenutzer(Benutzer obj) {
-        //hash password to base64
-        if (obj != null) {
-            obj.setPasswort(Base64.getEncoder().encodeToString(obj.getPasswort().getBytes(StandardCharsets.UTF_8)));
-            obj.setRolle(obj.getRolle().toLowerCase(Locale.ROOT));
-            _benutzer.addBenutzer(obj);
+    public Response addBenutzer(Benutzer benutzer) {
+        if (benutzer == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        return Response.status(Response.Status.CREATED).entity(obj).build();
+
+        // check if received user contains necessary fields
+        if (isAnyFieldEmpty(benutzer)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        if (isRoleInvalid(benutzer)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        // Check if a user with that email address already exists
+        String email = benutzer.getEmailAdresse();
+        Integer userId = _benutzer.getBenutzerIdByEmail(new UserEmailDto(email));
+        if (userId != -1) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        // encode password in base64
+        benutzer.setPasswort(Base64.getEncoder().encodeToString(benutzer.getPasswort().getBytes(StandardCharsets.UTF_8)));
+        _benutzer.addBenutzer(benutzer);
+        return Response.status(Response.Status.CREATED).entity(benutzer).build();
     }
 
     @Override
@@ -81,6 +98,26 @@ public class BenutzerService implements IBenutzerService {
     }
 
     @Override
-    public List getBenutzerKundeEinstellungenByLogin(String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
+    public List getBenutzerKundeEinstellungenByLogin(String email) {
+        return _benutzer.getBenutzerKundeEinstellungenByLogin(email);
+    }
+
+    private boolean isAnyFieldEmpty(Benutzer benutzer) {
+        return benutzer.getBenutzername().isEmpty()
+                || benutzer.getPasswort().isEmpty()
+                || benutzer.getEmailAdresse().isEmpty()
+                || benutzer.getVorname().isEmpty()
+                || benutzer.getNachname().isEmpty()
+                || benutzer.getRolle().isEmpty();
+    }
+
+    private boolean isRoleInvalid(Benutzer benutzer) {
+        for (Benutzer.UserRole role : Benutzer.UserRole.values()) {
+            if (role.toString().equals(benutzer.getRolle())) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
