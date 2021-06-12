@@ -29,8 +29,11 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
 
     @Transactional
     public Integer getBenutzerIdByEmail(UserEmailDto email) {
-        Benutzer dummy = find("EmailAdresse", email.getEmail()).firstResult();
-        return dummy.getBenutzer_ID();
+        Benutzer user = find("EmailAdresse", email.getEmail()).firstResult();
+        if (user == null) {
+            return -1;
+        }
+        return user.getBenutzer_ID();
     }
 
     @Transactional
@@ -63,5 +66,12 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return kundeBenutzer;
     }
 
-
+    /**
+     * Should only be used in Test cleanup
+     * @param name name of entities to be deleted
+     */
+    @Transactional
+    public void deleteBenutzerByUsername(String name){
+        delete("Benutzername", name);
+    }
 }

@@ -65,4 +65,9 @@ public class AdressenRepository implements PanacheRepository<Adressen> {
     public Adressen getAdresseByCustomerId(int id){
         return find("Adress_ID", id).firstResult();
     }
+
+    @Transactional
+    public void deleteAdresse(int addressId) {
+        delete("Adress_ID", addressId);
+    }
 }
