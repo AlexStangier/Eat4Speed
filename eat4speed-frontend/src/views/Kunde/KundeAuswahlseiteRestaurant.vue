@@ -260,12 +260,17 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   mounted() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
-    this.currentKunde_ID = 6;
+    this.getLoggedInKunde()
     this.loadRestaurant();
     this.displayGetraenke = false;
     this.loadGerichte();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+      this.currentKunde_ID = response.data[0];
+    },
     async loadRestaurant() {
 
       this.restaurantIsFav = false;

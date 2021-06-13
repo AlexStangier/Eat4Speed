@@ -66,6 +66,38 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return kundeBenutzer;
     }
 
+    @Transactional
+    public List getKundennummerByBenutzername(String username)
+    {
+        List kundennummer;
+
+        Query query = entityManager.createQuery(
+                "SELECT k.kundennummer " +
+                        "from Benutzer b, Kunde k " +
+                        "where b.emailAdresse LIKE ?1 " +
+                        "and b.benutzer_ID = k.benutzer_ID"
+        ).setParameter(1, username);
+
+        kundennummer = query.getResultList();
+        return kundennummer;
+    }
+
+    @Transactional
+    public List getRestaurant_IDByBenutzername(String username)
+    {
+        List restaurant_ID;
+
+        Query query = entityManager.createQuery(
+                "SELECT r.restaurant_ID " +
+                        "from Benutzer b, Restaurant r " +
+                        "where b.emailAdresse LIKE ?1 " +
+                        "and b.benutzer_ID = r.benutzer_ID"
+        ).setParameter(1, username);
+
+        restaurant_ID = query.getResultList();
+        return restaurant_ID;
+    }
+
     /**
      * Should only be used in Test cleanup
      * @param name name of entities to be deleted

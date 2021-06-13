@@ -102,6 +102,16 @@ public class BenutzerService implements IBenutzerService {
         return _benutzer.getBenutzerKundeEinstellungenByLogin(email);
     }
 
+    @Override
+    public List getKundennummerByBenutzername(String username) {
+        return _benutzer.getKundennummerByBenutzername(username);
+    }
+
+    @Override
+    public List getRestaurant_IDByBenutzername(String username) {
+        return _benutzer.getRestaurant_IDByBenutzername(username);
+    }
+
     private boolean isAnyFieldEmpty(Benutzer benutzer) {
         return benutzer.getBenutzername().isEmpty()
                 || benutzer.getPasswort().isEmpty()

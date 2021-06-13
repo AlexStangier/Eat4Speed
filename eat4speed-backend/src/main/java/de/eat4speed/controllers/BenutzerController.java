@@ -56,4 +56,17 @@ public class BenutzerController {
     @Path("getBenutzerKundeEinstellungenByLogin/{email}")
     public List getBenutzerKundeEinstellungenByLogin(@PathParam("email") String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
 
+    @GET
+    @Path("getKundennummerByBenutzername/{username}")
+    public List getKundennummerByBenutzername(@PathParam("username") String username)
+    {
+        return _benutzer.getKundennummerByBenutzername(username);
+    }
+
+    @GET
+    @Path("getRestaurant_IDByBenutzername/{username}")
+    public List getRestaurant_IDByBenutzername(@PathParam("username") String username)
+    {
+        return _benutzer.getRestaurant_IDByBenutzername(username);
+    }
 }

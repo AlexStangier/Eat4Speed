@@ -168,12 +168,16 @@ export default {
     this.searchOptions = this.$store.getters.searchOptionsRestaurant;
 
     console.log(this.searchString);
-    //TODO change later!
-    this.loggedInKunde_ID = 6;
+    this.getLoggedInKunde();
 
     this.loadRestaurants();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+    },
     selectRestaurant(item) {
       console.log("Restaurant selected "+item.restaurantid);
       this.selectedRestaurant = item.restaurantid;

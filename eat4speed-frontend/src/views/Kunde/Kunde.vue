@@ -337,8 +337,8 @@ export default {
     this.searchOptions = this.$store.getters.searchOptions;
 
     console.log(this.searchString);
-    //TODO change later!
-    this.loggedInKunde_ID = 6;
+
+    this.getLoggedInKunde();
 
     this.loadGerichte();
   },
@@ -348,6 +348,11 @@ export default {
     next();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+    },
     selectItem(item) {
       console.log("Gericht selected "+item.id);
       this.selectedItem = item;
@@ -362,6 +367,7 @@ export default {
     },
     getStoreSearchOptions() {
       this.searchOptions = this.$store.getters.searchOptions;
+      this.searchString = this.searchOptions.gerichtName;
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);

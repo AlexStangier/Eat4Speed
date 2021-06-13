@@ -96,7 +96,7 @@ export default {
   name: "Favorites",
   mounted() {
     //TODO change later to actual value
-    this.loggedInKunde_ID = 6;
+    this.getLoggedInKunde();
     this.loadGerichte();
   },
   beforeRouteLeave(to, from, next) {
@@ -105,6 +105,11 @@ export default {
     next();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+    },
     setDisplayGerichteToTrue() {
       this.displayGerichte = true;
       this.loadGerichte();
