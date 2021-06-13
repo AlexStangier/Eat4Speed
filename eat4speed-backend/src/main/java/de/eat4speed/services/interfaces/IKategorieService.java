@@ -10,4 +10,6 @@ public interface IKategorieService {
     Response addKategorie(Kategorie obj);
 
     List listAll();
+
+
 }
