@@ -23,7 +23,6 @@ public class Algo_FahrerAuswahl {
     private SchichtRepository schichtRepository = new SchichtRepository();
     private FahrerRepository fahrerRepository = new FahrerRepository();
     private FahrzeugRepository fahrzeugRepository = new FahrzeugRepository();
-    private UrlaubRepository urlaubRepository = new UrlaubRepository();
     private AuftragRepository auftragRepository = new AuftragRepository();
     private BestellungRepository bestellungRepository = new BestellungRepository();
 
@@ -46,10 +45,9 @@ public class Algo_FahrerAuswahl {
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
         List<Integer> BenachrichtigungsIDs = new ArrayList<>();
 
-        boolean isRunning = true;
         boolean restart = false;
 
-        while(isRunning) {
+        while (true) {
 
             if (AuftragAngenommen(auftragID))
             {
@@ -76,7 +74,7 @@ public class Algo_FahrerAuswahl {
 
                 restart(auftragID);
 
-                isRunning = false;
+                break;
             }
             // sende alle 30 sek an nächstbesten Fahrer
             else if (naheFahrer.size() > 0 )
@@ -84,11 +82,11 @@ public class Algo_FahrerAuswahl {
                 if (naheFahrer.size() > count && count < maxFahrer)
                 {
                     // wenn noch an unter maxFahrer gesendet
-                    System.out.println(count + " Schicke an Fahrer mit ID: " + naheFahrer.get(count)
-                    + " "  + LocalDateTime.now());
+                    System.out.println(count + " Schicke an Fahrer mit ID: " + naheFahrer.get(count).getFahrer().getFahrernummer()
+                        + " "  + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
 
                     BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer().getFahrernummer(),
-                            (int)start.getAuftrags_ID(), naheFahrer.get(count).getRestaurant_ID()));
+                        (int)start.getAuftrags_ID(), naheFahrer.get(count).getRestaurant_ID()));
 
                     count++;
                 }
@@ -140,6 +138,7 @@ public class Algo_FahrerAuswahl {
         int count = 0;
 
         List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", auftragsID).list();
+
         for (Bestellung b : bestellungen)
         {
             count += new JSONArray(b.getGericht_IDs()).length();
@@ -312,7 +311,7 @@ public class Algo_FahrerAuswahl {
 
     private List<Fahrer_Distanz> getNaheFahrer()
     {
-        List<Fahrer> fahrer = fahrerRepository.getEveryVerifiedFahrer();
+        List<Fahrer> fahrer = fahrerRepository.getEveryAvailableFahrer();
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
 
         System.out.println("Fahrer gefunden: " + fahrer.size());
@@ -335,20 +334,19 @@ public class Algo_FahrerAuswahl {
                 }
             }
 
-            System.out.println("zur Verfuegung: " + distances.size());
-
             distances.sort( sortByDistanz );
-
             List<Integer> da = new ArrayList<>();
+
             for (int i = 0; i < distances.size() && i < maxFahrer; i++)
             {
-                if(!da.contains(distances.get(i).getFahrer().getFahrernummer()))
+                if (!da.contains(distances.get(i).getFahrer().getFahrernummer()))
                 {
                     da.add(distances.get(i).getFahrer().getFahrernummer());
                     naheFahrer.add(distances.get(i));
                 }
             }
 
+            System.out.println("zur Verfuegung: " + naheFahrer.size());
         }
         return naheFahrer;
     }
@@ -360,23 +358,42 @@ public class Algo_FahrerAuswahl {
 
         //TODO
         // fahrer anzahl aktueller Aufträge
-        //TODO
-        // Schicht nur Uhrzeit, Urlaub nur Datum
-        if (fahrer.getAnzahl_Aktueller_Auftraege() < 1 && fahrer.getIst_in_Pause() == 0)
+        if (fahrer.getAnzahl_Aktueller_Auftraege() < 1)
         {
-            //Urlaub urlaub = urlaubRepository.find("fahrernummer", fahrer.getFahrernummer()).firstResult();
-
-            Schicht schicht = schichtRepository.getSchichtHeute(fahrer.getFahrernummer());
-            Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
-
-            Timestamp now = new Timestamp(new Date().getTime()
-                    + (long)(getGeschaetzte_Fahrtzeit * 60L * 1000L) + (Fahrzeit * 1000L));
-            //urlaub.getAnfang();
-            if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(now) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
+            if (!istImUrlaub(fahrer.getFahrernummer()))
             {
-                isAvailable = true;
+                Timestamp endeAuftrag = new Timestamp( new Date().getTime()
+                        + (long)(getGeschaetzte_Fahrtzeit * 1000L) + (Fahrzeit * 1000L));
+
+                Schicht schicht = schichtRepository.getSchichtHeute(fahrer.getFahrernummer());
+                Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
+
+                if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(endeAuftrag) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
+                {
+                    isAvailable = true;
+                }
             }
         }
         return isAvailable;
+    }
+
+    private boolean istImUrlaub(int fahrernummer)
+    {
+        boolean heute_im_Urlaub = false;
+
+        try {
+            URL url = new URL("http://localhost:1337/Urlaub/HeuteUrlaub/" + fahrernummer);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("GET");
+            http.setDoOutput(true);
+
+            heute_im_Urlaub = Boolean.getBoolean(getResponse(http.getInputStream()));
+
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+
+        return heute_im_Urlaub;
     }
 }

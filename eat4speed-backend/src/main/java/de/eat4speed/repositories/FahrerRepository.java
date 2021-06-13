@@ -93,10 +93,9 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List<Fahrer> getEveryVerifiedFahrer()
+    public List<Fahrer> getEveryAvailableFahrer()
     {
-        byte b = 1;
-        return find("verifiziert", b ).list();
+        return find("verifiziert = ?1 and Ist_in_Pause = ?2", (byte)1, (byte)0 ).list();
     }
 
     @Transactional
