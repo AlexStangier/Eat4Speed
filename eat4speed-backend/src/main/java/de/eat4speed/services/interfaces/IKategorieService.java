@@ -12,5 +12,5 @@ public interface IKategorieService {
 
     List listAll();
 
-    CategoriePreferences getFavoriteCategorie(int customerId);
+    CategoriePreferences getFavouriteCategorie(int customerId);
 }
