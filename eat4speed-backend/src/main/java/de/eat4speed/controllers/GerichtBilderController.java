@@ -1,44 +1,43 @@
 package de.eat4speed.controllers;
 
 
-
 import de.eat4speed.multipart.MultipartBody;
 import de.eat4speed.services.interfaces.IGerichtService;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.jboss.resteasy.plugins.providers.multipart.InputPart;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-
 @Path("/GerichtBilder")
-@RegisterRestClient
 public class GerichtBilderController {
 
-    private final String path = "src/main/resources/Bilder/gerichtBilder/";
-
-    private final String projectDirectory = System.getProperty("user.dir");
-
-    private final String projectDirectoryNoTarget = projectDirectory.replace("target", "");
+    private final String imageDatabasePath;
 
     @Inject
     IGerichtService gerichtService;
+
+    public GerichtBilderController() {
+        String mavenProjectDirectory = System.getProperty("user.dir").replace("target", "");
+        if (!mavenProjectDirectory.endsWith("/")) {
+            mavenProjectDirectory += "/";
+        }
+        this.imageDatabasePath = mavenProjectDirectory + "src/main/resources/Bilder/gerichtBilder/";
+    }
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -46,64 +45,45 @@ public class GerichtBilderController {
     @Path("/upload")
     public Response upload(@MultipartForm MultipartBody data) throws IOException {
 
-        byte[] picture = IOUtils.toByteArray(data.file);
+        if (data == null || !data.fileName.matches("^Bild[0-9]+$")) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
 
-        String fileName = data.fileName;
+        String picturePath = this.imageDatabasePath + data.fileName + ".png";
 
-        int id = Integer.parseInt(fileName.replace("Bild",""));
+        // IMPORTANT: Try to write the file BEFORE updating the entry in the database to prevent dangling
+        // references in the case of an IOException.
+        File pictureFile = new File(picturePath);
+        FileUtils.copyInputStreamToFile(data.file, pictureFile);
 
-        gerichtService.updatePicturePath(path+fileName+".png", id);
+        // Check if the uploaded file is actually an image
+        BufferedImage image = ImageIO.read(pictureFile);
+        if (image == null) {
+            boolean deleteSuccess = pictureFile.delete();
+            if (!deleteSuccess) {
+                throw new IOException("Could not delete invalid image!");
+            }
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
 
-        writeFile(picture,projectDirectoryNoTarget + path+fileName+".png");
+        int id = Integer.parseInt(data.fileName.replace("Bild",""));
+        gerichtService.updatePicturePath(picturePath, id);
 
         return Response.status(Response.Status.OK).build();
     }
 
-    //    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces("image/png")
     @Path("/getBild/{id}")
-    public byte[] getBildByID(@PathParam("id")int id) throws IOException {
-        final String picturePath = projectDirectoryNoTarget+path+"Bild"+id+".png";
+    public Response getBildByID(@PathParam("id") int id) throws IOException {
 
-        byte[] content;
-
-        File pictureFile = new File(picturePath);
-
-        System.out.println(picturePath);
-
-        if(pictureFile.exists() && !pictureFile.isDirectory())
-        {
-            java.nio.file.Path path = Paths.get(picturePath);
-
-            content = Files.readAllBytes(path);
-        }
-        else
-        {
-            content = null;
+        File pictureFile = new File(this.imageDatabasePath + "Bild" + id + ".png");
+        if (!pictureFile.exists()) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        //return savedPicture.file;
-        return content;
+        InputStream pictureStream = new FileInputStream(pictureFile);
+        byte[] content = IOUtils.toByteArray(pictureStream);
+        return Response.status(Response.Status.OK).entity(content).build();
     }
-
-
-    private void writeFile(byte[] content, String filename) throws IOException
-    {
-        System.out.println(filename);
-
-        File file = new File(filename);
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-        FileOutputStream fop = new FileOutputStream(file);
-        fop.write(content);
-        fop.flush();
-        fop.close();
-    }
-
-
-
 }
