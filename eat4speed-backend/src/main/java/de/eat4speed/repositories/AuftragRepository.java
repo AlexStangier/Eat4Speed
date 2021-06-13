@@ -35,23 +35,23 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
 
     @Transactional
     public void updateAuftragFahrernummer(int auftrags_ID, int fahrernummer) {
-        update("fahernummer = ?1 where auftrags_ID = ?2", fahrernummer, auftrags_ID);
+        update("fahrernummer = ?1 where auftrags_ID = ?2", fahrernummer, (long) auftrags_ID);
     }
 
     @Transactional
     public List getAuftragFahrernummerByAuftrags_ID(int auftrags_ID)
     {
-        List fahernummer;
+        List fahrernummer;
 
         Query query = entityManager.createQuery(
                 "SELECT a.fahrernummer " +
                         "FROM Auftrag a " +
                         "WHERE a.auftrags_ID = ?1"
-        ).setParameter(1,auftrags_ID);
+        ).setParameter(1,(long) auftrags_ID);
 
-        fahernummer = query.getResultList();
+        fahrernummer = query.getResultList();
 
-        return fahernummer;
+        return fahrernummer;
     }
 
     @Transactional
