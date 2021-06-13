@@ -1,5 +1,6 @@
 package de.eat4speed.systemTests;
 
+import de.eat4speed.controllers.GerichtBilderController;
 import de.eat4speed.controllers.GerichtController;
 import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Benutzer;
@@ -13,14 +14,23 @@ import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import static io.restassured.RestAssured.given;
 
@@ -36,6 +46,10 @@ public class GerichtControllerTest {
     @TestHTTPEndpoint(GerichtController.class)
     @TestHTTPResource("updateGerichtAllData")
     URL updateGerichtEndpoint;
+
+    @TestHTTPEndpoint(GerichtBilderController.class)
+    @TestHTTPResource("upload")
+    URL uploadGerichtPictureEndpoint;
 
     @Inject
     BenutzerRepository _benutzerRepository;
@@ -96,6 +110,53 @@ public class GerichtControllerTest {
         given().contentType(ContentType.JSON)
                 .body(jsonb.toJson(gericht))
                 .when().put(this.updateGerichtEndpoint)
+                .then().statusCode(400);
+    }
+
+    @Test  // TST008 (1)
+    void tryUpdateGerichtPicture() throws IOException, NoSuchAlgorithmException {
+        Gericht gericht = _gerichtRepository.getGerichtByGerichtID(this.dummyGerichtId);
+        String pictureFilename = "Bild" + gericht.getGericht_ID();
+
+        File picture = new File("src/test/resources/220px-Krabby_Patty.png");
+        InputStream pictureStream = new FileInputStream(picture);
+
+        given().contentType("multipart/form-data")
+                .multiPart("file", pictureFilename, pictureStream)
+                .multiPart("fileName", pictureFilename)
+                .when().post(this.uploadGerichtPictureEndpoint)
+                .then().statusCode(200);
+
+        File actualPicture = new File(
+                "src/main/resources/Bilder/gerichtBilder/Bild" + gericht.getGericht_ID() + ".png");
+        InputStream actualPictureStream = new FileInputStream(actualPicture);
+
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+
+        pictureStream = new FileInputStream(picture);
+        byte[] pictureDigest = md5.digest(IOUtils.toByteArray(pictureStream));
+        md5.reset();
+        byte[] actualPictureDigest = md5.digest(IOUtils.toByteArray(actualPictureStream));
+
+        Assertions.assertTrue(MessageDigest.isEqual(pictureDigest, actualPictureDigest));
+
+        if (!actualPicture.delete()) {
+            throw new IOException("Could not delete picture after finishing test!");
+        }
+    }
+
+    @Test  // TST008 (2)
+    void tryUpdateGerichtPictureWithInvalidData() throws FileNotFoundException {
+        Gericht gericht = _gerichtRepository.getGerichtByGerichtID(this.dummyGerichtId);
+        String pictureFilename = "Bild" + gericht.getGericht_ID();
+
+        File picture = new File("src/test/resources/meal-image-test.html");
+        InputStream pictureStream = new FileInputStream(picture);
+
+        given().contentType("multipart/form-data")
+                .multiPart("file", pictureFilename, pictureStream)
+                .multiPart("fileName", pictureFilename)
+                .when().post(this.uploadGerichtPictureEndpoint)
                 .then().statusCode(400);
     }
 
