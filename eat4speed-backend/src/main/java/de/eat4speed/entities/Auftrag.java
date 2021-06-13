@@ -18,6 +18,8 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long auftrags_ID;
     private int auftragnehmer;
+
+    @ColumnDefault("9999")
     private int fahrernummer;
     private Timestamp timestamp;
     private Timestamp timestamp_On_Customer_Demand;

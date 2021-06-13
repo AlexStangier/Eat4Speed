@@ -2,10 +2,7 @@ package de.eat4speed.services;
 
 import de.eat4speed.dto.CategorieMapper;
 import de.eat4speed.dto.CategoriePreferences;
-import de.eat4speed.entities.Auftrag;
-import de.eat4speed.entities.Bestellung;
-import de.eat4speed.entities.Gericht_Kategorie;
-import de.eat4speed.entities.Kategorie;
+import de.eat4speed.entities.*;
 import de.eat4speed.repositories.AuftragRepository;
 import de.eat4speed.repositories.BestellungRepository;
 import de.eat4speed.repositories.Gericht_KategorieRepository;
@@ -64,6 +61,7 @@ public class KategorieService implements IKategorieService {
         List<Auftrag> auftraege = null;
         List<Bestellung> bestellungen = null;
         HashMap<String, Integer> dataSet = new HashMap<String, Integer>();
+        HashMap<Integer, Gericht_Kategorie> gerichtMapper = new HashMap<Integer, Gericht_Kategorie>();
 
         try {
             auftraege = _auftrag.getAllAuftraegeByKunde(customerId);
@@ -82,16 +80,26 @@ public class KategorieService implements IKategorieService {
                 for (Bestellung bestellung : bestellungen) {
                     try {
                         String idsString = bestellung.getGericht_IDs();
-                        idsString = idsString.replaceAll("[\\[\\]\\(\\)]", "");
-                        String[] ids = idsString.split("\\,");
+                        if (idsString != null) {
+                            idsString = idsString.replaceAll("[\\[\\]\\(\\)]", "");
+                            String[] ids = idsString.split("\\,");
 
-                        for (String id : ids) {
-                            Gericht_Kategorie cat = _gericht_kategorie.getGericht_KategorieById(Long.parseLong(id.trim()));
-                            if (dataSet.containsKey(cat.getKategorie())) {
-                                int value = dataSet.get(cat.getKategorie());
-                                dataSet.replace(cat.getKategorie(), ++value);
-                            } else {
-                                dataSet.put(cat.getKategorie(), 1);
+
+                            for (String id : ids) {
+                                Gericht_Kategorie cat = null;
+                                if (!gerichtMapper.containsKey(Integer.parseInt(id.trim()))) {
+                                    cat = _gericht_kategorie.getGericht_KategorieById(Long.parseLong(id.trim()));
+                                    gerichtMapper.put(cat.getGericht_ID(), cat);
+                                } else {
+                                    cat = gerichtMapper.get(Integer.parseInt(id.trim()));
+                                }
+
+                                if (dataSet.containsKey(cat.getKategorie())) {
+                                    int value = dataSet.get(cat.getKategorie());
+                                    dataSet.replace(cat.getKategorie(), ++value);
+                                } else {
+                                    dataSet.put(cat.getKategorie(), 1);
+                                }
                             }
                         }
                     } catch (Exception e) {
