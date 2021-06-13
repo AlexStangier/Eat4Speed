@@ -38,6 +38,43 @@
         </v-flex>
       </v-layout>
     </v-container>
+
+    <v-dialog
+        transition="dialog-top-transition"
+        :retain-focus="false"
+        v-model="dialog"
+        max-width="290"
+    >
+      <v-card>
+        <v-toolbar
+            color="primary"
+            dark
+        >
+          <div class="mx-auto">
+            <h2>asd</h2>
+          </div>
+        </v-toolbar>
+        <v-card-actions>
+          <v-container>
+            <v-row class="mt-2">
+              <v-col align="center" justify="center">
+                <v-btn color="primary" depressed tile width="200px"
+                       @click="acceptStornierung()">Kunde
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-actions>
+        <v-card-actions>
+          <v-btn
+              text
+              @click="closeDialog()"
+          >Schließen
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-main>
 </template>
 
@@ -51,6 +88,16 @@ export default {
     this.loadBestellungen();
   },
   methods: {
+    closeDialog() {
+      window.location.reload();
+      this.dialog = false;
+    },
+    acceptStornierung() {
+      this.dialog = false;
+      this.accepted = true;
+      this.changeBestellungStatus(this.bestellungStatus.bestellID, this.bestellungStatus.zustand);
+      this.bestellungStatus = {};
+    },
     async loadBestellungen() {
 
       const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$store.getters.getLoginData.auth.username);
@@ -81,8 +128,12 @@ export default {
 
     },
     async changeBestellungStatus(bestellID, zustand){
-
       if(zustand === 'stornieren'){
+        if (!this.accepted) {
+          this.dialog = true;
+          this.bestellungStatus = { bestellID: bestellID, zustand: zustand };
+          return;
+        }
         zustand = 'storniert';
       }
       if(zustand === 'Bereit'){
@@ -102,17 +153,21 @@ export default {
 
       await axios.put("/Bestellung/updateBestellungStatus", bestellung);
 
+      this.accepted = false;
+
       if(zustand === 'storniert'){
         window.location.reload();
       }
-
     }
   },
   data () {
     return {
       bestellstati: ['stornieren', 'Bereit', 'In Zubereitung', 'Abholbereit'],
       bestellstatifarben: ['red', 'yellow', 'green'],
-      eingegangeneBestellungen: []
+      eingegangeneBestellungen: [],
+      dialog: false,
+      accepted: false,
+      bestellungStatus: {}
     }
   },
 }
