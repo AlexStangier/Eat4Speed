@@ -31,7 +31,7 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
 
     @Override
     public int compare(Fahrer_Distanz f1, Fahrer_Distanz f2) {
-        return Long.compare( f1.getDistanz(), f2.getDistanz());
+        return Long.compare( f1.getFahrzeit(), f2.getFahrzeit());
     }
 
     protected List<Fahrer_Distanz> getDistances(List<Fahrer> fahrer, List<Integer> restaurantIDs)
