@@ -153,7 +153,7 @@ export default {
     gericht_ID: "",
     version: 0,
     countMinMaxRule:[
-        v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
+        v => (v && v >= 1) || "Bestellungen müssen größer als 1 sein",
         v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
     ],
 
