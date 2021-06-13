@@ -39,15 +39,14 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
     }
 
     @Transactional
-    public List getAuftragFahrernummerByAuftrags_ID(int auftrags_ID)
-    {
+    public List getAuftragFahrernummerByAuftrags_ID(int auftrags_ID) {
         List fahrernummer;
 
         Query query = entityManager.createQuery(
                 "SELECT a.fahrernummer " +
                         "FROM Auftrag a " +
                         "WHERE a.auftrags_ID = ?1"
-        ).setParameter(1,(long) auftrags_ID);
+        ).setParameter(1, (long) auftrags_ID);
 
         fahrernummer = query.getResultList();
 
@@ -62,5 +61,10 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
     @Transactional
     public List<Auftrag> getAllAuftragByRestaurant(long id) {
         return find("Auftragnehmer", id).list();
+    }
+
+    @Transactional
+    public List<Auftrag> getAllAuftraegeByKunde(int id) {
+        return find("Kundennummer", id).list();
     }
 }

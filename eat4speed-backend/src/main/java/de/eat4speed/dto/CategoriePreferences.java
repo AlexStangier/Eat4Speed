@@ -14,7 +14,12 @@ public class CategoriePreferences {
         this.data = new ArrayList<>();
     }
 
-    public void AddToList(String categorie, int amount) {
+    /**
+     * Appends an item to the List
+     * @param categorie
+     * @param amount
+     */
+    public void AddToList(String categorie, Integer amount) {
         this.data.add(new CategorieMapper(categorie, amount));
     }
 

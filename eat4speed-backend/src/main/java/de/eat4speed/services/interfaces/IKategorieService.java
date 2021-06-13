@@ -1,5 +1,6 @@
 package de.eat4speed.services.interfaces;
 
+import de.eat4speed.dto.CategoriePreferences;
 import de.eat4speed.entities.Kategorie;
 
 import javax.ws.rs.core.Response;
@@ -11,5 +12,5 @@ public interface IKategorieService {
 
     List listAll();
 
-
+    CategoriePreferences getFavoriteCategorie(int customerId);
 }
