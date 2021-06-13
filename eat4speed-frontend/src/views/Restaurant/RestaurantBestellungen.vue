@@ -14,7 +14,7 @@
                 </v-col>
               </v-card>
               <v-slider
-                  :value="statusNummer"
+                  :value="item.currentState"
                   :tick-labels="bestellstati"
                   :max="3"
                   step="1"
@@ -47,7 +47,7 @@ import axios from "axios";
 
 export default {
   name: "RestaurantBestellungen",
-  mounted() {
+  created() {
     this.loadBestellungen();
   },
   methods: {
@@ -59,19 +59,21 @@ export default {
 
       let item;
       for(let i = 0; i < anzahl; i++) { // outer loop
-        if((ResponseBestellungen.data[i][2]) == 'bezahlt'){
-          this.statusNummer = 1;
+        let statusNummer = 0;
+
+        if((ResponseBestellungen.data[i][2]) === 'bezahlt'){
+          statusNummer = 1;
         }
-        if((ResponseBestellungen.data[i][2]) == 'bearbeitung'){
-          this.statusNummer = 2;
+        if((ResponseBestellungen.data[i][2]) === 'bearbeitung'){
+          statusNummer = 2;
         }
-        if((ResponseBestellungen.data[i][2]) == 'abholbereit'){
-          this.statusNummer = 3;
+        if((ResponseBestellungen.data[i][2]) === 'abholbereit'){
+          statusNummer = 3;
         }
 
         item = {id: (ResponseBestellungen.data[i][0]), name: (ResponseBestellungen.data[i][1]),
           price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
-          status: this.statusNummer}
+          currentState: statusNummer}
 
         this.eingegangeneBestellungen.push( item )
 
@@ -80,16 +82,16 @@ export default {
     },
     async changeBestellungStatus(bestellID, zustand){
 
-      if(zustand == 'stornieren'){
+      if(zustand === 'stornieren'){
         zustand = 'storniert';
       }
-      if(zustand == 'Bereit'){
+      if(zustand === 'Bereit'){
         zustand = 'bezahlt';
       }
-      if(zustand == 'In Zubereitung'){
+      if(zustand === 'In Zubereitung'){
         zustand = 'bearbeitung';
       }
-      if(zustand == 'Abholbereit'){
+      if(zustand === 'Abholbereit'){
         zustand = 'abholbereit';
       }
 
@@ -100,7 +102,7 @@ export default {
 
       await axios.put("/Bestellung/updateBestellungStatus", bestellung);
 
-      if(zustand == 'storniert'){
+      if(zustand === 'storniert'){
         window.location.reload();
       }
 
@@ -110,8 +112,7 @@ export default {
     return {
       bestellstati: ['stornieren', 'Bereit', 'In Zubereitung', 'Abholbereit'],
       bestellstatifarben: ['red', 'yellow', 'green'],
-      eingegangeneBestellungen: [],
-      statusNummer: '',
+      eingegangeneBestellungen: []
     }
   },
 }
