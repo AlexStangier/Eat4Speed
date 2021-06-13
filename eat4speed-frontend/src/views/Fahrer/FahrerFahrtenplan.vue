@@ -10,45 +10,6 @@
           item-key="name"
           multi-sort
       >
-        <template v-slot:item.map="{ item }">
-          <div class="pa-2">
-            <GmapMap
-                :center="{ lat: 47.98, lng: 7.89 }"
-                :options="{
-                zoomControl: true,
-                mapTypeControl: false,
-                scaleControl: false,
-                streetViewControl: false,
-                rotateControl: false,
-                fullscreenControl: true,
-                disableDefaultUi: false
-                }"
-                :zoom="7"
-            >
-              <DirectionsRenderer :destination="item.end" :origin="item.start" travelMode="DRIVING"/>
-            </GmapMap>
-          </div>
-        </template>
-
-        <template v-slot:item.actions="{ item }">
-          <v-btn
-              color="primary"
-              depressed
-              tile
-              @click="abholungBestätigen(item)"
-          >Bestätigen
-          </v-btn>
-        </template>
-      </v-data-table>
-      <v-data-table
-          :headers="headers"
-          :items="data"
-          :items-per-page="10"
-          :single-select="false"
-          class="elevation-1 pa-6"
-          item-key="name"
-          multi-sort
-      >
         <template v-slot:top>
           <v-container fluid>
             <v-col cols="6">

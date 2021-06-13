@@ -209,7 +209,7 @@
                             <v-icon>mdi-heart</v-icon>
                           </v-btn>
                         </template>
-                        <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                        <span>Aus Favoriten entfernen</span>
                       </v-tooltip>
                     </div>
                     <div v-else>

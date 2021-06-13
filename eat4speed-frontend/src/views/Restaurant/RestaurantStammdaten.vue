@@ -117,6 +117,11 @@
                 <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer" maxlength="20"
                               required></v-text-field>
               </v-col>
+              <label>
+                Bild auswählen
+                <input type="file" ref="file" id="fileChange" accept="image/*"
+                       v-on:change="selectedPicture()"/>
+              </label>
               <v-spacer></v-spacer>
               <v-col class="text-right">
                 <v-btn @click="validate(); artDialog = false"
@@ -281,11 +286,38 @@ export default {
           console.log(responseAdresseToAlter);
           console.log(responseRestaurantToAlter);
 
+          if (this.restaurantBild !== null) {
+            const picturedata = new FormData();
+            picturedata.append("file", this.restaurantBild);
+            picturedata.append("fileName", "Bild" + this.restaurant_ID);
+
+            const options = {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            };
+
+            const responsePictureUpload = await axios.post('/RestaurantBilder/upload',
+                picturedata, options
+            ).then(function () {
+              console.log('Picture successfully uploaded');
+            })
+                .catch(function () {
+                  console.log('Picture upload error');
+                });
+
+            console.log(responsePictureUpload);
+          }
+
         } else {
           this.openSnackbar("Bitte gültige Adresse eingeben!")
         }
       //}
 
+    },
+    selectedPicture() {
+      this.restaurantBild = this.$refs.file.files[0];
+      console.log(this.restaurantBild);
     },
     reset() {
       this.$refs.form.reset();
@@ -311,6 +343,7 @@ export default {
       ],
       valid: false,
       paypal: "",
+      restaurantBild: "",
       restaurant_name: "",
       descriptionShort: "",
       firstName: "",
