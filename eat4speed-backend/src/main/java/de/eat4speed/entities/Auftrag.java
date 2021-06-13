@@ -3,10 +3,7 @@ package de.eat4speed.entities;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -19,7 +16,7 @@ public class Auftrag extends PanacheEntityBase implements Serializable {
     private long auftrags_ID;
     private int auftragnehmer;
 
-    @ColumnDefault("9999")
+    @Column(columnDefinition = "integer default 9999")
     private int fahrernummer;
     private Timestamp timestamp;
     private Timestamp timestamp_On_Customer_Demand;
