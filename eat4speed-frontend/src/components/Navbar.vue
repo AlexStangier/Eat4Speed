@@ -36,7 +36,91 @@
         </template>
       </v-text-field>
 
+
       <v-spacer></v-spacer>
+
+      <v-menu
+          bottom
+          left
+          offset-y
+          tile
+          :close-on-content-click="false"
+      >
+        <template v-slot:activator="{ on, attrs}">
+          <v-btn
+              v-bind="attrs"
+              v-on="on"
+              class="ml-3"
+              color="primary"
+              tile
+          >
+            <v-icon> mdi-account </v-icon>
+            Konto
+          </v-btn>
+        </template>
+        <v-list
+            max-width="400"
+        >
+          <v-list-item>
+            <v-btn
+                :to="{name: 'Favorites'}"
+                text
+                tile
+                width="200"
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon>mdi-heart</v-icon>
+                Favoriten
+              </v-content>
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+                text
+                tile
+                width="200"
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon>mdi-map-clock</v-icon>
+                Lieferansicht
+              </v-content>
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+                text
+                tile
+                width="200"
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon>mdi-history</v-icon>
+                Bestellhistorie
+              </v-content>
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+                :to="{name: 'Einstellungen'}"
+                text
+                tile
+                width="200"
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon>mdi-account-cog-outline</v-icon>
+                Einstellungen
+              </v-content>
+            </v-btn>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
       <Cart></Cart>
 

@@ -2,88 +2,79 @@
   <v-main>
     <v-container>
       <v-container>
-        <v-row no-gutters>
-          <v-col sm="2">
-            <v-select
-                v-model="selectedBewertung"
-                label="Bewertung"
-                :items="selectRating"
-                clearable="true"
-                @change="applyBewertungFilterAndSearch"
+        <v-row no-gutters class="align-center">
+          <v-col
+              v-for="k in 4"
+              :key="k"
+              cols="3"
+          >
+            <v-card
+                v-if="k === 1"
+                flat
             >
-              <template v-slot:selection="data">
-                {{data.item}} {{"Sterne"}}
-              </template>
-              <template v-slot:item="data">
-                {{data.item}} {{"Sterne"}}
-              </template>
-            </v-select>
-          </v-col>
-          <v-col sm="2" offset-sm="1">
-            <v-select
-                v-model="selectedEntfernung"
-                label="Entfernung"
-                :items="selectArea"
-                clearable="true"
-                @change="applyDistanceFilterAndSearch"
-            >
-              <template v-slot:selection="data">
-                {{data.item}} {{"km"}}
-              </template>
-              <template v-slot:item="data">
-                {{data.item}} {{"km"}}
-              </template>
-            </v-select>
-          </v-col>
-          <v-col offset-sm="1">
-            <v-btn>Auf der Karte anzeigen</v-btn>
-          </v-col>
-          <v-col order-sm="12" offset-sm="1">
-            <v-menu
-                bottom
-                offset-y
-                :close-on-content-click="false"
-            >
-              <template v-slot:activator="{ on, attrs}">
-                <v-btn
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  Filter
-                </v-btn>
-              </template>
-              <v-list
-                  max-width="400"
-                  min-width="400"
-
+              <v-select
+                  v-model="selectedBewertung"
+                  label="Bewertung"
+                  :items="selectRating"
+                  clearable="true"
+                  @change="applyBewertungFilterAndSearch"
               >
-                <v-checkbox label="Mindestbestellwert benutzen" v-model="mindestbestellwertOptionActive">
-                </v-checkbox>
-                <v-subheader>Mindestbestellwert</v-subheader>
-                <v-list-item>
-                  <v-slider
-                      v-model="selectedMindestbestellwert"
-                      min="5"
-                      max="100"
-                      step="5"
-                      thumb-label
-                      prepend-icon="mdi-cash"
-                      append-icon="mdi-cash-multiple"
-                  >
-                    <template v-slot:thumb-label="{ value }">
-                      {{value}} {{"€"}}
-                    </template>
-                  </v-slider>
-                </v-list-item>
-                <v-list-item>
-                  <v-btn color="error" @click="()=>{this.mindestbestellwertOptionActive=false;this.selectedMindestbestellwert=0;}">Filter löschen</v-btn>
-                  <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+                <template v-slot:selection="data">
+                  {{data.item}} {{"Sterne"}}
+                </template>
+                <template v-slot:item="data">
+                  {{data.item}} {{"Sterne"}}
+                </template>
+              </v-select>
+            </v-card>
+            <v-card
+                v-if="k === 2"
+                flat
+            >
+              <v-select
+                  class="ml-10"
+                  v-model="selectedEntfernung"
+                  label="Entfernung"
+                  :items="selectArea"
+                  clearable="true"
+                  @change="applyDistanceFilterAndSearch"
+              >
+                <template v-slot:selection="data">
+                  {{data.item}} {{"km"}}
+                </template>
+                <template v-slot:item="data">
+                  {{data.item}} {{"km"}}
+                </template>
+              </v-select>
+            </v-card>
+            <v-card
+                v-if="k === 3"
+                flat
+                class="text-right"
+            >
+              <v-btn
+                  color="primary"
+                  tile
+                  width="250"
+              >
+                Auf der Karte anzeigen
+              </v-btn>
+            </v-card>
+            <v-card
+                v-if="k === 4"
+                flat
+                class="text-right"
+            >
+              <v-btn
+                  disabled
+                  color="primary"
+                  tile
+              >
+                Fliter
+              </v-btn>
+            </v-card>
           </v-col>
         </v-row>
-
       </v-container>
       <v-container>
         <v-card class="mx-auto">
@@ -91,64 +82,136 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="300"
-              max-height="600"
+              :item-height="250"
+              max-height="650"
           >
             <template v-slot:default="{ item }" v-resize>
-              <v-list-item v-resize :key="version">
-                <v-list-item-content>
-                  <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
-                </v-list-item-content>
-                <v-list-item-content>
-                  <v-list-item-group class="text-left">
-                    <v-list-item-title>{{ item.restaurant }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                    <br>
-                    <br>
-                    <v-list-item-content>Mindestbestellwert: {{item.mindestbestellwert}} €</v-list-item-content>
-                    <v-list-item-content>Bestellradius: {{item.bestellradius}}</v-list-item-content>
-                  </v-list-item-group>
-                </v-list-item-content>
-                <v-list-item-content></v-list-item-content>
-                <v-list-item-group class="text-right">
-                  <div v-if="item.isFav === true">
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            @mouseenter="selectRestaurant(item)"  small="true" right
-                            @mousedown="deleteFromFavorites"
-                            @mouseup="()=>{this.amountRestaurants=0;version++}"
-                            v-bind="attrs"
-                            v-on="on"
-                        >
-                          <v-icon>mdi-heart</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
-                    </v-tooltip>
-                  </div>
-                  <div v-else>
-                    <v-tooltip bottom>
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            @mouseenter="selectRestaurant(item)"  small="true" right
-                            @mousedown="addToFavorites"
-                            @mouseup="()=>{this.amountRestaurants=0;version++}"
-                            v-bind="attrs"
-                            v-on="on"
-                        >
-                          <v-icon>mdi-heart-outline</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>Zu Favoriten hinzufügen</span>
-                    </v-tooltip>
-                  </div>
-                  <br>
-                  <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
-                  <br>
-                  <v-btn small="true" bottom="bottom" @mouseenter="selectRestaurant(item)" @click="setStoreSearchOptions">Zur Speisekarte</v-btn>
-                </v-list-item-group>
-              </v-list-item>
+
+              <v-card
+                  flat
+                  tile
+                  outlined
+              >
+                <v-container class="pa-1">
+                  <v-row>
+                    <v-col
+                        cols="3"
+                    >
+                      <v-card
+                      flat
+                      tile
+                      outlined
+                      >
+                        <v-img alt="Bild von Essen" min-height="230" max-height="230" max-width="400" position="center center" :src="item.img"></v-img>
+                      </v-card>
+                    </v-col>
+                    <v-col>
+                      <v-row
+                          v-for="a in 3"
+                          :key="a"
+                      >
+                        <v-col
+                          cols="4"
+                          >
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-h5 text-decoration-underline"
+                          >
+                            {{ item.restaurant }}
+                          </v-card>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="subtitle-1"
+                          >
+                            {{ item.description }}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1"
+                          >
+                            Mindestbestellwert: {{item.mindestbestellwert+' €'}}
+                          </v-card>
+                          <v-crad
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1"
+                          >
+                            Bestellradius: {{item.bestellradius +' km'}}
+                          </v-crad>
+                        </v-col>
+                        <v-col>
+                          <v-card
+                            v-if="a === 1"
+                            flat
+                            class="text-right"
+                            >
+                            <div v-if="item.isFav === true">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectRestaurant(item)"  small="true" right
+                                      @mousedown="deleteFromFavorites"
+                                      @mouseup="()=>{this.amountRestaurants=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                              </v-tooltip>
+                            </div>
+                            <div v-else>
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectRestaurant(item)"  small="true" right
+                                      @mousedown="addToFavorites"
+                                      @mouseup="()=>{this.amountRestaurants=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zu Favoriten hinzufügen</span>
+                              </v-tooltip>
+                            </div>
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="text-right"
+                          >
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
+                          </v-card>
+                          <v-card
+                            v-if="a === 3"
+                            flat
+                            class="text-right"
+                            >
+                            <v-btn
+                                color="primary"
+                                tile
+                                small="true"
+                                bottom="bottom"
+                                @mouseenter="selectRestaurant(item)"
+                                @click="setStoreSearchOptions"
+                            >
+                              Zur Speisekarte
+                            </v-btn>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
               <v-divider></v-divider>
             </template>
           </v-virtual-scroll>

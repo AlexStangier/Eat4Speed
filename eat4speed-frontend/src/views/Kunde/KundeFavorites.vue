@@ -1,91 +1,202 @@
 <template>
   <v-main>
     <v-container>
-
-      <h1>Favorites</h1>
-      <v-btn @click="setDisplayGerichteToTrue">Gerichte</v-btn>
-      <v-btn @click="setDisplayGerichteToFalse">Restaurants</v-btn>
-      <v-container>
+      <v-card class="mx-auto">
+        <v-card-title>
+          <v-col>
+            <v-row class="text-h4">
+              Favoriten
+            </v-row>
+            <v-row>
+              <v-btn
+                  @click="setDisplayGerichteToTrue"
+                  :color="btnType === 0 ? 'primary' : 'blue-grey'"
+                  class="mt-2 white--text"
+                  width="150"
+              >
+                Gerichte
+              </v-btn>
+              <v-btn
+                  @click="setDisplayGerichteToFalse"
+                  :color="btnType === 1 ? 'primary' : 'blue-grey'"
+                  class="mt-2 ml-2 white--text"
+                  width="150"
+              >
+                Restaurants
+              </v-btn>
+            </v-row>
+          </v-col>
+        </v-card-title>
+        <v-divider></v-divider>
         <v-virtual-scroll
             :items="items"
-            :item-height="310"
-            max-height="600"
+            :item-height="210"
+            max-height="650"
         >
           <template v-slot:default="{ item }" v-resize>
-            <v-list-item v-resize>
-              <v-list-item-content>
-                <v-img alt="Bild von Essen" max-height="300" max-width="300" position="center center" :src="item.img"></v-img>
-              </v-list-item-content>
-              <v-list-item-content>
-                <v-list-item-group class="text-left">
-                  <div v-if="displayGerichte===true">
-                    <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                    <br>
-                    <br>
-                    <v-list-item-content>{{item.restaurant}}</v-list-item-content>
-                  </div>
-                  <div v-else>
-                    <v-list-item-content>{{item.restaurant}}</v-list-item-content>
-                  </div>
-                </v-list-item-group>
-              </v-list-item-content>
-              <v-list-item-content>
-                <v-list-item-group class="text-right">
-                  <v-list-item-content>Anzahl Bestellungen: {{item.anzahlBestellungen}}</v-list-item-content>
-                </v-list-item-group>
-              </v-list-item-content>
-              <v-list-item-group class="text-right">
-                <v-list-item-content>
-                  <div v-if="displayGerichte===true">
-                    Preis: {{ item.price}}
-                  </div>
-                  <div v-else>
-                  </div>
-                </v-list-item-content>
-                <div v-if="displayGerichte===true">
-                  <v-btn small="true" bottom="bottom" :to="{name: 'Gericht'}" @mouseover="selectGericht(item)">Details</v-btn>
-                  <v-menu
-                      bottom
-                      offset-y
-                      :close-on-content-click="false"
+            <v-card
+                flat
+                tile
+            >
+              <v-container class="pa-1">
+                <v-row>
+                  <v-col
+                      cols="3"
                   >
-                    <template v-slot:activator="{ on, attrs}">
-                      <v-btn
-                          v-bind="attrs"
-                          v-on="on"
-                          small="true"
-                          bottom="bottom"
-                          @mouseover="selectItem(item)"
-                          @click="gerichtAnzahl=0"
-                      >
-                        Bestellen
-                      </v-btn>
-                    </template>
-                    <v-list
-                        max-width="200"
-                        min-width="250"
-                        class="text-center"
+                    <v-card
+                        flat
+                        tile
+                        class="center"
                     >
-                      <v-list-item>
-                        <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
-                      </v-list-item>
-                      <v-btn @click="addToCart()" small="small">Zum Warenkorb hinzufügen</v-btn>
-                    </v-list>
-                  </v-menu>
-                  <v-btn small="true" bottom="bottom" @mouseenter="selectItem(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
-                </div>
-                <div v-else>
-                  <v-btn small="true" bottom="bottom" @mouseenter="selectItem(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
-                </div>
-                <v-btn @mouseenter="selectItem(item)" @click="deleteFromFavorites">Aus Favoriten entfernen</v-btn>
-              </v-list-item-group>
-            </v-list-item>
+                      <v-img alt="Bild von Essen" min-height="200" max-height="200" max-width="400" :src="item.img"></v-img>
+                    </v-card>
+                  </v-col>
+                  <v-col>
+                    <v-row
+                        v-for="a in 3"
+                        :key="a"
+                    >
+                      <v-col
+                          cols="4"
+                      >
+                        <v-card
+                            v-if="a === 1 && displayGerichte===true"
+                            class="text-h5 text-decoration-underline"
+                            flat
+                        >
+                          {{ item.name }}
+                        </v-card>
+                        <v-card
+                            v-if="a === 1 && displayGerichte===true"
+                            class="text-subtitle-1"
+                            flat
+                        >
+                          {{ item.description }}
+                        </v-card>
+                        <v-card
+                            v-if="a === 1 && displayGerichte===false"
+                            class="text-h5 text-decoration-underline"
+                            flat
+                        >
+                          {{item.restaurant}}
+                        </v-card>
+                        <v-card
+                            v-if="a === 2 && displayGerichte===true"
+                            class="text-subtitle-1"
+                            flat
+                        >
+                          {{item.restaurant}}
+                        </v-card>
+                      </v-col>
+                      <v-col class="text-right">
+                        <v-card
+                            v-if="a === 1"
+                            flat
+                        >
+                          <v-btn
+                              small="true"
+                              icon
+                              @mouseenter="selectItem(item)"
+                              @click="deleteFromFavorites"
+                          >
+                            <v-icon>mdi-heart-broken</v-icon>
+                          </v-btn>
+                        </v-card>
+                        <v-card
+                            v-if="a === 2 && displayGerichte===true"
+                            class="text-subtitle-1"
+                            flat
+                        >
+                          Preis: {{ item.price + ' €'}}
+                        </v-card>
+                        <v-card
+                            v-if="a === 2"
+                            flat
+                            class="text-subtitle-1"
+                        >
+                          Anzahl Bestellungen: {{item.anzahlBestellungen}}
+                        </v-card>
+                        <v-card
+                            v-if="a === 3"
+                            flat
+                            class="text-right"
+                        >
+                          <v-btn
+                              v-if="displayGerichte===true"
+                              color="primary"
+                              tile
+                              class="ml-1"
+                              small="true"
+                              bottom="bottom"
+                              :to="{name: 'Gericht'}"
+                              @mouseover="selectGericht(item)"
+                          >
+                            Details
+                          </v-btn>
+                          <v-btn
+                              color="primary"
+                              tile
+                              class="ml-1"
+                              small="true"
+                              bottom="bottom"
+                              @mouseenter="selectItem(item)"
+                              @click="setStoreRestaurant_ID"
+                          >
+                            Zur Speisekarte
+                          </v-btn>
+                          <v-menu
+                              v-if="displayGerichte===true"
+                              bottom
+                              left
+                              offset-y
+                              :close-on-content-click="false"
+                          >
+                            <template v-slot:activator="{ on, attrs}">
+                              <v-btn
+                                  color="primary"
+                                  tile
+                                  class="ml-1"
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  small="true"
+                                  bottom="bottom"
+                                  @mouseover="selectItem(item)"
+                                  @click="gerichtAnzahl=0"
+                              >
+                                Bestellen
+                              </v-btn>
+                            </template>
+                            <v-list
+                                max-width="200"
+                                min-width="250"
+                                class="text-center"
+                            >
+                              <v-list-item>
+                                <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
+                              </v-list-item>
+                              <v-btn
+                                  color="primary"
+                                  tile
+                                  @click="addToCart()"
+                                  small="small"
+                              >
+                                Zum Warenkorb hinzufügen
+                              </v-btn>
+                            </v-list>
+                          </v-menu>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
-      </v-container>
+      </v-card>
     </v-container>
+
   </v-main>
 </template>
 
@@ -106,10 +217,12 @@ export default {
   },
   methods: {
     setDisplayGerichteToTrue() {
+      this.btnType = 0
       this.displayGerichte = true;
       this.loadGerichte();
     },
     setDisplayGerichteToFalse() {
+      this.btnType = 1;
       this.displayGerichte = false;
       this.loadGerichte()
     },
@@ -272,6 +385,7 @@ export default {
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
       v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
     ],
+    btnType: 0,
   }),
   computed: {
     items(){

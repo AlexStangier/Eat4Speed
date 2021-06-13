@@ -90,6 +90,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                     color="green"
+                    tile
                     v-bind="attrs"
                     v-on="on"
                     :disabled="!valid"
@@ -133,6 +134,8 @@
             </v-dialog>
             <v-btn
                 color="error"
+                tile
+                class="ml-2"
             >
               Konto löschen
             </v-btn>
