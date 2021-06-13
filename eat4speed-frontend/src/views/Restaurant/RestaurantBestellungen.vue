@@ -39,7 +39,7 @@
       </v-layout>
     </v-container>
 
-    <v-dialog
+    <v-dialog persistent
         transition="dialog-top-transition"
         :retain-focus="false"
         v-model="dialog"
@@ -47,26 +47,26 @@
     >
       <v-card>
         <v-toolbar
-            color="primary"
+            color="grey"
             dark
         >
           <div class="mx-auto">
-            <h2>asd</h2>
+            <h2>Bestellung stornieren</h2>
           </div>
         </v-toolbar>
         <v-card-actions>
           <v-container>
             <v-row class="mt-2">
               <v-col align="center" justify="center">
-                <v-btn color="primary" depressed tile width="200px"
-                       @click="acceptStornierung()">Kunde
+                <v-btn color="green" depressed tile width="200px"
+                       @click="acceptStornierung()">Bestätigen
                 </v-btn>
               </v-col>
             </v-row>
           </v-container>
         </v-card-actions>
         <v-card-actions>
-          <v-btn
+          <v-btn color="red"
               text
               @click="closeDialog()"
           >Schließen
