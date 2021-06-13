@@ -29,5 +29,4 @@ public interface IBenutzerService {
 
     List getBenutzerKundeEinstellungenByLogin(String email);
 
-    List getRestaurantBestellungen(String email);
 }

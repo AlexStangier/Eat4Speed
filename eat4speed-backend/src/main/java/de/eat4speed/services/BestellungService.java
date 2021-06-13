@@ -211,4 +211,13 @@ public class BestellungService implements IBestellungService {
         }
         return new PaymentDto(total, "success");
     }
+
+    @Override
+    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+
+    @Override
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        _bestellungRepository.updateBestellungStatus(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
 }

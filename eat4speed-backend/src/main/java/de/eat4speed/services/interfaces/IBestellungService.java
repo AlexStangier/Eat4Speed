@@ -3,7 +3,6 @@ package de.eat4speed.services.interfaces;
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.entities.Bestellung;
-import de.eat4speed.entities.Gericht;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -27,4 +26,8 @@ public interface IBestellungService {
      * @return success or error
      */
     PaymentDto payForOrder(Integer AuftragsId) throws SQLException;
+
+    List getRestaurantBestellungen(String email);
+
+    Response updateBestellungStatus(Bestellung bestellung);
 }

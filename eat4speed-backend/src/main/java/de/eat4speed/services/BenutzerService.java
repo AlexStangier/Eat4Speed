@@ -83,7 +83,6 @@ public class BenutzerService implements IBenutzerService {
     @Override
     public List getBenutzerKundeEinstellungenByLogin(String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
 
-    @Override
-    public List getRestaurantBestellungen(String email) {return _benutzer.getRestaurantBestellungen(email);}
+
 }
 

@@ -9,7 +9,7 @@
               <v-card class="mr-10" color="red" dark>
                 <v-col >
                   <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
-                  <v-card-text>- {{ item.artikel }}</v-card-text>
+                  <v-card-text>- </v-card-text>
                   {{ item.price }} €
                 </v-col>
               </v-card>
@@ -21,7 +21,7 @@
                   ticks="always"
                   tick-size="0"
                   thumb-size="100"
-                  @change="changeAuftragStatus(item.id, item.status)"
+                  @change="changeBestellungStatus(item.id, item.status)"
 
 
               >
@@ -53,7 +53,7 @@ export default {
   methods: {
     async loadBestellungen() {
 
-      const ResponseBestellungen = await axios.get("Benutzer/getRestaurantBestellungen/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$store.getters.getLoginData.auth.username);
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
@@ -71,14 +71,14 @@ export default {
 
         item = {id: (ResponseBestellungen.data[i][0]), name: (ResponseBestellungen.data[i][1]),
           price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
-          artikel: (ResponseBestellungen.data[i][4]), status: this.statusNummer}
+          status: this.statusNummer}
 
         this.eingegangeneBestellungen.push( item )
 
       }
 
     },
-    async changeAuftragStatus(bestellID, zustand){
+    async changeBestellungStatus(bestellID, zustand){
 
       if(zustand == 'stornieren'){
         zustand = 'storniert';
@@ -93,12 +93,12 @@ export default {
         zustand = 'abholbereit';
       }
 
-      let auftrag = {
+      let bestellung = {
         status: zustand,
-        auftrags_ID: bestellID
+        bestell_ID: bestellID
       }
 
-      await axios.put("/Auftrag/updateAuftragStatusRestaurant", auftrag);
+      await axios.put("/Bestellung/updateBestellungStatus", bestellung);
 
       if(zustand == 'storniert'){
         window.location.reload();

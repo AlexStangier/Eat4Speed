@@ -3,6 +3,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.dto.PayDto;
 import de.eat4speed.dto.PaymentDto;
+import de.eat4speed.entities.Bestellung;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -33,6 +34,16 @@ public class BestellungController {
     @Path("pay")
     public PaymentDto pay(PayDto jobId) throws SQLException {
         return _bestellungen.payForOrder(jobId.getJobId());
+    }
+
+    @GET
+    @Path("getRestaurantBestellungen/{email}")
+    public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
+
+    @PUT
+    @Path("updateBestellungStatus")
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        return _bestellungen.updateBestellungStatus(bestellung);
     }
 
 }

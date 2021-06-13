@@ -20,6 +20,7 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
     private Timestamp timestamp;
     private int rechnung;
     private String Gericht_IDs;
+    private String status;
     public Bestellung() {
     }
     public Bestellung(int auftrags_ID, Timestamp timestamp, int rechnung) {
@@ -73,6 +74,10 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
         Gericht_IDs = gericht_IDs;
     }
 
+    public String getStatus() { return status; }
+
+    public void setStatus(String status) { this.status = status; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -83,7 +88,7 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(bestell_ID, auftrags_ID, timestamp, rechnung);
+        return Objects.hash(bestell_ID, auftrags_ID, timestamp, rechnung, Gericht_IDs, status);
     }
 
     @Override
@@ -93,6 +98,8 @@ public class Bestellung extends PanacheEntityBase implements Serializable {
                 ", auftrags_ID=" + auftrags_ID +
                 ", timestamp=" + timestamp +
                 ", rechnung=" + rechnung +
+                ", Gericht_IDs='" + Gericht_IDs + '\'' +
+                ", status='" + status + '\'' +
                 '}';
     }
 }
