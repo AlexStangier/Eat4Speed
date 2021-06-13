@@ -1,6 +1,7 @@
 package de.eat4speed.controllers;
 
 
+import de.eat4speed.dto.CategoriePreferences;
 import de.eat4speed.entities.Kategorie;
 import de.eat4speed.repositories.KategorieRepository;
 import de.eat4speed.services.interfaces.IKategorieService;
@@ -30,5 +31,13 @@ public class KategorieController {
     public Response add(Kategorie kategorie)
     {
         return _kategorie.addKategorie(kategorie);
+    }
+
+    @GET
+    @Path("getPreferences/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
+    public CategoriePreferences getCustomerPreferences(@PathParam("id") Integer customerId){
+        return _kategorie.getFavoriteCategorie(customerId);
     }
 }
