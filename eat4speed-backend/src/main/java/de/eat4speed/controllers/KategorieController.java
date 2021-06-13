@@ -3,14 +3,12 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.dto.CategoriePreferences;
 import de.eat4speed.entities.Kategorie;
-import de.eat4speed.repositories.KategorieRepository;
 import de.eat4speed.services.interfaces.IKategorieService;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Path("/Kategorie")
@@ -38,6 +36,6 @@ public class KategorieController {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.TEXT_PLAIN)
     public CategoriePreferences getCustomerPreferences(@PathParam("id") Integer customerId){
-        return _kategorie.getFavoriteCategorie(customerId);
+        return _kategorie.getFavouriteCategorie(customerId);
     }
 }

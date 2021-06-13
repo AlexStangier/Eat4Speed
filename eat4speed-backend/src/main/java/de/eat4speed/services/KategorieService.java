@@ -60,8 +60,7 @@ public class KategorieService implements IKategorieService {
      * @return
      */
     @Override
-    public CategoriePreferences getFavoriteCategorie(int customerId) {
-
+    public CategoriePreferences getFavouriteCategorie(int customerId) {
         List<Auftrag> auftraege = null;
         List<Bestellung> bestellungen = null;
         HashMap<String, Integer> dataSet = new HashMap<String, Integer>();
