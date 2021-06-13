@@ -3,7 +3,7 @@
     <v-container :key="version2">
       <v-card class="mx-auto">
         <v-card-title>
-          <v-img alt="Bild von Restaurant" max-height="35%" max-width="35%" src="https://www.onpsx.de/uploads/mediapool/dvdreviews/sponge1-03.jpg"></v-img>
+          <v-img alt="Bild von Restaurant" max-height="35%" max-width="35%" :src="this.img"></v-img>
 
           <v-list-item-content>
             <v-item-group>
@@ -11,9 +11,36 @@
                 <h1>{{restaurantName}}</h1>
               </v-list-item-action>
               <v-list-item-action>
-                <v-btn small="true" right="right" icon>
-                  <v-icon>mdi-heart</v-icon>
-                </v-btn>
+                <div v-if="restaurantIsFav === true">
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          small="true" right
+                          @mousedown="deleteFromFavorites"
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        <v-icon>mdi-heart</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Aus Favoriten entfernen</span>
+                  </v-tooltip>
+                </div>
+                <div v-else>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          small="true" right
+                          @mousedown="addToFavorites"
+                          v-bind="attrs"
+                          v-on="on"
+                      >
+                        <v-icon>mdi-heart-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>Zu Favoriten hinzufügen</span>
+                  </v-tooltip>
+                </div>
               </v-list-item-action>
             </v-item-group>
 
@@ -233,13 +260,30 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   mounted() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
-    this.currentKunde_ID = 6;
+    this.getLoggedInKunde()
     this.loadRestaurant();
     this.displayGetraenke = false;
     this.loadGerichte();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+      this.currentKunde_ID = response.data[0];
+    },
     async loadRestaurant() {
+
+      this.restaurantIsFav = false;
+      const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
+      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      {
+        let favData = ResponseFavoriten.data[i];
+        if(this.selectedRestaurant_ID === favData[0])
+        {
+          this.restaurantIsFav = true;
+        }
+      }
+
       const ResponseRestaurant = await axios.get("Restaurant/getAllRestaurantDataByRestaurant_ID/"+this.selectedRestaurant_ID);
       let restaurantData = ResponseRestaurant.data[0];
       this.restaurantName = restaurantData[1];
@@ -254,6 +298,28 @@ export default {
       {
         this.restaurantRating = ResponseBewertung.data[0][0];
         this.restaurantBewertungCount = ResponseBewertung.data[0][1];
+      }
+
+      const config = { responseType:"arraybuffer" };
+      const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.selectedRestaurant_ID,config);
+
+      console.log(responsePicture);
+
+      if(responsePicture.status !== 204)
+      {
+        console.log("received Picture")
+        console.log(responsePicture.data);
+
+        let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+        let imageURL = URL.createObjectURL(pictureBlob);
+        console.log(imageURL);
+
+        this.img = imageURL;
+      }
+      else
+      {
+        this.img = "";
       }
 
       this.version2++;
@@ -383,6 +449,23 @@ export default {
     selectItem(item) {
       this.selectedItem = item;
     },
+    async addToFavorites() {
+      var today = new Date();
+      const restaurantFavorite = {
+        restaurant_ID: this.selectedRestaurant_ID,
+        kundennummer: this.currentKunde_ID,
+        hinzufuegedatum: today,
+        //TODO get anzahl_Bestellungen from Database
+        anzahl_Bestellungen: 0
+      }
+
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      this.loadRestaurant();
+    },
+    async deleteFromFavorites(){
+      await axios.delete("Favoritenliste_Restaurants/remove/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+      this.loadRestaurant();
+    },
     addToCart() {
 
       console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
@@ -410,6 +493,8 @@ export default {
     descriptions: [],
     prices: [],
     imgs: [],
+    img: "",
+    restaurantIsFav: false,
     restaurants: [],
     gerichtIDs: [],
     minimums: [],

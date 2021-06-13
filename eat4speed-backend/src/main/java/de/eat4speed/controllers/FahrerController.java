@@ -49,6 +49,12 @@ public class FahrerController {
         return _fahrer.updateFahrer_Verifiziert(id);
     }
 
+    @PUT
+    @Path("updateFahrer_anzahl_aktueller_Auftraege/{fahrernummer}/{anzahl}")
+    public Response updateFahrer_anzahl_aktueller_Auftraege(@PathParam("fahrernummer") int fahrernummer, @PathParam("anzahl") int anzahl)
+    {
+        return _fahrer.updateFahrer_anzahl_aktueller_Auftraege(fahrernummer, anzahl);
+    }
 
     @GET
     @Path("getAll")

@@ -59,6 +59,7 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
+import axios from "axios";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -66,6 +67,50 @@ export default {
     DirectionsRenderer
   },
   methods: {
+    async pollData() {
+      this.polling = setInterval(() => {
+        this.getBenachrichtigung();
+        this.checkAuftraegeforFahrernummer();
+      },3000);
+    },
+    async getBenachrichtigung()
+    {
+      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/"+this.fahrernummer);
+      for(let i = 0; i<responseBenachrichtigung.data.length; i++)
+      {
+        let benachrichtigungs_ID = responseBenachrichtigung.data[i][0];
+
+        this.auftrags_IDs.push(responseBenachrichtigung.data[i][1]);
+
+        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/"+benachrichtigungs_ID);
+      }
+
+    },
+    async setAuftragFahrernummer()
+    {
+      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[this.auftrags_IDs_index])
+      if(response.data[0]>=0)
+      {
+        alert("Auftrag bereits verteilt.");
+      }
+      else
+      {
+        await axios.put("Auftrag/updateAuftragFahrernummer/"+this.auftrags_IDs[this.auftrags_IDs_index]+"/"+this.fahrernummer);
+        this.active_auftrags_IDs.push(this.auftrags_IDs[this.auftrags_IDs_index]);
+        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/"+this.fahrernummer+"/"+this.active_auftrags_IDs.length);
+        this.auftrags_IDs.splice(this.auftrags_IDs_index,1);
+      }
+    },
+    async checkAuftraegeforFahrernummer(){
+      for(let i = 0; i<this.auftrags_IDs.length;i++)
+      {
+        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[i])
+        if(response.data[0]>=0)
+        {
+          this.auftrags_IDs.splice(i,1);
+        }
+      }
+    },
     abholungBestätigen(id) {
       id;
     },
@@ -80,11 +125,22 @@ export default {
     },
   },
   async mounted() {
-      await this.$http.get('/route').then(response => this.data = response.data)
+      await this.$http.get('/route').then(response => this.data = response.data);
+      this.pollData();
+      //todo this fahrernummer = aktuelle Fahrernummer
     },
+  beforeDestroy() {
+    clearInterval(this.polling);
+  },
   data() {
     return {
       data: [],
+      fahrernummer: 0,
+      auftrags_IDs: [],
+      active_auftrags_IDs: [],
+      auftrags_IDs_index: 0,
+      benachrichtigungs_ID: 0,
+      polling: null,
       acceptDialog: false,
       deleteDialog: false,
       headers: [
