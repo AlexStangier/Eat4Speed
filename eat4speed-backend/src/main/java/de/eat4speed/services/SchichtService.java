@@ -31,8 +31,15 @@ public class SchichtService implements ISchichtService {
     }
 
     @Override
-    public List getAllZeiten(int schicht_ID)
+    public Response updateSchicht(Schicht zeit)
     {
-        return schichtRepository.getAllZeiten(schicht_ID);
+        schichtRepository.updateSchicht(zeit);
+
+        return Response.status(Response.Status.OK).entity(zeit).build();
+    }
+
+    @Override
+    public List getSchicht(int fahrer_ID) {
+        return schichtRepository.getSchicht(fahrer_ID);
     }
 }

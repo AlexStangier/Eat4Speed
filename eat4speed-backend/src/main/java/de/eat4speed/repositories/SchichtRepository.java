@@ -23,22 +23,25 @@ public class SchichtRepository implements PanacheRepository<Schicht> {
         persist(zeit);
     }
 
-
+    @Transactional
+    public void updateSchicht(Schicht zeit){
+        update("anfang = ?1, ende = ?2 where fahrernummer = ?3", zeit.getAnfang(),zeit.getEnde(),zeit.getFahrernummer());
+    }
 
     @Transactional
-    public List getAllZeiten(int schicht_ID)
+    public List getSchicht(int fahrerNummer)
     {
-        List allZeiten;
+        List schicht;
 
         Query query = entityManager.createQuery(
                 "SELECT t.anfang, t.ende, t.fahrernummer, t.schicht_ID " +
                         "FROM Schicht t " +
-                        "WHERE t.schicht_ID = ?1 "
-        ).setParameter(1,schicht_ID);
+                        "WHERE t.fahrernummer = ?1 "
+        ).setParameter(1,fahrerNummer);
 
-        allZeiten = query.getResultList();
+        schicht = query.getResultList();
 
-        return allZeiten;
+        return schicht;
     }
 
 }

@@ -9,5 +9,7 @@ public interface ISchichtService {
 
     Response setSchicht(Schicht zeit);
 
-    List getAllZeiten(int restaurant_ID);
+    Response updateSchicht(Schicht zeit);
+
+    List getSchicht(int fahrer_ID);
 }

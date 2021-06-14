@@ -24,18 +24,18 @@ public class SchichtController {
         return Response.status(Response.Status.CREATED).entity(zeit).build();
     };
 
-    //@PUT
-    //@Path("updateArbeitstag")
-    //public Response updateArbeitstag(Oeffnungszeiten zeit)
-    //{
-      //  return oeffnungszeitenService.updateArbeitstag(zeit);
-    //}
+    @PUT
+    @Path("/updateSchicht")
+    public Response updateSchicht(Schicht zeit)
+    {
+        return schichtplanService.updateSchicht(zeit);
+    }
 
     @GET
-    @Path("/getAllZeiten/{id}")
+    @Path("/getSchicht/{id}")
     public List getAllZeiten(@PathParam("id") int schicht_id){
 
-        return schichtplanService.getAllZeiten(schicht_id);
+        return schichtplanService.getSchicht(schicht_id);
     }
 
 }
