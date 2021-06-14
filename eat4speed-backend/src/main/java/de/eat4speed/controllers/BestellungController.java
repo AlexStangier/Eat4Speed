@@ -46,4 +46,9 @@ public class BestellungController {
         return _bestellungen.updateBestellungStatus(bestellung);
     }
 
+    @GET
+    @Path("getProdutAndAnzahl/{id}")
+    public List getProdutAndAnzahl(@PathParam("id") int id) {return _bestellungen.getProdutAndAnzahl(id);}
+
+
 }

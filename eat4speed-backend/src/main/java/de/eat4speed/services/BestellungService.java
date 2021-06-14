@@ -220,4 +220,7 @@ public class BestellungService implements IBestellungService {
         _bestellungRepository.updateBestellungStatus(bestellung);
         return Response.status(Response.Status.OK).entity(bestellung).build();
     }
+
+    @Override
+    public List getProdutAndAnzahl(int id) {return _bestellungRepository.getProdutAndAnzahl(id);}
 }

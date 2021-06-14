@@ -7,9 +7,10 @@
           <v-list>
             <v-list-item class="mb-12" v-for="item in eingegangeneBestellungen" v-bind:key="item.id">
               <v-card class="mr-10" color="red" dark>
-                <v-col >
+                <v-col>
                   <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
-                  <v-card-text>- </v-card-text>
+                  <v-card-text>{{ item.products }}</v-card-text>
+                  <v-card-text>{{ item.count }}x</v-card-text>
                   {{ item.price }} €
                 </v-col>
               </v-card>
@@ -40,10 +41,10 @@
     </v-container>
 
     <v-dialog persistent
-        transition="dialog-top-transition"
-        :retain-focus="false"
-        v-model="dialog"
-        max-width="290"
+              transition="dialog-top-transition"
+              :retain-focus="false"
+              v-model="dialog"
+              max-width="290"
     >
       <v-card>
         <v-toolbar
@@ -67,8 +68,8 @@
         </v-card-actions>
         <v-card-actions>
           <v-btn color="red"
-              text
-              @click="closeDialog()"
+                 text
+                 @click="closeDialog()"
           >Schließen
           </v-btn>
         </v-card-actions>
@@ -102,47 +103,55 @@ export default {
 
       const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$store.getters.getLoginData.auth.username);
 
+
       let anzahl = ResponseBestellungen.data.length.toString();
 
       let item;
-      for(let i = 0; i < anzahl; i++) { // outer loop
+      for (let i = 0; i < anzahl; i++) { // outer loop
         let statusNummer = 0;
 
-        if((ResponseBestellungen.data[i][2]) === 'bezahlt'){
+        if ((ResponseBestellungen.data[i][2]) === 'bezahlt') {
           statusNummer = 1;
         }
-        if((ResponseBestellungen.data[i][2]) === 'bearbeitung'){
+        if ((ResponseBestellungen.data[i][2]) === 'bearbeitung') {
           statusNummer = 2;
         }
-        if((ResponseBestellungen.data[i][2]) === 'abholbereit'){
+        if ((ResponseBestellungen.data[i][2]) === 'abholbereit') {
           statusNummer = 3;
         }
 
-        item = {id: (ResponseBestellungen.data[i][0]), name: (ResponseBestellungen.data[i][1]),
-          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
-          currentState: statusNummer}
+        const ResponseProdukte = await axios.get("Bestellung/getProdutAndAnzahl/" + ResponseBestellungen.data[i][0]);
 
-        this.eingegangeneBestellungen.push( item )
+        item = {
+          id: (ResponseBestellungen.data[i][0]),
+          name: (ResponseBestellungen.data[i][1]),
+          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          products: (ResponseProdukte.data[0][0]),
+          count: (ResponseProdukte.data[0][1]),
+          currentState: statusNummer
+        }
+
+        this.eingegangeneBestellungen.push(item)
 
       }
 
     },
-    async changeBestellungStatus(bestellID, zustand){
-      if(zustand === 'stornieren'){
+    async changeBestellungStatus(bestellID, zustand) {
+      if (zustand === 'stornieren') {
         if (!this.accepted) {
           this.dialog = true;
-          this.bestellungStatus = { bestellID: bestellID, zustand: zustand };
+          this.bestellungStatus = {bestellID: bestellID, zustand: zustand};
           return;
         }
         zustand = 'storniert';
       }
-      if(zustand === 'Bereit'){
+      if (zustand === 'Bereit') {
         zustand = 'bezahlt';
       }
-      if(zustand === 'In Zubereitung'){
+      if (zustand === 'In Zubereitung') {
         zustand = 'bearbeitung';
       }
-      if(zustand === 'Abholbereit'){
+      if (zustand === 'Abholbereit') {
         zustand = 'abholbereit';
       }
 
@@ -155,12 +164,12 @@ export default {
 
       this.accepted = false;
 
-      if(zustand === 'storniert'){
+      if (zustand === 'storniert') {
         window.location.reload();
       }
     }
   },
-  data () {
+  data() {
     return {
       bestellstati: ['stornieren', 'Bereit', 'In Zubereitung', 'Abholbereit'],
       bestellstatifarben: ['red', 'yellow', 'green'],
