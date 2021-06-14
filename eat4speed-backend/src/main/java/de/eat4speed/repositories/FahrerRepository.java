@@ -28,6 +28,12 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public void setPause(int pause, int fahrernummer)
+    {
+            update("ist_in_pause = ?1 where fahrernummer = ?2", pause, fahrernummer);
+    }
+
+    @Transactional
     public void updateFahrer_Fahrzeug_id(int fahrernummer, int fahrzeug_Id)
     {
         update("fahrzeug = ?1 where fahrernummer = ?2", fahrzeug_Id, fahrernummer);
@@ -39,6 +45,20 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         update("verifiziert = 1 where fahrernummer = ?1", fahrernummer);
     }
 
+    @Transactional
+    public List getFahrer(int benutzer_Id)
+    {
+        List fahrer;
+
+        Query query = entityManager.createQuery(
+                "SELECT f.fahrernummer, f.ist_in_Pause  " +
+                        "FROM Fahrer f " +
+                        "WHERE f.benutzer_ID = " + benutzer_Id + " "
+        );
+        fahrer =  query.getResultList();
+        return fahrer;
+    }
+  
     @Transactional
     public void updateFahrer_anzahl_aktueller_Auftraege(int fahrernummer, int anzahl)
     {

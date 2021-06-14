@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{on}">
-      <v-btn v-on="on" @click="loadGerichteFromStore" icon>
+      <v-btn class="ml-5" v-on="on" @click="loadGerichteFromStore" icon>
         <v-icon>mdi-cart</v-icon>
         <!-- <v-badge v-if="totalItem > 0" :content="totalItem" inline>
         </v-badge>

@@ -29,6 +29,19 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
+    public Response setPause(int pause, int fahrernummer)
+    {
+        fahrerRepository.setPause(pause, fahrernummer);
+
+        return Response.status(Response.Status.OK).entity(pause).entity(fahrernummer).build();
+    }
+
+    @Override
+    public List getFahrerByID(int benutzer_Id) {
+        return fahrerRepository.getFahrer(benutzer_Id);
+    }
+
+    @Override
     public List getAllFahrer()
     {
         return fahrerRepository.getAllFahrer();

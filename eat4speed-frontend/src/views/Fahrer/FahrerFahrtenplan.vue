@@ -54,6 +54,57 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <v-dialog
+        transition="dialog-top-transition"
+        :retain-focus="false"
+        v-model="dialog"
+        max-width="50%"
+    >
+        <v-card>
+          <v-toolbar
+              color="primary"
+              dark
+          >
+            <div class="mx-auto">
+              <h2>Fahrt bestätigen</h2>
+            </div>
+          </v-toolbar>
+          <v-card-actions>
+            <v-container>
+              <row>
+                <v-col>
+                  <v-data-table
+                      :headers="headersAuftrag"
+                      :items="auftrags_IDs"
+                      :items-per-page="3"
+                      :single-select="false"
+                      class="elevation-1 pa-6"
+                      item-key="name"
+                  >
+                    <template v-slot:item.actions="{ item }">
+                      <v-btn
+                          color="primary"
+                          depressed
+                          tile
+                          @click="setAuftragFahrernummer(item.id)"
+                      >Bestätigen
+                      </v-btn>
+                    </template>
+                  </v-data-table>
+                </v-col>
+              </row>
+            </v-container>
+          </v-card-actions>
+          <v-card-actions>
+            <v-btn
+                text
+                @click="dialog = false"
+            >Schließen</v-btn>
+          </v-card-actions>
+        </v-card>
+    </v-dialog>
+
   </v-main>
 </template>
 
@@ -76,36 +127,47 @@ export default {
     async getBenachrichtigung()
     {
       const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/"+this.fahrernummer);
+
       for(let i = 0; i<responseBenachrichtigung.data.length; i++)
       {
         let benachrichtigungs_ID = responseBenachrichtigung.data[i][0];
 
-        this.auftrags_IDs.push(responseBenachrichtigung.data[i][1]);
+        this.auftrags_IDs.push({ id: responseBenachrichtigung.data[i][1] });
 
         await axios.put("Benachrichtigung_Fahrer/markAsGelesen/"+benachrichtigungs_ID);
       }
 
+      if (responseBenachrichtigung.data.length > 0) {
+        this.dialog = true;
+      }
+
     },
-    async setAuftragFahrernummer()
+    async setAuftragFahrernummer(id)
     {
-      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[this.auftrags_IDs_index])
-      if(response.data[0]>=0)
+      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+id)
+
+      if(response.data[0] !== 9999 && response.data[0] !== null)
       {
         alert("Auftrag bereits verteilt.");
       }
       else
       {
-        await axios.put("Auftrag/updateAuftragFahrernummer/"+this.auftrags_IDs[this.auftrags_IDs_index]+"/"+this.fahrernummer);
-        this.active_auftrags_IDs.push(this.auftrags_IDs[this.auftrags_IDs_index]);
+        await axios.put("Auftrag/updateAuftragFahrernummer/"+id+"/"+this.fahrernummer);
+        //this.active_auftrags_IDs.push(this.auftrags_IDs[index]);
         await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/"+this.fahrernummer+"/"+this.active_auftrags_IDs.length);
-        this.auftrags_IDs.splice(this.auftrags_IDs_index,1);
+        //this.auftrags_IDs.splice(index,1);
       }
     },
     async checkAuftraegeforFahrernummer(){
+      if (this.auftrags_IDs.length === 0) {
+        this.dialog = false;
+        return;
+      }
+
       for(let i = 0; i<this.auftrags_IDs.length;i++)
       {
-        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[i])
-        if(response.data[0]>=0)
+        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[i].id)
+        if(response.data[0] !== 9999 && response.data[0] !== null)
         {
           this.auftrags_IDs.splice(i,1);
         }
@@ -135,7 +197,7 @@ export default {
   data() {
     return {
       data: [],
-      fahrernummer: 0,
+      fahrernummer: 12,
       auftrags_IDs: [],
       active_auftrags_IDs: [],
       auftrags_IDs_index: 0,
@@ -143,6 +205,7 @@ export default {
       polling: null,
       acceptDialog: false,
       deleteDialog: false,
+      dialog: false,
       headers: [
         {
           text: 'Karte',
@@ -169,6 +232,19 @@ export default {
           text: 'Entfernung',
           value: 'entfernung',
           sortable: false
+        },
+        {
+          value: 'actions',
+          sortable: false,
+          align: 'end'
+        },
+      ],
+      headersAuftrag: [
+        {
+          text: 'Auftrags ID',
+          align: 'start',
+          sortable: false,
+          value: 'id'
         },
         {
           value: 'actions',

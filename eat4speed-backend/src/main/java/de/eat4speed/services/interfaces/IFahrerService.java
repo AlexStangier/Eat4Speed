@@ -11,6 +11,10 @@ public interface IFahrerService {
 
     Response addFahrer(Fahrer obj);
 
+    Response setPause(int pause, int fahrernummer);
+
+    List getFahrerByID(int id);
+
     List<String> getAllFahrer();
 
     List<String> getNotVerifiedFahrer();

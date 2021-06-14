@@ -1,20 +1,26 @@
-<template><v-main>
-  <v-container>
-    <v-row>
-      <v-col cols="1"
-      >
-        <v-btn small @click="returnToPreviousView">Zurück</v-btn>
-      </v-col>
-    </v-row>
+<template>
+  <v-main>
     <v-container>
-      <v-container>
+      <v-row>
+        <v-col cols="1"
+        >
+          <v-btn small @click="returnToPreviousView">Zurück</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container>
+      <v-card
+          class="pa-2"
+          tile
+      >
         <v-row>
           <v-col
-              v-for="a in 2"
-              :key="a"
+              cols="5"
           >
-            <v-img v-if="a === 1" :src="gerichtBild" alt="Bild von Essen" max-height="500" max-width="500"></v-img>
-            <v-content v-if="a === 2" align="left"> <!--Information-->
+            <v-img :src="gerichtBild" alt="Bild von Essen" max-height="500" max-width="500"></v-img>
+          </v-col>
+          <v-col>
+            <v-content align="left">
               <v-row
                   v-for="b in 10"
                   :key="b"
@@ -38,7 +44,12 @@
                     {{ gerichtPreis + '&euro;' }}
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
-                    <v-btn small @click="addToCart">
+                    <v-btn
+                        small
+                        @click="addToCart"
+                        color="primary"
+                        tile
+                    >
                       <v-icon>mdi-cart</v-icon>
                       Zum Warenkorb hinzufügen
                     </v-btn>
@@ -48,10 +59,18 @@
             </v-content>
           </v-col>
         </v-row>
-        <br>
-        <v-textarea outlined readonly no-resize rows="8" v-model="gerichtBeschreibung"></v-textarea>
-        </v-container>
-      </v-container>
+        <v-row>
+          <v-col>
+            <v-card
+                flat
+                outlined
+                tile
+            >
+              {{ gerichtBeschreibung }}
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-card>
     </v-container>
   </v-main>
 </template>
