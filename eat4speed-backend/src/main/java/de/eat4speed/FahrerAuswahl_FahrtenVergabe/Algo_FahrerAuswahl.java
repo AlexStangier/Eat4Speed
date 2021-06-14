@@ -27,8 +27,8 @@ public class Algo_FahrerAuswahl {
     private BestellungRepository bestellungRepository = new BestellungRepository();
 
     private Auftrag start;
-    private final int sekunden = 30;
     private final int maxFahrer = 5;
+    private final int maxSekunden = maxFahrer * 30;
     private int anzahlGerichte;
     private List<Integer> RestaurantIDs = new ArrayList<>();
     private boolean nichtStorniert = true;
@@ -39,14 +39,13 @@ public class Algo_FahrerAuswahl {
     public void Fahrtenvergabe(int auftragID) {
 
         int count = 0;
-        start = auftragRepository.getAuftragByID(auftragID);
+        boolean restart = false;
 
+        start = auftragRepository.getAuftragByID(auftragID);
         anzahlGerichte = AnzahlGerichte(auftragID);
 
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
         List<Integer> BenachrichtigungsIDs = new ArrayList<>();
-
-        boolean restart = false;
 
         while (nichtStorniert) {
 
@@ -107,7 +106,7 @@ public class Algo_FahrerAuswahl {
             }
             try
             {
-                Thread.sleep(sekunden * 1000);
+                Thread.sleep(((naheFahrer.size() > 0) ? (maxSekunden / naheFahrer.size()) : 30) * 1000);
             }
             catch (Exception e)
             {
@@ -149,7 +148,7 @@ public class Algo_FahrerAuswahl {
             }
         }
 
-        nichtStorniert = (RestaurantIDs.size() > 0);
+        nichtStorniert = true;//(RestaurantIDs.size() > 0);
 
         if (nichtStorniert)
         {
