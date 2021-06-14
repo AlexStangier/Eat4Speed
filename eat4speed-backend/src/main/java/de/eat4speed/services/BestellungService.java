@@ -257,4 +257,69 @@ public class BestellungService implements IBestellungService {
         }
         return wrapper;
     }
+
+    /**
+     * Returns the amount of Gericht orders by customer
+     *
+     * @param customerId
+     * @param gerichtId
+     * @return
+     */
+    @Override
+    public Integer getAmountOrdersByCustomerIdAndGerichtId(int customerId, int gerichtId) {
+        Kunde customer = null;
+        List<Auftrag> orders = null;
+        List<String> allOrders = null;
+        String purchases = "";
+        int count = 0;
+
+        try {
+            customer = _kundeRepository.getKundeByKundenId(customerId);
+            orders = _auftragRepository.getAllAuftaregeByKundenId(customerId);
+        } catch (Exception e) {
+            System.out.println("@AmountOrdersGericht Failed to get Data " + e);
+        }
+
+        if (customer != null && orders != null) {
+            for (Auftrag order : orders) {
+                Bestellung purchase = _bestellungRepository.getBestellungByAuftragsId((int) order.getAuftrags_ID());
+                purchases = purchases.concat(purchase.getGericht_IDs());
+            }
+        }
+
+        String idsString = purchases.replaceAll("[\\[\\]\\(\\)]", "");
+        String[] ids = idsString.split("\\,");
+        for (String id : ids) {
+            if (gerichtId == Integer.parseInt(id.trim())) count++;
+        }
+
+        return count;
+    }
+
+    /**
+     * Returns the amount of All Orders from a restaurant by customer
+     *
+     * @param restaurantId
+     * @param customerId
+     * @return
+     */
+    @Override
+    public Integer getAllOrdersForRestaurantIdByCustomerID(int restaurantId, int customerId) {
+        List<Bestellung> ordersMatchingId = null;
+        int count = 0;
+
+        try {
+            ordersMatchingId = _bestellungRepository.getAllBestellungenByRestaurantId(restaurantId);
+
+            for (Bestellung order : ordersMatchingId) {
+                Auftrag job = _auftragRepository.getAuftragByID(order.getAuftrags_ID());
+                if (job.getKundennummer() == customerId) count++;
+            }
+
+        } catch (Exception e) {
+            System.out.println("@GetAllOrders Failed to get Data " + e);
+        }
+
+        return count;
+    }
 }

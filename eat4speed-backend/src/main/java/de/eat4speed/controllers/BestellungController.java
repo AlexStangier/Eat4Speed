@@ -40,4 +40,22 @@ public class BestellungController {
     public StatisticDtoWrapper getStatistic(StatisticRequestDto req) throws SQLException {
         return _bestellungen.getStatistic(req.restaurantId, req.start, req.end);
     }
+
+    @GET
+    @PermitAll
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("getAllOrdersFromCustomerByDishId/{customerId}/{dishId}")
+    public Integer getAllOrdersFromCustomerByDishId(@PathParam("customerId") int customerId, @PathParam("dishId") int dishId) {
+        return _bestellungen.getAmountOrdersByCustomerIdAndGerichtId(customerId, dishId);
+    }
+
+    @GET
+    @PermitAll
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    @Path("getAllOrdersFromRestaurantId/{customerId}/{restaurantId}")
+    public Integer getAllOrdersFromRestaurantId(@PathParam("customerId") int customerId, @PathParam("restaurantId") int restaurantId) {
+        return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId,customerId);
+    }
 }
