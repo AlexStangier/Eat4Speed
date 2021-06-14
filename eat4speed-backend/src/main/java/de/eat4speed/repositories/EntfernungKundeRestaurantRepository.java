@@ -42,4 +42,16 @@ public class EntfernungKundeRestaurantRepository implements PanacheRepository<En
         return entfernungData;
     }
 
+    @Transactional
+    public void deleteEntfernungByKundennummer(int kundennummer)
+    {
+        delete("kundennummer",kundennummer);
+    }
+
+    @Transactional
+    public void deleteEntfernungByRestaurant_ID(int restaurant_ID)
+    {
+        delete("restaurant_ID",restaurant_ID);
+    }
+
 }

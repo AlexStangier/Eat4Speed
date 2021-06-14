@@ -5,6 +5,11 @@ public class UserEmailDto {
     public String email;
 
     public UserEmailDto() {
+
+    }
+
+    public UserEmailDto(String email) {
+        this.email = email;
     }
 
     public String getEmail() {

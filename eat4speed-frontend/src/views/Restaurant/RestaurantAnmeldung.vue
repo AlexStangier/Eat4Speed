@@ -2,10 +2,18 @@
   <v-main>
     <v-container fill-height fluid>
       <v-layout align-center justify-center>
-        <v-flex md3 sm6 xs12>
+        <v-flex md6 sm6 xs12>
+          <div class="d-flex flex-column justify-space-between align-center">
+            <v-img
+                class="justify-center"
+                max-height="50%"
+                max-width="50%"
+                src="@/assets/logo.png"
+            ></v-img>
+          </div>
           <v-card>
-            <v-tabs v-model="tab" background-color="red" dark grow icons-and-text show-arrows>
-              <v-tabs-slider color="red"></v-tabs-slider>
+            <v-tabs v-model="tab" background-color="primary" dark grow icons-and-text show-arrows>
+              <v-tabs-slider color="blue-grey"></v-tabs-slider>
               <v-tab v-for="i in tabs" :key="i">
                 <v-icon large>{{ i.icon }}</v-icon>
                 <div class="caption py-1">{{ i.name }}</div>
@@ -34,7 +42,7 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn color="red" dark rounded @click="login">Login</v-btn>
+                          <v-btn color="primary" depressed tile @click="login">Login</v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -63,10 +71,12 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="mindestBestellwert" number :rules="[rules.required]" label="Mindestbestellwert" required></v-text-field>
+                          <v-text-field v-model="mindestBestellwert" number :rules="[rules.required]"
+                                        label="Mindestbestellwert" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="bestellradius" number :rules="[rules.required]" label="Bestellradius" required></v-text-field>
+                          <v-text-field v-model="bestellradius" number :rules="[rules.required]" label="Bestellradius"
+                                        required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
@@ -114,9 +124,18 @@
                                         counter label="Passwort bestätigen" name="input-10-1"
                                         @click:append="show1 = !show1"></v-text-field>
                         </v-col>
+                        <label>
+                          Bild auswählen
+                          <input type="file" ref="file" id="fileChange" accept="image/*"
+                                 v-on:change="selectedPicture()"/>
+                        </label>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn :disabled="!valid" color="red" dark rounded @click="validate">Register</v-btn>
+                          <v-btn :disabled="!valid"
+                                 color="primary"
+                                 depressed tile
+                                 @click="validate">Register
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -171,123 +190,153 @@ export default {
             }
           });
     },
+    selectedPicture() {
+      this.restaurantBild = this.$refs.file.files[0];
+      console.log(this.restaurantBild);
+    },
     async validate() {
-      var benutzer = {
-        vorname: this.firstName,
-        nachname: this.lastName,
-        benutzername: this.username,
-        emailAdresse: this.email,
-        passwort: this.password,
-        telefonnummer: this.phoneNumber,
-        rolle: "restaurant",
-        paypal_Account: this.paypal
-      };
-
-      const responseBenutzer = await axios.post("/Benutzer", benutzer);
-
-      this.benutzer_ID = responseBenutzer.data.benutzer_ID;
-
-      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text="+this.houseNumber+"%20"+this.street+"%2C%20"+this.place+"%20"+this.postCode+"%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
+      // if (this.$refs.loginForm.validate()) {
+      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
       this.lng = response.data.features[0].geometry.coordinates[0];
       this.lat = response.data.features[0].geometry.coordinates[1];
 
-      var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
+      if (this.lng > 7.510900 && this.lng < 9.212988 && this.lat > 47.533674 && this.lat < 48.720036) {
 
-      if(responseKundenLngLat.data.length>0)
-      {
-        for(let i = 0; i<responseKundenLngLat.data.length; i++)
-        {
-          let resData = responseKundenLngLat.data[i];
-
-          this.kunden_IDs[i] = resData[0];
-          this.kundenLngs[i] = resData[1];
-          this.kundenLats[i] = resData[2];
-
-          let entry = [];
-          entry[0] = resData[1];
-          entry[1] = resData[2];
-
-          this.targets[i] = entry;
-
-        }
-
-        this.entry[0] = this.lng;
-        this.entry[1] = this.lat;
-
-        this.sources[0] = this.entry;
-
-        let config = {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        }
-
-        var data = {
-          mode: "drive",
-          sources: this.sources,
-          targets: this.targets
-        }
-
-        var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
-
-        console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-        console.log(responseEntfernungen.data.sources_to_targets[0][0].distance/1000)
-
-        for(let i = 0; i< responseEntfernungen.data.sources_to_targets[0].length; i++)
-        {
-          this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance/1000
-        }
-        console.log(this.distances);
-      }
-
-      var adressen = {
-        strasse: this.street,
-        hausnummer: this.houseNumber,
-        ort: this.place,
-        postleitzahl: this.postCode,
-        lng: this.lng,
-        lat: this.lat
-      };
-
-      const responseAdressen = await axios.post("/Adressen", adressen);
-
-      console.log(responseAdressen);
-      console.log(responseAdressen.data);
-      console.log(responseAdressen.data.adress_ID);
-
-      this.adress_ID = responseAdressen.data.adress_ID;
-
-      var restaurant = {
-        benutzer_ID: this.benutzer_ID,
-        name_des_Restaurants: this.restaurant_name,
-        allgemeine_Beschreibung: this.descriptionShort,
-        anschrift: this.adress_ID,
-        verifiziert: 0,
-        mindestbestellwert: this.mindestBestellwert,
-        bestellradius: this.bestellradius
-      };
-
-      var responseRestaurant = await axios.post("/Restaurant", restaurant);
-
-      this.restaurant_ID = responseRestaurant.data.restaurant_ID;
-
-      for(let i = 0; i<this.distances.length;i++)
-      {
-        var entfernung = {
-          kundennummer: this.kunden_IDs[i],
-          restaurant_ID: this.restaurant_ID,
-          entfernung: this.distances[i]
+        var benutzer = {
+          vorname: this.firstName,
+          nachname: this.lastName,
+          benutzername: this.username,
+          emailAdresse: this.email,
+          passwort: this.password,
+          telefonnummer: this.phoneNumber,
+          rolle: "restaurant",
+          paypal_Account: this.paypal
         };
 
-        console.log(entfernung);
+        const responseBenutzer = await axios.post("/Benutzer", benutzer);
 
-        await axios.post("/EntfernungKundeRestaurant", entfernung);
+        this.benutzer_ID = responseBenutzer.data.benutzer_ID;
+
+
+        var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
+
+        if (responseKundenLngLat.data.length > 0) {
+          for (let i = 0; i < responseKundenLngLat.data.length; i++) {
+            let resData = responseKundenLngLat.data[i];
+
+            this.kunden_IDs[i] = resData[0];
+            this.kundenLngs[i] = resData[1];
+            this.kundenLats[i] = resData[2];
+
+            let entry = [];
+            entry[0] = resData[1];
+            entry[1] = resData[2];
+
+            this.targets[i] = entry;
+
+          }
+
+          this.entry[0] = this.lng;
+          this.entry[1] = this.lat;
+
+          this.sources[0] = this.entry;
+
+          let config = {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
+
+          var data = {
+            mode: "drive",
+            sources: this.sources,
+            targets: this.targets
+          }
+
+          var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
+
+          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
+          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
+
+          for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
+            this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
+          }
+          console.log(this.distances);
+        }
+
+        var adressen = {
+          strasse: this.street,
+          hausnummer: this.houseNumber,
+          ort: this.place,
+          postleitzahl: this.postCode,
+          lng: this.lng,
+          lat: this.lat
+        };
+
+        const responseAdressen = await axios.post("/Adressen", adressen);
+
+        console.log(responseAdressen);
+        console.log(responseAdressen.data);
+        console.log(responseAdressen.data.adress_ID);
+
+        this.adress_ID = responseAdressen.data.adress_ID;
+
+        var restaurant = {
+          benutzer_ID: this.benutzer_ID,
+          name_des_Restaurants: this.restaurant_name,
+          allgemeine_Beschreibung: this.descriptionShort,
+          anschrift: this.adress_ID,
+          verifiziert: 0,
+          mindestbestellwert: this.mindestBestellwert,
+          bestellradius: this.bestellradius
+        };
+
+        var responseRestaurant = await axios.post("/Restaurant", restaurant);
+
+        this.restaurant_ID = responseRestaurant.data.restaurant_ID;
+
+        for (let i = 0; i < this.distances.length; i++) {
+          var entfernung = {
+            kundennummer: this.kunden_IDs[i],
+            restaurant_ID: this.restaurant_ID,
+            entfernung: this.distances[i]
+          };
+
+          console.log(entfernung);
+
+          await axios.post("/EntfernungKundeRestaurant", entfernung);
+
+        }
+        if (this.restaurantBild !== null) {
+          const picturedata = new FormData();
+          picturedata.append("file", this.restaurantBild);
+          picturedata.append("fileName", "Bild" + this.restaurant_ID);
+
+          const options = {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          };
+
+          const responsePictureUpload = await axios.post('/RestaurantBilder/upload',
+              picturedata, options
+          ).then(function () {
+            console.log('Picture successfully uploaded');
+          })
+              .catch(function () {
+                console.log('Picture upload error');
+              });
+
+          console.log(responsePictureUpload);
+        }
+      } else {
+        this.openSnackbar("Bitte gültige Adresse eingeben!")
       }
 
-      if (this.$refs.loginForm.validate()) {
-        // submit form to server/API here...
-      }
+
+      // submit form to server/API here...
+      // }
     },
     reset() {
       this.$refs.form.reset();
@@ -309,6 +358,7 @@ export default {
       ],
       valid: true,
       paypal: "",
+      restaurantBild: "",
       restaurant_name: "",
       descriptionShort: "",
       firstName: "",

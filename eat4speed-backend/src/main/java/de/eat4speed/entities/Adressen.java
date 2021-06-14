@@ -9,8 +9,6 @@ import java.util.Objects;
 @Entity
 public class Adressen extends PanacheEntityBase implements Serializable {
 
-    public Adressen(){}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int adress_ID;
@@ -20,6 +18,17 @@ public class Adressen extends PanacheEntityBase implements Serializable {
     private int postleitzahl;
     private String lng;
     private String lat;
+
+    public Adressen() {
+
+    }
+
+    public Adressen(String strasse, int hausnummer, String ort, int postleitzahl) {
+        this.strasse = strasse;
+        this.hausnummer = hausnummer;
+        this.ort = ort;
+        this.postleitzahl = postleitzahl;
+    }
 
     public int getAdress_ID() {
         return adress_ID;

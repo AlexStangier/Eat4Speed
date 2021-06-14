@@ -11,6 +11,12 @@ public class Rechnung extends PanacheEntityBase implements Serializable {
 
     public Rechnung(){}
 
+    public Rechnung( double betrag, Timestamp rechnungsdatum, byte zahlungseingang) {
+        this.betrag = betrag;
+        this.rechnungsdatum = rechnungsdatum;
+        this.zahlungseingang = zahlungseingang;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int rechnungs_ID;

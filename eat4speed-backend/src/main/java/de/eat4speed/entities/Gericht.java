@@ -9,8 +9,6 @@ import java.util.Objects;
 @Entity
 public class Gericht extends PanacheEntityBase implements Serializable {
 
-    public Gericht(){}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int gericht_ID;
@@ -21,6 +19,20 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     private double preis;
     private byte verfuegbar;
     private byte ist_Getraenk;
+
+    public Gericht() {
+
+    }
+
+    public Gericht(int restaurant_ID, String name, String beschreibung, String abbildung, double preis, byte verfuegbar, byte ist_Getraenk) {
+        this.restaurant_ID = restaurant_ID;
+        this.name = name;
+        this.beschreibung = beschreibung;
+        this.abbildung = abbildung;
+        this.preis = preis;
+        this.verfuegbar = verfuegbar;
+        this.ist_Getraenk = ist_Getraenk;
+    }
 
     public int getGericht_ID() {
         return gericht_ID;

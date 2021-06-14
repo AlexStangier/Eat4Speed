@@ -4,7 +4,7 @@
       <v-layout align-center justify-center>
         <v-flex md3 sm6 xs12>
           <v-card>
-            <v-toolbar color="red" dark>
+            <v-toolbar color="primary" dark>
               <v-toolbar-title>Administrations Login</v-toolbar-title>
             </v-toolbar>
             <v-card class="px-4">
@@ -21,7 +21,7 @@
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col class="text-right">
-                    <v-btn color="red" dark rounded @click="login">Login</v-btn>
+                    <v-btn color="primary" depressed tile @click="login">Login</v-btn>
                   </v-col>
                 </v-row>
               </v-form>

@@ -18,21 +18,19 @@ public class Gericht_KategorieRepository implements PanacheRepository<Gericht_Ka
     EntityManager entityManager;
 
     @Transactional
-    public void addGericht_Kategorie(Gericht_Kategorie gericht_kategorie)
-    {
+    public void addGericht_Kategorie(Gericht_Kategorie gericht_kategorie) {
         persist(gericht_kategorie);
     }
 
     @Transactional
-    public List getGericht_KategorieByGericht_ID(int gericht_ID)
-    {
+    public List getGericht_KategorieByGericht_ID(int gericht_ID) {
         List kategorieByGericht_ID;
 
         Query query = entityManager.createQuery("" +
                 "SELECT ka.kategorie " +
                 "FROM Gericht_Kategorie ka " +
                 "WHERE ka.gericht_ID = ?1"
-        ).setParameter(1,gericht_ID);
+        ).setParameter(1, gericht_ID);
 
         kategorieByGericht_ID = query.getResultList();
 
@@ -40,10 +38,14 @@ public class Gericht_KategorieRepository implements PanacheRepository<Gericht_Ka
     }
 
     @Transactional
-    public int deleteGerichtKategorieByGerichtID(int id)
-    {
-        delete("Gericht_ID",id);
+    public int deleteGerichtKategorieByGerichtID(int id) {
+        delete("Gericht_ID", id);
 
         return id;
+    }
+
+    @Transactional
+    public Gericht_Kategorie getGericht_KategorieById(long id) {
+        return find("Gericht_ID", id).firstResult();
     }
 }

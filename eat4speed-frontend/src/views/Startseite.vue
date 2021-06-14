@@ -9,6 +9,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+                v-if="!isUserLoggedIn"
                 class="ml-2"
                 color="primary"
                 v-bind="attrs"
@@ -123,11 +124,10 @@ export default {
   name: 'Startseite',
   mounted() {
     this.searchDestination = "Gerichte";
-    this.$store.commit("changeCartGerichte", []);
   },
   computed: {
     isUserLoggedIn() {
-      return this.user !== undefined;
+      return this.$cookies.get('emailAdresse') !== undefined;
     },
   },
   methods: {
@@ -179,9 +179,6 @@ export default {
     setDestinationToRestaurants() {
       console.log("Changed Destination to Restaurants");
       this.searchDestination = "Restaurants";
-    },
-    openLogin() {
-      this.$refs.Anmeldung.class = "px-4 d-flex"
     },
     gerichtFarbe() {
       this.btnType = 0;

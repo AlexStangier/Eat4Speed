@@ -209,7 +209,7 @@
                             <v-icon>mdi-heart</v-icon>
                           </v-btn>
                         </template>
-                        <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                        <span>Aus Favoriten entfernen</span>
                       </v-tooltip>
                     </div>
                     <div v-else>
@@ -337,8 +337,8 @@ export default {
     this.searchOptions = this.$store.getters.searchOptions;
 
     console.log(this.searchString);
-    //TODO change later!
-    this.loggedInKunde_ID = 6;
+
+    this.getLoggedInKunde();
 
     this.loadGerichte();
   },
@@ -348,6 +348,11 @@ export default {
     next();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+    },
     selectItem(item) {
       console.log("Gericht selected "+item.id);
       this.selectedItem = item;
@@ -362,6 +367,7 @@ export default {
     },
     getStoreSearchOptions() {
       this.searchOptions = this.$store.getters.searchOptions;
+      this.searchString = this.searchOptions.gerichtName;
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
@@ -527,21 +533,6 @@ export default {
           this.hinzufuegedatumAssigned[i] = null;
         }
       }
-
-      for(let i = 0; i < ResponseGerichte.data.length; i++)
-      {
-        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.restaurant_IDs[i]);
-        if(ResponseBewertung.data[0][0]!==null)
-        {
-          this.restaurantBewertungen[i] = ResponseBewertung.data[0][0];
-        }
-        else
-        {
-          this.restaurantBewertungen[i] = 0;
-        }
-
-      }
-      console.log("Bewertungen "+this.restaurantBewertungen);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
@@ -796,7 +787,6 @@ export default {
         const cavailable = this.availabilities[i]
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
-        const crestaurantbewertung = this.restaurantBewertungen[i]
         i++;
 
         return {
@@ -812,7 +802,6 @@ export default {
           available: cavailable,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
-          rating: crestaurantbewertung
         }
       })
     }

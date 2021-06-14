@@ -27,6 +27,7 @@ public interface IFahrerService {
 
     Response deleteFahrer(int id);
 
+    Response updateFahrer_anzahl_aktueller_Auftraege(int fahrernummer, int anzahl);
 
     List get_Fahrer_Fzg_Pos();
 

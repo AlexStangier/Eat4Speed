@@ -5,7 +5,7 @@ import Cookies from 'js-cookie'
 
 Vue.use(Vuex)
 
-const in30Minutes = 1/48;
+const in2Hours = 1/12;
 
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
@@ -82,8 +82,8 @@ export default new Vuex.Store({
       state.cartGerichte = payload;
     },
     saveLoginData: (state, payload) => {
-      Cookies.set('emailAdresse', payload.emailAdresse, { expires: in30Minutes, secure: true });
-      Cookies.set('passwort', payload.passwort, { expires: in30Minutes, secure: true });
+      Cookies.set('emailAdresse', payload.emailAdresse, { expires: in2Hours, secure: false });
+      Cookies.set('passwort', payload.passwort, { expires: in2Hours, secure: false });
     },
     deleteCartGerichte: (state) => {
       state.cartGerichte = [];

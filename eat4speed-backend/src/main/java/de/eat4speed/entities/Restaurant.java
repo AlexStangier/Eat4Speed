@@ -9,8 +9,6 @@ import java.util.Objects;
 @Entity
 public class Restaurant extends PanacheEntityBase implements Serializable {
 
-    public Restaurant(){}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int restaurant_ID;
@@ -22,6 +20,19 @@ public class Restaurant extends PanacheEntityBase implements Serializable {
     private double bestellradius;
     private byte verifiziert;
 
+    public Restaurant() {
+
+    }
+
+    public Restaurant(int benutzer_ID, String name_des_Restaurants, String allgemeine_Beschreibung, int anschrift, double mindestbestellwert, double bestellradius, byte verifiziert) {
+        this.benutzer_ID = benutzer_ID;
+        this.name_des_Restaurants = name_des_Restaurants;
+        this.allgemeine_Beschreibung = allgemeine_Beschreibung;
+        this.anschrift = anschrift;
+        this.mindestbestellwert = mindestbestellwert;
+        this.bestellradius = bestellradius;
+        this.verifiziert = verifiziert;
+    }
 
     public int getRestaurant_ID() {
         return restaurant_ID;

@@ -168,12 +168,16 @@ export default {
     this.searchOptions = this.$store.getters.searchOptionsRestaurant;
 
     console.log(this.searchString);
-    //TODO change later!
-    this.loggedInKunde_ID = 6;
+    this.getLoggedInKunde();
 
     this.loadRestaurants();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+    },
     selectRestaurant(item) {
       console.log("Restaurant selected "+item.restaurantid);
       this.selectedRestaurant = item.restaurantid;
@@ -245,11 +249,10 @@ export default {
         this.ratings[i] = ResponseBewertung.data[0][0];
       }
 
-      //TODO
-      /*for (let i = 0; i < ResponseRestaurants.data.length; i++)
+      for (let i = 0; i < ResponseRestaurants.data.length; i++)
       {
         const config = { responseType:"arraybuffer" };
-        const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
+        const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.restaurant_IDs[i],config);
 
         console.log(responsePicture);
 
@@ -271,7 +274,6 @@ export default {
         }
 
       }
-      console.log(this.imgs);*/
       this.amountRestaurants = 0;
       this.amountRestaurants = ResponseRestaurants.data.length;
       this.version++;

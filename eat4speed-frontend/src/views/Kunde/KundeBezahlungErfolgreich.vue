@@ -27,7 +27,10 @@
 
             <v-divider></v-divider>
 
-            <h2 class="py-2">Endpreis: {{ calculateCartPrice() }} &euro;</h2>
+            <h3>Steuer: {{ parseFloat(payment.amountTax).toFixed(2) }} &euro; (7% Mwst.)</h3>
+            <h3 class="pb-1">Lieferkosten: {{ payment.shipping }} &euro;</h3>
+            <v-divider></v-divider>
+            <h2 class="py-2">Endpreis: {{ payment.amount }} &euro;</h2>
 
             <v-divider></v-divider>
 
@@ -50,6 +53,9 @@ export default {
   props: {
     cart: {
       type: Array
+    },
+    payment: {
+      type: Object
     }
   },
   methods: {
