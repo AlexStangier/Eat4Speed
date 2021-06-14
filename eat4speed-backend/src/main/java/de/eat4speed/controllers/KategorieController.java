@@ -34,7 +34,7 @@ public class KategorieController {
     @GET
     @Path("getPreferences/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     public CategoriePreferences getCustomerPreferences(@PathParam("id") Integer customerId){
         return _kategorie.getFavouriteCategorie(customerId);
     }
