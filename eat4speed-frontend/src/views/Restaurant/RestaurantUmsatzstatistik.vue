@@ -142,14 +142,9 @@ import axios from "axios";
 Vue.use(Chartkick.use(Chart));
 export default {
   mounted() {
-    this.restaurantID = 5;
-    this.start= 0;
-    this.end= 2922463867000;
-    this.info={
-      restaurantId: 5,
-      start: 0,
-      end: 1922463867000
-    },
+    this.getLoggedInRestaurant();
+
+
         this.loadZeiten()
   },
 
@@ -170,10 +165,18 @@ export default {
     };
   },
   methods:{
+    async getLoggedInRestaurant()
+    {
+      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+      this.info.restaurantId = response.data[0];
+      //console.log(response.data[0]);
+      //this.info.restaurantId=4;
+    },
     async loadZeiten() {
 
       this.info.end=moment().unix()*1000;
       //console.log(this.info.end);
+      //console.log(this.info.restaurantId);
 
       const ResponseUmsatz = await axios.post("Bestellung/getStatistic/", this.info);
      // console.log("1");
@@ -287,6 +290,7 @@ export default {
     dateRangeText () {
       return this.dates.join(' ~ ')
     },
+
 
   },
 }
