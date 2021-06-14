@@ -31,6 +31,7 @@ public class Algo_FahrerAuswahl {
     private final int maxFahrer = 5;
     private int anzahlGerichte;
     private List<Integer> RestaurantIDs = new ArrayList<>();
+    private boolean nichtStorniert = true;
 
     // Sende Auftrag an besten Fahrer, falls nach 30 sekunden nicht angenommen
     // sende zusätzlich an nächstbesten fahrer falls keine fahrer mehr da oder 5min vergangen sind
@@ -47,7 +48,7 @@ public class Algo_FahrerAuswahl {
 
         boolean restart = false;
 
-        while (true) {
+        while (nichtStorniert) {
 
             if (AuftragAngenommen(auftragID))
             {
@@ -141,11 +142,23 @@ public class Algo_FahrerAuswahl {
 
         for (Bestellung b : bestellungen)
         {
-            count += new JSONArray(b.getGericht_IDs()).length();
-            RestaurantIDs.add(b.getRestaurant_ID());
+            if (b.getStatus().equals("abholbereit"))
+            {
+                count += new JSONArray(b.getGericht_IDs()).length();
+                RestaurantIDs.add(b.getRestaurant_ID());
+            }
         }
 
-        System.out.println("Gerichte: " + count);
+        nichtStorniert = (RestaurantIDs.size() > 0);
+
+        if (nichtStorniert)
+        {
+            System.out.println("Gerichte: " + count);
+        }
+        else
+        {
+            System.out.println(auftragsID + " wurde storniert");
+        }
 
         return count;
     }
@@ -154,14 +167,20 @@ public class Algo_FahrerAuswahl {
     {
         boolean retVal = false;
 
-        try {
-            URL url = new URL("http://localhost:1337/Fahrtenplan/exist/" + id);
+        try
+        {
+            //URL url = new URL("http://localhost:1337/Fahrtenplan/exist/" + id);
+            URL url = new URL("http://localhost:1337/Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
             http.setDoOutput(true);
 
-            retVal = Boolean.getBoolean(getResponse(http.getInputStream()));
+            JSONArray jarray = new JSONArray(getResponse(http.getInputStream()));
 
+            //retVal = Boolean.getBoolean(getResponse(http.getInputStream()));
+            retVal = !(jarray.getLong(0) == 9999);
+
+            System.out.println(retVal + " | " + jarray);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -381,7 +400,8 @@ public class Algo_FahrerAuswahl {
     {
         boolean heute_im_Urlaub = false;
 
-        try {
+        try
+        {
             URL url = new URL("http://localhost:1337/Urlaub/HeuteUrlaub/" + fahrernummer);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
@@ -392,8 +412,6 @@ public class Algo_FahrerAuswahl {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-
         return heute_im_Urlaub;
     }
 }
