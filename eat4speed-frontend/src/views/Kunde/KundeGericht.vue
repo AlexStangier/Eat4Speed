@@ -1,6 +1,14 @@
 <template>
   <v-main>
     <v-container>
+      <v-row>
+        <v-col cols="1"
+        >
+          <v-btn small @click="returnToPreviousView">Zurück</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container>
       <v-card
           class="pa-2"
           tile
