@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-
 public class SortByDistanz implements Comparator<Fahrer_Distanz> {
 
     private Adressen startAdresse;
@@ -109,7 +108,6 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
             for ( int i = 0; i < fahrer.size(); i++)
             {
                 Adressen adresse = adressenRepository.getAdresseByCustomerId(fahrer.get(i).getAktueller_Standort());
-                //fahrerPositionen.append("{ \"location\": [ " + adresse.getLng() + "," + adresse.getLat() + "] }");
                 fahrerPositionen.append("{ \"location\": [ ");
                 fahrerPositionen.append(adresse.getLng());
                 fahrerPositionen.append(",");
@@ -122,22 +120,16 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
                 }
             }
 
-            String data =
-                    "{" +
-                        "\"mode\": \"drive\"," +
-                        "\"sources\": [" +
-                            //fahrerPositionen +
-                            fahrerPositionen +
-                            //"{ \"location\": [ 10.836284570309772, 48.41256954594283] }," +
-                            //"{ \"location\": [ 11.66300576171568, 48.4344417659791] }," +
-                            //"{ \"location\": [ 11.910198144528408, 48.22444577934331] }" +
-                        "]," +
-                        "\"targets\": [" +
-                            "{ \"location\": [" + startAdresse.getLng() + "," + startAdresse.getLat() + "] }" +
-                        "]" +
-                    "}";
+            StringBuilder data = new StringBuilder();
+            data.append( "{\"mode\": \"drive\",\"sources\": [" );
+            data.append( fahrerPositionen );
+            data.append( "],\"targets\": [{ \"location\": [" );
+            data.append( startAdresse.getLng() );
+            data.append( "," );
+            data.append( startAdresse.getLat() );
+            data.append( "] } ] }" );
 
-            byte[] out = data.getBytes(StandardCharsets.UTF_8);
+            byte[] out = data.toString().getBytes(StandardCharsets.UTF_8);
 
             OutputStream stream = http.getOutputStream();
             stream.write(out);

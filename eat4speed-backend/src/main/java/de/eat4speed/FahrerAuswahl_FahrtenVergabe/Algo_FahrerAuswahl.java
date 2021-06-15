@@ -148,7 +148,7 @@ public class Algo_FahrerAuswahl {
             }
         }
 
-        nichtStorniert = true;//(RestaurantIDs.size() > 0);
+        nichtStorniert = (RestaurantIDs.size() > 0);
 
         if (nichtStorniert)
         {
@@ -168,7 +168,6 @@ public class Algo_FahrerAuswahl {
 
         try
         {
-            //URL url = new URL("http://localhost:1337/Fahrtenplan/exist/" + id);
             URL url = new URL("http://localhost:1337/Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
@@ -176,7 +175,6 @@ public class Algo_FahrerAuswahl {
 
             JSONArray jarray = new JSONArray(getResponse(http.getInputStream()));
 
-            //retVal = Boolean.getBoolean(getResponse(http.getInputStream()));
             retVal = !(jarray.getLong(0) == 9999);
 
             System.out.println(retVal + " | " + jarray);
@@ -332,7 +330,6 @@ public class Algo_FahrerAuswahl {
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
         SortByDistanz sortByDistanz = new SortByDistanz();
         List<Fahrer_Distanz> distances;
-
         List<Fahrer> fahrer = fahrerRepository.getEveryAvailableFahrer();
 
         for (int i = 0; i < fahrer.size(); i++)
@@ -372,13 +369,10 @@ public class Algo_FahrerAuswahl {
         return naheFahrer;
     }
 
-    //TODO
     private boolean CheckFahrerAvailability(Fahrer fahrer, Long Fahrzeit, double getGeschaetzte_Fahrtzeit)
     {
         boolean isAvailable = false;
 
-        //TODO
-        // fahrer anzahl aktueller Aufträge
         if (fahrer.getAnzahl_Aktueller_Auftraege() < 1)
         {
             Timestamp endeAuftrag = new Timestamp( new Date().getTime()
