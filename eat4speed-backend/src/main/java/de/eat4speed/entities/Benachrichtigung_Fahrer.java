@@ -22,6 +22,17 @@ public class Benachrichtigung_Fahrer extends PanacheEntityBase implements Serial
     private Timestamp timestamp;
     private byte gelesen;
 
+    public Benachrichtigung_Fahrer(int benachrichtigungs_ID, int fahrernummer, String benachrichtigung,
+                                   Integer restaurant_ID, Timestamp timestamp, byte gelesen)
+    {
+        this.benachrichtigungs_ID = benachrichtigungs_ID;
+        this.fahrernummer = fahrernummer;
+        this.benachrichtigung = benachrichtigung;
+        this.restaurant_ID = restaurant_ID;
+        this.timestamp = timestamp;
+        this.gelesen = gelesen;
+    }
+
     public int getBenachrichtigungs_ID() {
         return benachrichtigungs_ID;
     }
@@ -75,7 +86,7 @@ public class Benachrichtigung_Fahrer extends PanacheEntityBase implements Serial
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Benachrichtigung_Fahrer that = (Benachrichtigung_Fahrer) o;
-        return benachrichtigungs_ID == that.benachrichtigungs_ID && fahrernummer == that.fahrernummer && restaurant_ID == that.restaurant_ID && gelesen == that.gelesen && Objects.equals(benachrichtigung, that.benachrichtigung) && Objects.equals(timestamp, that.timestamp);
+        return benachrichtigungs_ID == that.benachrichtigungs_ID && fahrernummer == that.fahrernummer && restaurant_ID.equals(that.restaurant_ID) && gelesen == that.gelesen && Objects.equals(benachrichtigung, that.benachrichtigung) && Objects.equals(timestamp, that.timestamp);
     }
 
     @Override

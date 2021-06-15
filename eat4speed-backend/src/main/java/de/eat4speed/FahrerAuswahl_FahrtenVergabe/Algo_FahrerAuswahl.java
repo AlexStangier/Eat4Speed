@@ -188,13 +188,8 @@ public class Algo_FahrerAuswahl {
     private int sende_Auftrag_an_Fahrer(int fahrerID, int auftragID, int restaurantID)
     {
         String benachrichtigung = "Auftrag Anfrage " + auftragID;
-        Benachrichtigung_Fahrer benachrichtigung_fahrer = new Benachrichtigung_Fahrer();
-        benachrichtigung_fahrer.setBenachrichtigungs_ID(0);
-        benachrichtigung_fahrer.setFahrernummer(fahrerID);
-        benachrichtigung_fahrer.setRestaurant_ID(restaurantID);
-        benachrichtigung_fahrer.setGelesen((byte)0);
-        benachrichtigung_fahrer.setBenachrichtigung(benachrichtigung);
-        benachrichtigung_fahrer.setTimestamp(new Timestamp(new Date().getTime()));
+        Benachrichtigung_Fahrer benachrichtigung_fahrer = new Benachrichtigung_Fahrer(0, fahrerID,
+                benachrichtigung, restaurantID, new Timestamp(new Date().getTime()), (byte)0);
 
         try
         {
