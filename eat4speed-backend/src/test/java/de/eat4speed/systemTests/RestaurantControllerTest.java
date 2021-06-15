@@ -92,6 +92,35 @@ public class RestaurantControllerTest {
                 .then().statusCode(400);
     }
 
+    @Test  // TST011 (1)
+    void trySetMinimumOrderValue() {
+        Restaurant restaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
+        restaurant.setMindestbestellwert(20);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(restaurant))
+                .when().put(this.updateRestaurantStammdatenEndpoint)
+                .then().statusCode(200);
+
+        Restaurant actualRestaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
+        Assertions.assertEquals(restaurant, actualRestaurant);
+    }
+
+    @Test  // TST011 (2)
+    void trySetInvalidMinimumOrderValue() {
+        Restaurant restaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
+        restaurant.setMindestbestellwert(-1);
+
+        Jsonb jsonb = JsonbBuilder.create();
+
+        given().contentType(ContentType.JSON)
+                .body(jsonb.toJson(restaurant))
+                .when().put(this.updateRestaurantStammdatenEndpoint)
+                .then().statusCode(400);
+    }
+
     @AfterEach
     void cleanup() {
         this._restaurantRepository.deleteRestaurant(this.mockRestaurantId);

@@ -189,6 +189,11 @@ public class RestaurantService implements IRestaurantService {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        // The minimum order value must not be negative
+        if (restaurant.getMindestbestellwert() < 0.0) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         _restaurant.updateRestaurantStammdaten(restaurant);
         return Response.status(Response.Status.OK).entity(restaurant).build();
     }
