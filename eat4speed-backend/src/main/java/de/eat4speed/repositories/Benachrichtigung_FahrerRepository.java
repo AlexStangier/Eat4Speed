@@ -29,8 +29,8 @@ public class Benachrichtigung_FahrerRepository implements PanacheRepository<Bena
         List allBenachrichtigungData;
 
         Query query = entityManager.createQuery(
-                "SELECT bf.benachrichtigungs_ID, a.auftrags_ID " +
-                        "FROM Auftrag a, Benachrichtigung_Fahrer bf " +
+                "SELECT bf.benachrichtigungs_ID, a.Auftrags_ID " +
+                        "FROM BenachrichtigungFahrerAuftrag a, Benachrichtigung_Fahrer bf " +
                         "WHERE bf.fahrernummer = ?1 " +
                         "AND bf.gelesen = 0 "
 

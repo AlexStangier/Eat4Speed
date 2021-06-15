@@ -124,12 +124,18 @@
                                         counter label="Passwort bestätigen" name="input-10-1"
                                         @click:append="show1 = !show1"></v-text-field>
                         </v-col>
+                        <label>
+                          Bild auswählen
+                          <input type="file" ref="file" id="fileChange" accept="image/*"
+                                 v-on:change="selectedPicture()"/>
+                        </label>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
                           <v-btn :disabled="!valid"
                                  color="primary"
                                  depressed tile
-                                 @click="validate">Register</v-btn>
+                                 @click="validate">Register
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -183,6 +189,10 @@ export default {
               this.openSnackbar(error);
             }
           });
+    },
+    selectedPicture() {
+      this.restaurantBild = this.$refs.file.files[0];
+      console.log(this.restaurantBild);
     },
     async validate() {
       // if (this.$refs.loginForm.validate()) {
@@ -296,13 +306,36 @@ export default {
           console.log(entfernung);
 
           await axios.post("/EntfernungKundeRestaurant", entfernung);
+
+        }
+        if (this.restaurantBild !== null) {
+          const picturedata = new FormData();
+          picturedata.append("file", this.restaurantBild);
+          picturedata.append("fileName", "Bild" + this.restaurant_ID);
+
+          const options = {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          };
+
+          const responsePictureUpload = await axios.post('/RestaurantBilder/upload',
+              picturedata, options
+          ).then(function () {
+            console.log('Picture successfully uploaded');
+          })
+              .catch(function () {
+                console.log('Picture upload error');
+              });
+
+          console.log(responsePictureUpload);
         }
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
       }
 
 
-        // submit form to server/API here...
+      // submit form to server/API here...
       // }
     },
     reset() {
@@ -325,6 +358,7 @@ export default {
       ],
       valid: true,
       paypal: "",
+      restaurantBild: "",
       restaurant_name: "",
       descriptionShort: "",
       firstName: "",

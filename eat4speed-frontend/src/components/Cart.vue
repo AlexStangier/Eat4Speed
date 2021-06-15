@@ -1,7 +1,7 @@
 <template>
   <v-menu offset-y>
     <template v-slot:activator="{on}">
-      <v-btn v-on="on" @click="loadGerichteFromStore" icon>
+      <v-btn class="ml-5" v-on="on" @click="loadGerichteFromStore" icon>
         <v-icon>mdi-cart</v-icon>
         <!-- <v-badge v-if="totalItem > 0" :content="totalItem" inline>
         </v-badge>
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     roundToTwo(num) {
-      return +(Math.round(num + "e+2")  + "e-2");
+      return (Math.round(num + "e+2")  + "e-2");
     },
     selectGericht(item) {
       this.selectedGericht = item;
@@ -107,8 +107,18 @@ export default {
       return this.roundToTwo(cartPrice * 0.07);
     },
     async getCustomerId() {
-      const response = await this.$http.post("/Benutzer/getIdByEmail", { email: this.$cookies.get('emailAdresse') });
-      return response.data;
+      let id;
+      await this.$http.post('/Benutzer/getIdByEmail', {
+        email: this.$cookies.get('emailAdresse')
+      }).then((response) => {
+        if (response.status === 200) {
+          id = response.data;
+        }
+      }, () => {
+        this.$router.push({name: "KundeAnmeldung"});
+      });
+
+      return id;
     },
     async paypalRequest() {
       const items = [];
@@ -120,6 +130,8 @@ export default {
       });
 
       const customerId = await this.getCustomerId();
+
+      console.log(customerId);
 
       this.$http.post('/Bestellung/add', {
         items: items,

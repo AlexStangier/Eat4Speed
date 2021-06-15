@@ -3,19 +3,13 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.entities.Fahrer;
 import de.eat4speed.entities.Fahrzeug;
+import de.eat4speed.entities.Gericht;
 import de.eat4speed.services.interfaces.IFahrerService;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -36,6 +30,13 @@ public class FahrerController {
     }
 
     @PUT
+    @Path("setPause/{id}/{pause}")
+    public Response setPause(@PathParam("id") int id, @PathParam("pause") int pause)
+    {
+        return _fahrer.setPause(pause, id);
+    }
+
+    @PUT
     @Path("updateFahrzeugId/{id}")
     public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug)
     {
@@ -49,12 +50,25 @@ public class FahrerController {
         return _fahrer.updateFahrer_Verifiziert(id);
     }
 
+    @PUT
+    @Path("updateFahrer_anzahl_aktueller_Auftraege/{fahrernummer}/{anzahl}")
+    public Response updateFahrer_anzahl_aktueller_Auftraege(@PathParam("fahrernummer") int fahrernummer, @PathParam("anzahl") int anzahl)
+    {
+        return _fahrer.updateFahrer_anzahl_aktueller_Auftraege(fahrernummer, anzahl);
+    }
 
     @GET
     @Path("getAll")
     @RolesAllowed("admin")
     public List getAllDrivers(){
         return _fahrer.getAllFahrer();
+    }
+
+    @GET
+    @Path("get/{id}")
+    public List getFahrerByID(@PathParam("id") int benutzer_ID)
+    {
+        return _fahrer.getFahrerByID(benutzer_ID);
     }
 
     @GET

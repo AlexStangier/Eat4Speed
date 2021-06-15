@@ -109,6 +109,13 @@
                     </v-btn>
                   </v-col>
                 </v-row>
+                <v-row>
+                  <v-btn class="ma-1 white--text" ref="VorschlaegeButton" width="200px" depressed tile
+                         @click="getVorschlaege"
+                  :color="'primary'" min-width="98%">
+                    Vorschläge
+                  </v-btn>
+                </v-row>
 
               </v-card>
             </v-card>
@@ -120,11 +127,13 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: 'Startseite',
   mounted() {
     this.searchDestination = "Gerichte";
-    this.$store.commit("changeCartGerichte", []);
+    this.getLoggedInKunde();
   },
   computed: {
     isUserLoggedIn() {
@@ -132,6 +141,94 @@ export default {
     },
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+      //this.loggedInKunde_ID = 5;
+    },
+    async getVorschlaege()
+    {
+      const responsePreferences = await axios.get("Kategorie/getPreferences/"+this.loggedInKunde_ID);
+      console.log(responsePreferences);
+      console.log(responsePreferences.data);
+      console.log(responsePreferences.data.data);
+      console.log(responsePreferences.data.data[0]);
+      console.log(responsePreferences.data.data[0].amount);
+      console.log(responsePreferences.data.data[0].categorie);
+
+      for(let i=0;i<responsePreferences.data.data.length; i++)
+      {
+          this.kategorienAmount.push(responsePreferences.data.data[i])
+      }
+
+      this.kategorienAmount.sort((a,b)=>{
+        if (a.amount > b.amount) {
+          return -1;
+        }
+        if (a.amount < b.amount) {
+          return 1;
+        }
+        return 0;
+      });
+
+      console.log(this.kategorienAmount);
+
+      for(let i = 0; i < this.kategorienAmount.length; i++) {
+        this.kategorien[i] = this.kategorienAmount[i].categorie.toString();
+      }
+
+      console.log(this.kategorien);
+
+      let useHeiss = false;
+      let useKalt = false;
+      for(let i = 0; i<this.kategorien.length; i++)
+      {
+        if(this.kategorien[i].includes("Heiß"))
+        {
+          useHeiss = true;
+          this.kategorien.splice(i,1);
+        }
+        if(this.kategorien[i].includes("Kalt"))
+        {
+          useKalt = true;
+          this.kategorien.splice(i,1);
+        }
+      }
+
+      if(useHeiss)
+      {
+        this.kategorien.push("heiß");
+      }
+      if(useKalt)
+      {
+        this.kategorien.push("kalt");
+      }
+
+      console.log(this.kategorien);
+
+      this.searchDestination = "Gerichte";
+
+      const searchOptions = {
+        gericht_ID: -1,
+        kundennummer: this.loggedInKunde_ID,
+        gerichtName: this.searchString,
+        kategorien: this.kategorien,
+        excludedAllergene: [],
+        maxMindestbestellwert: 0,
+        maxEntfernung: 0,
+        minBewertung: 0,
+        useName: false,
+        useKategorien: true,
+        useAllergene: false,
+        useMindestbestellwert: false,
+        useEntfernung: false,
+        useBewertung: false
+      }
+      this.$store.commit("changeSearchOptions", searchOptions);
+      this.$store.commit("changeSearchType", "Gerichte");
+      this.$router.push({name: 'Kunde'});
+    },
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
       console.log("changed searchString to " + this.$store.getters.searchString);
@@ -198,6 +295,9 @@ export default {
     return {
       valid: true,
       searchString: "",
+      loggedInKunde_ID: "",
+      kategorien: [],
+      kategorienAmount: [],
       searchDestination: "Gerichte",
       btnType: 0,
       user: this.$cookies.get('emailAdresse'),

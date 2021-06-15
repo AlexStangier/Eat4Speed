@@ -2,168 +2,217 @@
   <v-main>
     <v-container>
       <v-container>
-        <v-row no-gutters align="center">
-          <v-col sm="2">
-            <v-select
-                v-model="selectedBewertung"
-                label="Bewertung"
-                :items="selectRating"
-                clearable="true"
-                @change="applyBewertungFilterAndSearch"
+        <v-row no-gutters class="align-center">
+          <v-col
+              v-for="k in 4"
+              :key="k"
+              cols="3"
+          >
+            <v-card
+                v-if="k === 1"
+                flat
             >
-              <template v-slot:selection="data">
-                {{data.item}} {{"Sterne"}}
-              </template>
-              <template v-slot:item="data">
-                {{data.item}} {{"Sterne"}}
-              </template>
-            </v-select>
-          </v-col>
-          <v-col sm="2" offset-sm="1">
-            <v-select
-                v-model="selectedEntfernung"
-                label="Entfernung"
-                :items="selectArea"
-                clearable="true"
-                @change="applyDistanceFilterAndSearch"
-            >
-              <template v-slot:selection="data">
-                {{data.item}} {{"km"}}
-              </template>
-              <template v-slot:item="data">
-                {{data.item}} {{"km"}}
-              </template>
-            </v-select>
-          </v-col>
-          <v-col sm="2" offset-sm="1">
-            <v-btn>Auf der Karte anzeigen</v-btn>
-          </v-col>
-          <v-col sm="2" offset-sm="1">
-
-            <v-menu
-                bottom
-                offset-y
-                :close-on-content-click="false"
-            >
-              <template v-slot:activator="{ on, attrs}">
-                <v-btn
-                    v-bind="attrs"
-                    v-on="on"
-                >
-                  <v-icon> mdi-account </v-icon>
-                  Konto
-                </v-btn>
-              </template>
-              <v-list
-                  max-width="400"
+              <v-select
+                  v-model="selectedBewertung"
+                  label="Bewertung"
+                  :items="selectRating"
+                  clearable="true"
+                  @change="applyBewertungFilterAndSearch"
               >
-                <v-list-item>
-                  <v-btn :to="{name: 'Favorites'}" text>
-                    <v-icon>mdi-heart</v-icon>
-                    Favoriten
-                  </v-btn>
-                </v-list-item>
-                <v-list-item>
-                  <v-btn text>
-                    <v-icon>mdi-map-clock</v-icon>
-                    Lieferansicht
-                  </v-btn>
-                </v-list-item>
-                <v-list-item>
-                  <v-btn text>
-                    <v-icon>mdi-history</v-icon>
-                    Bestellhistorie
-                  </v-btn>
-                </v-list-item>
-                <v-list-item>
-                  <v-btn :to="{name: 'Einstellungen'}" text>
-                    <v-icon>mdi-account-cog-outline</v-icon>
-                    Einstellungen
-                  </v-btn>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-
-          </v-col>
-          <v-col order-sm="12">
-            <v-menu
-                bottom
-                offset-y
-                :close-on-content-click="false"
+                <template v-slot:selection="data">
+                  {{data.item}} {{"Sterne"}}
+                </template>
+                <template v-slot:item="data">
+                  {{data.item}} {{"Sterne"}}
+                </template>
+              </v-select>
+            </v-card>
+            <v-card
+                v-if="k === 2"
+                flat
             >
-              <template v-slot:activator="{ on, attrs}">
-                <v-btn
-                    v-bind="attrs"
-                    v-on="on"
-                    @mouseenter="loadAllKategorienAndAllergene"
-                >
-                  Filter
-                </v-btn>
-              </template>
-              <v-list
+              <v-select
+                  class="ml-10"
+                  v-model="selectedEntfernung"
+                  label="Entfernung"
+                  :items="selectArea"
+                  clearable="true"
+                  @change="applyDistanceFilterAndSearch"
+              >
+                <template v-slot:selection="data">
+                  {{data.item}} {{"km"}}
+                </template>
+                <template v-slot:item="data">
+                  {{data.item}} {{"km"}}
+                </template>
+              </v-select>
+            </v-card>
+            <v-card
+                v-if="k === 3"
+                flat
+                class="text-right"
+            >
+              <v-btn
+                  color="primary"
+                  tile
+                  width="250"
+              >
+                Auf der Karte anzeigen
+              </v-btn>
+            </v-card>
+            <v-card
+                v-if="k === 4"
+                flat
+                class="text-right"
+            >
+              <v-menu
+                  bottom
+                  left
+                  offset-y
+                  tile
+                  :close-on-content-click="false"
                   max-width="400"
                   min-width="400"
-
+                  max-height="400"
               >
-                <v-checkbox label="Suche benutzen" v-model="nameOptionActive">
-                </v-checkbox>
-                <v-checkbox label="Mindestbestellwert benutzen" v-model="mindestbestellwertOptionActive">
-                </v-checkbox>
-                <v-subheader>Mindestbestellwert</v-subheader>
-                <v-list-item>
-                  <v-slider
-                      v-model="selectedMindestbestellwert"
-                      min="5"
-                      max="100"
-                      step="5"
-                      thumb-label
-                      prepend-icon="mdi-cash"
-                      append-icon="mdi-cash-multiple"
+                <template v-slot:activator="{ on, attrs}">
+                  <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      @mouseenter="loadAllKategorienAndAllergene"
+                      color="primary"
+                      tile
                   >
-                    <template v-slot:thumb-label="{ value }">
-                      {{value}} {{"€"}}
-                    </template>
-                  </v-slider>
-                </v-list-item>
-                <v-list-item>
-                  <v-container fluid>
-                    <v-checkbox label="Kategorien benutzen" v-model="kategorieOptionActive">
-                    </v-checkbox>
-                    <v-select
-                        ref="KategorieSelect"
-                        v-model="selectedKategorien"
-                        :items="kategorien"
-                        chips
-                        label="Kategorien"
-                        multiple
-                        outlined
-                        block
-                        :key="kategorieVersion"
-                    ></v-select>
-                    <v-checkbox label="Allergene benutzen" v-model="allergeneOptionActive">
-                    </v-checkbox>
-                    <v-select
-                        ref="AllergeneSelect"
-                        v-model="selectedAllergene"
-                        :items="allergene"
-                        chips
-                        label="Allergene"
-                        multiple
-                        outlined
-                        block
-                        :key="allergeneVersion"
-                    ></v-select>
+                    Filter
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item>
+                    <h2
+                        class="text-uppercase"
+                    >
+                      Filter
+                    </h2>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-checkbox
+                        label="Suche benutzen"
+                        v-model="nameOptionActive"
+                    ></v-checkbox>
+                  </v-list-item>
+                  <v-subheader
+                      class="text-uppercase"
+                  >
+                    Mindestbestellwert
+                  </v-subheader>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Mindestbestellwert benutzen"
+                          v-model="mindestbestellwertOptionActive"
+                          :disabled="!nameOptionActive"
+                      ></v-checkbox>
+                      <v-slider
+                          v-model="selectedMindestbestellwert"
+                          min="5"
+                          max="100"
+                          step="5"
+                          thumb-label
+                          prepend-icon="mdi-cash"
+                          append-icon="mdi-cash-multiple"
+                          v-if="mindestbestellwertOptionActive"
+                      >
+                        <template v-slot:thumb-label="{ value }">
+                          {{value}} {{"€"}}
+                        </template>
+                      </v-slider>
+                    </v-container>
+                  </v-list-item>
+                  <v-subheader
+                      class="text-uppercase"
+                  >
+                    Kategorien
+                  </v-subheader>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Kategorien benutzen"
+                          v-model="kategorieOptionActive"
+                          :disabled="!nameOptionActive"
+                      ></v-checkbox>
+                      <v-select
+                          ref="KategorieSelect"
+                          v-model="selectedKategorien"
+                          :items="kategorien"
+                          chips
+                          label="Kategorien"
+                          multiple
+                          outlined
+                          block
+                          :key="kategorieVersion"
+                          v-if="kategorieOptionActive"
+                      ></v-select>
+                    </v-container>
+                  </v-list-item>
+                  <v-subheader
+                      class="text-uppercase"
+                  >
+                    Allergene
+                  </v-subheader>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Allergene benutzen"
+                          v-model="allergeneOptionActive"
+                          :disabled="!nameOptionActive"
+                      ></v-checkbox>
+                      <v-select
+                          ref="AllergeneSelect"
+                          v-model="selectedAllergene"
+                          :items="allergene"
+                          chips
+                          label="Allergene"
+                          multiple
+                          outlined
+                          block
+                          :key="allergeneVersion"
+                          v-if="allergeneOptionActive"
+                      ></v-select>
+                    </v-container>
+                  </v-list-item>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                          class="justify-start"
+                      >
+                        <v-btn
+                            color="error"
+                            tile
+                            :disabled="!nameOptionActive"
+                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                        >
+                          Filter löschen
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                          class="justify-end"
+                      >
+                        <v-btn
+                            color="blue"
+                            tile
+                            :disabled="!nameOptionActive"
+                            @click="applyFiltersAndSearch"
+                        >
+                          Filter anwenden
+                        </v-btn>
+                      </v-col>
+                    </v-row>
                   </v-container>
-                </v-list-item>
-                <v-list-item>
-                  <v-btn color="error" @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}">Filter löschen</v-btn>
-                  <v-btn @click="applyFiltersAndSearch" color="blue">Filter anwenden</v-btn>
-                </v-list-item>
-              </v-list>
-            </v-menu>
+                </v-list>
+              </v-menu>
+            </v-card>
           </v-col>
         </v-row>
-
       </v-container>
       <v-container>
         <v-card class="mx-auto">
@@ -171,154 +220,288 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              item-height="300"
-              max-height="600"
+              :item-height="250"
+              max-height="650"
           >
             <template v-slot:default="{ item }" v-resize>
-              <v-container>
-                <v-list-item v-resize :key="version">
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="250" max-width="250" position="center center" :src="item.img"></v-img>
-                  </v-list-item-content>
-                  <v-list-item-content>
-                    <v-list-item-group class="text-left">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <v-list-item-content>{{item.restaurant}}</v-list-item-content>
-                      <v-list-item-content>
-                        <v-rating readonly length="5" half-icon="$ratingHalf" half-increments hover="true" dense small="true" :value="item.rating"></v-rating>
-                      </v-list-item-content>
-                      <v-list-item-content>Entfernung: {{item.distance}} km</v-list-item-content>
-                      <v-list-item-content>Verfügbar: {{item.available}}</v-list-item-content>
-                    </v-list-item-group>
-                  </v-list-item-content>
-                  <v-list-item-content></v-list-item-content>
-                  <v-list-item-group :key="version" class="text-right">
 
-                    <div v-if="item.isFav === true">
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                              @mouseenter="selectItem(item)"  small="true" right
-                              @mousedown="deleteFromFavorites"
-                              @mouseup="()=>{this.amountGerichte=0;version++}"
-                              v-bind="attrs"
-                              v-on="on"
-                          >
-                            <v-icon>mdi-heart</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
-                      </v-tooltip>
-                    </div>
-                    <div v-else>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                              @mouseenter="selectItem(item)"  small="true" right
-                              @mousedown="addToFavorites"
-                              @mouseup="()=>{this.amountGerichte=0;version++}"
-                              v-bind="attrs"
-                              v-on="on"
-                          >
-                            <v-icon>mdi-heart-outline</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>Zu Favoriten hinzufügen</span>
-                      </v-tooltip>
-                    </div>
-                    <br>
-                    <v-list-item-content>
-                      Preis: {{ item.price +' €'}}
-                      <br>
-                      Mindestbestellwert: {{item.minimum}} €
-                    </v-list-item-content>
-                    <br>
-                    <v-btn small="true" bottom="bottom" :to="{name: 'Gericht'}" @mouseover="selectGericht(item)">Details</v-btn>
-                    <v-btn small="true" bottom="bottom" @mouseenter="selectItem(item)" @click="setStoreRestaurant_ID">Zur Speisekarte</v-btn>
-                    <v-menu
-                        bottom
-                        offset-y
-                        :close-on-content-click="false"
+              <v-card
+                  flat
+                  tile
+              >
+                <v-container class="pa-1">
+                  <v-row>
+                    <v-col
+                        cols="3"
                     >
-                      <template v-slot:activator="{ on, attrs}">
-                        <v-btn
-                            v-bind="attrs"
-                            v-on="on"
-                            small="true"
-                            bottom="bottom"
-                            @mouseover="selectItem(item)"
-                            @click="gerichtAnzahl=0"
-                        >
-                          Bestellen
-                        </v-btn>
-                      </template>
-                      <v-list
-                          max-width="200"
-                          min-width="250"
-                          class="text-center"
+                      <v-card
+                          flat
+                          tile
+                          outlined
                       >
-                        <v-list-item>
-                          <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
-                        </v-list-item>
-                        <v-btn @click="addToCart()" small="small">Zum Warenkorb hinzufügen</v-btn>
-                      </v-list>
-                    </v-menu>
-
-                    <v-col cols="auto">
-                      <v-dialog
-                          max-width="80%"
-                      >
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                              v-bind="attrs"
-                              v-on="on"
-                              small="small"
-                              @mouseenter="selectItem(item)"
-                              @mousedown="loadKategorien"
-                              @click="nameOptionActive=false; kategorieOptionActive=false"
-                          >Alternativen</v-btn>
-                        </template>
-                        <template v-slot:default="dialog">
-                          <v-card>
-                            <v-toolbar>Alternativen</v-toolbar>
-                            <v-card-text>
-                              <div class="text-h2 pa-12">Inhalt</div>
-                            </v-card-text>
-                            <v-card-actions class="justify-end">
-                              <v-checkbox label="Name" v-model="nameOptionActive">
-                              </v-checkbox>
-                              <v-checkbox label="Kategorien" v-model="kategorieOptionActive">
-                              </v-checkbox>
-                              <v-select
-                                  ref="KategorieSelect"
-                                  v-model="selectedKategorien"
-                                  :items="kategorien"
-                                  chips
-                                  label="Kategorien"
-                                  multiple
-                                  outlined
-                                  block
-                                  :key="kategorieVersion"
-                              ></v-select>
-                              <v-btn
-                                  @mousedown="findAlternatives"
-                                  @click="dialog.value = false"
-                              >Alternativen</v-btn>
-                              <v-btn
-                                  @click="dialog.value = false"
-                              >Schließen</v-btn>
-                            </v-card-actions>
-                          </v-card>
-                        </template>
-                      </v-dialog>
+                        <v-img alt="Bild von Essen" min-height="230" max-height="230" max-width="400" position="center center" :src="item.img"></v-img>
+                      </v-card>
                     </v-col>
+                    <v-col>
+                      <v-row
+                          v-for="a in 3"
+                          :key="a"
+                      >
+                        <v-col
+                            cols="4"
+                        >
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-h5 text-decoration-underline"
+                          >
+                            {{ item.name }}
+                          </v-card>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="subtitle-1"
+                          >
+                            {{ item.description }}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1"
+                          >
+                            {{item.restaurant}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1"
+                          >
+                            Entfernung: {{item.distance+' km'}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1"
+                          >
+                            <span>
+                              Verfügbar
+                              <v-icon v-if="item.available == 'verfügbar'" color="green">
+                                mdi-check
+                              </v-icon>
+                              <v-icon v-if="item.available != 'verfügbar'" color="red">
+                                mdi-close
+                              </v-icon>
+                            </span>
+                          </v-card>
+                        </v-col>
+                        <v-col>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              :key="version"
+                              class="text-right"
+                          >
+                            <div v-if="item.isFav === true">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectItem(item)"
+                                      small="true"
+                                      right
+                                      @mousedown="deleteFromFavorites"
+                                      @mouseup="()=>{this.amountGerichte=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Aus Favoriten entfernen</span>
+                              </v-tooltip>
+                            </div>
+                            <div v-else>
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectItem(item)"  small="true" right
+                                      @mousedown="addToFavorites"
+                                      @mouseup="()=>{this.amountGerichte=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zu Favoriten hinzufügen</span>
+                              </v-tooltip>
+                            </div>
+                          </v-card>
 
-                  </v-list-item-group>
-                </v-list-item>
-                <v-divider></v-divider>
-              </v-container>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1 text-right"
+                          >
+                            Preis: {{ item.price +' €'}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="subtitle-1 text-right"
+                          >
+                            Mindestbestellwert: {{item.minimum +' €'}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 3"
+                              flat
+                              class="text-right"
+                          >
+                            <v-btn
+                                small="true"
+                                color="primary"
+                                tile
+                                :to="{name: 'Gericht'}"
+                                @mouseover="selectGericht(item)"
+                            >
+                              Details
+                            </v-btn>
+                            <v-btn
+                                small="true"
+                                class="ml-1"
+                                color="primary"
+                                tile
+                                @mouseenter="selectItem(item)"
+                                @click="setStoreRestaurant_ID"
+                            >
+                              Zur Speisekarte
+                            </v-btn>
+
+                            <v-dialog
+                                max-width="50%"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small="small"
+                                    class="ml-1"
+                                    color="primary"
+                                    tile
+                                    @mouseenter="selectItem(item)"
+                                    @mousedown="loadKategorien"
+                                    @click="nameOptionActive=false; kategorieOptionActive=false"
+                                >
+                                  Alternativen
+                                </v-btn>
+                              </template>
+                              <template v-slot:default="dialog">
+                                <v-card>
+                                  <v-toolbar>Alternativen</v-toolbar>
+                                  <v-container>
+                                    <v-row no-gutters>
+                                      <v-checkbox
+                                          label="Name"
+                                          v-model="nameOptionActive"
+                                          :disabled="kategorieOptionActive"
+                                      >
+                                      </v-checkbox>
+                                      <v-checkbox
+                                          class="ml-2"
+                                          label="Kategorien"
+                                          v-model="kategorieOptionActive"
+                                          :disabled="nameOptionActive"
+                                      >
+                                      </v-checkbox>
+                                    </v-row>
+                                    <v-row>
+                                      <v-container>
+                                        <v-select
+                                            ref="KategorieSelect"
+                                            v-model="selectedKategorien"
+                                            :items="kategorien"
+                                            chips
+                                            label="Kategorien"
+                                            multiple
+                                            outlined
+                                            block
+                                            :key="kategorieVersion"
+                                            v-if="kategorieOptionActive"
+                                        >
+                                        </v-select>
+                                      </v-container>
+                                    </v-row>
+                                    <v-row no-gutters class="justify-end">
+                                      <v-btn
+                                          class="ml-1"
+                                          @mousedown="findAlternatives"
+                                          @click="dialog.value = false"
+                                          color="primary"
+                                          tile
+                                          :disabled="(!kategorieOptionActive) && (!nameOptionActive)"
+                                      >
+                                        Suchen
+                                      </v-btn>
+                                      <v-btn
+                                          class="ml-1"
+                                          @click="dialog.value = false"
+                                          color="error"
+                                          tile
+                                      >
+                                        Schließen
+                                      </v-btn>
+                                    </v-row>
+                                  </v-container>
+                                </v-card>
+                              </template>
+                            </v-dialog>
+                            <v-menu
+                                bottom
+                                left
+                                offset-y
+                                :close-on-content-click="false"
+                            >
+                              <template v-slot:activator="{ on, attrs}">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small="true"
+                                    class="ml-1"
+                                    color="primary"
+                                    tile
+                                    @mouseover="selectItem(item)"
+                                    @click="gerichtAnzahl=1"
+                                >
+                                  Bestellen
+                                </v-btn>
+                              </template>
+                              <v-list
+                                  max-width="200"
+                                  min-width="250"
+                                  class="text-center"
+                              >
+                                <v-list-item>
+                                  <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
+                                </v-list-item>
+                                <v-btn
+                                    @click="addToCart()"
+                                    small="small"
+                                    color="primary"
+                                    tile
+                                >
+                                  Zum Warenkorb hinzufügen
+                                </v-btn>
+                              </v-list>
+                            </v-menu>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+              <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
         </v-card>
@@ -337,8 +520,8 @@ export default {
     this.searchOptions = this.$store.getters.searchOptions;
 
     console.log(this.searchString);
-    //TODO change later!
-    this.loggedInKunde_ID = 6;
+
+    this.getLoggedInKunde();
 
     this.loadGerichte();
   },
@@ -348,6 +531,11 @@ export default {
     next();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      this.loggedInKunde_ID = response.data[0];
+    },
     selectItem(item) {
       console.log("Gericht selected "+item.id);
       this.selectedItem = item;
@@ -362,6 +550,7 @@ export default {
     },
     getStoreSearchOptions() {
       this.searchOptions = this.$store.getters.searchOptions;
+      this.searchString = this.searchOptions.gerichtName;
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
@@ -527,21 +716,6 @@ export default {
           this.hinzufuegedatumAssigned[i] = null;
         }
       }
-
-      for(let i = 0; i < ResponseGerichte.data.length; i++)
-      {
-        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.restaurant_IDs[i]);
-        if(ResponseBewertung.data[0][0]!==null)
-        {
-          this.restaurantBewertungen[i] = ResponseBewertung.data[0][0];
-        }
-        else
-        {
-          this.restaurantBewertungen[i] = 0;
-        }
-
-      }
-      console.log("Bewertungen "+this.restaurantBewertungen);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
       {
@@ -796,7 +970,6 @@ export default {
         const cavailable = this.availabilities[i]
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
-        const crestaurantbewertung = this.restaurantBewertungen[i]
         i++;
 
         return {
@@ -812,7 +985,6 @@ export default {
           available: cavailable,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
-          rating: crestaurantbewertung
         }
       })
     }

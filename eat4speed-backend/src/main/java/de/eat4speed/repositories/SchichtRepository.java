@@ -26,6 +26,17 @@ public class SchichtRepository implements PanacheRepository<Schicht> {
     }
 
     @Transactional
+    public void setSchicht(Schicht zeit)
+    {
+        persist(zeit);
+    }
+
+    @Transactional
+    public void updateSchicht(Schicht zeit){
+        update("anfang = ?1, ende = ?2 where fahrernummer = ?3", zeit.getAnfang(),zeit.getEnde(),zeit.getFahrernummer());
+    }
+
+    @Transactional
     public List getAllSchichtFromID(int fahrernummer)
     {
         List allSchichtData;
@@ -52,5 +63,21 @@ public class SchichtRepository implements PanacheRepository<Schicht> {
         delete("Schicht_ID", schicht_ID);
 
         return schicht_ID;
+    }
+
+    @Transactional
+    public List getSchicht(int fahrerNummer)
+    {
+        List schicht;
+
+        Query query = entityManager.createQuery(
+                "SELECT t.anfang, t.ende, t.fahrernummer, t.schicht_ID " +
+                        "FROM Schicht t " +
+                        "WHERE t.fahrernummer = ?1 "
+        ).setParameter(1,fahrerNummer);
+
+        schicht = query.getResultList();
+
+        return schicht;
     }
 }

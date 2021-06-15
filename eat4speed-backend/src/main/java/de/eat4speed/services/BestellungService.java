@@ -72,6 +72,7 @@ public class BestellungService implements IBestellungService {
 
     /**
      * Creates and persists an order with all attached items
+     * During creation the Auftrag will be attached to a dummy Fahrer with id 9999
      *
      * @param obj Dto containing a list of items and an customer identifier
      * @return HTTP Response
@@ -147,14 +148,13 @@ public class BestellungService implements IBestellungService {
 
                         bestellung.setGericht_IDs(Json.encode(relevantGerichte));
                         _bestellungRepository.persist(bestellung);
+                        _bestellungRepository.flush();
                     }
                 } catch (Exception e) {
                     System.out.println("Failed while creating bestellung:" + e);
                     return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
                 }
-
                 if (_bestellungRepository.isPersistent(bestellung)) {
-
                     for (Restaurant rest : restaurants) {
                         Map<Integer, Integer> amountMap = new HashMap<Integer, Integer>();
                         for (Gericht gericht : restaurantOrderMapper.get(rest.getRestaurant_ID())) {
@@ -162,14 +162,6 @@ public class BestellungService implements IBestellungService {
                                 int currVal = amountMap.get(gericht.getGericht_ID());
                                 amountMap.replace(gericht.getGericht_ID(), currVal + 1);
                             } else amountMap.put(gericht.getGericht_ID(), 1);
-
-                        }
-                        for (Map.Entry<Integer, Integer> entry : amountMap.entrySet()) {
-                            try {
-                                _bestellzuordnungRepository.addBestellzuordnung(new Bestellzuordnung(bestellung.getBestell_ID(), entry.getKey(), entry.getValue()));
-                            } catch (Exception e) {
-                                System.out.println("Something went wrong persisting bestellzuordnung: " + e);
-                            }
                         }
                     }
                 }

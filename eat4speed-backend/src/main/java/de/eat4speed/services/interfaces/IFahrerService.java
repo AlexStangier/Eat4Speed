@@ -11,6 +11,10 @@ public interface IFahrerService {
 
     Response addFahrer(Fahrer obj);
 
+    Response setPause(int pause, int fahrernummer);
+
+    List getFahrerByID(int id);
+
     List<String> getAllFahrer();
 
     List<String> getNotVerifiedFahrer();
@@ -23,6 +27,7 @@ public interface IFahrerService {
 
     Response deleteFahrer(int id);
 
+    Response updateFahrer_anzahl_aktueller_Auftraege(int fahrernummer, int anzahl);
 
     List get_Fahrer_Fzg_Pos();
 

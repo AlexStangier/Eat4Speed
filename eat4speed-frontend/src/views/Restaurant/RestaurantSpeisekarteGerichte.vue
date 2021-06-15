@@ -318,11 +318,33 @@ export default {
   mounted() {
     this.displayGetraenke=false;
 
-    this.restaurantID = 5;
+    this.getLoggedInRestaurant();
+    this.checkIfVerified();
     this.loadGerichte()
   },
   methods: {
+    async getLoggedInRestaurant()
+    {
+      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+      this.restaurantID = response.data[0];
+    },
+    async checkIfVerified()
+    {
+      const response = await axios.get("Restaurant/VERIFIED");
+      for(let i = 0; i<response.data.length;i++)
+      {
+        this.verifiedRestaurants[i] = response.data[i][2];
+      }
 
+      if(this.verifiedRestaurants.includes(this.restaurantID))
+      {
+        this.isVerified = true;
+      }
+      else
+      {
+        this.isVerified = false;
+      }
+    },
     async loadGerichte() {
 
       let gerichtPath;
@@ -456,72 +478,79 @@ export default {
 
       console.log("it's fine");
 
-      if (this.gerichtVerfuegbar === true) {
-        this.gerichtVerfuegbar = 1;
-      } else {
-        this.gerichtVerfuegbar = 0;
-      }
-
-      if(this.displayGetraenke === true) {
-        this.istGetraenk = 1;
-      } else {
-        this.istGetraenk = 0;
-      }
-
-      var gericht = {
-        beschreibung: this.gerichtBeschreibung,
-        name: this.gerichtName,
-        restaurant_ID: this.restaurantID,
-        verfuegbar: this.gerichtVerfuegbar,
-        preis: this.gerichtPreis,
-        ist_Getraenk: this.istGetraenk
-      }
-
-      const responseGericht = await axios.post("/Gericht/addGericht", gericht);
-
-      this.gericht_ID = responseGericht.data.gericht_ID;
-
-      for (let i = 0; i < this.selectedKategorien.length; i++) {
-        let gericht_Kategorie = {
-          gericht_ID: this.gericht_ID,
-          kategorie: this.selectedKategorien[i]
-        }
-        await axios.post("/Gericht_Kategorie", gericht_Kategorie);
-
-      }
-      for (let i = 0; i < this.selectedAllergene.length; i++) {
-        let gericht_Allergene = {
-          gericht_ID: this.gericht_ID,
-          allergen: this.selectedAllergene[i]
-        }
-        await axios.post("/Gericht_Allergene", gericht_Allergene);
-
-      }
-
-      if(this.gerichtBild !== null)
+      if(this.isVerified)
       {
-        const picturedata = new FormData();
-        picturedata.append("file", this.gerichtBild);
-        picturedata.append("fileName", "Bild"+this.gericht_ID);
+        if (this.gerichtVerfuegbar === true) {
+          this.gerichtVerfuegbar = 1;
+        } else {
+          this.gerichtVerfuegbar = 0;
+        }
 
-        const options = {
-          headers: {
-            'Content-Type': 'multipart/form-data'
+        if(this.displayGetraenke === true) {
+          this.istGetraenk = 1;
+        } else {
+          this.istGetraenk = 0;
+        }
+
+        var gericht = {
+          beschreibung: this.gerichtBeschreibung,
+          name: this.gerichtName,
+          restaurant_ID: this.restaurantID,
+          verfuegbar: this.gerichtVerfuegbar,
+          preis: this.gerichtPreis,
+          ist_Getraenk: this.istGetraenk
+        }
+
+        const responseGericht = await axios.post("/Gericht/addGericht", gericht);
+
+        this.gericht_ID = responseGericht.data.gericht_ID;
+
+        for (let i = 0; i < this.selectedKategorien.length; i++) {
+          let gericht_Kategorie = {
+            gericht_ID: this.gericht_ID,
+            kategorie: this.selectedKategorien[i]
           }
-        };
+          await axios.post("/Gericht_Kategorie", gericht_Kategorie);
 
-        const responsePictureUpload = await axios.post( '/GerichtBilder/upload',
-            picturedata,options
-        ).then(function(){
-          console.log('Picture successfully uploaded');
-        })
-            .catch(function(){
-              console.log('Picture upload error');
-            });
+        }
+        for (let i = 0; i < this.selectedAllergene.length; i++) {
+          let gericht_Allergene = {
+            gericht_ID: this.gericht_ID,
+            allergen: this.selectedAllergene[i]
+          }
+          await axios.post("/Gericht_Allergene", gericht_Allergene);
 
-        console.log(responsePictureUpload);
+        }
+
+        if(this.gerichtBild !== null)
+        {
+          const picturedata = new FormData();
+          picturedata.append("file", this.gerichtBild);
+          picturedata.append("fileName", "Bild"+this.gericht_ID);
+
+          const options = {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          };
+
+          const responsePictureUpload = await axios.post( '/GerichtBilder/upload',
+              picturedata,options
+          ).then(function(){
+            console.log('Picture successfully uploaded');
+          })
+              .catch(function(){
+                console.log('Picture upload error');
+              });
+
+          console.log(responsePictureUpload);
+        }
+        this.loadGerichte();
       }
-      this.loadGerichte();
+      else
+      {
+        alert("Nicht verifiziert!");
+      }
 
     },
     async fillDataOfGerichtToAlter(item) {
@@ -669,7 +698,8 @@ export default {
     selectedKategorien: [],
     allergen: [],
     selectedAllergene: [],
-
+    verifiedRestaurants: [],
+    isVerified: false,
     gerichtName: "",
     gerichtBeschreibung: "",
     gerichtBild: "",
