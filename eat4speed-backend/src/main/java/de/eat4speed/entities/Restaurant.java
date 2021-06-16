@@ -2,12 +2,30 @@ package de.eat4speed.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 public class Restaurant extends PanacheEntityBase implements Serializable {
+
+    public enum VerificationStatus {
+        NOT_VERIFIED((byte) 0),
+        VERIFIED((byte) 1);
+
+        private final byte value;
+
+        public byte value() {
+            return this.value;
+        }
+
+        VerificationStatus(byte value) {
+            this.value = value;
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,6 +9,36 @@ import java.util.Objects;
 @Entity
 public class Gericht extends PanacheEntityBase implements Serializable {
 
+    public enum AvailabilityStatus {
+        NOT_AVAILABLE((byte) 0),
+        AVAILABLE((byte) 1);
+
+        private final byte value;
+
+        public byte value() {
+            return this.value;
+        }
+
+        AvailabilityStatus(byte value) {
+            this.value = value;
+        }
+    }
+
+    public enum MealType {
+        MEAL((byte) 0),
+        DRINK((byte) 1);
+
+        private final byte value;
+
+        public byte value() {
+            return this.value;
+        }
+
+        MealType(byte value) {
+            this.value = value;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int gericht_ID;

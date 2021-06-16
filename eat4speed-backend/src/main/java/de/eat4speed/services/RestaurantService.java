@@ -1,16 +1,12 @@
 package de.eat4speed.services;
 
-import de.eat4speed.entities.Adressen;
 import de.eat4speed.entities.Restaurant;
-import de.eat4speed.entities.Fahrzeug;
-import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.repositories.RestaurantRepository;
 import de.eat4speed.searchOptions.RestaurantSearchOptions;
 import de.eat4speed.services.interfaces.IRestaurantService;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -161,7 +157,6 @@ public class RestaurantService implements IRestaurantService {
                     foundRestaurants.add(restaurant.get(0));
                 }
             }
-
         }
 
         return foundRestaurants;
@@ -188,10 +183,18 @@ public class RestaurantService implements IRestaurantService {
 
     @Override
     public Response updateRestaurantStammdaten(Restaurant restaurant) {
+
+        // The order radius must be positive
+        if (restaurant.getBestellradius() <= 0.0) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
+        // The minimum order value must not be negative
+        if (restaurant.getMindestbestellwert() < 0.0) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+
         _restaurant.updateRestaurantStammdaten(restaurant);
         return Response.status(Response.Status.OK).entity(restaurant).build();
     }
-
-
-
 }
