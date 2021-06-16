@@ -8,6 +8,12 @@
             <v-card class="px-4">
               <v-card-title>Bitte wählen Sie Ihre Schicht</v-card-title>
               <v-spacer></v-spacer>
+              <v-btn :to="{name: 'FahrerFahrtenplan'}">
+                <v-icon>
+                  mdi-arrow-left
+                </v-icon>
+                Fahrtenplan
+              </v-btn>
               <v-col align="center">
                 <v-btn
                    @click="morgenFarbe"
