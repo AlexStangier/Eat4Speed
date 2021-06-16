@@ -43,5 +43,19 @@ public class SchichtRepository implements PanacheRepository<Schicht> {
 
         return schicht;
     }
+    public Object getAmountActiveSchicht()
+    {
+
+        Object amount;
+        Query query = entityManager.createQuery(
+                "SELECT count(s) " +
+                        "FROM Schicht s " +
+                        "WHERE CURRENT_TIME BETWEEN s.anfang AND s.ende"
+
+        );
+        amount = query.getSingleResult();
+        return amount;
+    }
+
 
 }

@@ -9,6 +9,8 @@ import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,19 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     public void setPause(int pause, int fahrernummer)
     {
             update("ist_in_pause = ?1 where fahrernummer = ?2", pause, fahrernummer);
+    }
+
+    @Transactional
+    public Object getAmountInPause()
+    {
+        Object amount;
+        Query query = entityManager.createQuery(
+                "SELECT count(f.ist_in_Pause)" +
+                        "FROM Fahrer f " +
+                        "WHERE f.ist_in_Pause = 1 "
+        );
+        amount = query.getSingleResult();
+        return amount;
     }
 
     @Transactional
