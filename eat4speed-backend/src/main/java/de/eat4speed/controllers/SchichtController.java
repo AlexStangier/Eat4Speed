@@ -32,6 +32,13 @@ public class SchichtController {
     }
 
     @GET
+    @Path("getAmountActiveSchicht")
+    public Object getAmountActiveSchicht()
+    {
+        return schichtplanService.getAmountActiveSchicht();
+    }
+
+    @GET
     @Path("/getSchicht/{id}")
     public List getAllZeiten(@PathParam("id") int schicht_id){
 

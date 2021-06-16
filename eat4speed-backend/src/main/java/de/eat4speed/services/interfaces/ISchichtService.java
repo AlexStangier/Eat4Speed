@@ -11,5 +11,7 @@ public interface ISchichtService {
 
     Response updateSchicht(Schicht zeit);
 
+    Object getAmountActiveSchicht();
+
     List getSchicht(int fahrer_ID);
 }

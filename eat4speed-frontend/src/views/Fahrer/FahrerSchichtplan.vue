@@ -171,8 +171,8 @@ export default {
           break
         }
       }
-      let anfangMoment = moment().hour(anfang).minute(0).second(0).toDate();
-      let endeMoment = moment().hour(ende).minute(0).second(0).toDate();
+      let anfangMoment = moment().second(0).hour(anfang).minute(0).toDate();
+      let endeMoment = moment().second(0).hour(ende).minute(0).toDate();
 
       let time = {
 
@@ -193,7 +193,20 @@ export default {
 
       await this.loadZeiten();
     },
+    async calcIfPause(){
+      const amountPause = await axios.get("Fahrer/getAmountInPause");
+      const amountFahrer = await axios.get("Schichten/getAmountActiveSchicht");
+      if(((amountFahrer.data - amountPause.data) <= 2) && amountFahrer.data != 1 &&
+          !(amountFahrer.data == 2 && amountPause.data < 2))
+      {
+        return true
+      }
+      else{
+        return false
+      }
+    },
     async loadZeiten(){
+      //await this.calcIfPause()
       const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
       const fahrer_id = fahrer_id_data.data[0];
@@ -202,15 +215,21 @@ export default {
         this.timeInDB = false;
       }
       else {
-        if(fahrer_id[1] == 1){
-          document.getElementById("pause").innerHTML = "Pause beenden..."
+        if(await this.calcIfPause()){
+          document.getElementById("pause").innerHTML = "Zu viele Fahrer in Pause"
           this.pauseColor = "red"
           this.pause = 0
         }
-        else{
-          document.getElementById("pause").innerHTML = "Pause beginnen..."
-          this.pauseColor = "green"
-          this.pause = 1
+        else {
+          if (fahrer_id[1] == 1) {
+            document.getElementById("pause").innerHTML = "Pause beenden..."
+            this.pauseColor = "red"
+            this.pause = 0
+          } else {
+            document.getElementById("pause").innerHTML = "Pause beginnen..."
+            this.pauseColor = "green"
+            this.pause = 1
+          }
         }
         const schicht = schichtdata.data[0];
         if(moment().isSameOrBefore(moment(schicht[1].substring(0, 19)+"+00:00"), 'hour')){
