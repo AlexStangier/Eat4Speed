@@ -9,8 +9,6 @@ import javax.json.Json;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
-import javax.ws.rs.core.Response;
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
