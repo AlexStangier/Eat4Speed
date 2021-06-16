@@ -52,8 +52,8 @@ public class BestellungController {
 
     @GET
     @PermitAll
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("getAllOrdersFromRestaurantId/{customerId}/{restaurantId}")
     public Integer getAllOrdersFromRestaurantId(@PathParam("customerId") int customerId, @PathParam("restaurantId") int restaurantId) {
         return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId,customerId);

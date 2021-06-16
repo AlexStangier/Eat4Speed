@@ -283,7 +283,15 @@ public class BestellungService implements IBestellungService {
         if (customer != null && orders != null) {
             for (Auftrag order : orders) {
                 Bestellung purchase = _bestellungRepository.getBestellungByAuftragsId((int) order.getAuftrags_ID());
-                purchases = purchases.concat(purchase.getGericht_IDs());
+
+
+                try {
+                    purchases = purchases.concat(purchase.getGericht_IDs());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
             }
         }
 
