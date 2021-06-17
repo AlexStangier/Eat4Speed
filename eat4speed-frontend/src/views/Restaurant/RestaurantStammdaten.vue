@@ -1,7 +1,7 @@
 <template>
   <v-main>
-
-    <v-app-bar color="blue"  dark>
+    <v-card class="mx-5 my-5">
+    <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title>Stammdaten</v-toolbar-title>
     </v-app-bar>
@@ -135,6 +135,7 @@
         </v-flex>
       </v-layout>
     </v-container>
+    </v-card>
   </v-main>
 </template>
 

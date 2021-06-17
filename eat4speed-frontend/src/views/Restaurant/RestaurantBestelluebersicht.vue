@@ -1,7 +1,7 @@
 <template>
   <v-main>
 
-    <v-app-bar color="blue"  dark>
+    <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title>Bestellübersicht</v-toolbar-title>
     </v-app-bar>

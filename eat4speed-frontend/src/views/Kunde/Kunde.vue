@@ -185,7 +185,7 @@
                           class="justify-end"
                       >
                         <v-btn
-                            color="blue"
+                            color="primary"
                             tile
                             :disabled="!nameOptionActive"
                             @click="applyFiltersAndSearch"

@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
-import java.util.Locale;
 
 @ApplicationScoped
 public class BenutzerService implements IBenutzerService {
@@ -64,14 +63,34 @@ public class BenutzerService implements IBenutzerService {
      * @return Benutzer if exists
      */
     @Override
-    public Response checkCredentials(Benutzer requestedUser) {
+    public Response checkCredentials(Benutzer requestedUser, char type) {
         Benutzer currBenutzer = requestedUser.findMatchingEntryByEmail();
         //currBenutzer actually exists
+
         if (currBenutzer != null) {
             //Credentials are correct
             if (currBenutzer.getPasswort().equals(requestedUser.getPasswort())) {
-                return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
-                //Credentails doesn't match
+                switch (type) {
+                    case 'a':
+                        if (currBenutzer.getRolle().toLowerCase().equals("admin"))
+                            return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
+                        break;
+                    case 'u':
+                        if (currBenutzer.getRolle().toLowerCase().equals("kunde"))
+                            return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
+                        break;
+                    case 'r':
+                        if (currBenutzer.getRolle().toLowerCase().equals("restaurant"))
+                            return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
+                        break;
+                    case 'd':
+                        if (currBenutzer.getRolle().toLowerCase().equals("fahrer"))
+                            return Response.ok(currBenutzer, MediaType.APPLICATION_JSON).build();
+                        break;
+                    default:
+                        return Response.status(Response.Status.NOT_FOUND).entity("Benutzer Daten sind falsch!").build();
+                }
+                //Credentails don't match
             } else {
                 return Response.status(Response.Status.NOT_FOUND).entity("Benutzer Daten sind falsch!").build();
             }
@@ -79,6 +98,7 @@ public class BenutzerService implements IBenutzerService {
             //currBenutzer is null
             return Response.status(Response.Status.NOT_FOUND).entity("Benutzer existiert nicht!").build();
         }
+        return Response.status(Response.Status.NOT_FOUND).entity("Benutzer existiert nicht!").build();
     }
 
     @Override

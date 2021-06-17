@@ -17,9 +17,10 @@ public interface IBenutzerService {
      * Comapares a given user with existing users in the database
      *
      * @param requestedUser
+     * @param type u = user r = restaurant a = admin d = driver
      * @return Benutzer if exists
      */
-    Response checkCredentials(Benutzer requestedUser);
+    Response checkCredentials(Benutzer requestedUser, char type);
 
     Integer getEmailById(UserEmailDto email);
 

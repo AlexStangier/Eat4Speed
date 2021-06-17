@@ -240,7 +240,7 @@ public class BestellungService implements IBestellungService {
                             try {
                                 Rechnung rechnungen = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
                                 if (rechnungen.getZahlungseingang() == 1) {
-                                    wrapper.data.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
+                                    wrapper.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
                                 }
 
                             } catch (Exception e) {
@@ -255,6 +255,8 @@ public class BestellungService implements IBestellungService {
         } catch (Exception s) {
             System.out.println("@Get Stat Failed to retrieve Auftrag: " + s);
         }
+        wrapper.convert();
+
         return wrapper;
     }
 

@@ -2,7 +2,7 @@
 <template>
   <v-main>
 
-    <v-app-bar color="blue"  dark>
+    <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title>ControlPanel</v-toolbar-title>
     </v-app-bar>
@@ -94,13 +94,13 @@
 
               <v-col >
                 <div class="pa-4"><router-link   to="/restaurant/speisekarteGerichte">
-                <v-card color="blue" width="200px" height="200px">
+                <v-card color="primary" width="200px" height="200px">
 
-                  <v-card-text  align="center">
+                  <v-card-text class="white--text" align="center">
                   Spesekarte bearbeiten
                   </v-card-text>
                  <div align="center">
-                  <v-icon align="center" size="100px" class="justify-center">mdi-silverware</v-icon>
+                  <v-icon color="white" align="center" size="100px" class="justify-center">mdi-silverware</v-icon>
                  </div>
                 </v-card>
                 </router-link></div>
@@ -109,13 +109,13 @@
 
               <v-col >
                 <div class="pa-4"><router-link  to="/restaurant/bestellungen">
-                  <v-card color="blue" width="200px" height="200px">
+                  <v-card color="primary" width="200px" height="200px">
 
-                    <v-card-text  align="center">
+                    <v-card-text class="white--text" align="center">
                   Offene Bestellungen
                     </v-card-text>
                     <div align="center">
-                      <v-icon align="center" size="100px" class="justify-center">mdi-view-headline</v-icon>
+                      <v-icon color="white" align="center" size="100px" class="justify-center">mdi-view-headline</v-icon>
                     </div>
                   </v-card>
                 </router-link></div>
@@ -124,13 +124,13 @@
 
               <v-col >
                 <div class="pa-4"><router-link  to="/restaurant/schichtplan">
-                  <v-card color="blue" width="200px" height="200px">
+                  <v-card color="primary" width="200px" height="200px">
 
-                    <v-card-text  align="center">
+                    <v-card-text class="white--text" align="center">
                       Schichtplan
                     </v-card-text>
                     <div align="center">
-                      <v-icon align="center" size="100px" class="justify-center">mdi-watch</v-icon>
+                      <v-icon color="white" align="center" size="100px" class="justify-center">mdi-watch</v-icon>
                     </div>
                   </v-card>
                 </router-link>
@@ -142,13 +142,13 @@
               <v-col >
                 <div class="pa-4">
                 <router-link  to="/restaurant/stammdaten">
-                  <v-card color="blue" width="200px" height="200px">
+                  <v-card color="primary" width="200px" height="200px">
 
-                    <v-card-text  align="center">
+                    <v-card-text class="white--text" align="center">
                   Stammdaten
                     </v-card-text>
                       <div align="center">
-                        <v-icon align="center" size="100px" class="justify-center">mdi-account</v-icon>
+                        <v-icon color="white" align="center" size="100px" class="justify-center">mdi-account</v-icon>
                       </div>
                   </v-card>
                 </router-link>
@@ -157,13 +157,13 @@
               <v-col >
                 <div class="pa-4">
                 <router-link  to="/restaurant/umsatzstatistik">
-                  <v-card color="blue" width="200px" height="200px">
+                  <v-card color="primary" width="200px" height="200px">
 
-                    <v-card-text  align="center">
+                    <v-card-text class="white--text" align="center">
                   Umsatzstatistik
                     </v-card-text>
                     <div align="center">
-                      <v-icon align="center" size="100px" class="justify-center">mdi-margin</v-icon>
+                      <v-icon color="white" align="center" size="100px" class="justify-center">mdi-margin</v-icon>
                     </div>
                   </v-card>
                 </router-link>
