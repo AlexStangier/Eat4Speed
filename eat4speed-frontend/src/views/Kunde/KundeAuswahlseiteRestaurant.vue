@@ -380,9 +380,9 @@ import axios from "axios";
 
 export default {
   name: "KundeAuswahlseiteRestaurant",
-  created() {
+  async created() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
-    this.getLoggedInKunde()
+    await this.getLoggedInKunde()
     this.loadRestaurant();
     this.displayGetraenke = false;
     this.loadGerichte();
@@ -426,17 +426,23 @@ export default {
       const config = { responseType:"arraybuffer" };
       const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.selectedRestaurant_ID,config);
 
-      console.log(responsePicture);
+      //console.log(responsePicture);
+
+      const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+      if(ResponseEntfernung.data.length>0)
+      {
+        this.entfernung = ResponseEntfernung.data[0];
+      }
 
       if(responsePicture.status !== 204)
       {
-        console.log("received Picture")
-        console.log(responsePicture.data);
+        //console.log("received Picture")
+        //console.log(responsePicture.data);
 
         let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
         let imageURL = URL.createObjectURL(pictureBlob);
-        console.log(imageURL);
+        //console.log(imageURL);
 
         this.img = imageURL;
       }
@@ -461,7 +467,7 @@ export default {
 
       const ResponseGerichte = await axios.get(gerichtPath + this.selectedRestaurant_ID);
 
-      console.log(ResponseGerichte);
+      //console.log(ResponseGerichte);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -476,17 +482,17 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gerichtIDs[i],config);
 
-        console.log(responsePicture);
+        //console.log(responsePicture);
 
         if(responsePicture.status !== 204)
         {
-          console.log("received Picture")
-          console.log(responsePicture.data);
+          //console.log("received Picture")
+          //console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
+          //console.log(imageURL);
 
           this.imgs[i] = imageURL;
         }
@@ -496,7 +502,7 @@ export default {
         }
 
       }
-      console.log(this.imgs);
+      //console.log(this.imgs);
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -521,10 +527,6 @@ export default {
         this.userRating = responseBewertung.data[0][3];
         this.userComment = responseBewertung.data[0][4];
       }
-
-      console.log(this.reviewUsername);
-      console.log(this.reviewComment);
-      console.log(this.reviewRating);
 
       this.amountReviews = 0;
       this.amountReviews = responseBewertungen.data.length;
@@ -565,13 +567,13 @@ export default {
 
     },
     selectGericht(item) {
-      console.log("Gericht selected "+item.id);
+      //console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+      //console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     selectItem(item) {
       this.selectedItem = item;
@@ -595,7 +597,13 @@ export default {
     },
     addToCart() {
 
-      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      if(this.restaurantBestellradius<this.entfernung)
+      {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
+
+      //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
@@ -605,7 +613,7 @@ export default {
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+      //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
   },
   data: () => ({
@@ -639,6 +647,7 @@ export default {
     restaurantMindestbestellwert:"",
     restaurantBestellradius:"",
     bewertung_ID:"",
+    entfernung: "",
 
     userRating:0,
     userComment:"",
@@ -681,7 +690,7 @@ export default {
           description: cdescription,
           price: cprice,
           img: cimg,
-          rating: crating
+          rating: crating,
         }
       })
     },
