@@ -265,8 +265,13 @@ export default {
           this.minimums[i] = gerichtData[7];
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
-          // let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
-          // console.log(ResponseAmount);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
+          console.log(ResponseAmount);
+
+          if(ResponseAmount.data!==0)
+          {
+            this.anzahlBestellungen[i] = ResponseAmount.data;
+          }
         }
 
         //console.log("Suche nach Bildern");
@@ -314,8 +319,14 @@ export default {
           this.anzahlBestellungen[i] = restaurantData[11];
           this.hinzufuegedaten[i] = restaurantData[12];
 
-          // let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
-          // console.log(ResponseAmount);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
+          console.log(ResponseAmount);
+
+          if(ResponseAmount.data!==0)
+          {
+            this.anzahlBestellungen[i] = ResponseAmount.data;
+          }
+
         }
 
         for (let i = 0; i < ResponseRestaurants.data.length; i++)
