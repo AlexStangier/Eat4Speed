@@ -332,4 +332,17 @@ public class BestellungService implements IBestellungService {
 
         return count;
     }
+
+    @Override
+    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+
+    @Override
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        _bestellungRepository.updateBestellungStatus(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
+
+    @Override
+    public List getProduktUndAnzahl(int id) {return _bestellungRepository.getProduktUndAnzahl(id);}
+
 }
