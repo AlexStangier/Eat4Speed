@@ -55,4 +55,11 @@ public interface IBestellungService {
      * @return
      */
     Integer getAllOrdersForRestaurantIdByCustomerID(int restaurantId, int customerId);
+
+    List getRestaurantBestellungen(String email);
+
+    Response updateBestellungStatus(Bestellung bestellung);
+
+    List getProduktUndAnzahl(int id);
+
 }

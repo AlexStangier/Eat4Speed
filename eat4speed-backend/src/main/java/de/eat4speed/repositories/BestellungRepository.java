@@ -64,13 +64,30 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "AND b.Gericht_IDs IS NOT NULL " +
                         "AND b.Auftrags_ID = a.Auftrags_ID " +
                         "AND a.Kundennummer = k.Kundennummer ").setParameter(1, email);
-            restaurantBestellungen = query.getResultList();
-            return restaurantBestellungen;
+        restaurantBestellungen = query.getResultList();
+        return restaurantBestellungen;
     }
 
     @Transactional
     public void updateBestellungStatus(Bestellung bestellung) {
         update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
+    }
+
+    @Transactional
+    public List getProduktUndAnzahl(int id) {
+        List getProdutAndAnzahl;
+
+        Query query = entityManager.createNativeQuery(
+                "select " +
+                        "group_concat(DISTINCT A.Name SEPARATOR ', ') Produkte, " +
+                        "group_concat(DISTINCT cnt.Anzahl SEPARATOR ', ') Anzahl " +
+                        "from (SELECT Name FROM Gericht WHERE Gericht_ID " +
+                        "IN ( SELECT json_as_rows.* FROM Bestellung best, " +
+                        "JSON_TABLE(Gericht_IDs, '$[*]' COLUMNS(Gericht_ID INT PATH '$')) json_as_rows where Bestell_ID = ?1 ) ) as A, " +
+                        "(select count(Gericht_ID) as Anzahl FROM Bestellung best, " +
+                        "JSON_TABLE(Gericht_IDs, '$[*]' COLUMNS(Gericht_ID INT PATH '$')) json_as_rows where Bestell_ID = ?1 group by Gericht_ID) as cnt").setParameter(1, id);
+        getProdutAndAnzahl = query.getResultList();
+        return getProdutAndAnzahl;
     }
 
     @Transactional

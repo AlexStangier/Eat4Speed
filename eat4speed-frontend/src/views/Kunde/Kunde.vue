@@ -637,6 +637,12 @@ export default {
 
     },
     async addToFavorites() {
+
+      if(this.selectedItem.bestellradius<this.selectedItem.distance)
+      {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
       var today = new Date();
       const gerichtFavorite = {
         gericht_ID: this.selectedItem.id,
@@ -876,6 +882,12 @@ export default {
     },
     addToCart() {
 
+      if(this.selectedItem.bestellradius<this.selectedItem.distance)
+      {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
+
       //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
@@ -884,7 +896,6 @@ export default {
         quantity: this.gerichtAnzahl,
         price: this.selectedItem.price
       }
-
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     }

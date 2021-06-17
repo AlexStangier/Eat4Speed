@@ -285,22 +285,24 @@ public class BestellungService implements IBestellungService {
         if (customer != null && orders != null) {
             for (Auftrag order : orders) {
                 Bestellung purchase = _bestellungRepository.getBestellungByAuftragsId((int) order.getAuftrags_ID());
-
-
-                try {
-                    purchases = purchases.concat(purchase.getGericht_IDs());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (purchase != null) {
+                    try {
+                        purchases = purchases.concat(purchase.getGericht_IDs());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-
-
             }
         }
 
-        String idsString = purchases.replaceAll("[\\[\\]\\(\\)]", "");
-        String[] ids = idsString.split("\\,");
-        for (String id : ids) {
-            if (gerichtId == Integer.parseInt(id.trim())) count++;
+        try {
+            String idsString = purchases.replaceAll("[\\[\\]\\(\\)]", "");
+            String[] ids = idsString.split("\\,");
+            for (String id : ids) {
+                if (gerichtId == Integer.parseInt(id.trim())) count++;
+            }
+        } catch (Exception e) {
+            System.out.println("@AmountOrdersGericht Failed to get Data " + e);
         }
 
         return count;
@@ -332,4 +334,17 @@ public class BestellungService implements IBestellungService {
 
         return count;
     }
+
+    @Override
+    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+
+    @Override
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        _bestellungRepository.updateBestellungStatus(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
+
+    @Override
+    public List getProduktUndAnzahl(int id) {return _bestellungRepository.getProduktUndAnzahl(id);}
+
 }
