@@ -34,6 +34,19 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public Object getAmountInPause()
+    {
+        Object amount;
+        Query query = entityManager.createQuery(
+                "SELECT count(f.ist_in_Pause)" +
+                        "FROM Fahrer f " +
+                        "WHERE f.ist_in_Pause = 1 "
+        );
+        amount = query.getSingleResult();
+        return amount;
+    }
+
+    @Transactional
     public void updateFahrer_Fahrzeug_id(int fahrernummer, int fahrzeug_Id)
     {
         update("fahrzeug = ?1 where fahrernummer = ?2", fahrzeug_Id, fahrernummer);

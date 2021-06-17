@@ -39,6 +39,11 @@ public class SchichtService implements ISchichtService {
     }
 
     @Override
+    public Object getAmountActiveSchicht() {
+        return schichtRepository.getAmountActiveSchicht();
+    }
+
+    @Override
     public List getSchicht(int fahrer_ID) {
         return schichtRepository.getSchicht(fahrer_ID);
     }

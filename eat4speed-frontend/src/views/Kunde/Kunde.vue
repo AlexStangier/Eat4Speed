@@ -48,19 +48,6 @@
               </v-select>
             </v-card>
             <v-card
-                v-if="k === 3"
-                flat
-                class="text-right"
-            >
-              <v-btn
-                  color="primary"
-                  tile
-                  width="250"
-              >
-                Auf der Karte anzeigen
-              </v-btn>
-            </v-card>
-            <v-card
                 v-if="k === 4"
                 flat
                 class="text-right"
@@ -358,26 +345,25 @@
                               flat
                               class="text-right"
                           >
-                            <v-btn
-                                small="true"
-                                color="primary"
-                                tile
-                                :to="{name: 'Gericht'}"
-                                @mouseover="selectGericht(item)"
-                            >
-                              Details
-                            </v-btn>
-                            <v-btn
-                                small="true"
-                                class="ml-1"
-                                color="primary"
-                                tile
-                                @mouseenter="selectItem(item)"
-                                @click="setStoreRestaurant_ID"
-                            >
-                              Zur Speisekarte
-                            </v-btn>
-
+                              <v-btn
+                                  small="true"
+                                  color="primary"
+                                  tile
+                                  :to="{name: 'Gericht'}"
+                                  @mouseover="selectGericht(item)"
+                              >
+                                Details
+                              </v-btn>
+                              <v-btn
+                                  small="true"
+                                  class="ml-1"
+                                  color="primary"
+                                  tile
+                                  @mouseenter="selectItem(item)"
+                                  @click="setStoreRestaurant_ID"
+                              >
+                                Zur Speisekarte
+                              </v-btn>
                             <v-dialog
                                 max-width="50%"
                             >
@@ -515,14 +501,13 @@ import axios from "axios";
 
 export default {
   name: "Kunde",
-  mounted() {
+  async mounted() {
     this.searchString = this.$store.getters.searchString;
     this.searchOptions = this.$store.getters.searchOptions;
 
-    console.log(this.searchString);
-
-    this.getLoggedInKunde();
-
+    //console.log(this.searchString);
+    await this.getLoggedInKunde();
+    await this.getAllEntfernungen();
     this.loadGerichte();
   },
   beforeRouteLeave(to, from, next) {
@@ -533,15 +518,24 @@ export default {
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
       this.loggedInKunde_ID = response.data[0];
     },
+    async getAllEntfernungen()
+    {
+      const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
+      for(let i = 0; i<responseEntfernungen.data.length; i++)
+      {
+        this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
+        this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+      }
+    },
     selectItem(item) {
-      console.log("Gericht selected "+item.id);
+      //console.log("Gericht selected "+item.id);
       this.selectedItem = item;
     },
     selectGericht(item) {
-      console.log("Gericht selected "+item.id);
+      //console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
@@ -554,14 +548,14 @@ export default {
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
-      console.log("changed searchString to "+this.$store.getters.searchString);
+      //console.log("changed searchString to "+this.$store.getters.searchString);
     },
     setStoreSearchOptions(){
       this.$store.commit("changeSearchOptions", this.searchOptions);
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+      //console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurantid);
@@ -588,13 +582,7 @@ export default {
 
       this.searchOptions = searchOptions;
 
-      console.log("Before sending get...")
-
       const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
-
-      console.log("After sending get...")
-
-      console.log(responseAlternatives)
 
       for (let i = 0; i < responseAlternatives.data.length; i++) {
         let gerichtData = responseAlternatives.data[i];
@@ -622,17 +610,17 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-        console.log(responsePicture);
+        //console.log(responsePicture);
 
         if(responsePicture.status !== 204)
         {
-          console.log("received Picture")
-          console.log(responsePicture.data);
+          //console.log("received Picture")
+          //console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
+          //console.log(imageURL);
 
           this.imgs[i] = imageURL;
         }
@@ -642,7 +630,7 @@ export default {
         }
 
       }
-      console.log(this.imgs);
+      //console.log(this.imgs);
       this.amountGerichte = 0;
       this.amountGerichte = responseAlternatives.data.length;
       this.version++;
@@ -654,7 +642,6 @@ export default {
         gericht_ID: this.selectedItem.id,
         kundennummer: this.loggedInKunde_ID,
         hinzufuegedatum: today,
-        //TODO get anzahl_Bestellungen from Database
         anzahl_Bestellungen: 0
       }
 
@@ -672,7 +659,7 @@ export default {
 
       const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
 
-      console.log(ResponseFavoriten);
+      //console.log(ResponseFavoriten);
       for(let i = 0; i < ResponseFavoriten.data.length; i++)
       {
         let favData = ResponseFavoriten.data[i];
@@ -682,7 +669,7 @@ export default {
 
       const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
 
-      console.log(ResponseGerichte);
+      //console.log(ResponseGerichte);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -703,6 +690,7 @@ export default {
         this.restaurant_IDs[i] = gerichtData[5];
         this.restaurantnamen[i] = gerichtData[6];
         this.minimums[i] = gerichtData[7];
+        this.bestellradius[i] = gerichtData[8];
 
         if(this.favoritenlisteGerichte_IDs.includes(gerichtData[0]))
         {
@@ -715,6 +703,9 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
+
+        let index = this.distanceRestaurant_IDs.indexOf(gerichtData[5]);
+        this.distances[i] = this.distancesUnassigned[index];
       }
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
@@ -722,17 +713,17 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-        console.log(responsePicture);
+        //console.log(responsePicture);
 
         if(responsePicture.status !== 204)
         {
-          console.log("received Picture")
-          console.log(responsePicture.data);
+          //console.log("received Picture")
+          //console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
+          //console.log(imageURL);
 
           this.imgs[i] = imageURL;
         }
@@ -744,20 +735,10 @@ export default {
       }
 
       //console.log("Verarbeitung abgeschlossen")
-      console.log(this.imgs);
-
-      for(let i = 0; i<this.restaurant_IDs.length;i++)
-      {
-        const responseDistance = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_IDs[i])
-
-        console.log(responseDistance);
-
-        this.distances[i] = responseDistance.data[0];
-
-      }
+      //console.log(this.imgs);
 
       this.amountGerichte = 0;
-      this.amountGerichte = ResponseGerichte.data.length;
+      this.amountGerichte = this.gericht_IDs.length;
       this.version++;
     },
     async loadKategorien() {
@@ -870,7 +851,7 @@ export default {
         this.selectedBewertung = 0;
       }
       this.nameOptionActive = true;
-      console.log(this.selectedBewertung);
+      //console.log(this.selectedBewertung);
 
       const searchOptions = {
         gericht_ID: -1,
@@ -895,7 +876,7 @@ export default {
     },
     addToCart() {
 
-      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
@@ -905,7 +886,7 @@ export default {
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+      //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     }
   },
   data: () => ({
@@ -925,7 +906,10 @@ export default {
     imgs: [],
     restaurant_IDs: [],
     restaurantnamen:[],
+    bestellradius: [],
     distances: [],
+    distancesUnassigned: [],
+    distanceRestaurant_IDs: [],
     minimums: [],
     availabilities: [],
     kategorien: [],
@@ -970,6 +954,7 @@ export default {
         const cavailable = this.availabilities[i]
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
+        const cbestellradius = this.bestellradius[i]
         i++;
 
         return {
@@ -985,6 +970,7 @@ export default {
           available: cavailable,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
+          bestellradius: cbestellradius
         }
       })
     }

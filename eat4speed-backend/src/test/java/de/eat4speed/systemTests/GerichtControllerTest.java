@@ -75,13 +75,14 @@ public class GerichtControllerTest {
         this.dummyAddressId = dummyAddress.getAdress_ID();
 
         Restaurant dummyRestaurant = new Restaurant(dummyRestaurantOwner.getBenutzer_ID(), "Krusty Krab",
-                "", dummyAddress.getAdress_ID(), 0.0, 0.0, (byte) 0);
+                "", dummyAddress.getAdress_ID(), 5.0, 1.0,
+                Restaurant.VerificationStatus.NOT_VERIFIED.value());
         this._restaurantRepository.addRestaurant(dummyRestaurant);
 
         this.dummyRestaurantId = dummyRestaurant.getRestaurant_ID();
 
         Gericht dummyGericht = new Gericht(dummyRestaurantId, "Krabby Patty", "",
-                "", 0.0, (byte) 1, (byte) 0);
+                "", 0.0, Gericht.AvailabilityStatus.AVAILABLE.value(), Gericht.MealType.MEAL.value());
         this._gerichtRepository.addGericht(dummyGericht);
 
         this.dummyGerichtId = dummyGericht.getGericht_ID();

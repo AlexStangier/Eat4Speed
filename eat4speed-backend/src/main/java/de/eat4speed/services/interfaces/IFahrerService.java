@@ -13,6 +13,8 @@ public interface IFahrerService {
 
     Response setPause(int pause, int fahrernummer);
 
+    Object getAmountInPause();
+
     List getFahrerByID(int id);
 
     List<String> getAllFahrer();

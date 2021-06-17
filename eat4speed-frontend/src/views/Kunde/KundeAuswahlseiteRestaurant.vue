@@ -151,7 +151,6 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                             <v-rating
                                 x-large
                                 v-model="userRating"
-                                half-increments
                                 hover
                             >
                             </v-rating>
@@ -392,7 +391,7 @@ export default {
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
       this.currentKunde_ID = response.data[0];
     },
     async loadRestaurant() {

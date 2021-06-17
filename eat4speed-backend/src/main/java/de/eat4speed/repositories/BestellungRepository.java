@@ -73,5 +73,8 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
         update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
     }
 
-
+    @Transactional
+    public List<Bestellung> getAllBestellungenByRestaurantId(Integer restaurantId){
+        return find("restaurant_ID", restaurantId).list();
+    }
 }

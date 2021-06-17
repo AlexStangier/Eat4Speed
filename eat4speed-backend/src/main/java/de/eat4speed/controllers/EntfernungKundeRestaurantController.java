@@ -2,6 +2,7 @@ package de.eat4speed.controllers;
 
 
 import de.eat4speed.entities.EntfernungKundeRestaurant;
+import de.eat4speed.repositories.EntfernungKundeRestaurantRepository;
 import de.eat4speed.services.interfaces.IEntfernungKundeRestaurantService;
 
 import javax.inject.Inject;
@@ -19,6 +20,9 @@ public class EntfernungKundeRestaurantController {
     @Inject
     IEntfernungKundeRestaurantService entfernungKundeRestaurantService;
 
+    @Inject
+    EntfernungKundeRestaurantRepository entfernungKundeRestaurantRepository;
+
     @POST
     public Response add(EntfernungKundeRestaurant entfernungKundeRestaurant)
     {
@@ -30,6 +34,13 @@ public class EntfernungKundeRestaurantController {
     public List getEntfernungByKundennummerRestaurant_ID(@PathParam("kundennummer") int kundennummer, @PathParam("restaurant_ID") int restaurant_ID)
     {
         return entfernungKundeRestaurantService.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
+    }
+
+    @GET
+    @Path("/getEntfernungByKundennummer/{kundennummer}")
+    public List getEntfernungByKundennummer(@PathParam("kundennummer") int kundennummer)
+    {
+        return entfernungKundeRestaurantRepository.getEntfernungByKundennummer(kundennummer);
     }
 
     @DELETE

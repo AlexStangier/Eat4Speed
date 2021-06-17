@@ -48,19 +48,6 @@
               </v-select>
             </v-card>
             <v-card
-                v-if="k === 3"
-                flat
-                class="text-right"
-            >
-              <v-btn
-                  color="primary"
-                  tile
-                  width="250"
-              >
-                Auf der Karte anzeigen
-              </v-btn>
-            </v-card>
-            <v-card
                 v-if="k === 4"
                 flat
                 class="text-right"
@@ -226,20 +213,29 @@ import axios from "axios";
 
 export default {
   name: "KundeRestaurants",
-  mounted() {
+  async mounted() {
     this.searchString = this.$store.getters.searchString;
     this.searchOptions = this.$store.getters.searchOptionsRestaurant;
 
     console.log(this.searchString);
-    this.getLoggedInKunde();
+    await this.getLoggedInKunde();
 
     this.loadRestaurants();
   },
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
       this.loggedInKunde_ID = response.data[0];
+    },
+    async getAllEntfernungen()
+    {
+      const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
+      for(let i = 0; i<responseEntfernungen.data.length; i++)
+      {
+        this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
+        this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+      }
     },
     selectRestaurant(item) {
       console.log("Restaurant selected "+item.restaurantid);
@@ -304,6 +300,8 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
+        let index = this.distanceRestaurant_IDs.indexOf(restaurantData[0]);
+        this.distances[i] = this.distancesUnassigned[index];
 
       }
       for(let i = 0; i < ResponseRestaurants.data.length; i++)
@@ -451,6 +449,8 @@ export default {
     lng: [],
     lat: [],
     ratings: [],
+    distanceRestaurant_IDs: [],
+    distancesUnassigned: [],
     favoritenlisteRestaurants_IDs: [],
     hinzufuegedaten: [],
     hinzufuegedatumAssigned: [],
@@ -481,6 +481,7 @@ export default {
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         const crating = this.ratings[i]
+        const cdistance = this.distances[i]
         i++;
 
         return {
@@ -494,7 +495,8 @@ export default {
           lat: clat,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
-          rating: crating
+          rating: crating,
+          distance: cdistance
         }
       })
     }

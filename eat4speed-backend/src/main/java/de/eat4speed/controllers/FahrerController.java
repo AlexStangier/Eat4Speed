@@ -36,6 +36,13 @@ public class FahrerController {
         return _fahrer.setPause(pause, id);
     }
 
+    @GET
+    @Path("getAmountInPause")
+    public Object getAmountInPause()
+    {
+        return _fahrer.getAmountInPause();
+    }
+
     @PUT
     @Path("updateFahrzeugId/{id}")
     public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug)
