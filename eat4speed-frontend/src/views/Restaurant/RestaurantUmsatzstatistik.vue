@@ -144,7 +144,7 @@ import axios from "axios";
 Vue.use(Chartkick.use(Chart));
 export default {
   async mounted() {
-    //await this.getLoggedInRestaurant();
+    await this.getLoggedInRestaurant();
     await this.loadZeiten();
   },
   data() {
