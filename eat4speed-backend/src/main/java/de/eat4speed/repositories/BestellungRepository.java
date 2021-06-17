@@ -63,7 +63,8 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "AND b.Rechnung = r.Rechnungs_ID " +
                         "AND b.Gericht_IDs IS NOT NULL " +
                         "AND b.Auftrags_ID = a.Auftrags_ID " +
-                        "AND a.Kundennummer = k.Kundennummer ").setParameter(1, email);
+                        "AND a.Kundennummer = k.Kundennummer " +
+                        "order by  FIELD(b.Status, 'bezahlt', 'bearbeitung', 'abholbereit'), b.Bestell_ID").setParameter(1, email);
         restaurantBestellungen = query.getResultList();
         return restaurantBestellungen;
     }
