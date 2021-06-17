@@ -52,7 +52,8 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "b.Bestell_ID, " +
                         "k.NAME, " +
                         "b.STATUS, " +
-                        "r.Betrag " +
+                        "r.Betrag," +
+                        "DATE_FORMAT(b.Timestamp, '%d.%m.%y - %H:%i')" +
                         "FROM Auftrag a, Bestellung b, Rechnung r, Kunde k " +
                         "WHERE b.restaurant_ID = " +
                         "( SELECT Restaurant_ID FROM Restaurant " +
