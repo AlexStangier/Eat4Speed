@@ -52,7 +52,8 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "b.Bestell_ID, " +
                         "k.NAME, " +
                         "b.STATUS, " +
-                        "r.Betrag " +
+                        "r.Betrag," +
+                        "DATE_FORMAT(b.Timestamp, '%d.%m.%y - %H:%i')" +
                         "FROM Auftrag a, Bestellung b, Rechnung r, Kunde k " +
                         "WHERE b.restaurant_ID = " +
                         "( SELECT Restaurant_ID FROM Restaurant " +
@@ -63,7 +64,8 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "AND b.Rechnung = r.Rechnungs_ID " +
                         "AND b.Gericht_IDs IS NOT NULL " +
                         "AND b.Auftrags_ID = a.Auftrags_ID " +
-                        "AND a.Kundennummer = k.Kundennummer ").setParameter(1, email);
+                        "AND a.Kundennummer = k.Kundennummer " +
+                        "order by  FIELD(b.Status, 'bezahlt', 'bearbeitung', 'abholbereit'), b.Bestell_ID").setParameter(1, email);
         restaurantBestellungen = query.getResultList();
         return restaurantBestellungen;
     }

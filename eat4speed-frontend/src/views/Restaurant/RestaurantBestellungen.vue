@@ -6,14 +6,15 @@
           <h1 class="mb-5">Offene Bestellungen</h1>
           <v-list>
             <v-list-item class="mb-12" v-for="item in eingegangeneBestellungen" v-bind:key="item.id">
-              <v-card class="mr-10" color="red" dark>
-                <v-col>
+
+                <v-col style="background-color: lightsteelblue" >
+                  <div  class="text-right">{{ item.date }}</div>
                   <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
                   <v-card-text>{{ item.products }}</v-card-text>
                   <v-card-text>{{ item.count }}x</v-card-text>
-                  {{ item.price }} €
+                  <div  class="text-right">{{ item.price }} €</div>
                 </v-col>
-              </v-card>
+
               <v-slider
                   :value="item.currentState"
                   :tick-labels="bestellstati"
@@ -126,6 +127,7 @@ export default {
           id: (ResponseBestellungen.data[i][0]),
           name: (ResponseBestellungen.data[i][1]),
           price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          date: (ResponseBestellungen.data[i][4]),
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
           currentState: statusNummer
