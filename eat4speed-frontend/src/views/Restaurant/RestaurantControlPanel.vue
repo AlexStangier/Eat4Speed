@@ -1,7 +1,6 @@
-
 <template>
   <v-main>
-
+    <v-card class="mx-5 my-5">
     <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
       <v-toolbar-title>ControlPanel</v-toolbar-title>
@@ -177,6 +176,7 @@
         </v-flex>
       </v-layout>
     </v-container>
+    </v-card>
   </v-main>
 </template>
 
