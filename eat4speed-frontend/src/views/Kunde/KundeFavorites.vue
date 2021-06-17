@@ -38,7 +38,7 @@
                 flat
                 tile
             >
-              <v-container class="pa-1">
+              <v-container>
                 <v-row>
                   <v-col
                       cols="3"

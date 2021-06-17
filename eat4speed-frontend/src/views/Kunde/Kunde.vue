@@ -151,7 +151,25 @@
                           block
                           :key="kategorieVersion"
                           v-if="kategorieOptionActive"
-                      ></v-select>
+                          clearable
+                      >
+                        <template v-slot:selection="{ item, index }">
+                          <v-chip
+                              v-if="index < 3"
+                          >
+                            <span>
+                              {{ item }}
+                            </span>
+                          </v-chip>
+                          <v-chip
+                              v-if="index === 3"
+                          >
+                            <span>
+                              + {{ selectedKategorien.length - 3 }} andere
+                            </span>
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-list-item>
                   <v-subheader
@@ -177,7 +195,25 @@
                           block
                           :key="allergeneVersion"
                           v-if="allergeneOptionActive"
-                      ></v-select>
+                          clearable
+                      >
+                        <template v-slot:selection="{ item, index }">
+                          <v-chip
+                              v-if="index < 3"
+                          >
+                            <span>
+                              {{ item }}
+                            </span>
+                          </v-chip>
+                          <v-chip
+                              v-if="index === 3"
+                          >
+                            <span>
+                              + {{ selectedAllergene.length - 3 }} andere
+                            </span>
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-list-item>
                   <v-container>
@@ -198,7 +234,7 @@
                           class="justify-end"
                       >
                         <v-btn
-                            color="blue"
+                            color="primary"
                             tile
                             :disabled="!nameOptionActive"
                             @click="applyFiltersAndSearch"
@@ -228,8 +264,9 @@
               <v-card
                   flat
                   tile
+                  outlined
               >
-                <v-container class="pa-1">
+                <v-container>
                   <v-row>
                     <v-col
                         cols="3"
@@ -301,7 +338,7 @@
                               :key="version"
                               class="text-right"
                           >
-                            <div v-if="item.isFav === true">
+                            <div v-if="item.isFav === true && isUserLoggedIn">
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
@@ -317,7 +354,7 @@
                                     <v-icon>mdi-heart</v-icon>
                                   </v-btn>
                                 </template>
-                                <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                                <span>Hinzugefügt am {{ item.hinzufuegedatum }}</span>
                               </v-tooltip>
                             </div>
                             <div v-else>
@@ -501,7 +538,6 @@
                   </v-row>
                 </v-container>
               </v-card>
-              <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
         </v-card>
@@ -915,7 +951,7 @@ export default {
 
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
-    }
+    },
   },
   data: () => ({
     searchOptions: {},
@@ -964,6 +1000,9 @@ export default {
     ],
   }),
   computed: {
+    isUserLoggedIn() {
+      return this.user !== undefined;
+    },
     items(){
       let i = 0
       return Array.from({ length: this.amountGerichte}, () => {

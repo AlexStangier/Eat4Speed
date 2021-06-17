@@ -65,20 +65,106 @@
                 flat
                 class="text-right"
             >
-              <v-btn
-                  disabled
-                  color="primary"
+              <v-menu
+                  bottom
+                  left
+                  offset-y
                   tile
+                  :close-on-content-click="false"
+                  max-width="400"
+                  min-width="400"
+                  max-height="400"
               >
-                Fliter
-              </v-btn>
+                <template v-slot:activator="{ on, attrs}">
+                  <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      @mouseenter="loadAllKategorienAndAllergene"
+                      color="primary"
+                      tile
+                  >
+                    Filter
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item>
+                    <h2
+                        class="text-uppercase"
+                    >
+                      Filter
+                    </h2>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-checkbox
+                        label="Suche benutzen"
+                        v-model="nameOptionActive"
+                    ></v-checkbox>
+                  </v-list-item>
+                  <v-subheader
+                      class="text-uppercase"
+                  >
+                    Mindestbestellwert
+                  </v-subheader>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Mindestbestellwert benutzen"
+                          v-model="mindestbestellwertOptionActive"
+                          :disabled="!nameOptionActive"
+                      ></v-checkbox>
+                      <v-slider
+                          v-model="selectedMindestbestellwert"
+                          min="5"
+                          max="100"
+                          step="5"
+                          thumb-label
+                          prepend-icon="mdi-cash"
+                          append-icon="mdi-cash-multiple"
+                          v-if="mindestbestellwertOptionActive"
+                      >
+                        <template v-slot:thumb-label="{ value }">
+                          {{value}} {{"€"}}
+                        </template>
+                      </v-slider>
+                    </v-container>
+                  </v-list-item>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                          class="justify-start"
+                      >
+                        <v-btn
+                            color="error"
+                            tile
+                            :disabled="!nameOptionActive"
+                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                        >
+                          Filter löschen
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                          class="justify-end"
+                      >
+                        <v-btn
+                            color="primary"
+                            tile
+                            :disabled="!nameOptionActive"
+                            @click="applyFiltersAndSearch"
+                        >
+                          Filter anwenden
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-list>
+              </v-menu>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
       <v-container>
         <v-card class="mx-auto">
-          <v-card-title> Gerichte </v-card-title>
+          <v-card-title> Restaurants </v-card-title>
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
@@ -92,7 +178,7 @@
                   tile
                   outlined
               >
-                <v-container class="pa-1">
+                <v-container>
                   <v-row>
                     <v-col
                         cols="3"
@@ -162,7 +248,7 @@
                                     <v-icon>mdi-heart</v-icon>
                                   </v-btn>
                                 </template>
-                                <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                                <span>Hinzugefügt am {{ item.hinzufuegedatum }}</span>
                               </v-tooltip>
                             </div>
                             <div v-else>

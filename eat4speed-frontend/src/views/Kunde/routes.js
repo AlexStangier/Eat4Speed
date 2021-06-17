@@ -5,6 +5,7 @@ import KundeFavorites from '@/views/Kunde/KundeFavorites.vue'
 import KundeAuswahlseiteRestaurant from '@/views/Kunde/KundeAuswahlseiteRestaurant.vue'
 import KundeEinstellungen from '@/views/Kunde/KundeEinstellungen.vue';
 import KundeRestaurants from "@/views/Kunde/KundeRestaurants.vue";
+import KundeBestellhistorie from "@/views/Kunde/KundeBestellhistorie";
 
 export default [
     {
@@ -41,5 +42,10 @@ export default [
         path: '/kundeRestaurants',
         name: 'KundeRestaurants',
         component: KundeRestaurants
+    },
+    {
+        path: '/kundeBestellhistorie',
+        name: 'KundeBestellhistorie',
+        component: KundeBestellhistorie
     }
 ]

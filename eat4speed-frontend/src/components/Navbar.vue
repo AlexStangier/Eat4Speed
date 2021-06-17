@@ -63,6 +63,40 @@
         >
           <v-list-item>
             <v-btn
+                :to="{name: 'Startseite'}"
+                text
+                tile
+                width="200"
+                depressed
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon>mdi-home</v-icon>
+                Startseite
+              </v-content>
+            </v-btn>
+          </v-list-item>
+          <v-list-item>
+            <v-btn
+                :to="{name: 'RestaurantControlPanel'}"
+                text
+                tile
+                width="200"
+                depressed
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon>mdi-home</v-icon>
+                Startseite
+              </v-content>
+            </v-btn>
+          </v-list-item>
+          <v-list-item
+              v-if="isUserLoggedIn"
+          >
+            <v-btn
                 :to="{name: 'Favorites'}"
                 text
                 tile
@@ -76,7 +110,9 @@
               </v-content>
             </v-btn>
           </v-list-item>
-          <v-list-item>
+          <v-list-item
+              v-if="isUserLoggedIn"
+          >
             <v-btn
                 text
                 tile
@@ -90,8 +126,11 @@
               </v-content>
             </v-btn>
           </v-list-item>
-          <v-list-item>
+          <v-list-item
+              v-if="isUserLoggedIn"
+          >
             <v-btn
+                :to="{name: 'KundeBestellhistorie'}"
                 text
                 tile
                 width="200"
@@ -104,7 +143,9 @@
               </v-content>
             </v-btn>
           </v-list-item>
-          <v-list-item>
+          <v-list-item
+              v-if="isUserLoggedIn"
+          >
             <v-btn
                 :to="{name: 'Einstellungen'}"
                 text
@@ -139,6 +180,7 @@ export default {
   created() {
     eventBus.$on('setLogin', (token) => this.user = token);
   },
+  //TODO
   data() {
     return {
       user: this.$cookies.get('emailAdresse'),
