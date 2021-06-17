@@ -1,6 +1,7 @@
 package de.eat4speed.controllers;
 
 import de.eat4speed.dto.*;
+import de.eat4speed.entities.Bestellung;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -58,4 +59,18 @@ public class BestellungController {
     public Integer getAllOrdersFromRestaurantId(@PathParam("customerId") int customerId, @PathParam("restaurantId") int restaurantId) {
         return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId,customerId);
     }
+
+    @GET
+    @Path("getRestaurantBestellungen/{email}")
+    public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
+
+    @PUT
+    @Path("updateBestellungStatus")
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        return _bestellungen.updateBestellungStatus(bestellung);
+    }
+
+    @GET
+    @Path("getProduktUndAnzahl/{id}")
+    public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
 }

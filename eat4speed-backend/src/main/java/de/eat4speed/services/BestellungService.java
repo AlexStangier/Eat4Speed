@@ -240,7 +240,7 @@ public class BestellungService implements IBestellungService {
                             try {
                                 Rechnung rechnungen = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
                                 if (rechnungen.getZahlungseingang() == 1) {
-                                    wrapper.data.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
+                                    wrapper.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
                                 }
 
                             } catch (Exception e) {
@@ -255,6 +255,8 @@ public class BestellungService implements IBestellungService {
         } catch (Exception s) {
             System.out.println("@Get Stat Failed to retrieve Auftrag: " + s);
         }
+        wrapper.convert();
+
         return wrapper;
     }
 
@@ -332,4 +334,17 @@ public class BestellungService implements IBestellungService {
 
         return count;
     }
+
+    @Override
+    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+
+    @Override
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        _bestellungRepository.updateBestellungStatus(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
+
+    @Override
+    public List getProduktUndAnzahl(int id) {return _bestellungRepository.getProduktUndAnzahl(id);}
+
 }

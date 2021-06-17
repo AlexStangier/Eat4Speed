@@ -2,15 +2,7 @@
   <v-main>
     <v-container fill-height fluid>
       <v-layout align-center justify-center>
-        <v-flex md6 sm6 xs12>
-          <div class="d-flex flex-column justify-space-between align-center">
-            <v-img
-                class="justify-center"
-                max-height="50%"
-                max-width="50%"
-                src="@/assets/logo.png"
-            ></v-img>
-          </div>
+        <v-flex md3 sm6 xs12>
           <v-card>
             <v-tabs v-model="tab" background-color="primary" dark grow icons-and-text show-arrows>
               <v-tabs-slider color="blue-grey"></v-tabs-slider>
@@ -180,7 +172,7 @@ export default {
               }
               this.$store.commit('saveLoginData', payload);
               eventBus.$emit('setLogin', payload.emailAdresse);
-              this.$router.push({name: "Startseite"})
+              this.$router.push({name: "RestaurantControlPanel"});
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {
@@ -343,11 +335,11 @@ export default {
     },
     resetValidation() {
       this.$refs.form.resetValidation();
-    }
-  },
-  openSnackbar(message) {
-    this.popupData.display = true;
-    this.popupData.message = message;
+    },
+    openSnackbar(message) {
+      this.popupData.display = true;
+      this.popupData.message = message;
+    },
   },
   data() {
     return {

@@ -1,134 +1,136 @@
 <template>
   <v-main>
-
-    <v-app-bar color="blue"  dark>
-      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title>Umsatzstatistik</v-toolbar-title>
-    </v-app-bar>
-    <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        temporary
-    >
-      <v-list
-          nav
-          dense
+    <v-card class="mx-5 my-5">
+      <v-app-bar color="primary" dark>
+        <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+        <v-toolbar-title>Umsatzstatistik</v-toolbar-title>
+      </v-app-bar>
+      <v-navigation-drawer
+          v-model="drawer"
+          absolute
+          temporary
       >
-        <v-list-item-group
-            v-model="group"
-            active-class="deep-purple--text text--accent-4"
+        <v-list
+            dense
+            nav
         >
-          <router-link  to="/restaurant/controlpanel">
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-home</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>ControlPanel</v-list-item-title>
-            </v-list-item>
-          </router-link>
-          <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-silverware</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Speisekarte bearbeiten</v-list-item-title>
-          </v-list-item>
-          </router-link>
-          <router-link  to="/restaurant/bestellungen"><v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-view-headline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Offene Bestellungen</v-list-item-title>
-          </v-list-item>
-          </router-link>
-          <router-link to="/restaurant/schichtplan">
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-watch</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Schichtplan</v-list-item-title>
-            </v-list-item>
-          </router-link>
-          <router-link  to="/restaurant/stammdaten"><v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-account</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Stammdaten</v-list-item-title>
-          </v-list-item>
-          </router-link>
-          <router-link  to="/restaurant/umsatzstatistik">
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-margin</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>Umsatzstatistik</v-list-item-title>
-            </v-list-item>
-          </router-link>
+          <v-list-item-group
+              v-model="group"
+              active-class="deep-purple--text text--accent-4"
+          >
+            <router-link to="/restaurant/controlpanel">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-home</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>ControlPanel</v-list-item-title>
+              </v-list-item>
+            </router-link>
+            <router-link to="/restaurant/speisekarteGerichte">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-silverware</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Speisekarte bearbeiten</v-list-item-title>
+              </v-list-item>
+            </router-link>
+            <router-link to="/restaurant/bestellungen">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-view-headline</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Offene Bestellungen</v-list-item-title>
+              </v-list-item>
+            </router-link>
+            <router-link to="/restaurant/schichtplan">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-watch</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Schichtplan</v-list-item-title>
+              </v-list-item>
+            </router-link>
+            <router-link to="/restaurant/stammdaten">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-account</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Stammdaten</v-list-item-title>
+              </v-list-item>
+            </router-link>
+            <router-link to="/restaurant/umsatzstatistik">
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon>mdi-margin</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>Umsatzstatistik</v-list-item-title>
+              </v-list-item>
+            </router-link>
 
-        </v-list-item-group>
-      </v-list>
-    </v-navigation-drawer>
-    <v-container fill-height fluid>
-      <v-layout align-center justify-center>
-        <v-flex md6 sm6 xs12>
+          </v-list-item-group>
+        </v-list>
+      </v-navigation-drawer>
+      <v-container fill-height fluid>
+        <v-layout align-center justify-center>
+          <v-flex md6 sm6 xs12>
 
 
-
-          <v-row>
-            <v-col
-                cols="12"
-                sm="6"
-            >
-              <v-menu
-                  v-model="menu2"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  transition="scale-transition"
-                  offset-y
-                  min-width="auto"
+            <v-row>
+              <v-col
+                  cols="12"
+                  sm="6"
               >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
+                <v-menu
+                    v-model="menu2"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    min-width="auto"
+                    offset-y
+                    transition="scale-transition"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field
+                        v-model="dateRangeText"
+                        v-bind="attrs"
+                        v-on="on"
+                        label="Datum"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                    ></v-text-field>
+                  </template>
+                  <v-date-picker
                       v-model="dates"
-                      label="Datum"
-                      prepend-icon="mdi-calendar"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                    v-model="dates"
-                    range
-                    @change="loadZeiten"
-                ></v-date-picker>
-              </v-menu>
-            </v-col>
-            <v-col
-                cols="12"
-                sm="6"
-            >
+                      range
+                      @change="loadZeiten"
+                  ></v-date-picker>
+                </v-menu>
+              </v-col>
+              <v-col
+                  cols="12"
+                  sm="6"
+              >
 
 
-            </v-col>
-          </v-row>
-
-
-
-
-
-
-
-
-          <line-chart :data="iteratedDates"></line-chart>
-
-
-
-
-
-
+              </v-col>
+            </v-row>
+            <area-chart :data="iteratedDates" decimal="," :round="2" :zeros="true" download="umsatzstatistik"></area-chart>
+          </v-flex>
+        </v-layout>
+      </v-container>
+      <v-layout justify-center>
+        <v-flex md6 sm12 xs12>
+          <v-data-table
+              :key="componentKey"
+              :headers="headers"
+              :items="iteratedDatesTable"
+              class="elevation-1"
+              dense
+              item-key="name"
+          ></v-data-table>
         </v-flex>
       </v-layout>
-    </v-container>
+
+    </v-card>
   </v-main>
 </template>
 
@@ -141,164 +143,70 @@ import axios from "axios";
 
 Vue.use(Chartkick.use(Chart));
 export default {
-  mounted() {
-    this.getLoggedInRestaurant();
-
-
-        this.loadZeiten()
+  async mounted() {
+    //await this.getLoggedInRestaurant();
+    await this.loadZeiten();
   },
-
-  data () {
-    return{
+  data() {
+    return {
       drawer: false,
       group: null,
       switch1: true,
       menu2: false,
-      info:{
+      info: {
         restaurantId: 5,
         start: 0,
         end: 1922463867000
       },
-      value:[ ],
-      dates : ['2021-06-05', '2021-06-09'],
-      iteratedDates :{}
+      value: [],
+      dates: [moment().subtract(7, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD")],
+      iteratedDates: {},
+      iteratedDatesTable: [],
+      componentKey: 0,
+      headers: [
+        {
+          text: 'Datum',
+          align: 'start',
+          value: 'time',
+        },
+        {text: 'Einnahmen', value: 'value'}
+      ],
     };
   },
-  methods:{
-    async getLoggedInRestaurant()
-    {
-      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+  methods: {
+    forceRerender() {
+      this.componentKey += 1;
+    },
+    async getLoggedInRestaurant() {
+      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$store.getters.getLoginData.auth.username);
       this.info.restaurantId = response.data[0];
-      //console.log(response.data[0]);
-      //this.info.restaurantId=4;
     },
     async loadZeiten() {
-
-      this.info.end=moment().unix()*1000;
-      //console.log(this.info.end);
-      //console.log(this.info.restaurantId);
+      this.info.start = moment(this.dates[0]).unix() * 1000;
+      this.info.end = moment(this.dates[1]).unix() * 1000;
 
       const ResponseUmsatz = await axios.post("Bestellung/getStatistic/", this.info);
-     // console.log("1");
-      //let myData=ResponseUmsatz.data.data;
-      //console.log(ResponseUmsatz.data.data.length);
-      var o=0;
-      while(o<10) {
-        //var dummy4 = moment.unix(ResponseUmsatz.data.data[o].timestamp / 1000).format("MM.DD.YYYY");
-       // console.log(dummy4);
-       // console.log(ResponseUmsatz.data.data[o].value);
-        //console.log("dummy4");
-        o++;
-      }
-      //console.log(myData);
-     // console.log("2");
-      var i=0;
-      this.iteratedDates={};
-      this.value=[];
-      var date0;
-      var date1;
-      if (this.dates[0] > this.dates[1]) {
-        date0 = new Date(this.dates[1]);
-        date1 = new Date(this.dates[0]);
-      } else {
-        date1 = new Date(this.dates[1]);
-        date0 = new Date(this.dates[0]);
-      }
+      let formattedData = {};
+      let formattedDataTable = [];
 
+      ResponseUmsatz.data.data.forEach(data => {
+        const date = moment(data.timestamp).format("YYYY-MM-DD");
+        formattedData[date] = parseFloat(data.value).toFixed(2);
 
+        formattedDataTable.push({
+          time: moment(data.timestamp).format("LL"),
+          value: parseFloat(data.value).toFixed(2)
+        });
+      });
 
-      var date = moment(date0, "MMDDYYYY").format("MM.DD.YYYY");
-      while (i<ResponseUmsatz.data.data.length)
-      {
-        var dummy=moment.unix(ResponseUmsatz.data.data[i].timestamp/1000).format("MM.DD.YYYY");
-        //console.log(dummy);
-
-        if(dummy>=date)
-          break;
-
-        i++;
-      }
-      var j=0;
-      date = moment(date1, "MMDDYYYY").format("MM.DD.YYYY");
-      while (j<ResponseUmsatz.data.data.length)
-      {
-        var dummy2=moment.unix(ResponseUmsatz.data.data[j].timestamp/1000).format("MM.DD.YYYY");
-
-        if(dummy2>=date)
-          break;
-        j++;
-        //console.log(j);
-      }
-
-      for(var k=i;k<=j;k++)
-      {
-        if(k>=ResponseUmsatz.data.data.length)
-          break;
-        var dummy3=moment.unix(ResponseUmsatz.data.data[k].timestamp/1000).format("MM.DD.YYYY");
-        var v=0;
-        while(k<ResponseUmsatz.data.data.length && dummy3===moment.unix(ResponseUmsatz.data.data[k].timestamp/1000).format("MM.DD.YYYY"))
-        {
-          v=v+ResponseUmsatz.data.data[k].value;
-          k++;
-         // console.log(k);
-        }
-        k--;
-        if(dummy3<=date)
-          this.iteratedDates[dummy3] = v.toFixed(2)+"€";
-      }
-      for (var d = date0; d <= date1; d.setDate(d.getDate() + 1)){
-        const date4 = moment(d, "MMDDYYYY").format("MM.DD.YYYY");
-       // console.log(d);
-       // console.log(this.iteratedDates[d]);
-        if(this.iteratedDates[date4]===undefined)
-          this.iteratedDates[date4]=0;
-      }
-
-
-
+      this.iteratedDates = formattedData;
+      this.iteratedDatesTable = formattedDataTable;
     },
-
-
-
-    async iterateDate() {
-      this.iteratedDates={};
-      this.value=[];
-      var date0;
-      var date1;
-      if (this.dates[0] > this.dates[1]) {
-        date0 = new Date(this.dates[1]);
-        date1 = new Date(this.dates[0]);
-      } else {
-        date1 = new Date(this.dates[1]);
-        date0 = new Date(this.dates[0]);
-      }
-
-
-      //var datesList = [];
-      for (var d = date0; d <= date1; d.setDate(d.getDate() + 1)) {
-        const date = moment(d, "YYYYMMDD").format("YYYY-MM-DD");
-        // this.iteratedDates.push(date.toString());
-        this.iteratedDates[date] = Math.random()+1;
-        // this.iteratedDates.push(date.toString(),Math.random());
-        //this.value.push(Math.random());
-      }
-      // console.log(this.iteratedDates);
-
-    }
   },
   computed: {
-    dateRangeText () {
-      return this.dates.join(' ~ ')
+    dateRangeText() {
+      return this.dates.join(' ~ ');
     },
-
-
   },
 }
 </script>
-
-<style scoped>
-.v-sheet--offset {
-  top: -24px;
-  position: relative;
-}
-</style>

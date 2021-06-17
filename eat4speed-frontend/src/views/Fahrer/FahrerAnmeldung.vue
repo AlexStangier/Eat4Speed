@@ -244,6 +244,10 @@ export default {
     },
   },
   methods: {
+    openSnackbar(message) {
+      this.popupData.display = true;
+      this.popupData.message = message;
+    },
     async validateLogin() {
 
 
@@ -264,7 +268,7 @@ export default {
               }
               this.$store.commit('saveLoginData', payload);
               eventBus.$emit('setLogin', payload.emailAdresse);
-              this.$router.push({name: "Startseite"})
+              this.$router.push({name: "FahrerSchichtplan"});
             }
           }, (error) => {
             if (error.message === 'Request failed with status code 404') {
@@ -341,10 +345,6 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation();
     }
-  },
-  openSnackbar(message) {
-    this.popupData.display = true;
-    this.popupData.message = message;
   },
   data() {
     return {
