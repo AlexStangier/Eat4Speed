@@ -147,6 +147,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.wildfly.security</groupId>
+            <artifactId>wildfly-elytron-asn1</artifactId>
+            <version>1.13.1.Final</version>
+        </dependency>
 
     </dependencies>
     <build>

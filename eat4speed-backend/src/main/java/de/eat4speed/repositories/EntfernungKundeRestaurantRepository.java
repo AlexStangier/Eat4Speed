@@ -43,6 +43,25 @@ public class EntfernungKundeRestaurantRepository implements PanacheRepository<En
     }
 
     @Transactional
+    public List getEntfernungByKundennummer(int kundennummer)
+    {
+        List entfernungData;
+
+        Query query = entityManager.createQuery(
+                "SELECT ekr.restaurant_ID, ekr.entfernung " +
+                        "FROM Kunde k, Restaurant r, EntfernungKundeRestaurant ekr " +
+                        "WHERE k.kundennummer = ekr.kundennummer " +
+                        "AND r.restaurant_ID = ekr.restaurant_ID " +
+                        "AND k.kundennummer = ?1 "
+
+        ).setParameter(1,kundennummer);
+
+        entfernungData = query.getResultList();
+
+        return entfernungData;
+    }
+
+    @Transactional
     public void deleteEntfernungByKundennummer(int kundennummer)
     {
         delete("kundennummer",kundennummer);

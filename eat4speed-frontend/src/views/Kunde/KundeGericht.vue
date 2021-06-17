@@ -80,11 +80,17 @@ import axios from "axios";
 
 export default {
   name: "Gericht",
-  mounted(){
+  async mounted(){
     this.gericht_ID = this.$store.getters.gericht_ID;
+    await this.getLoggedInKunde();
     this.loadGericht();
   },
   methods: {
+    async getLoggedInKunde()
+    {
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+      this.loggedInKunde_ID = response.data[0];
+    },
     async loadGericht() {
       const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID);
 
@@ -100,6 +106,13 @@ export default {
         this.restaurant_ID = gerichtData[5];
         this.restaurantName = gerichtData[6];
         this.restaurantMindestbestellwert = gerichtData[7];
+        this.restaurantBestellradius = gerichtData[8];
+
+        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID);
+        if(ResponseEntfernung.data.length>0)
+        {
+          this.entfernung = ResponseEntfernung.data[0];
+        }
       }
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
@@ -131,6 +144,11 @@ export default {
 
     },
     addToCart() {
+      if(this.restaurantBestellradius<this.entfernung)
+      {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
 
       let cartGericht = {
         gericht_ID: this.gericht_ID,
@@ -160,15 +178,18 @@ export default {
   },
   data: () => ({
     gerichtName: "",
+    loggedInKunde_ID: "",
     gerichtBeschreibung: "",
     gerichtBild: "",
     gerichtPreis: 0.0,
     gerichtVerfuegbar: "",
     gerichtAnzahl: 1,
     cartGerichte: "",
+    entfernung: "",
     restaurant_ID: "",
     restaurantName: "",
     restaurantMindestbestellwert: "",
+    restaurantBestellradius: "",
     gericht_ID: "",
     version: 0,
     countMinMaxRule:[

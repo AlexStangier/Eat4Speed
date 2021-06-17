@@ -67,4 +67,9 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
     public List<Auftrag> getAllAuftraegeByKunde(int id) {
         return find("Kundennummer", id).list();
     }
+
+    @Transactional
+    public List<Auftrag> getAllAuftaregeByKundenId(long id){
+        return find("Kundennummer", id).list();
+    }
 }

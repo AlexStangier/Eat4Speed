@@ -6,6 +6,7 @@ import de.eat4speed.dto.StatisticDtoWrapper;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
 import org.json.JSONArray;
+import org.json.JSONArray;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -40,6 +41,28 @@ public interface IBestellungService {
      * @throws SQLException
      */
     StatisticDtoWrapper getStatistic(Long restaurantId, long startTime, long endTime) throws SQLException;
+
+    /**
+     * Returns the amount of Gericht orders by customer
+     * @param customerId
+     * @param gerichtId
+     * @return
+     */
+    Integer getAmountOrdersByCustomerIdAndGerichtId(int customerId, int gerichtId);
+
+    /**
+     * Returns the amount of All Orders from a restaurant by customer
+     * @param restaurantId
+     * @param customerId
+     * @return
+     */
+    Integer getAllOrdersForRestaurantIdByCustomerID(int restaurantId, int customerId);
+
+    List getRestaurantBestellungen(String email);
+
+    Response updateBestellungStatus(Bestellung bestellung);
+
+    List getProduktUndAnzahl(int id);
 
     List listAll();
 

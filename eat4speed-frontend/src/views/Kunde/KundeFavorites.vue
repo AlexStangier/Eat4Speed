@@ -205,9 +205,8 @@ import axios from "axios";
 
 export default {
   name: "Favorites",
-  mounted() {
-    //TODO change later to actual value
-    this.getLoggedInKunde();
+  async mounted() {
+    await this.getLoggedInKunde();
     this.loadGerichte();
   },
   beforeRouteLeave(to, from, next) {
@@ -218,7 +217,7 @@ export default {
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
       this.loggedInKunde_ID = response.data[0];
     },
     setDisplayGerichteToTrue() {
@@ -266,6 +265,13 @@ export default {
           this.minimums[i] = gerichtData[7];
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
+          console.log(ResponseAmount);
+
+          if(ResponseAmount.data!==0)
+          {
+            this.anzahlBestellungen[i] = ResponseAmount.data;
+          }
         }
 
         //console.log("Suche nach Bildern");
@@ -312,6 +318,41 @@ export default {
           this.minimums[i] = restaurantData[3];
           this.anzahlBestellungen[i] = restaurantData[11];
           this.hinzufuegedaten[i] = restaurantData[12];
+
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
+          console.log(ResponseAmount);
+
+          if(ResponseAmount.data!==0)
+          {
+            this.anzahlBestellungen[i] = ResponseAmount.data;
+          }
+
+        }
+
+        for (let i = 0; i < ResponseRestaurants.data.length; i++)
+        {
+          const config = { responseType:"arraybuffer" };
+          const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.restaurant_IDs[i],config);
+
+          console.log(responsePicture);
+
+          if(responsePicture.status !== 204)
+          {
+            console.log("received Picture")
+            console.log(responsePicture.data);
+
+            let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+
+            let imageURL = URL.createObjectURL(pictureBlob);
+            console.log(imageURL);
+
+            this.imgs[i] = imageURL;
+          }
+          else
+          {
+            this.imgs[i] = "";
+          }
+
         }
 
         this.amountGerichte = 0;

@@ -241,7 +241,7 @@ public class BestellungService implements IBestellungService {
                             try {
                                 Rechnung rechnungen = _rechnungRepository.getRechnungByID(bestellung.getRechnung());
                                 if (rechnungen.getZahlungseingang() == 1) {
-                                    wrapper.data.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
+                                    wrapper.add(new StatisticDto(rechnungen.getRechnungsdatum().getTime(), rechnungen.getBetrag()));
                                 }
 
                             } catch (Exception e) {
@@ -256,8 +256,97 @@ public class BestellungService implements IBestellungService {
         } catch (Exception s) {
             System.out.println("@Get Stat Failed to retrieve Auftrag: " + s);
         }
+        wrapper.convert();
+
         return wrapper;
     }
+
+    /**
+     * Returns the amount of Gericht orders by customer
+     *
+     * @param customerId
+     * @param gerichtId
+     * @return
+     */
+    @Override
+    public Integer getAmountOrdersByCustomerIdAndGerichtId(int customerId, int gerichtId) {
+        Kunde customer = null;
+        List<Auftrag> orders = null;
+        List<String> allOrders = null;
+        String purchases = "";
+        int count = 0;
+
+        try {
+            customer = _kundeRepository.getKundeByKundenId(customerId);
+            orders = _auftragRepository.getAllAuftaregeByKundenId(customerId);
+        } catch (Exception e) {
+            System.out.println("@AmountOrdersGericht Failed to get Data " + e);
+        }
+
+        if (customer != null && orders != null) {
+            for (Auftrag order : orders) {
+                Bestellung purchase = _bestellungRepository.getBestellungByAuftragsId((int) order.getAuftrags_ID());
+                if (purchase != null) {
+                    try {
+                        purchases = purchases.concat(purchase.getGericht_IDs());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        try {
+            String idsString = purchases.replaceAll("[\\[\\]\\(\\)]", "");
+            String[] ids = idsString.split("\\,");
+            for (String id : ids) {
+                if (gerichtId == Integer.parseInt(id.trim())) count++;
+            }
+        } catch (Exception e) {
+            System.out.println("@AmountOrdersGericht Failed to get Data " + e);
+        }
+
+        return count;
+    }
+
+    /**
+     * Returns the amount of All Orders from a restaurant by customer
+     *
+     * @param restaurantId
+     * @param customerId
+     * @return
+     */
+    @Override
+    public Integer getAllOrdersForRestaurantIdByCustomerID(int restaurantId, int customerId) {
+        List<Bestellung> ordersMatchingId = null;
+        int count = 0;
+
+        try {
+            ordersMatchingId = _bestellungRepository.getAllBestellungenByRestaurantId(restaurantId);
+
+            for (Bestellung order : ordersMatchingId) {
+                Auftrag job = _auftragRepository.getAuftragByID(order.getAuftrags_ID());
+                if (job.getKundennummer() == customerId) count++;
+            }
+
+        } catch (Exception e) {
+            System.out.println("@GetAllOrders Failed to get Data " + e);
+        }
+
+        return count;
+    }
+
+    @Override
+    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+
+    @Override
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        _bestellungRepository.updateBestellungStatus(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
+
+    @Override
+    public List getProduktUndAnzahl(int id) {return _bestellungRepository.getProduktUndAnzahl(id);}
 
     @Override
     public List listAll() {
@@ -268,6 +357,5 @@ public class BestellungService implements IBestellungService {
     public JSONArray getGerichteByAuftragID(int Auftrag_ID) {
         return _bestellungRepository.getGerichteByAuftragID(Auftrag_ID);
     }
-
 
 }

@@ -12,6 +12,12 @@
       >
         <template v-slot:top>
           <v-container fluid>
+            <v-btn :to="{name: 'FahrerSchichtplan'}" class="mb-5">
+              <v-icon>
+                mdi-arrow-left
+              </v-icon>
+              Schichtplan
+            </v-btn>
             <v-col cols="6">
               <v-row>
                 Liefertermin: {{ getTermin() }}

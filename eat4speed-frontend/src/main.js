@@ -8,6 +8,7 @@ import axios from "axios";
 import * as VueGoogleMaps from 'vue2-google-maps'
 import VideoBackground from 'vue-responsive-video-background-player'
 import VueMeta from 'vue-meta'
+import moment from "moment";
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios;
@@ -22,6 +23,8 @@ Vue.use(VueGoogleMaps, {
 })
 
 Vue.component('video-background', VideoBackground);
+
+moment.locale('de');
 
 Vue.use(VueMeta);
 
