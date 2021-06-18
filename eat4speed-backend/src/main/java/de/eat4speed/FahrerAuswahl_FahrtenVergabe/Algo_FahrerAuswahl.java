@@ -124,7 +124,7 @@ public class Algo_FahrerAuswahl {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
-            http.setReadTimeout(1000);
+            http.setReadTimeout(10);
             http.getInputStream();
 
             http.disconnect();
