@@ -66,7 +66,7 @@ public class GerichtControllerTest {
     @BeforeEach
     void setup() {
         Benutzer dummyRestaurantOwner = new Benutzer(TEST_USER_NAME, "Eugene", "Krabs",
-                "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "", "", 0);
+                "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "restaurant", "", 0);
         this._benutzerRepository.addBenutzer(dummyRestaurantOwner);
 
         Adressen dummyAddress = new Adressen("Musterstrasse", 23, "Musterstadt", 11233);
