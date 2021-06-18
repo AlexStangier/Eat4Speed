@@ -23,7 +23,7 @@
                           class="ml-1"
                           color="red"
                           tile
-                          @click="checkButton(itemOffen.zahl_number + number)"
+                          @click="saveValues(itemOffen.id, itemOffen.zahl_number + number)"
                       >
                         Stornieren
                       </v-btn>
@@ -47,21 +47,12 @@
                                class="mb-12">
 
                     <v-col cols="8" style="background-color: lightsteelblue">
-                      <v-card-title>Bestelldatum: {{ itemStorniert.date }}</v-card-title>
+                      <v-card-title>#{{ itemStorniert.id }} Bestelldatum: {{ itemStorniert.date }}</v-card-title>
                       <v-card-text>{{ itemStorniert.products }}</v-card-text>
                       <v-card-text>{{ itemStorniert.count }}x</v-card-text>
                       <div class="text-right">{{ itemStorniert.price }} €</div>
                     </v-col>
 
-                    <div>
-                      <v-btn
-                          class="ml-1"
-                          color="red"
-                          tile
-                      >
-                        Stornieren
-                      </v-btn>
-                    </div>
                   </v-list-item>
                 </v-list>
               </v-tab-item>
@@ -70,6 +61,43 @@
         </v-flex>
       </v-layout>
     </v-container>
+
+    <v-dialog v-model="dialog"
+              :retain-focus="false"
+              max-width="290"
+              persistent
+              transition="dialog-top-transition"
+    >
+      <v-card>
+        <v-toolbar
+            color="grey"
+            dark
+        >
+          <div class="mx-auto">
+            <h2>Bestellung stornieren</h2>
+          </div>
+        </v-toolbar>
+        <v-card-actions>
+          <v-container>
+            <v-row class="mt-2">
+              <v-col align="center" justify="center">
+                <v-btn color="green" depressed tile width="200px"
+                       @click="acceptStornierung()">Bestätigen
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-actions>
+        <v-card-actions>
+          <v-btn color="red"
+                 text
+                 @click="closeDialog()"
+          >Schließen
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-main>
 </template>
 
@@ -87,6 +115,16 @@ export default {
     this.countDownTimer();
   },
   methods: {
+    closeDialog() {
+      window.location.reload();
+      this.dialog = false;
+    },
+    acceptStornierung() {
+      this.dialog = false;
+      this.accepted = true;
+      this.changeBestellungStatus(this.stornierteBestellID);
+      this.bestellungStatus = {};
+    },
     async loadBestellungenOffen() {
 
       const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'bezahlt/' + this.$store.getters.getLoginData.auth.username);
@@ -98,7 +136,7 @@ export default {
 
         let sekunden = 300 - ResponseBestellungen.data[i][4];
         console.log(sekunden)
-        if(sekunden <= 0){
+        if (sekunden <= 0) {
           sekunden = -300;
         }
 
@@ -155,26 +193,45 @@ export default {
         }, 1000)
       }
     },
-    checkButton(timeLeft){
+    saveValues(bestellID, timeLeft) {
       timeLeft = timeLeft - 300;
-      timeLeft = Math.max(0,timeLeft)
-console.log(timeLeft)
+      timeLeft = Math.max(0, timeLeft)
+      console.log(bestellID)
+      if (timeLeft > 0) {
+        this.stornierteBestellID = bestellID;
+        if (!this.accepted) {
+          this.dialog = true;
+          return;
+        }
+      }
     },
-  toZero(inputNumber) {
+
+    async changeBestellungStatus(bestellID) {
+      let bestellung = {
+        status: 'storniert',
+        bestell_ID: bestellID
+      }
+
+      await axios.put("/Bestellung/updateBestellungStatus", bestellung);
+
+      this.accepted = false;
+    },
+    toZero(inputNumber) {
       inputNumber = inputNumber - 300;
-   inputNumber = Math.max(0,inputNumber);
-  return inputNumber
-}
+      inputNumber = Math.max(0, inputNumber);
+      return inputNumber
+    }
   },
   data() {
     return {
       offeneBestellungen: [],
       stornierteBestellungen: [],
-      number: 300
+      number: 300,
+      dialog: false,
+      accepted: false,
+      stornierteBestellID: 0
     }
   },
-
-
 
 
 }
