@@ -36,7 +36,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List allRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert, b.emailAdresse  " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_ID " +
                         "AND r.benutzer_ID = b.benutzer_ID "
@@ -86,7 +86,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List notVerifiedRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert, b.emailAdresse " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_ID " +
                         "AND r.benutzer_ID = b.benutzer_ID " +
@@ -103,7 +103,7 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List verifiedRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert, b.emailAdresse " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_ID " +
                         "AND r.benutzer_ID = b.benutzer_ID " +

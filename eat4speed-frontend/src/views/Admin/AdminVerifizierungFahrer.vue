@@ -105,16 +105,16 @@
                 <v-container>
                   <v-row>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unseriös'" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Spam'" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unvollständig'" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Keine Angabe'" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
                     </v-col>
                     <v-col cols="12"></v-col>
                     <v-col align="center" justify="center">
@@ -132,12 +132,14 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "AdminVerifizierungFahrer",
   methods: {
     async reloadFahrer(){
       if (this.select.value === 1) {
-        const ResponseAllFahrer = await this.$http.get("/Fahrer/getAll", this.$store.getters.getLoginData);
+        const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
 
         this.allFahrer = ResponseAllFahrer;
 
@@ -153,7 +155,8 @@ export default {
             nachname: fahrer[2],
             fahrzeugart: fahrer[3],
             verifiziert: fahrer[4],
-            anrede: fahrer[5]
+            anrede: fahrer[5],
+            email: fahrer[6]
           };
           arrayAllFahrer[it] = entry;
         }
@@ -161,7 +164,7 @@ export default {
       }
 
       if (this.select.value === 2) {
-        const ResponseNotVerifiedFahrer = await this.$http.get("/Fahrer/NOT_VERIFIED");
+        const ResponseNotVerifiedFahrer = await axios.get("/Fahrer/NOT_VERIFIED");
 
         this.allFahrer = ResponseNotVerifiedFahrer;
 
@@ -177,7 +180,8 @@ export default {
             nachname: fahrer[2],
             fahrzeugart: fahrer[3],
             verifiziert: fahrer[4],
-            anrede: fahrer[5]
+            anrede: fahrer[5],
+            email: fahrer[6]
           };
           arrayNotVerifiedFahrer[it] = entry;
 
@@ -186,7 +190,7 @@ export default {
       }
 
       if(this.select.value === 3) {
-        const ResponseVerifiedFahrer = await this.$http.get("/Fahrer/VERIFIED");
+        const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED");
 
         this.allFahrer = ResponseVerifiedFahrer;
 
@@ -202,7 +206,8 @@ export default {
             nachname: fahrer[2],
             fahrzeugart: fahrer[3],
             verifiziert: fahrer[4],
-            anrede: fahrer[5]
+            anrede: fahrer[5],
+            email: fahrer[6]
           };
           arrayVerifiedFahrer[it] = entry;
         }
@@ -215,6 +220,12 @@ export default {
       this.currentRowItem = item;
     },
     async deleteBewerbung() {
+      const deleteBe = {
+        emailAdresse: this.currentRowItem.email,
+        loeschbegruendung: this.deleteReason
+      }
+      await axios.post("Blacklist",deleteBe);
+
       await this.$http.delete("Fahrer/"+this.currentRowItem.fahrernummer);
       this.reloadFahrer();
     },
@@ -234,6 +245,7 @@ export default {
       allFahrer: "",
       currentRowItem: "",
       fahrerSelection: "",
+      deleteReason: "",
       search: '',
       select: {text: 'Alle Bewerbungen', value: 1},
       items: [
@@ -242,6 +254,10 @@ export default {
         {text: 'Verifizierte Fahrer', value: 3},
       ],
       headers: [
+        {
+          text: "Email",
+          value: "email"
+        },
         {
           text: 'Anrede',
           align: 'start',

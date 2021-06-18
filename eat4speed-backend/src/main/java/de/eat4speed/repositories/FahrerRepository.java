@@ -84,7 +84,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         List allFahrerData;
 
                 Query query = entityManager.createQuery(
-                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
+                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede, b.emailAdresse  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
                         "WHERE f.fahrzeug = fz.fahrzeug_ID " +
                         "AND f.benutzer_ID = b.benutzer_ID "
@@ -101,7 +101,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         List notVerifiedFahrerData;
 
         Query query = entityManager.createQuery(
-                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
+                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede,b.emailAdresse  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
                         "WHERE f.fahrzeug = fz.fahrzeug_ID " +
                         "AND f.benutzer_ID = b.benutzer_ID " +
@@ -119,7 +119,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         List verifiedFahrerData;
 
         Query query = entityManager.createQuery(
-                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede  " +
+                "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede,b.emailAdresse  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
                         "WHERE f.fahrzeug = fz.fahrzeug_ID " +
                         "AND f.benutzer_ID = b.benutzer_ID " +
