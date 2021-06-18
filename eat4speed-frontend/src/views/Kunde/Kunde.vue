@@ -37,6 +37,7 @@
                   label="Entfernung"
                   :items="selectArea"
                   clearable="true"
+                  :disabled="!isUserLoggedInBoolean"
                   @change="applyDistanceFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -257,6 +258,13 @@
                               class="subtitle-1"
                           >
                             {{item.restaurant}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="text-right"
+                          >
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
                           </v-card>
                           <v-card
                               v-if="a === 2"
@@ -506,8 +514,9 @@ export default {
     this.searchOptions = this.$store.getters.searchOptions;
 
     //console.log(this.searchString);
+    await this.checkLoggedInUser();
     await this.getLoggedInKunde();
-    await this.getAllEntfernungen();
+    await this.getAllEntfernungenAndBewertungen();
     this.loadGerichte();
   },
   beforeRouteLeave(to, from, next) {
@@ -516,18 +525,36 @@ export default {
     next();
   },
   methods: {
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
+    },
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
-      this.loggedInKunde_ID = response.data[0];
-    },
-    async getAllEntfernungen()
-    {
-      const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
-      for(let i = 0; i<responseEntfernungen.data.length; i++)
+      if(this.isUserLoggedInBoolean)
       {
-        this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
-        this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+        this.loggedInKunde_ID = response.data[0];
+      }
+
+    },
+    async getAllEntfernungenAndBewertungen()
+    {
+      if(this.isUserLoggedInBoolean)
+      {
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
+        for(let i = 0; i<responseEntfernungen.data.length; i++)
+        {
+          this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
+          this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+        }
+      }
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
+      for(let i = 0; i<ResponseBewertungen.data.length;i++)
+      {
+        this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
+        this.bewertungRestaurants[i] = ResponseBewertungen.data[i][2];
       }
     },
     selectItem(item) {
@@ -637,6 +664,11 @@ export default {
 
     },
     async addToFavorites() {
+      if(!this.isUserLoggedInBoolean)
+      {
+        alert("Sie müssen sich einloggen, um Favoriten hinzufügen zu können!")
+        return;
+      }
 
       if(this.selectedItem.bestellradius<this.selectedItem.distance)
       {
@@ -660,17 +692,19 @@ export default {
     },
     async loadGerichte() {
 
+      this.gericht_IDs = [];
       this.favoritenlisteGerichte_IDs=[];
       this.hinzufuegedaten=[];
-
-      const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
-
-      //console.log(ResponseFavoriten);
-      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      if(this.isUserLoggedInBoolean)
       {
-        let favData = ResponseFavoriten.data[i];
-        this.favoritenlisteGerichte_IDs[i] = favData[0];
-        this.hinzufuegedaten[i]= favData[7];
+        const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        //console.log(ResponseFavoriten);
+        for(let i = 0; i < ResponseFavoriten.data.length; i++)
+        {
+          let favData = ResponseFavoriten.data[i];
+          this.favoritenlisteGerichte_IDs[i] = favData[0];
+          this.hinzufuegedaten[i]= favData[7];
+        }
       }
 
       const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
@@ -708,6 +742,17 @@ export default {
         {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
+        }
+        console.log(this.bewertungRestaurants);
+
+        if(this.bewertungRestaurants.includes(gerichtData[5])===true)
+        {
+          let index = this.bewertungRestaurants.indexOf(gerichtData[5]);
+          this.restaurantBewertungen[i] = this.bewertungAvgUnassigned[index];
+        }
+        else
+        {
+          this.restaurantBewertungen[i] = 0;
         }
 
         let index = this.distanceRestaurant_IDs.indexOf(gerichtData[5]);
@@ -882,12 +927,14 @@ export default {
     },
     addToCart() {
 
-      if(this.selectedItem.bestellradius<this.selectedItem.distance)
+      if(this.isUserLoggedInBoolean)
       {
-        alert("Sie befinden sich außerhalb des Bestellradius")
-        return;
+        if(this.selectedItem.bestellradius<this.selectedItem.distance)
+        {
+          alert("Sie befinden sich außerhalb des Bestellradius")
+          return;
+        }
       }
-
       //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
@@ -906,7 +953,10 @@ export default {
     loggedInKunde_ID: 0,
     amountGerichte: 4,
     selectedGericht_ID: "",
+    isUserLoggedInBoolean: false,
     selectedItem: "",
+    bewertungAvgUnassigned: [],
+    bewertungRestaurants: [],
     version: 0,
     kategorieVersion: 0,
     allergeneVersion: 0,
@@ -966,6 +1016,7 @@ export default {
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         const cbestellradius = this.bestellradius[i]
+        const cbewertung = this.restaurantBewertungen[i]
         i++;
 
         return {
@@ -981,7 +1032,8 @@ export default {
           available: cavailable,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
-          bestellradius: cbestellradius
+          bestellradius: cbestellradius,
+          rating: cbewertung
         }
       })
     }

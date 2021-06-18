@@ -14,7 +14,8 @@
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
-            >Anmelden</v-btn>
+            >Anmelden
+            </v-btn>
           </template>
           <template v-slot:default="dialog">
             <v-card>
@@ -30,17 +31,20 @@
                 <v-container>
                   <v-row class="mt-2">
                     <v-col align="center" justify="center">
-                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'KundeAnmeldung'}" width="200px" color="primary" depressed tile
+                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'KundeAnmeldung'}" width="200px"
+                             color="primary" depressed tile
                              @click="gerichtFarbe">Kunde
                       </v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'RestaurantAnmeldung'}" width="200px" color="primary" depressed tile
+                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'RestaurantAnmeldung'}" width="200px"
+                             color="primary" depressed tile
                              @click="gerichtFarbe">Restaurant
                       </v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'FahrerAnmeldung'}" width="200px" color="primary" depressed tile
+                      <v-btn ref="GerichtButton" :disabled="!valid" :to="{ name: 'FahrerAnmeldung'}" width="200px"
+                             color="primary" depressed tile
                              @click="gerichtFarbe">Fahrer
                       </v-btn>
                     </v-col>
@@ -51,7 +55,8 @@
                 <v-btn
                     text
                     @click="dialog.value = false"
-                >Schließen</v-btn>
+                >Schließen
+                </v-btn>
               </v-card-actions>
             </v-card>
           </template>
@@ -99,24 +104,26 @@
 
                 <v-row>
                   <v-col align="center">
-                    <v-btn class="mt-1 mx-1 white--text" ref="GerichtButton" :disabled="!valid" width="45%" depressed tile
+                    <v-btn class="mt-3 mx-1 white--text" ref="GerichtButton" :disabled="!valid" width="45%" depressed
+                           tile
                            @click="gerichtFarbe" @mousedown="setDestinationToGerichte"
                            :color="btnType === 0 ? 'primary' : 'blue-grey'">Gericht
                     </v-btn>
-                    <v-btn class="mt-1 mx-1 white--text" ref="UmgebungButton" :disabled="!valid" width="45%" depressed tile
+                    <v-btn class="mt-3 mx-1 white--text" ref="UmgebungButton" :disabled="!valid" width="45%" depressed
+                           tile
                            @click="umbegungFarbe" @mousedown="setDestinationToRestaurants"
                            :color="btnType === 1 ? 'primary' : 'blue-grey'">Umgebung
                     </v-btn>
                   </v-col>
                 </v-row>
-                <v-row>
+                <v-row v-if="displayVorschlaege===true">
                   <v-col align="center">
-                    <v-btn class="mt-n5 white--text" ref="VorschlaegeButton" width="92%" depressed tile @click="getVorschlaege" :color="'primary'">
+                    <v-btn class="mt-n4 white--text" ref="VorschlaegeButton" width="92%" depressed tile
+                           @click="getVorschlaege" :color="'primary'">
                       Vorschläge
                     </v-btn>
                   </v-col>
                 </v-row>
-
               </v-card>
             </v-card>
           </v-flex>
@@ -131,9 +138,11 @@ import axios from "axios";
 
 export default {
   name: 'Startseite',
-  mounted() {
+  async mounted() {
     this.searchDestination = "Gerichte";
-    this.getLoggedInKunde();
+    await this.checkLoggedInUser();
+    await this.getLoggedInKunde();
+    this.checkForOrders();
   },
   computed: {
     isUserLoggedIn() {
@@ -141,15 +150,29 @@ export default {
     },
   },
   methods: {
-    async getLoggedInKunde()
-    {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$store.getters.getLoginData.auth.username)
-      this.loggedInKunde_ID = response.data[0];
-      //this.loggedInKunde_ID = 5;
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
     },
-    async getVorschlaege()
-    {
-      const responsePreferences = await axios.get("Kategorie/getPreferences/"+this.loggedInKunde_ID);
+    async getLoggedInKunde() {
+      if (this.isUserLoggedInBoolean) {
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$store.getters.getLoginData.auth.username)
+        this.loggedInKunde_ID = response.data[0];
+      }
+    },
+    async checkForOrders() {
+      if (this.isUserLoggedInBoolean) {
+        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
+        if (responseOrders.data.length === 0) {
+          this.displayVorschlaege = false;
+        } else {
+          this.displayVorschlaege = true;
+        }
+      }
+    },
+    async getVorschlaege() {
+      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID);
       console.log(responsePreferences);
       console.log(responsePreferences.data);
       console.log(responsePreferences.data.data);
@@ -157,12 +180,11 @@ export default {
       console.log(responsePreferences.data.data[0].amount);
       console.log(responsePreferences.data.data[0].categorie);
 
-      for(let i=0;i<responsePreferences.data.data.length; i++)
-      {
-          this.kategorienAmount.push(responsePreferences.data.data[i])
+      for (let i = 0; i < responsePreferences.data.data.length; i++) {
+        this.kategorienAmount.push(responsePreferences.data.data[i])
       }
 
-      this.kategorienAmount.sort((a,b)=>{
+      this.kategorienAmount.sort((a, b) => {
         if (a.amount > b.amount) {
           return -1;
         }
@@ -174,7 +196,7 @@ export default {
 
       console.log(this.kategorienAmount);
 
-      for(let i = 0; i < this.kategorienAmount.length; i++) {
+      for (let i = 0; i < this.kategorienAmount.length; i++) {
         this.kategorien[i] = this.kategorienAmount[i].categorie.toString();
       }
 
@@ -182,26 +204,21 @@ export default {
 
       let useHeiss = false;
       let useKalt = false;
-      for(let i = 0; i<this.kategorien.length; i++)
-      {
-        if(this.kategorien[i].includes("Heiß"))
-        {
+      for (let i = 0; i < this.kategorien.length; i++) {
+        if (this.kategorien[i].includes("Heiß")) {
           useHeiss = true;
-          this.kategorien.splice(i,1);
+          this.kategorien.splice(i, 1);
         }
-        if(this.kategorien[i].includes("Kalt"))
-        {
+        if (this.kategorien[i].includes("Kalt")) {
           useKalt = true;
-          this.kategorien.splice(i,1);
+          this.kategorien.splice(i, 1);
         }
       }
 
-      if(useHeiss)
-      {
+      if (useHeiss) {
         this.kategorien.push("heiß");
       }
-      if(useKalt)
-      {
+      if (useKalt) {
         this.kategorien.push("kalt");
       }
 
@@ -295,7 +312,10 @@ export default {
     return {
       valid: true,
       searchString: "",
-      loggedInKunde_ID: "",
+      loggedInKunde_ID: 0,
+      isUserLoggedInBoolean: false,
+      didUserOrderSomething: false,
+      displayVorschlaege: false,
       kategorien: [],
       kategorienAmount: [],
       searchDestination: "Gerichte",
