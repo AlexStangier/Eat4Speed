@@ -48,6 +48,7 @@ public class BestellungController {
     }
 
     @GET
+    @PermitAll
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     @Path("getAllOrdersFromCustomerByDishId/{customerId}/{dishId}")
@@ -56,6 +57,7 @@ public class BestellungController {
     }
 
     @GET
+    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("getAllOrdersFromRestaurantId/{customerId}/{restaurantId}")

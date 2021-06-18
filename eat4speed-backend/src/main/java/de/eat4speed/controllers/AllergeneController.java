@@ -6,6 +6,7 @@ import de.eat4speed.repositories.AllergeneRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 import de.eat4speed.services.interfaces.IAllergeneService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
