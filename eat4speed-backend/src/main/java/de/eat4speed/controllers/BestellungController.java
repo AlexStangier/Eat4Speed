@@ -49,7 +49,6 @@ public class BestellungController {
     }
 
     @GET
-    @PermitAll
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
     @RolesAllowed("kunde")
@@ -59,7 +58,6 @@ public class BestellungController {
     }
 
     @GET
-    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("kunde")
