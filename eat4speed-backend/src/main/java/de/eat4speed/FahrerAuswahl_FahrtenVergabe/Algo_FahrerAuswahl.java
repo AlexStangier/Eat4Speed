@@ -118,9 +118,8 @@ public class Algo_FahrerAuswahl {
     private void restart(int startPunktID)
     {
         URL url;
-        System.out.println("Restarting" + " "  + LocalDateTime.now());
         try {
-            url = new URL("http://localhost:1337/FahrerAuswahl/" + startPunktID);
+            url = new URL("http://localhost:1337/FahrerAuswahl/start/" + startPunktID);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
@@ -129,7 +128,7 @@ public class Algo_FahrerAuswahl {
 
             http.disconnect();
         } catch (Exception e) {
-            System.out.println("Restarted: " + startPunktID + " "  + LocalDateTime.now());
+            System.out.println("Restarting: " + startPunktID + " | "  + LocalDateTime.now());
         }
     }
 
@@ -177,7 +176,6 @@ public class Algo_FahrerAuswahl {
 
             retVal = !(jarray.getLong(0) == 9999);
 
-            System.out.println(retVal + " | " + jarray);
         } catch (IOException e){
             e.printStackTrace();
         }
@@ -329,7 +327,7 @@ public class Algo_FahrerAuswahl {
 
         for (int i = 0; i < fahrer.size(); i++)
         {
-            if (istImUrlaub(fahrer.get(i).getFahrernummer()))
+            if (istImUrlaub(fahrer.get(i).getFahrernummer()) | fahrer.get(i).getAktueller_Standort() == 0)
             {
                 fahrer.remove(i);
                 i--;
