@@ -44,7 +44,7 @@
               <v-tab-item>
                 <v-card class="px-4">
                   <v-card-text>
-                    <v-form ref="registerForm" v-model="valid" lazy-validation>
+                    <v-form ref="registerForm" v-model="valid">
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="restaurant_name" :rules="[rules.required]" label="Restaurant-Name"
@@ -107,14 +107,14 @@
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'Passwort'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'Passwort'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <label>
                           Bild auswählen

@@ -53,8 +53,7 @@
                   <v-card-text>
                     <v-form
                         ref="registrationForm"
-                        v-model="registrationValid"
-                        lazy-validation
+                        v-model="valid"
                     >
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
@@ -146,6 +145,7 @@
                               label="Passwort"
                               name="input-10-1"
                               @click:append="show1 = !show1"
+                              required
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
@@ -159,6 +159,7 @@
                               label="Passwort bestätigen"
                               name="input-10-1"
                               @click:append="show1 = !show1"
+                              required
                           ></v-text-field>
                         </v-col>
                         <v-spacer></v-spacer>
@@ -208,6 +209,7 @@
                               color="primary"
                               depressed
                               tile
+                              :disabled="!valid"
                               @click="validateVerification"
                           >Fahrerkonto erstellen
                           </v-btn
@@ -360,6 +362,7 @@ export default {
       vehicle: "",
       fahrzeug_ID: "",
       fahrer_ID: "",
+      valid: false,
       driverLicense: "",
       licensePlate: "",
       agbAccepted: false,

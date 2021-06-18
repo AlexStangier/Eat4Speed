@@ -44,7 +44,7 @@
               <v-tab-item>
                 <v-card class="px-4">
                   <v-card-text>
-                    <v-form ref="registerForm" v-model="valid" lazy-validation>
+                    <v-form ref="registerForm" v-model="isFormValid">
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
@@ -96,20 +96,20 @@
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'Passwort'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'Passwort'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
                           <v-btn color="primary"
                                  depressed tile
-                                 :disabled="!valid"
+                                 :disabled="!isFormValid"
                                  @click="validate">Register
                           </v-btn>
                         </v-col>
@@ -170,8 +170,7 @@ export default {
     },
     async validate() {
 
-
-      console.log("test");
+      console.log(this.valid);
 
       var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
@@ -299,7 +298,7 @@ export default {
           await axios.post("/EntfernungKundeRestaurant", entfernung);
         }
       } else {
-        this.openSnackbar("Bitte gültiga Adresse eingeben!")
+        this.openSnackbar("Bitte gültige Adresse eingeben!")
 
       }
 
@@ -327,7 +326,7 @@ export default {
         {name: "Registrieren", icon: "mdi-account-outline"}
       ],
       isFormValid: false,
-      valid: true,
+      valid: false,
       salutation: "",
       adress_ID: "",
       benutzer_ID: "",
