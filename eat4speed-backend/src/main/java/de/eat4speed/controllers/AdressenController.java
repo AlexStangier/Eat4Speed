@@ -6,7 +6,6 @@ import de.eat4speed.repositories.AdressenRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 import de.eat4speed.services.interfaces.IAdressenService;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

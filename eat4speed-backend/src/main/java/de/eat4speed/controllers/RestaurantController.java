@@ -8,8 +8,6 @@ import de.eat4speed.searchOptions.RestaurantSearchOptions;
 import de.eat4speed.services.interfaces.IRestaurantService;
 import org.hibernate.annotations.Parameter;
 
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -33,14 +31,12 @@ public class RestaurantController {
 
     @PUT
     @Path("updateVerifiziert/{id}")
-    @RolesAllowed("admin")
     public Response updateRestaurant_Verifiziert(@PathParam("id") int id) {
         return _restaurant.updateRestaurant_Verifiziert(id);
     }
 
     @GET
     @Path("{selection}")
-    @PermitAll
     public List getAllRestaurant(@PathParam("selection") String restaurantSelectionVerifizierung) {
         List restaurantData = null;
 
@@ -61,28 +57,24 @@ public class RestaurantController {
 
     @POST
     @Path("searchRestaurants")
-    @PermitAll
     public List searchRestaurants(RestaurantSearchOptions options){
         return _restaurant.searchRestaurants(options);
     }
 
     @GET
     @Path("getRestaurantDataByRestaurantName/{name}")
-    @PermitAll
     public List getRestaurantDataByRestaurantName(@PathParam("name") String restaurantName) {
         return _restaurant.getRestaurantDataByRestaurantName(restaurantName);
     }
 
     @GET
     @Path("getAllRestaurantDataByRestaurant_ID/{id}")
-    @PermitAll
     public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID) {
         return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
     }
 
     @GET
     @Path("getRestaurantDataByKundennummer_Favoriten/{kundennummer}")
-    @PermitAll
     public List getRestaurantDataByKundennummer_Favoriten(@PathParam("kundennummer") int kundennummer)
     {
         return _restaurant.getRestaurantDataByKundennummer_Favoriten(kundennummer);
@@ -90,14 +82,12 @@ public class RestaurantController {
 
     @DELETE
     @Path("{id}")
-    @PermitAll
     public Response deleteRestaurant(@PathParam("id") int id) {
         return _restaurant.deleteRestaurant(id);
     }
 
     @PUT
     @Path("updateRestaurantStammdaten")
-    @PermitAll
     public Response updateRestaurantStammdaten(Restaurant restaurant) {
         return _restaurant.updateRestaurantStammdaten(restaurant);
     }
