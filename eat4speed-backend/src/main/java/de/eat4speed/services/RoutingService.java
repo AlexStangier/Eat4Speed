@@ -44,16 +44,16 @@ public class RoutingService implements IRoutingService {
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         if(auftrags_beschreibung.equals("Abholung")){
             System.out.println(auftraege + " " + data + " " + email);
-            for(int  i = 0; i < auftr.size(); i++){
-                _fahrer.set_Bestellung_abgeholt(data, Integer.parseInt(auftr.get(i)));
+            for (String s : auftr) {
+                _fahrer.set_Bestellung_abgeholt(data, Integer.parseInt(s));
                 _fahrer.set_Fahrer_aktuellePos_Abholung(data, email);
             }
         }
         else{
-            for(int  i = 0; i < auftr.size(); i++){
+            for (String s : auftr) {
                 System.out.println(auftraege);
-                _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(auftr.get(i)), email);
-                _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(auftr.get(i)));
+                _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(s), email);
+                _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(s));
             }
             System.out.println(auftraege + " " + email);
         }
@@ -195,9 +195,6 @@ public class RoutingService implements IRoutingService {
             return null;
         }
 
-        System.out.println(fahrer);
-        System.out.println(restaurants);
-        System.out.println(kunden);
         return ret_object;
 
     }
@@ -213,7 +210,6 @@ public class RoutingService implements IRoutingService {
         try {//"arturs@arturs.de"
             String data = create_Request(email).toString();
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
-            System.out.println(data);
 
             OutputStream stream = http.getOutputStream();
             stream.write(out);
@@ -245,7 +241,7 @@ public class RoutingService implements IRoutingService {
 
         System.out.println("before if");
         if(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length() > 1){
-            String single_beschreibung = "";
+            String single_beschreibung;
             StringBuilder single_restaurant = new StringBuilder();
             StringBuilder single_kunde = new StringBuilder();
             StringBuilder single_auftrags_id_string = new StringBuilder();
