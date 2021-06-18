@@ -13,6 +13,7 @@ import de.eat4speed.repositories.RestaurantRepository;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterEach;
@@ -89,6 +90,7 @@ public class GerichtControllerTest {
     }
 
     @Test  // TST007 (1)
+    @TestSecurity(authorizationEnabled = false)
     void trySetGerichtToNotAvailable() {
         Gericht gericht = _gerichtRepository.getGerichtByGerichtID(this.dummyGerichtId);
         gericht.setVerfuegbar((byte) 0);
@@ -102,6 +104,7 @@ public class GerichtControllerTest {
     }
 
     @Test  // TST007 (3)
+    @TestSecurity(authorizationEnabled = false)
     void trySetGerichtAvailabilityToInvalidStatus() {
         Gericht gericht = _gerichtRepository.getGerichtByGerichtID(this.dummyGerichtId);
         gericht.setVerfuegbar((byte) 23);
@@ -115,6 +118,7 @@ public class GerichtControllerTest {
     }
 
     @Test  // TST008 (1)
+    @TestSecurity(authorizationEnabled = false)
     void tryUpdateGerichtPicture() throws IOException, NoSuchAlgorithmException {
         Gericht gericht = _gerichtRepository.getGerichtByGerichtID(this.dummyGerichtId);
         String pictureFilename = "Bild" + gericht.getGericht_ID();
@@ -147,6 +151,7 @@ public class GerichtControllerTest {
     }
 
     @Test  // TST008 (2)
+    @TestSecurity(authorizationEnabled = false)
     void tryUpdateGerichtPictureWithInvalidData() throws FileNotFoundException {
         Gericht gericht = _gerichtRepository.getGerichtByGerichtID(this.dummyGerichtId);
         String pictureFilename = "Bild" + gericht.getGericht_ID();
