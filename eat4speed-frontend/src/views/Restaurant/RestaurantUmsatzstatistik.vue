@@ -117,7 +117,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-layout justify-center>
+      <v-layout class="pb-5" justify-center>
         <v-flex md6 sm12 xs12>
           <v-data-table
               :key="componentKey"

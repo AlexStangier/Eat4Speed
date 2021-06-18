@@ -104,28 +104,26 @@
 
                 <v-row>
                   <v-col align="center">
-                    <v-btn class="mt-1 mx-1 white--text" ref="GerichtButton" :disabled="!valid" width="45%" depressed
+                    <v-btn class="mt-3 mx-1 white--text" ref="GerichtButton" :disabled="!valid" width="45%" depressed
                            tile
                            @click="gerichtFarbe" @mousedown="setDestinationToGerichte"
                            :color="btnType === 0 ? 'primary' : 'blue-grey'">Gericht
                     </v-btn>
-                    <v-btn class="mt-1 mx-1 white--text" ref="UmgebungButton" :disabled="!valid" width="45%" depressed
+                    <v-btn class="mt-3 mx-1 white--text" ref="UmgebungButton" :disabled="!valid" width="45%" depressed
                            tile
                            @click="umbegungFarbe" @mousedown="setDestinationToRestaurants"
                            :color="btnType === 1 ? 'primary' : 'blue-grey'">Umgebung
                     </v-btn>
                   </v-col>
                 </v-row>
-                <div v-if="displayVorschlaege===true">
-                  <v-row>
-                    <v-col align="center">
-                      <v-btn class="mt-n5 white--text" ref="VorschlaegeButton" width="92%" depressed tile
-                             @click="getVorschlaege" :color="'primary'">
-                        Vorschläge
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </div>
+                <v-row v-if="displayVorschlaege===true">
+                  <v-col align="center">
+                    <v-btn class="mt-n4 white--text" ref="VorschlaegeButton" width="92%" depressed tile
+                           @click="getVorschlaege" :color="'primary'">
+                      Vorschläge
+                    </v-btn>
+                  </v-col>
+                </v-row>
               </v-card>
             </v-card>
           </v-flex>
