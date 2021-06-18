@@ -156,7 +156,7 @@ export default {
   methods: {
     async loadStammdaten() {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
       let StammdatenData = ResponseStammdaten.data[0];
 
       // console.log(ResponseStammdaten);

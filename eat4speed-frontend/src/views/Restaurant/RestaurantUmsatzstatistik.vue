@@ -117,7 +117,7 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-layout justify-center>
+      <v-layout class="pb-5" justify-center>
         <v-flex md6 sm12 xs12>
           <v-data-table
               :key="componentKey"
@@ -144,7 +144,7 @@ import axios from "axios";
 Vue.use(Chartkick.use(Chart));
 export default {
   async mounted() {
-    //await this.getLoggedInRestaurant();
+    await this.getLoggedInRestaurant();
     await this.loadZeiten();
   },
   data() {
