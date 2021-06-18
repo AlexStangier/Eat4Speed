@@ -215,6 +215,8 @@ export default {
       await axios.put("/Bestellung/updateBestellungStatus", bestellung);
 
       this.accepted = false;
+      window.location.reload();
+
     },
     toZero(inputNumber) {
       inputNumber = inputNumber - 300;
