@@ -132,6 +132,12 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
+    public List<Fahrer> getEveryAvailableFahrer()
+    {
+        return find("verifiziert = ?1 and Ist_in_Pause = ?2", (byte)1, (byte)0 ).list();
+    }
+
+    @Transactional
     public int deleteFahrer(int fahrernummer)
     {
         delete("fahrernummer", fahrernummer);

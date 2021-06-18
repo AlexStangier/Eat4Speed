@@ -1,5 +1,6 @@
 package de.eat4speed.services;
 
+import de.eat4speed.entities.Fahrtenplan_Station;
 import de.eat4speed.repositories.FahrtenplanRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,5 +14,10 @@ public class FahrtenplanService {
     @Inject
     public FahrtenplanService(FahrtenplanRepository fahrtenplanRepository) {
         this.fahrtenplanRepository = fahrtenplanRepository;
+    }
+
+    public Fahrtenplan_Station getFahrtenPlanStaion(int id)
+    {
+        return this.fahrtenplanRepository.findByStationsID(id);
     }
 }
