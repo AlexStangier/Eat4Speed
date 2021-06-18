@@ -112,4 +112,23 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     public List<Bestellung> getAllBestellungenByRestaurantId(Integer restaurantId){
         return find("restaurant_ID", restaurantId).list();
     }
+
+    @Transactional
+    public List getKundeBestellungen(String status, String email) {
+        List getKundeBestellungen;
+
+        Query query = entityManager.createNativeQuery(
+                "select best.Bestell_ID, DATE_FORMAT(best.Timestamp, '%d.%m.%y - %H:%i'), best.Status, r.Betrag," +
+                        "TIMESTAMPDIFF(SECOND, best.Timestamp, CURRENT_TIMESTAMP()) AS SECONDS " +
+                        "from Bestellung best, Auftrag a, Rechnung r " +
+                        "where best.Auftrags_ID = a.Auftrags_ID " +
+                        " AND best.STATUS =  ?1 " +
+                        "and best.Rechnung = r.Rechnungs_ID " +
+                        "and a.Kundennummer = " +
+                        "(select Kundennummer from Kunde where Benutzer_ID = " +
+                        "(select Benutzer_ID from Benutzer where EmailAdresse = ?2)) " +
+                        "order by best.Timestamp desc").setParameter(1, status).setParameter(2, email);
+        getKundeBestellungen = query.getResultList();
+        return getKundeBestellungen;
+    }
 }

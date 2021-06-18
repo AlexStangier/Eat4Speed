@@ -62,4 +62,6 @@ public interface IBestellungService {
 
     List getProduktUndAnzahl(int id);
 
+    List getKundeBestellungen(String status, String email);
+
 }

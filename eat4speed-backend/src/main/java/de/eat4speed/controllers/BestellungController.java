@@ -85,4 +85,8 @@ public class BestellungController {
     @GET
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
+
+    @GET
+    @Path("getKundeBestellungen/{status}/{email}")
+    public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
 }

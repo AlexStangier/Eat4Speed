@@ -1,0 +1,175 @@
+<template>
+  <v-main>
+    <v-container fill-height fluid>
+      <v-layout align-start justify-center>
+        <v-flex md6 sm6 xs12>
+          <h1 class="mb-5">Bestellhistorie</h1>
+          <div>
+            <v-tabs>
+              <v-tab active title="Offen">
+                <p>Offen</p>
+              </v-tab>
+              <v-tab-item>
+                <v-list>
+                  <v-list-item v-for="itemOffen in offeneBestellungen" v-bind:key="itemOffen.id" class="mb-12">
+                    <v-col cols="8" style="background-color: lightsteelblue">
+                      <v-card-title>Bestelldatum: {{ itemOffen.date }}</v-card-title>
+                      <v-card-text>{{ itemOffen.products }}</v-card-text>
+                      <v-card-text>{{ itemOffen.count }}x</v-card-text>
+                      <div class="text-right">{{ itemOffen.price }} €</div>
+                    </v-col>
+                    <div>
+                      <v-btn
+                          class="ml-1"
+                          color="red"
+                          tile
+                      >
+                        Stornieren
+                      </v-btn>
+                      Zeit übrig:  {{ number }} s
+                    </div>
+                  </v-list-item>
+                </v-list>
+              </v-tab-item>
+
+              <v-tab title="Abgeschlossen">
+                <p>Abgeschlossen</p>
+              </v-tab>
+              <v-tab-item>sadf
+              </v-tab-item>
+              <v-tab title="Storniert">
+                <p>Storniert</p>
+              </v-tab>
+              <v-tab-item>
+                <v-list>
+                  <v-list-item v-for="itemStorniert in stornierteBestellungen" v-bind:key="itemStorniert.id"
+                               class="mb-12">
+
+                    <v-col cols="8" style="background-color: lightsteelblue">
+                      <v-card-title>Bestelldatum: {{ itemStorniert.date }}</v-card-title>
+                      <v-card-text>{{ itemStorniert.products }}</v-card-text>
+                      <v-card-text>{{ itemStorniert.count }}x</v-card-text>
+                      <div class="text-right">{{ itemStorniert.price }} €</div>
+                    </v-col>
+
+                    <div>
+                      <v-btn
+                          class="ml-1"
+                          color="red"
+                          tile
+                      >
+                        Stornieren
+                      </v-btn>
+                    </div>
+                  </v-list-item>
+                </v-list>
+              </v-tab-item>
+            </v-tabs>
+          </div>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-main>
+</template>
+
+
+<script>
+
+
+import axios from "axios";
+
+export default {
+  name: "KundeBestellhistorie",
+  created() {
+    this.loadBestellungenOffen();
+    this.loadBestellungenStorniert();
+    this.countDownTimer();
+  },
+  methods: {
+    async loadBestellungenOffen() {
+
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'bezahlt/' + this.$store.getters.getLoginData.auth.username);
+
+      let anzahl = ResponseBestellungen.data.length.toString();
+
+      let itemOffen;
+      for (let i = 0; i < anzahl; i++) { // outer loop
+
+
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+
+        let zahl = ResponseBestellungen.data[i][4];
+
+        if (zahl <= 300){
+          this.number = 300 - zahl;
+        }
+
+        itemOffen = {
+          id: (ResponseBestellungen.data[i][0]),
+          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          date: (ResponseBestellungen.data[i][1]),
+          products: (ResponseProdukte.data[0][0]),
+          count: (ResponseProdukte.data[0][1]),
+          zahl_number: zahl
+        }
+
+        this.offeneBestellungen.push(itemOffen)
+
+      }
+
+    },
+    async loadBestellungenStorniert() {
+
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'storniert/' + this.$store.getters.getLoginData.auth.username);
+
+      let anzahl = ResponseBestellungen.data.length.toString();
+
+      console.log(anzahl)
+      let itemStorniert;
+      for (let i = 0; i < anzahl; i++) { // outer loop
+
+
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+
+        itemStorniert = {
+          id: (ResponseBestellungen.data[i][0]),
+          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          date: (ResponseBestellungen.data[i][1]),
+          products: (ResponseProdukte.data[0][0]),
+          count: (ResponseProdukte.data[0][1]),
+          zahl_number: (ResponseBestellungen.data[i][4])
+        }
+
+        this.stornierteBestellungen.push(itemStorniert)
+
+      }
+
+      console.log(ResponseBestellungen)
+    }
+    ,
+    countDownTimer() {
+      if (this.number > 0) {
+        setTimeout(() => {
+          this.number -= 1
+          this.countDownTimer(this.number)
+        }, 1000)
+      } else {
+        this.number = 0;
+      }
+    },
+  },
+  data() {
+    return {
+      offeneBestellungen: [],
+      stornierteBestellungen: [],
+      number: 10
+    }
+  }
+
+
+}
+</script>
+
+<style scoped>
+
+</style>
