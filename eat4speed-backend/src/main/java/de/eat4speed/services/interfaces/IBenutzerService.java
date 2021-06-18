@@ -31,5 +31,8 @@ public interface IBenutzerService {
     List getBenutzerKundeEinstellungenByLogin(String email);
 
     List getKundennummerByBenutzername(String username);
+
     List getRestaurant_IDByBenutzername(String username);
+
+    String getRoleById(long id);
 }
