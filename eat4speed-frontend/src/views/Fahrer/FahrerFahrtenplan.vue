@@ -51,6 +51,7 @@
 
         <template v-slot:item.actions="{ item }">
           <v-btn
+              :disabled="item.hideButton"
               color="primary"
               depressed
               tile
@@ -117,6 +118,7 @@
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
 import axios from "axios";
+import Vue from "vue";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -179,21 +181,28 @@ export default {
         }
       }
     },
-    abholungBestätigen(id) {
-      id;
+    async abholungBestätigen(id) {
+      Vue.set(id, 'hideButton', true);
+      if(id.beschreibung === 'Abholung'){
+        await this.$http.get('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$store.getters.getLoginData.auth.username);
+      }
+      else{
+        await this.$http.get('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email='+ this.$store.getters.getLoginData.auth.username);
+      }
+      id.hidebutton=true;
     },
     getTermin() {
       return '12.12.2021';
     },
     getStationen() {
-      return 2;
+      return this.data.length;
     },
     convertToKM(meters) {
       return meters / 1000;
     },
   },
   async mounted() {
-      await this.$http.get('/route').then(response => this.data = response.data);
+      await this.$http.get('/route/calculate/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
       this.pollData();
       //todo this fahrernummer = aktuelle Fahrernummer
     },
@@ -222,6 +231,11 @@ export default {
         {
           text: 'Station',
           value: 'station',
+          sortable: false
+        },
+        {
+          text: 'Auftrags_ID',
+          value: 'auftrags_id',
           sortable: false
         },
         {

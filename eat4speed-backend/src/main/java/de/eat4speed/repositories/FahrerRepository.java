@@ -146,7 +146,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Fahrer_Fzg_Pos() {
+    public ArrayList<String> get_Fahrer_Fzg_Pos(String email) {
 
         List <Object[]> fahrer_fzg;
 
@@ -157,12 +157,11 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
                         "AND fa.benutzer_ID = b.benutzer_ID " +
                         "AND ad.adress_ID = fa.aktueller_Standort " +
                         "AND b.emailAdresse " +
-                        "like 'arturs@arturs.de'"
-        );
-
+                        "like ?1"
+        ).setParameter(1, email);
 
         fahrer_fzg = query.getResultList();
-        List<String> results = new ArrayList<>(fahrer_fzg.size());
+        ArrayList<String> results = new ArrayList<>(fahrer_fzg.size());
 
         for(Object[] objects : fahrer_fzg){
             results.add(new String((String) objects[0]));
@@ -182,29 +181,52 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Restautant_Lng_Lat(){
+    public ArrayList<String> get_Restautant_Lng_Lat(String email){
 
         List <Object[]> restaurant_lng_lat;
 
 
-        Query query = entityManager.createQuery(
-                "select lng, lat " +
-                        "from Adressen " +
-                        "where adress_ID " +
-                        "IN (select anschrift from Restaurant where restaurant_ID " +
-                        "IN (select auftragnehmer from Auftrag)) "
-        );
+        Query query = entityManager.createNativeQuery(
+                "SELECT Auftrag.auftrags_ID, lng, lat, name_des_Restaurants, Bestellung.status, timestamp_On_Customer_Demand " +
+                        "FROM Adressen, Auftrag, Restaurant, Bestellung " +
+                        "WHERE adress_ID IN (SELECT Restaurant.anschrift " +
+                        "WHERE Restaurant.restaurant_ID " +
+                        "IN (" +
+                        "SELECT restaurant_ID " +
+                        "FROM Gericht " +
+                        "WHERE gericht_ID " +
+                        "IN (" +
+                        "SELECT json_as_rows.* " +
+                        "FROM JSON_TABLE(Gericht_IDs, '$[*]' COLUMNS(gericht_ID INT PATH '$')) json_as_rows " +
+                        "WHERE Bestellung.auftrags_ID = Auftrag.auftrags_ID)))" +
+                        "AND Auftrag.fahrernummer " +
+                        "IN (" +
+                        "SELECT fahrernummer " +
+                        "FROM Fahrer " +
+                        "WHERE benutzer_ID = (" +
+                        "SELECT benutzer_ID " +
+                        "FROM Benutzer " +
+                        "WHERE emailAdresse = ?1)" +
+                        ")group by Auftrag.auftrags_ID, lng, lat, name_des_Restaurants, Bestellung.status, timestamp_On_Customer_Demand " +
+                        "ORDER BY auftrags_ID ASC;\n"
+        ).setParameter(1, email);
+
 
 
 
 
         restaurant_lng_lat = query.getResultList();
-        List<String> results = new ArrayList<>(restaurant_lng_lat.size());
+        ArrayList<String> results = new ArrayList<>(restaurant_lng_lat.size());
 
         int i = 0;
         for(Object[] objects : restaurant_lng_lat){
             while(i < objects.length){
-                results.add(new String((String) objects[i]));
+                if(objects[i] == null){
+                    results.add( "null");
+                }
+                else{
+                    results.add( objects[i].toString());
+                }
                 i++;
             }
             i = 0;
@@ -215,27 +237,36 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public List get_Kunde_Lng_Lat(){
+    public ArrayList<String> get_Kunde_Lng_Lat(String email){
 
         List <Object[]> kunde_lng_lat;
 
-        Query query = entityManager.createQuery(
-                "select lng, lat " +
-                        "from Adressen " +
-                        "where adress_ID " +
-                        "IN (select anschrift from Kunde where kundennummer " +
-                        "IN (select kundennummer from Auftrag) )"
-        );
+        Query query = entityManager.createNativeQuery(
+                "SELECT auftrags_ID, lng, lat, strasse, hausnummer, postleitzahl, ort " +
+                        "FROM Adressen, Auftrag " +
+                        "WHERE adress_ID IN ( " +
+                        "SELECT anschrift " +
+                        "FROM Kunde " +
+                        "WHERE kundennummer IN ( " +
+                        "SELECT kundennummer " +
+                        "FROM Auftrag ) AND Kunde.kundennummer = Auftrag.kundennummer ) AND Auftrag.fahrernummer IN ( " +
+                        "SELECT fahrernummer " +
+                        "FROM Fahrer " +
+                        "WHERE benutzer_ID = ( " +
+                        "SELECT benutzer_ID " +
+                        "FROM Benutzer " +
+                        "WHERE emailAdresse like ?1 ))  group by auftrags_ID, lng, lat, strasse, hausnummer, ort, postleitzahl order by auftrags_id ASC"
+        ).setParameter(1, email);
 
 
 
         kunde_lng_lat = query.getResultList();
-        List<String> results = new ArrayList<>(kunde_lng_lat.size());
+        ArrayList<String> results = new ArrayList<>(kunde_lng_lat.size());
 
         int i = 0;
         for(Object[] objects : kunde_lng_lat){
             while(i < objects.length){
-                results.add(new String((String) objects[i]));
+                results.add(objects[i].toString());
                 i++;
             }
             i = 0;
@@ -243,5 +274,63 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
         return results;
 
+    }
+
+    @Transactional
+    public void set_Bestellung_abgeholt(String rest_name, int auftr_id){
+        Query query = entityManager.createQuery(
+                "UPDATE Bestellung " +
+                        "SET status = 'abgeholt' " +
+                        "WHERE restaurant_ID = " +
+                        "(SELECT restaurant_ID FROM Restaurant WHERE name_des_Restaurants like ?1) AND auftrags_ID = ?2"
+        ).setParameter(1, rest_name).setParameter(2, auftr_id);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    public void set_Fahrer_aktuellePos_Abholung(String restaurant_name, String email){
+        Query query = entityManager.createNativeQuery(
+                "UPDATE Fahrer " +
+                        "SET aktueller_Standort = " +
+                        "(SELECT anschrift FROM Restaurant WHERE name_des_Restaurants like ?1 ) " +
+                        "WHERE fahrernummer = " +
+                        "(SELECT fahrernummer WHERE Fahrer.benutzer_ID = (SELECT benutzer_ID FROM Benutzer WHERE emailAdresse like ?2 ))"
+        ).setParameter(1, restaurant_name).setParameter(2, email);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    public void set_Fahrer_aktuellePos_Ablieferung(long auftrags_id, String email){
+        Query query = entityManager.createNativeQuery("UPDATE Fahrer " +
+                "SET aktueller_Standort = " +
+                "(SELECT anschrift " +
+                "FROM Kunde " +
+                "WHERE kundennummer = " +
+                "(SELECT Kundennummer FROM Auftrag WHERE Auftrags_ID = ?1) ) " +
+                "WHERE fahrernummer = (SELECT fahrernummer WHERE Fahrer.benutzer_ID = " +
+                "(SELECT benutzer_ID FROM Benutzer " +
+                "WHERE emailAdresse like ?2 ))"
+        ).setParameter(1, auftrags_id).setParameter(2, email);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    public void set_Bestellung_abgeliefert(int auftr_id){
+        Query query = entityManager.createQuery(
+                "UPDATE Bestellung " +
+                        "SET status = 'abgeliefert' " +
+                        "WHERE status = 'abgeholt' AND auftrags_ID = ?1"
+        ).setParameter(1, auftr_id);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    public void set_auftrags_zeit(long auftr_id, java.sql.Timestamp dt){
+        Query query = entityManager.createNativeQuery(
+                "UPDATE Auftrag " +
+                        "SET timestamp_Lieferung = ?1 " +
+                        "WHERE auftrags_ID = ?2 "
+        ).setParameter(1, dt).setParameter(2, auftr_id);
+        query.executeUpdate();
     }
 }
