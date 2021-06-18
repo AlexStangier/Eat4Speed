@@ -4,7 +4,6 @@ package de.eat4speed.controllers;
 import de.eat4speed.repositories.EinnahmenRepository;
 import de.eat4speed.repositories.FahrzeugRepository;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,7 +19,6 @@ public class EinnahmenController {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    @RolesAllowed("restaurant")
     public String get(){
         return einnahmenRepository.listAll().toString();
     }

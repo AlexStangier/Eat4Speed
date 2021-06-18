@@ -8,7 +8,6 @@ import de.eat4speed.repositories.KundeRepository;
 import de.eat4speed.services.interfaces.IKundeService;
 import de.eat4speed.services.interfaces.IRestaurantService;
 
-import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.*;
@@ -43,7 +42,6 @@ public class KundeController {
 
     @PUT
     @Path("updateKundeEinstellungen")
-    @RolesAllowed("kunde")
     public Response updateKundeEinstellungen(Kunde kunde) {
         return _kunde.updateKundeEinstellungen(kunde);
     }
