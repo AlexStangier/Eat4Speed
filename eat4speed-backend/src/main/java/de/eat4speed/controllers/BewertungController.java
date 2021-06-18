@@ -19,6 +19,9 @@ public class BewertungController {
     @Inject
     IBewertungService bewertungService;
 
+    @Inject
+    BewertungRepository bewertungRepository;
+
     @PUT
     public Response addBewertung(Bewertung bewertung) {
         return bewertungService.addOrUpdateBewertung(bewertung);
@@ -40,5 +43,12 @@ public class BewertungController {
     @Path("/getAverageBewertungAndCountBewertungByRestaurant_ID/{restaurant_ID}")
     public List getAverageBewertungAndCountBewertungByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID) {
         return bewertungService.getAverageBewertungAndCountBewertungByRestaurant_ID(restaurant_ID);
+    }
+
+    @GET
+    @Path("getAverageBewertungAndCountBewertungAllRestaurants")
+    public List getAverageBewertungAndCountBewertungAllRestaurants()
+    {
+        return bewertungRepository.getAverageBewertungAndCountBewertungAllRestaurants();
     }
 }

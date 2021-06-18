@@ -410,21 +410,33 @@ export default {
     this.user = this.$cookies.get('emailAdresse');
   },
   methods: {
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
+    },
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
-      this.currentKunde_ID = response.data[0];
+      if(this.isUserLoggedInBoolean)
+      {
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        this.currentKunde_ID = response.data[0];
+      }
     },
     async loadRestaurant() {
 
       this.restaurantIsFav = false;
-      const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
-      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+
+      if(this.isUserLoggedInBoolean)
       {
-        let favData = ResponseFavoriten.data[i];
-        if(this.selectedRestaurant_ID === favData[0])
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
+        for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
-          this.restaurantIsFav = true;
+          let favData = ResponseFavoriten.data[i];
+          if(this.selectedRestaurant_ID === favData[0])
+          {
+            this.restaurantIsFav = true;
+          }
         }
       }
 
@@ -444,16 +456,19 @@ export default {
         this.restaurantBewertungCount = ResponseBewertung.data[0][1];
       }
 
+      if(this.isUserLoggedInBoolean)
+      {
+        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+        if(ResponseEntfernung.data.length>0)
+        {
+          this.entfernung = ResponseEntfernung.data[0];
+        }
+      }
+
       const config = { responseType:"arraybuffer" };
       const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.selectedRestaurant_ID,config);
 
       //console.log(responsePicture);
-
-      const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
-      if(ResponseEntfernung.data.length>0)
-      {
-        this.entfernung = ResponseEntfernung.data[0];
-      }
 
       if(responsePicture.status !== 204)
       {
@@ -541,12 +556,15 @@ export default {
         this.test123.push({ reviewRating: bewertungData[3], reviewComment: bewertungData[4], reviewUsername: bewertungData[6] });
       }
 
-      const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
-
-      if(responseBewertung.data.length>0)
+      if(this.isUserLoggedInBoolean)
       {
-        this.userRating = responseBewertung.data[0][3];
-        this.userComment = responseBewertung.data[0][4];
+        const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+
+        if(responseBewertung.data.length>0)
+        {
+          this.userRating = responseBewertung.data[0][3];
+          this.userComment = responseBewertung.data[0][4];
+        }
       }
 
       this.amountReviews = 0;
@@ -554,6 +572,11 @@ export default {
       this.versionreview++;
     },
     async addBewertung(){
+      if(!this.isUserLoggedInBoolean)
+      {
+        alert("Sie müssen sich einloggen, um eine Bewertung hinzufügen zu können!")
+        return;
+      }
 
       var today = new Date();
 
@@ -600,12 +623,22 @@ export default {
       this.selectedItem = item;
     },
     async addToFavorites() {
+      if(!this.isUserLoggedInBoolean)
+      {
+        alert("Sie müssen sich einloggen, um Restaurants zu Ihren Favoriten hinzufügen zu können!");
+        return;
+      }
+
+      if(this.restaurantBestellradius<this.entfernung)
+      {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
       var today = new Date();
       const restaurantFavorite = {
         restaurant_ID: this.selectedRestaurant_ID,
         kundennummer: this.currentKunde_ID,
         hinzufuegedatum: today,
-        //TODO get anzahl_Bestellungen from Database
         anzahl_Bestellungen: 0
       }
 
@@ -618,12 +651,14 @@ export default {
     },
     addToCart() {
 
-      if(this.restaurantBestellradius<this.entfernung)
+      if(this.isUserLoggedInBoolean)
       {
-        alert("Sie befinden sich außerhalb des Bestellradius")
-        return;
+        if(this.restaurantBestellradius<this.entfernung)
+        {
+          alert("Sie befinden sich außerhalb des Bestellradius")
+          return;
+        }
       }
-
       //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
@@ -643,6 +678,7 @@ export default {
     selectedGericht_ID:"",
     selectedItem: "",
     gerichtAnzahl: 0,
+    isUserLoggedInBoolean: false,
     restaurantBewertungCount:0,
     displayGetraenke:"",
     names: [],
