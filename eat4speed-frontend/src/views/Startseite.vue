@@ -312,7 +312,7 @@ export default {
     return {
       valid: true,
       searchString: "",
-      loggedInKunde_ID: "",
+      loggedInKunde_ID: 0,
       isUserLoggedInBoolean: false,
       didUserOrderSomething: false,
       displayVorschlaege: false,
