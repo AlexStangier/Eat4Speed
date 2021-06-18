@@ -89,5 +89,17 @@ public class FahrerService implements IFahrerService {
     @Override
     public void set_auftrags_zeit(long auftr_id, java.sql.Timestamp dt){ fahrerRepository.set_auftrags_zeit(auftr_id, dt);}
 
+    @Override
+    public void set_Bestellung_abgeholt(String rest_name, int auftr_id){ fahrerRepository.set_Bestellung_abgeholt(rest_name, auftr_id);}
+
+    @Override
+    public void set_Fahrer_aktuellePos_Abholung(String restaurant_name, String email){ fahrerRepository.set_Fahrer_aktuellePos_Abholung(restaurant_name, email);}
+
+    @Override
+    public void set_Fahrer_aktuellePos_Ablieferung(long auftrags_id, String email){ fahrerRepository.set_Fahrer_aktuellePos_Ablieferung(auftrags_id, email);}
+
+    @Override
+    public void set_Bestellung_abgeliefert(int auftr_id){ fahrerRepository.set_Bestellung_abgeliefert(auftr_id);}
+
 
 }

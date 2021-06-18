@@ -32,4 +32,12 @@ public interface IFahrerService {
     ArrayList<String> get_Kunde_Lng_Lat(String email);
 
     void set_auftrags_zeit(long auftr_id, java.sql.Timestamp dt);
+
+    void set_Bestellung_abgeholt(String rest_name, int auftr_id);
+
+    void set_Fahrer_aktuellePos_Abholung(String restaurant_name, String email);
+
+    void set_Fahrer_aktuellePos_Ablieferung(long auftr_id, String email);
+
+    public void set_Bestellung_abgeliefert(int auftr_id);
 }

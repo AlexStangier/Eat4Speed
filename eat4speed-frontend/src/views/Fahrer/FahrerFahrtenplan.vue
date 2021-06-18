@@ -60,6 +60,7 @@
 
 <script>
 import DirectionsRenderer from "@/utils/DirectionsRenderer";
+import Vue from "vue";
 
 export default {
   name: "FahrerFahrtenplan",
@@ -67,12 +68,19 @@ export default {
     DirectionsRenderer
   },
   methods: {
-    abholungBestätigen(id) {
-      console.log(id.station);
+    async abholungBestätigen(id) {
+      Vue.set(id, 'hideButton', true);
+      if(id.beschreibung === 'Abholung'){
+        await this.$http.get('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$store.getters.getLoginData.auth.username);
+      }
+      else{
+        await this.$http.get('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email='+ this.$store.getters.getLoginData.auth.username);
+      }
+
       id.hidebutton=true;
     },
     getTermin() {
-      return '07.06.2021';
+      return '14.06.2021';
     },
     getStationen() {
       return this.data.length;
@@ -83,7 +91,7 @@ export default {
 
   },
   async mounted() {
-      await this.$http.get('/route/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
+      await this.$http.get('/route/calculate/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
 
     },
   data() {

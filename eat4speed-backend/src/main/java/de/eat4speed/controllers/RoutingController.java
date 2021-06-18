@@ -12,10 +12,10 @@ import org.json.JSONObject;
 public class RoutingController {
 
     @Inject
-    private IRoutingService _router;
+    IRoutingService _router;
 
     @GET
-    @Path("/{email}")
+    @Path("/calculate/{email}")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public String get_Sorted_Waypoints_test(@PathParam("email") String email) throws Exception {
@@ -32,15 +32,13 @@ public class RoutingController {
     }
 
 
-    @PUT
-    @Path("/confirm")
+    @GET
+    @Path("/confirm/{art}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String get_Sorted_Waypoints(@QueryParam("auftraege") String auftraege, @QueryParam("data") String data) throws Exception {
+    public String get_Sorted_Waypoints(@PathParam("art") String art,@QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) throws Exception {
 
+        _router.confirm(art, auftraege, data, email);
 
-
-
-
-        return data;
+        return "okay";
     }
 }

@@ -15,22 +15,88 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.text.ParseException;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 @ApplicationScoped
 public class RoutingService implements IRoutingService {
 
     @Inject
-    private FahrerService _fahrer;
+    FahrerService _fahrer;
 
     /**
      * Aufbau Fahrer_Mode -> fahrzeugart, lng, lat, kapazität
-     * Aufbau Restaurant_location -> Auftrag_ID, lng, lat, Restaurant_name
+     * Aufbau Restaurant_location -> Auftrag_ID, lng, lat, Restaurant_name,
      * Aufbau Kunde_location -> Auftrag_ID, lng, lat, Kunde: strasse, hausnummer, plz, ort
      */
 
-    public JSONObject add_shipment(String id, double src_lng, double src_lat, double dest_lng, double dest_lat, String timewindow) {
+
+    @Default
+    @Override
+    public String db_test() {
+
+        return "Ich bin relevant";
+    }
+
+    @Override
+    public void confirm(String auftrags_beschreibung, String auftraege, String data, String email){
+        ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
+        if(auftrags_beschreibung.equals("Abholung")){
+            System.out.println(auftraege + " " + data + " " + email);
+            for(int  i = 0; i < auftr.size(); i++){
+                _fahrer.set_Bestellung_abgeholt(data, Integer.parseInt(auftr.get(i)));
+                _fahrer.set_Fahrer_aktuellePos_Abholung(data, email);
+            }
+        }
+        else{
+            for(int  i = 0; i < auftr.size(); i++){
+                System.out.println(auftraege);
+                _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(auftr.get(i)), email);
+                _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(auftr.get(i)));
+            }
+            System.out.println(auftraege + " " + email);
+        }
+
+    }
+
+    public JSONObject add_shipment(String id, double src_lng, double src_lat, double dest_lng, double dest_lat, String timewindows) {
+
+        if (!timewindows.equals("null")) {
+            try {
+                Date date_now = new Date();
+                long _now = date_now.getTime();
+                Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
+                long delivery_date = date1.getTime();
+                long delivery_timewindow = (delivery_date - _now) / 1000;
+                long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
+                System.out.println(_now + " " + delivery_date + " " + (delivery_date - _now));
+
+                return new JSONObject()
+                        .put("id", id).put("pickup", new JSONObject()
+                                .put("location", new JSONArray()
+                                        .put(src_lng).put(src_lat))
+                                .put("duration", 300)
+                                .put("time_windows", new JSONArray()
+                                        .put(new JSONArray()
+                                                .put(pickup_timewindow - 5 * 60).put(delivery_timewindow)
+                                        )
+                                )
+                        )
+                        .put("delivery", new JSONObject()
+                                .put("location", new JSONArray()
+                                        .put(dest_lng).put(dest_lat))
+                                .put("duration", 300)
+                                .put("time_windows", new JSONArray()
+                                        .put(new JSONArray()
+                                                .put(delivery_timewindow - 5 * 60).put(delivery_timewindow + 5 * 60)
+                                        )
+                                )
+                        );
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         return new JSONObject()
@@ -44,15 +110,35 @@ public class RoutingService implements IRoutingService {
                                 .put(dest_lng).put(dest_lat))
                         .put("duration", 300)
                 );
-
     }
 
     public JSONObject add_jobs(String id, double lng, double lat, String timewindows) {
+        System.out.println(timewindows);
+        if (!timewindows.equals("null")) {
+            try {
+                Date date_now = new Date();
+                long _now = date_now.getTime();
+                Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
+                long delivery_date = date1.getTime();
+                long delivery_timewindow = (delivery_date - _now) / 1000;
+                System.out.println("Okay");
+                return new JSONObject()
+                        .put("id", id).put("location", new JSONArray()
+                                .put(lng).put(lat))
+                        .put("time_windows", new JSONArray()
+                                .put(new JSONArray()
+                                        .put(delivery_timewindow - 5 * 60).put(delivery_timewindow + 5 * 60)
+                                )
+                        );
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         return new JSONObject()
                 .put("id", id).put("location", new JSONArray()
                         .put(lng).put(lat));
-
     }
 
 
@@ -81,10 +167,10 @@ public class RoutingService implements IRoutingService {
                 kunden_list_pointer++;
             }
             if (restaurants.get(restaurant_list_pointer * 6 + 4).equals("abholbereit")) {
-                shipments.put(add_shipment(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) + "]", Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 1)), Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 2)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), "null"));
+                shipments.put(add_shipment(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) + "]", Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 1)), Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 2)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), restaurants.get(restaurant_list_pointer * 6 + 5)));
 
             } else if (restaurants.get(restaurant_list_pointer * 6 + 4).equals("abgeholt")) {
-                jobs.put(add_jobs(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) + "]", Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), "null"));
+                jobs.put(add_jobs(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) + "]", Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), restaurants.get(restaurant_list_pointer * 6 + 5)));
             }
         }
         JSONObject ret_object = new JSONObject()
@@ -105,7 +191,7 @@ public class RoutingService implements IRoutingService {
         if (jobs.length() > 0) {
             ret_object.put("jobs", jobs);
         }
-        if(shipments.length() == 0 && jobs.length() == 0){
+        if (shipments.length() == 0 && jobs.length() == 0) {
             return null;
         }
 
@@ -116,7 +202,6 @@ public class RoutingService implements IRoutingService {
 
     }
 
-    @Default
     @Override
     public JSONArray get_best_Route(String email) throws Exception {
 
@@ -125,18 +210,17 @@ public class RoutingService implements IRoutingService {
         http.setRequestMethod("POST");
         http.setDoOutput(true);
         http.setRequestProperty("Content-Type", "application/json");
-        try{//"arturs@arturs.de"
-            String data = create_Request("arturs@arturs.de").toString();
+        try {//"arturs@arturs.de"
+            String data = create_Request(email).toString();
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
+            System.out.println(data);
 
             OutputStream stream = http.getOutputStream();
             stream.write(out);
-        } catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Data was null: " + e.getMessage());
             return null;
         }
-
-
 
 
         InputStream ips = http.getInputStream();
@@ -158,6 +242,61 @@ public class RoutingService implements IRoutingService {
         JSONArray legs = props.getJSONArray("legs");
         //JSONArray actions = props.getJSONArray("actions");
         JSONArray list_waypoints = new JSONArray();
+
+        System.out.println("before if");
+        if(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length() > 1){
+         String single_beschreibung = "";
+         StringBuilder single_restaurant = new StringBuilder();
+         StringBuilder single_kunde = new StringBuilder();
+         StringBuilder single_auftrags_id_string = new StringBuilder();
+         ArrayList<String> single_auftrags_id = new ArrayList<>();
+            System.out.println("auftrags_ids");
+            for(int k = 1; k < waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length(); k++){
+                if (!single_auftrags_id.contains(StringUtils.substringBefore(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(k).getString("shipment_id"), "["))) {
+                    single_auftrags_id.add(StringUtils.substringBefore(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(k).getString("shipment_id"), "["));
+                }
+            }
+            for (int single_auftrags_id_counter = 0; single_auftrags_id_counter < single_auftrags_id.size(); single_auftrags_id_counter++) {
+
+                if (single_auftrags_id_counter == (single_auftrags_id.size() - 1)) {
+                    single_auftrags_id_string.append(single_auftrags_id.get(single_auftrags_id_counter));
+                } else {
+                    single_auftrags_id_string.append(single_auftrags_id.get(single_auftrags_id_counter)).append(", ");
+                }
+            }
+            System.out.println(single_auftrags_id);
+            if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("delivery") || waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("job")) {
+                single_beschreibung = "Lieferung";
+                try {
+                    single_kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("shipment_id").toString(), "|", "]"));
+                    single_restaurant.append("--- ");
+                } catch (Exception e) {
+                    single_kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("job_id").toString(), "|", "]"));
+                    single_restaurant.append("--- ");
+                }
+
+            } else if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("pickup")) {
+                single_beschreibung = "Abholung";
+                single_restaurant.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("shipment_id").toString(), "[", "|"));
+                single_kunde.append("--- ");
+            } else {
+                single_beschreibung = "No Data";
+            }
+            list_waypoints.put(new JSONObject()
+                    .put("auftrags_id", single_auftrags_id_string.toString())
+                    .put("station", 0)
+                    .put("beschreibung", single_beschreibung)
+                    .put("restaurantname", single_restaurant)
+                    .put("kunde", single_kunde)
+                    .put("entfernung", (Double.parseDouble(legs.getJSONObject(0).get("distance").toString()) / 1000.0) + "km")
+                    .put("start", new JSONObject().put("lat", waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("original_location").get(1))
+                            .put("lng", waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("original_location").get(0)))
+                    .put("end", new JSONObject().put("lat", waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("original_location").get(1))
+                            .put("lng", waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("original_location").get(0)))
+            );
+
+        }
+
 
         for (int i = 0; i < legs.length(); i++) {
             String beschreibung;
@@ -188,7 +327,7 @@ public class RoutingService implements IRoutingService {
                     auftrags_id_string.append(auftrags_id.get(auftrags_id_counter)).append(", ");
                 }
             }
-            if (waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("delivery")) {
+            if (waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("delivery") || waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("job")) {
                 beschreibung = "Lieferung";
                 try {
                     kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("shipment_id").toString(), "|", "]"));
@@ -238,15 +377,14 @@ public class RoutingService implements IRoutingService {
                 if (ar.getJSONObject(i).getJSONArray("actions").getJSONObject(0).get("type").equals("delivery")) {
                     for (int j = 0; j < ar.getJSONObject(i).getJSONArray("actions").length(); j++) {
                         java.sql.Timestamp tm = new java.sql.Timestamp(cal.getTimeInMillis() + Long.parseLong(ar.getJSONObject(i).getJSONArray("actions").getJSONObject(j).get("start_time").toString()) * 1000);
-                        if(ar.getJSONObject(i).getJSONArray("actions").getJSONObject(j).keySet().contains("shipment_id")){
+                        if (ar.getJSONObject(i).getJSONArray("actions").getJSONObject(j).keySet().contains("shipment_id")) {
                             id_key = "shipment_id";
                             //System.out.println(Integer.parseInt(StringUtils.substringBefore(ar.getJSONObject(i).getJSONArray("actions").getJSONObject(j).getString("shipment_id"), "[")) + ": " + tm);
-                        }
-                        else{
+                        } else {
                             id_key = "job_id";
                             //System.out.println(Integer.parseInt(StringUtils.substringBefore(ar.getJSONObject(j).getJSONArray("actions").getJSONObject(j).getString("job_id"), "[")) + ": " + tm);
                         }
-                        _fahrer.set_auftrags_zeit(Long.parseLong(StringUtils.substringBefore(ar.getJSONObject(i).getJSONArray("actions").getJSONObject(j).getString(id_key), "[")),tm);
+                        _fahrer.set_auftrags_zeit(Long.parseLong(StringUtils.substringBefore(ar.getJSONObject(i).getJSONArray("actions").getJSONObject(j).getString(id_key), "[")), tm);
 
                         //System.out.println(Integer.parseInt(StringUtils.substringBefore(ar.getJSONObject(j).getJSONArray("actions").getJSONObject(j).getString("shipment_id"), "[")) + ": " + tm.toString());
                     }

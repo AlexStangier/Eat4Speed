@@ -150,7 +150,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
         Query query = entityManager.createNativeQuery(
                 "SELECT Auftrag.auftrags_ID, lng, lat, name_des_Restaurants, Bestellung.status, timestamp_On_Customer_Demand " +
-                        "FROM Adressen, Auftrag, Fahrtenplan_Station, Restaurant, Bestellung " +
+                        "FROM Adressen, Auftrag, Restaurant, Bestellung " +
                         "WHERE adress_ID IN (SELECT Restaurant.anschrift " +
                         "WHERE Restaurant.restaurant_ID " +
                         "IN (" +
@@ -161,7 +161,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
                         "SELECT json_as_rows.* " +
                         "FROM JSON_TABLE(Gericht_IDs, '$[*]' COLUMNS(gericht_ID INT PATH '$')) json_as_rows " +
                         "WHERE Bestellung.auftrags_ID = Auftrag.auftrags_ID)))" +
-                        "AND Fahrtenplan_Station.fahrer " +
+                        "AND Auftrag.fahrernummer " +
                         "IN (" +
                         "SELECT fahrernummer " +
                         "FROM Fahrer " +
@@ -169,7 +169,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
                         "SELECT benutzer_ID " +
                         "FROM Benutzer " +
                         "WHERE emailAdresse = ?1)" +
-                        "AND Fahrtenplan_Station.auftrag = Auftrag.auftrags_ID)" +
+                        ")group by Auftrag.auftrags_ID, lng, lat, name_des_Restaurants, Bestellung.status, timestamp_On_Customer_Demand " +
                         "ORDER BY auftrags_ID ASC;\n"
         ).setParameter(1, email);
 
@@ -205,19 +205,19 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
 
         Query query = entityManager.createNativeQuery(
                 "SELECT auftrags_ID, lng, lat, strasse, hausnummer, postleitzahl, ort " +
-                        "FROM Adressen, Auftrag, Fahrtenplan_Station " +
+                        "FROM Adressen, Auftrag " +
                         "WHERE adress_ID IN ( " +
                         "SELECT anschrift " +
                         "FROM Kunde " +
                         "WHERE kundennummer IN ( " +
                         "SELECT kundennummer " +
-                        "FROM Auftrag ) AND Kunde.kundennummer = Auftrag.kundennummer ) AND Fahrtenplan_Station.Fahrer IN ( " +
+                        "FROM Auftrag ) AND Kunde.kundennummer = Auftrag.kundennummer ) AND Auftrag.fahrernummer IN ( " +
                         "SELECT fahrernummer " +
                         "FROM Fahrer " +
                         "WHERE benutzer_ID = ( " +
                         "SELECT benutzer_ID " +
                         "FROM Benutzer " +
-                        "WHERE emailAdresse like ?1 ) AND Fahrtenplan_Station.auftrag = Auftrag.auftrags_ID )"
+                        "WHERE emailAdresse like ?1 ))  group by auftrags_ID, lng, lat, strasse, hausnummer, ort, postleitzahl order by auftrags_id ASC"
         ).setParameter(1, email);
 
 
@@ -239,12 +239,14 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public void set_Bestellung_status(String status, int rest_id, int auftr_id){
+    public void set_Bestellung_abgeholt(String rest_name, int auftr_id){
         Query query = entityManager.createQuery(
                 "UPDATE Bestellung " +
-                        "SET status = ?1 " +
-                        "WHERE restaurant_ID = ?2 AND auftrags_ID = ?3"
-        ).setParameter(1, status).setParameter(2, rest_id).setParameter(3, auftr_id);
+                        "SET status = 'abgeholt' " +
+                        "WHERE restaurant_ID = " +
+                        "(SELECT restaurant_ID FROM Restaurant WHERE name_des_Restaurants like ?1) AND auftrags_ID = ?2"
+        ).setParameter(1, rest_name).setParameter(2, auftr_id);
+        query.executeUpdate();
     }
 
     @Transactional
@@ -260,12 +262,27 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public void set_Bestellung_abgeholt(int rest_id, int auftr_id){
+    public void set_Fahrer_aktuellePos_Ablieferung(long auftrags_id, String email){
+        Query query = entityManager.createNativeQuery("UPDATE Fahrer " +
+                "SET aktueller_Standort = " +
+                "(SELECT anschrift " +
+                "FROM Kunde " +
+                "WHERE kundennummer = " +
+                "(SELECT Kundennummer FROM Auftrag WHERE Auftrags_ID = ?1) ) " +
+                "WHERE fahrernummer = (SELECT fahrernummer WHERE Fahrer.benutzer_ID = " +
+                "(SELECT benutzer_ID FROM Benutzer " +
+                "WHERE emailAdresse like ?2 ))"
+        ).setParameter(1, auftrags_id).setParameter(2, email);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    public void set_Bestellung_abgeliefert(int auftr_id){
         Query query = entityManager.createQuery(
                 "UPDATE Bestellung " +
-                        "SET status = 'abgeholt' " +
-                        "WHERE restaurant_ID = ?1 AND auftrags_ID = ?2"
-        ).setParameter(1, rest_id).setParameter(2, auftr_id);
+                        "SET status = 'abgeliefert' " +
+                        "WHERE status = 'abgeholt' AND auftrags_ID = ?1"
+        ).setParameter(1, auftr_id);
         query.executeUpdate();
     }
 
