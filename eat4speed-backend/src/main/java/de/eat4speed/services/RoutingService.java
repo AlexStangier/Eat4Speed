@@ -43,7 +43,6 @@ public class RoutingService implements IRoutingService {
     public void confirm(String auftrags_beschreibung, String auftraege, String data, String email){
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         if(auftrags_beschreibung.equals("Abholung")){
-            System.out.println(auftraege + " " + data + " " + email);
             for (String s : auftr) {
                 _fahrer.set_Bestellung_abgeholt(data, Integer.parseInt(s));
                 _fahrer.set_Fahrer_aktuellePos_Abholung(data, email);
@@ -51,11 +50,9 @@ public class RoutingService implements IRoutingService {
         }
         else{
             for (String s : auftr) {
-                System.out.println(auftraege);
                 _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(s), email);
                 _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(s));
             }
-            System.out.println(auftraege + " " + email);
         }
 
     }
@@ -70,7 +67,6 @@ public class RoutingService implements IRoutingService {
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
                 long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
-                System.out.println(_now + " " + delivery_date + " " + (delivery_date - _now));
 
                 return new JSONObject()
                         .put("id", id).put("pickup", new JSONObject()
@@ -113,7 +109,6 @@ public class RoutingService implements IRoutingService {
     }
 
     public JSONObject add_jobs(String id, double lng, double lat, String timewindows) {
-        System.out.println(timewindows);
         if (!timewindows.equals("null")) {
             try {
                 Date date_now = new Date();
@@ -121,7 +116,6 @@ public class RoutingService implements IRoutingService {
                 Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
-                System.out.println("Okay");
                 return new JSONObject()
                         .put("id", id).put("location", new JSONArray()
                                 .put(lng).put(lat))
@@ -238,15 +232,12 @@ public class RoutingService implements IRoutingService {
         JSONArray legs = props.getJSONArray("legs");
         //JSONArray actions = props.getJSONArray("actions");
         JSONArray list_waypoints = new JSONArray();
-
-        System.out.println("before if");
         if(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length() > 1){
             String single_beschreibung;
             StringBuilder single_restaurant = new StringBuilder();
             StringBuilder single_kunde = new StringBuilder();
             StringBuilder single_auftrags_id_string = new StringBuilder();
             ArrayList<String> single_auftrags_id = new ArrayList<>();
-            System.out.println("auftrags_ids");
             for(int k = 1; k < waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length(); k++){
                 if (!single_auftrags_id.contains(StringUtils.substringBefore(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(k).getString("shipment_id"), "["))) {
                     single_auftrags_id.add(StringUtils.substringBefore(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(k).getString("shipment_id"), "["));
@@ -260,7 +251,6 @@ public class RoutingService implements IRoutingService {
                     single_auftrags_id_string.append(single_auftrags_id.get(single_auftrags_id_counter)).append(", ");
                 }
             }
-            System.out.println(single_auftrags_id);
             if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("delivery") || waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("job")) {
                 single_beschreibung = "Lieferung";
                 try {
