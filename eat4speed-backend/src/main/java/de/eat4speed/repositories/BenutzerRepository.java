@@ -67,8 +67,7 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     }
 
     @Transactional
-    public List getKundennummerByBenutzername(String username)
-    {
+    public List getKundennummerByBenutzername(String username) {
         List kundennummer;
 
         Query query = entityManager.createQuery(
@@ -83,8 +82,7 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     }
 
     @Transactional
-    public List getRestaurant_IDByBenutzername(String username)
-    {
+    public List getRestaurant_IDByBenutzername(String username) {
         List restaurant_ID;
 
         Query query = entityManager.createQuery(
@@ -100,10 +98,21 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
 
     /**
      * Should only be used in Test cleanup
+     *
      * @param name name of entities to be deleted
      */
     @Transactional
-    public void deleteBenutzerByUsername(String name){
+    public void deleteBenutzerByUsername(String name) {
         delete("Benutzername", name);
+    }
+
+    /**
+     * Returns the role of the specified user
+     * @param id
+     * @return
+     */
+    @Transactional
+    public String getRoleById(long id) {
+        return find("Benutzer_ID", id).firstResult().getRolle();
     }
 }

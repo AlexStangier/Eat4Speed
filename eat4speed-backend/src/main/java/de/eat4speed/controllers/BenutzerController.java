@@ -69,4 +69,10 @@ public class BenutzerController {
     {
         return _benutzer.getRestaurant_IDByBenutzername(username);
     }
+
+    @GET
+    @Path("getRoleById/{id}")
+    public String getRoleById(@PathParam("id") long id){
+        return _benutzer.getRoleById(id);
+    }
 }
