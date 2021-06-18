@@ -1,20 +1,3 @@
-PASTEBIN
-API
-TOOLS
-FAQ
-paste
-LOGIN SIGN UP
-SHARE
-TWEET
-Guest User
-Untitled
-A GUEST
-JUN 13TH, 2021
-3
-24 HOURS
-Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
-19.54 KB
-
 <template>
   <v-main>
     <v-container

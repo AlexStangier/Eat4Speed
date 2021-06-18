@@ -2,6 +2,8 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.dto.*;
 import de.eat4speed.entities.Bestellung;
+import de.eat4speed.repositories.BestellungRepository;
+import de.eat4speed.repositories.RestaurantRepository;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -17,6 +19,9 @@ public class BestellungController {
 
     @Inject
     IBestellungService _bestellungen;
+
+    @Inject
+    BestellungRepository bestellungRepository;
 
     @POST
     @PermitAll
@@ -68,6 +73,13 @@ public class BestellungController {
     @Path("updateBestellungStatus")
     public Response updateBestellungStatus(Bestellung bestellung) {
         return _bestellungen.updateBestellungStatus(bestellung);
+    }
+
+    @GET
+    @Path("checkForUserOrders/{kundennummer}")
+    public List checkForUserOrders(@PathParam("kundennummer") int kundennummer)
+    {
+        return bestellungRepository.checkForUserOrders(kundennummer);
     }
 
     @GET

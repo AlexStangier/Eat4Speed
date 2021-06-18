@@ -160,7 +160,7 @@ export default {
   methods: {
     async loadEinstellungen() {
 
-      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$cookies.get('emailAdresse'));
       let EinstellungenData = ResponseEinstellungen.data[0];
 
       console.log(ResponseEinstellungen);

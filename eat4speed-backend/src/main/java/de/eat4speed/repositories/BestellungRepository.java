@@ -93,6 +93,22 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     }
 
     @Transactional
+    public List checkForUserOrders(int kundennummer) {
+        List getProdutAndAnzahl;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.bestell_ID " +
+                        "FROM Kunde k, Auftrag a, Bestellung b " +
+                        "WHERE k.kundennummer = a.kundennummer " +
+                        "AND a.auftrags_ID = b.auftrags_ID " +
+                        "AND k.kundennummer = ?1"
+        ).setParameter(1,kundennummer);
+
+        getProdutAndAnzahl = query.getResultList();
+        return getProdutAndAnzahl;
+    }
+
+    @Transactional
     public List<Bestellung> getAllBestellungenByRestaurantId(Integer restaurantId){
         return find("restaurant_ID", restaurantId).list();
     }
