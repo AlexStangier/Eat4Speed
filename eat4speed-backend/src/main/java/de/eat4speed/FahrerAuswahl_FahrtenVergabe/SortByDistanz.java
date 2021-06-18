@@ -153,4 +153,28 @@ public class SortByDistanz implements Comparator<Fahrer_Distanz> {
         return distanzen;
     }
 
+    private String getMode(String Fahrzeugtyp)
+    {
+        String mode;
+
+        switch (Fahrzeugtyp)
+        {
+            case "0":
+                mode = "truck";
+                break;
+            case "1":
+                mode = "walk";
+                break;
+            case "2":
+                mode = "bicycle";
+                break;
+            case "PKW":
+            default:
+                mode = "drive";
+                break;
+        }
+
+        return mode;
+    }
+
 }
