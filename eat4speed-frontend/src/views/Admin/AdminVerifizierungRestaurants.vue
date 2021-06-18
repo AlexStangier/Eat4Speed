@@ -105,16 +105,16 @@
                   <v-container>
                     <v-row>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unseriös'" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
                       </v-col>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Spam'" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
                       </v-col>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unvollständig'" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
                       </v-col>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Keine Angabe'" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
                       </v-col>
                       <v-col cols="12"></v-col>
                       <v-col align="center" justify="center">
@@ -171,7 +171,8 @@ export default {
             hausnummer: restaurant[5],
             ort: restaurant[6],
             postleitzahl: restaurant[7],
-            verifiziert: restaurant[8]
+            verifiziert: restaurant[8],
+            email: restaurant[9]
           };
           arrayAllRestaurant[it] = entry;
 
@@ -208,7 +209,8 @@ export default {
             hausnummer: restaurant[5],
             ort: restaurant[6],
             postleitzahl: restaurant[7],
-            verifiziert: restaurant[8]
+            verifiziert: restaurant[8],
+            email: restaurant[9]
           };
           arrayNotVerifiedRestaurant[it] = entry;
 
@@ -244,7 +246,8 @@ export default {
             hausnummer: restaurant[5],
             ort: restaurant[6],
             postleitzahl: restaurant[7],
-            verifiziert: restaurant[8]
+            verifiziert: restaurant[8],
+            email: restaurant[9]
           };
           arrayVerifiedRestaurant[it] = entry;
 
@@ -264,8 +267,13 @@ export default {
     },
     async deleteBewerbung() {
 
-      await axios.delete("Restaurant/"+this.currentRowItem.restaurant_Id);
+      const deleteBe = {
+        emailAdresse: this.currentRowItem.email,
+        loeschbegruendung: this.deleteReason
+      }
+      await axios.post("Blacklist",deleteBe);
 
+      await axios.delete("Restaurant/"+this.currentRowItem.restaurant_Id);
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
@@ -295,6 +303,7 @@ export default {
       currentRowItem: "",
       restaurantSelection: "",
       search: '',
+      deleteReason: "",
       select: {text: 'Alle Bewerbungen', value: 1},
       items: [
         {text: 'Alle Bewerbungen', value: 1},
@@ -302,6 +311,10 @@ export default {
         {text: 'Verifizierte Restaurants', value: 3},
       ],
       headers: [
+        {
+          text: "Email",
+          value: "email"
+        },
         {
           text: 'Vorname',
           value: 'vorname'
