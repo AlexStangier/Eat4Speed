@@ -16,7 +16,7 @@
                   v-model="selectedBewertung"
                   label="Bewertung"
                   :items="selectRating"
-                  clearable="true"
+                  clearable
                   @change="applyBewertungFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -36,7 +36,7 @@
                   v-model="selectedEntfernung"
                   label="Entfernung"
                   :items="selectArea"
-                  clearable="true"
+                  clearable
                   @change="applyDistanceFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -67,6 +67,13 @@
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
           <v-divider></v-divider>
+          <v-card
+              v-if="amountRestaurants === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Restaurants gefunden
+          </v-card>
           <v-virtual-scroll
               :items="items"
               :item-height="250"
@@ -79,7 +86,7 @@
                   tile
                   outlined
               >
-                <v-container class="pa-1">
+                <v-container>
                   <v-row>
                     <v-col
                         cols="3"
@@ -139,7 +146,7 @@
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                      @mouseenter="selectRestaurant(item)"  small="true" right
+                                      @mouseenter="selectRestaurant(item)"  small right
                                       @mousedown="deleteFromFavorites"
                                       @mouseup="()=>{this.amountRestaurants=0;version++}"
                                       v-bind="attrs"
@@ -156,7 +163,7 @@
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                      @mouseenter="selectRestaurant(item)"  small="true" right
+                                      @mouseenter="selectRestaurant(item)"  small right
                                       @mousedown="addToFavorites"
                                       @mouseup="()=>{this.amountRestaurants=0;version++}"
                                       v-bind="attrs"
@@ -175,7 +182,7 @@
                               flat
                               class="text-right"
                           >
-                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
                           </v-card>
                           <v-card
                             v-if="a === 3"
@@ -185,7 +192,7 @@
                             <v-btn
                                 color="primary"
                                 tile
-                                small="true"
+                                small
                                 bottom="bottom"
                                 @mouseenter="selectRestaurant(item)"
                                 @click="setStoreSearchOptions"

@@ -4,7 +4,14 @@
       <v-row>
         <v-col cols="1"
         >
-          <v-btn small @click="returnToPreviousView">Zurück</v-btn>
+          <v-btn
+              color="primary"
+              tile
+              small
+              @click="returnToPreviousView"
+          >
+            Zurück
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -39,12 +46,13 @@
                   <v-content v-if="b === 10 & c === 1" class="text-center">
                     <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
                   </v-content>
-                  <v-content v-if="b === 10 & c === 2" class="text-center">
-                    Preis
-                    {{ gerichtPreis + '&euro;' }}
+                  <v-content v-if="b === 10 & c === 2" class="text-right">
+                    Preis:
+                    {{ (gerichtPreis * gerichtAnzahl) + ' &euro;' }}
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
                     <v-btn
+                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
                         small
                         @click="addToCart"
                         color="primary"
@@ -65,6 +73,7 @@
                 flat
                 outlined
                 tile
+                min-height="150"
             >
               {{ gerichtBeschreibung }}
             </v-card>
@@ -181,7 +190,7 @@ export default {
     loggedInKunde_ID: "",
     gerichtBeschreibung: "",
     gerichtBild: "",
-    gerichtPreis: 0.0,
+    gerichtPreis: 1.0,
     gerichtVerfuegbar: "",
     gerichtAnzahl: 1,
     cartGerichte: "",
@@ -194,7 +203,7 @@ export default {
     version: 0,
     countMinMaxRule:[
         v => (v && v >= 1) || "Bestellungen müssen größer als 1 sein",
-        v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+        v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
 
   }),

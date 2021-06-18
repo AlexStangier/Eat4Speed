@@ -16,7 +16,7 @@
                   v-model="selectedBewertung"
                   label="Bewertung"
                   :items="selectRating"
-                  clearable="true"
+                  clearable
                   @change="applyBewertungFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -36,7 +36,7 @@
                   v-model="selectedEntfernung"
                   label="Entfernung"
                   :items="selectArea"
-                  clearable="true"
+                  clearable
                   @change="applyDistanceFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -97,7 +97,6 @@
                       <v-checkbox
                           label="Mindestbestellwert benutzen"
                           v-model="mindestbestellwertOptionActive"
-                          :disabled="!nameOptionActive"
                       ></v-checkbox>
                       <v-slider
                           v-model="selectedMindestbestellwert"
@@ -125,7 +124,6 @@
                       <v-checkbox
                           label="Kategorien benutzen"
                           v-model="kategorieOptionActive"
-                          :disabled="!nameOptionActive"
                       ></v-checkbox>
                       <v-select
                           ref="KategorieSelect"
@@ -138,7 +136,20 @@
                           block
                           :key="kategorieVersion"
                           v-if="kategorieOptionActive"
-                      ></v-select>
+                      >
+                        <template v-slot:selection="{ item, index}">
+                          <v-chip
+                              v-if="index < 3"
+                          >
+                            <span>{{ item }}</span>
+                          </v-chip>
+                          <v-chip
+                              v-if="index === 3"
+                          >
+                            (+ {{ selectedKategorien.length - 3 }} andere)
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-list-item>
                   <v-subheader
@@ -151,7 +162,6 @@
                       <v-checkbox
                           label="Allergene benutzen"
                           v-model="allergeneOptionActive"
-                          :disabled="!nameOptionActive"
                       ></v-checkbox>
                       <v-select
                           ref="AllergeneSelect"
@@ -164,7 +174,20 @@
                           block
                           :key="allergeneVersion"
                           v-if="allergeneOptionActive"
-                      ></v-select>
+                      >
+                        <template v-slot:selection="{ item, index}">
+                          <v-chip
+                              v-if="index < 3"
+                          >
+                            <span>{{ item }}</span>
+                          </v-chip>
+                          <v-chip
+                              v-if="index === 3"
+                          >
+                            (+ {{ selectedAllergene.length - 3 }} andere)
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-list-item>
                   <v-container>
@@ -175,7 +198,6 @@
                         <v-btn
                             color="error"
                             tile
-                            :disabled="!nameOptionActive"
                             @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
                         >
                           Filter löschen
@@ -187,7 +209,6 @@
                         <v-btn
                             color="primary"
                             tile
-                            :disabled="!nameOptionActive"
                             @click="applyFiltersAndSearch"
                         >
                           Filter anwenden
@@ -205,9 +226,16 @@
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
           <v-divider></v-divider>
+          <v-card
+              v-if="amountGerichte === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Gerichte gefunden
+          </v-card>
           <v-virtual-scroll
               :items="items"
-              :item-height="250"
+              :item-height="260"
               max-height="650"
           >
             <template v-slot:default="{ item }" v-resize>
@@ -216,7 +244,7 @@
                   flat
                   tile
               >
-                <v-container class="pa-1">
+                <v-container>
                   <v-row>
                     <v-col
                         cols="3"
@@ -293,7 +321,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                       @mouseenter="selectItem(item)"
-                                      small="true"
+                                      small
                                       right
                                       @mousedown="deleteFromFavorites"
                                       @mouseup="()=>{this.amountGerichte=0;version++}"
@@ -311,7 +339,7 @@
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                      @mouseenter="selectItem(item)"  small="true" right
+                                      @mouseenter="selectItem(item)"  small right
                                       @mousedown="addToFavorites"
                                       @mouseup="()=>{this.amountGerichte=0;version++}"
                                       v-bind="attrs"
@@ -346,7 +374,7 @@
                               class="text-right"
                           >
                               <v-btn
-                                  small="true"
+                                  small
                                   color="primary"
                                   tile
                                   :to="{name: 'Gericht'}"
@@ -355,7 +383,7 @@
                                 Details
                               </v-btn>
                               <v-btn
-                                  small="true"
+                                  small
                                   class="ml-1"
                                   color="primary"
                                   tile
@@ -371,7 +399,7 @@
                                 <v-btn
                                     v-bind="attrs"
                                     v-on="on"
-                                    small="small"
+                                    small
                                     class="ml-1"
                                     color="primary"
                                     tile
@@ -452,7 +480,7 @@
                                 <v-btn
                                     v-bind="attrs"
                                     v-on="on"
-                                    small="true"
+                                    small
                                     class="ml-1"
                                     color="primary"
                                     tile
@@ -472,9 +500,10 @@
                                 </v-list-item>
                                 <v-btn
                                     @click="addToCart()"
-                                    small="small"
+                                    small
                                     color="primary"
                                     tile
+                                    :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
                                 >
                                   Zum Warenkorb hinzufügen
                                 </v-btn>
@@ -946,7 +975,7 @@ export default {
     selectArea: [5,10,20,30,40],
     countMinMaxRule:[
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
-      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+      v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
   }),
   computed: {

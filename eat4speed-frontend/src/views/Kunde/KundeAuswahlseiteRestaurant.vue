@@ -46,10 +46,11 @@
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                         class="html-editor-align-right" small="true" right
-                          @mousedown="deleteFromFavorites"
-                          v-bind="attrs"
-                          v-on="on"
+                         class="html-editor-align-right" small right
+                         @mousedown="deleteFromFavorites"
+                         v-bind="attrs"
+                         v-on="on"
+                         icon
                       >
                         <v-icon>mdi-heart</v-icon>
                       </v-btn>
@@ -61,10 +62,11 @@
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                          small="true" right
+                          small right
                           @mousedown="addToFavorites"
                           v-bind="attrs"
                           v-on="on"
+                          icon
                       >
                         <v-icon>mdi-heart-outline</v-icon>
                       </v-btn>
@@ -127,10 +129,20 @@
                               :items="test123"
                               :items-per-page="5"
                               class="elevation-1"
-                          ></v-data-table>
+                          >
+                            <template v-slot:item.reviewRating="{ item }">
+                              <v-rating
+                                  readonly
+                                  :value="item.reviewRating"
+                              >
+                              </v-rating>
+                            </template>
+                          </v-data-table>
 
                           <v-divider></v-divider>
-                          <v-card-actions>
+                          <v-card-actions
+                              v-if="isUserLoggedIn"
+                          >
                             <v-rating
                                 x-large
                                 v-model="userRating"
@@ -138,11 +150,14 @@
                             >
                             </v-rating>
                           </v-card-actions>
-                          <v-card-actions>
+                          <v-card-actions
+                              v-if="isUserLoggedIn"
+                          >
                             <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
                           </v-card-actions>
                           <v-card-actions class="justify-end">
                             <v-btn
+                                v-if="isUserLoggedIn"
                                 @click="addBewertung"
                                 @mouseup="dialog.value = false"
                                 color="primary"
@@ -233,19 +248,40 @@
         </v-card-title>
         <v-divider></v-divider>
 
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gericht gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
+        </v-card>
+
         <v-virtual-scroll
             :items="items"
-            :item-height="200"
-            max-height="500"
+            :item-height="210"
+            max-height="450"
             :key="version"
         >
           <template v-slot:default="{ item }">
-
             <v-card
                 flat
                 tile
             >
-              <v-container class="pa-1">
+              <v-container v-if="amountGerichte === 0">
+                <v-card>
+
+                </v-card>
+              </v-container>
+              <v-container>
                 <v-row>
                   <v-col
                       cols="4"
@@ -293,7 +329,7 @@
                             flat
                         >
                           <v-btn
-                              small="true"
+                              small
                               bottom="bottom"
                               color="primary"
                               tile
@@ -305,6 +341,7 @@
 
                           <v-menu
                               bottom
+                              left
                               offset-y
                               :close-on-content-click="false"
                           >
@@ -312,7 +349,7 @@
                               <v-btn
                                   v-bind="attrs"
                                   v-on="on"
-                                  small="true"
+                                  small
                                   bottom="bottom"
                                   class="ml-1"
                                   color="primary"
@@ -332,8 +369,9 @@
                                 <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field> <!--TODO-->
                               </v-list-item>
                               <v-btn
+                                  :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
                                   @click="addToCart()"
-                                  small="small"
+                                  small
                                   color="primary"
                                   tile
                               >
@@ -349,7 +387,6 @@
               </v-container>
             </v-card>
             <v-divider></v-divider>
-
           </template>
         </v-virtual-scroll>
 
@@ -370,6 +407,7 @@ export default {
     this.displayGetraenke = false;
     this.loadGerichte();
     this.loadBewertungen();
+    this.user = this.$cookies.get('emailAdresse');
   },
   methods: {
     async getLoggedInKunde()
@@ -645,12 +683,23 @@ export default {
         sortable: false,
         value: 'reviewComment',
       },
+      {
+        text: 'Bewertung',
+        sortable: true,
+        value: 'reviewRating',
+      },
+      {
+        text: 'Benutzer',
+        sortable: false,
+        value: 'reviewUsername'
+      }
     ],
     countMinMaxRule:[
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
-      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+      v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     btnType: 0,
+    user: 0,
   }),
 
 
@@ -676,6 +725,9 @@ export default {
           rating: crating,
         }
       })
+    },
+    isUserLoggedIn() {
+      return this.user !== undefined;
     },
   }
 }
