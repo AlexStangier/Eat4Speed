@@ -24,66 +24,69 @@ public class FahrerController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response add(Fahrer fahrer) {
+    public Response add(Fahrer fahrer)
+    {
         return _fahrer.addFahrer(fahrer);
     }
 
     @PUT
     @Path("setPause/{id}/{pause}")
-    @RolesAllowed("fahrer")
-    public Response setPause(@PathParam("id") int id, @PathParam("pause") int pause) {
+    public Response setPause(@PathParam("id") int id, @PathParam("pause") int pause)
+    {
         return _fahrer.setPause(pause, id);
     }
 
     @GET
     @Path("getAmountInPause")
-    @RolesAllowed("fahrer")
-    public Object getAmountInPause() {
+    public Object getAmountInPause()
+    {
         return _fahrer.getAmountInPause();
     }
 
     @PUT
     @Path("updateFahrzeugId/{id}")
-    @RolesAllowed("fahrer")
-    public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug) {
+    public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug)
+    {
         return _fahrer.updateFahrer_Fahrzeug_Id(id, fahrzeug);
     }
 
     @PUT
     @Path("updateVerifiziert/{id}")
-    @RolesAllowed("admin")
-    public Response updateFahrer_Verifiziert(@PathParam("id") int id) {
+    public Response updateFahrer_Verifiziert(@PathParam("id") int id)
+    {
         return _fahrer.updateFahrer_Verifiziert(id);
     }
 
     @PUT
     @Path("updateFahrer_anzahl_aktueller_Auftraege/{fahrernummer}/{anzahl}")
-    @RolesAllowed("fahrer")
-    public Response updateFahrer_anzahl_aktueller_Auftraege(@PathParam("fahrernummer") int fahrernummer, @PathParam("anzahl") int anzahl) {
+    public Response updateFahrer_anzahl_aktueller_Auftraege(@PathParam("fahrernummer") int fahrernummer, @PathParam("anzahl") int anzahl)
+    {
         return _fahrer.updateFahrer_anzahl_aktueller_Auftraege(fahrernummer, anzahl);
     }
 
     @GET
     @Path("getAll")
     @RolesAllowed("admin")
-    public List getAllDrivers() {
+    public List getAllDrivers(){
         return _fahrer.getAllFahrer();
     }
 
     @GET
     @Path("get/{id}")
-    @RolesAllowed("admin")
-    public List getFahrerByID(@PathParam("id") int benutzer_ID) {
+    public List getFahrerByID(@PathParam("id") int benutzer_ID)
+    {
         return _fahrer.getFahrerByID(benutzer_ID);
     }
 
     @GET
     @Path("{selection}")
     @PermitAll
-    public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung) {
+    public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung)
+    {
         List fahrerData = null;
 
-        switch (fahrerSelectionVerifizierung) {
+        switch(fahrerSelectionVerifizierung)
+        {
             case "ALL":
                 fahrerData = _fahrer.getAllFahrer();
                 break;
@@ -99,9 +102,12 @@ public class FahrerController {
 
     @DELETE
     @Path("{id}")
-    public Response deleteFahrer(@PathParam("id") int id) {
+    public Response deleteFahrer(@PathParam("id") int id)
+    {
         return _fahrer.deleteFahrer(id);
     }
+
+
 
 
 }
