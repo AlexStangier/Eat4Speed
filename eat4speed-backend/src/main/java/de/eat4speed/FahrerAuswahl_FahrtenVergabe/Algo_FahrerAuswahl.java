@@ -119,7 +119,7 @@ public class Algo_FahrerAuswahl {
     {
         URL url;
         try {
-            url = new URL("http://localhost:1337/FahrerAuswahl/start/" + startPunktID);
+            url = new URL("http://localhost:1337/FahrerAuswahl/" + startPunktID);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
