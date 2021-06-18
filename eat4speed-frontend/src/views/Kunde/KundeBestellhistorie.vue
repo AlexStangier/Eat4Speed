@@ -13,7 +13,7 @@
                 <v-list>
                   <v-list-item v-for="itemOffen in offeneBestellungen" v-bind:key="itemOffen.id" class="mb-12">
                     <v-col cols="8" style="background-color: lightsteelblue">
-                      <v-card-title>Bestelldatum: {{ itemOffen.date }}</v-card-title>
+                      <v-card-title>#{{ itemOffen.id }} Bestelldatum: {{ itemOffen.date }}</v-card-title>
                       <v-card-text>{{ itemOffen.products }}</v-card-text>
                       <v-card-text>{{ itemOffen.count }}x</v-card-text>
                       <div class="text-right">{{ itemOffen.price }} €</div>
@@ -23,10 +23,11 @@
                           class="ml-1"
                           color="red"
                           tile
+                          @click="checkButton(itemOffen.zahl_number + number)"
                       >
                         Stornieren
                       </v-btn>
-                      Zeit übrig:  {{ number }} s
+                      Zeit übrig: {{ toZero(itemOffen.zahl_number + number) }}s
                     </div>
                   </v-list-item>
                 </v-list>
@@ -95,14 +96,13 @@ export default {
       let itemOffen;
       for (let i = 0; i < anzahl; i++) { // outer loop
 
+        let sekunden = 300 - ResponseBestellungen.data[i][4];
+        console.log(sekunden)
+        if(sekunden <= 0){
+          sekunden = -300;
+        }
 
         const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
-
-        let zahl = ResponseBestellungen.data[i][4];
-
-        if (zahl <= 300){
-          this.number = 300 - zahl;
-        }
 
         itemOffen = {
           id: (ResponseBestellungen.data[i][0]),
@@ -110,7 +110,7 @@ export default {
           date: (ResponseBestellungen.data[i][1]),
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
-          zahl_number: zahl
+          zahl_number: sekunden
         }
 
         this.offeneBestellungen.push(itemOffen)
@@ -153,18 +153,28 @@ export default {
           this.number -= 1
           this.countDownTimer(this.number)
         }, 1000)
-      } else {
-        this.number = 0;
       }
     },
+    checkButton(timeLeft){
+      timeLeft = timeLeft - 300;
+      timeLeft = Math.max(0,timeLeft)
+console.log(timeLeft)
+    },
+  toZero(inputNumber) {
+      inputNumber = inputNumber - 300;
+   inputNumber = Math.max(0,inputNumber);
+  return inputNumber
+}
   },
   data() {
     return {
       offeneBestellungen: [],
       stornierteBestellungen: [],
-      number: 10
+      number: 300
     }
-  }
+  },
+
+
 
 
 }
