@@ -7,6 +7,7 @@ import de.eat4speed.repositories.RestaurantRepository;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,7 +25,7 @@ public class BestellungController {
     BestellungRepository bestellungRepository;
 
     @POST
-    @PermitAll
+    @RolesAllowed("kunde")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("add")
     public Response add(OrderDto obj) throws SQLException {
@@ -32,7 +33,7 @@ public class BestellungController {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed("kunde")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("pay")
     public PaymentDto pay(PayDto jobId) throws SQLException {
@@ -40,7 +41,7 @@ public class BestellungController {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed("restaurant")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("getStatistic")
     public StatisticDtoWrapper getStatistic(StatisticRequestDto req) throws SQLException {
@@ -48,18 +49,18 @@ public class BestellungController {
     }
 
     @GET
-    @PermitAll
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
+    @RolesAllowed("kunde")
     @Path("getAllOrdersFromCustomerByDishId/{customerId}/{dishId}")
     public Integer getAllOrdersFromCustomerByDishId(@PathParam("customerId") int customerId, @PathParam("dishId") int dishId) {
         return _bestellungen.getAmountOrdersByCustomerIdAndGerichtId(customerId, dishId);
     }
 
     @GET
-    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("kunde")
     @Path("getAllOrdersFromRestaurantId/{customerId}/{restaurantId}")
     public Integer getAllOrdersFromRestaurantId(@PathParam("customerId") int customerId, @PathParam("restaurantId") int restaurantId) {
         return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId,customerId);
@@ -71,12 +72,14 @@ public class BestellungController {
 
     @PUT
     @Path("updateBestellungStatus")
+    @RolesAllowed("restaurant")
     public Response updateBestellungStatus(Bestellung bestellung) {
         return _bestellungen.updateBestellungStatus(bestellung);
     }
 
     @GET
     @Path("checkForUserOrders/{kundennummer}")
+    @RolesAllowed("kunde")
     public List checkForUserOrders(@PathParam("kundennummer") int kundennummer)
     {
         return bestellungRepository.checkForUserOrders(kundennummer);

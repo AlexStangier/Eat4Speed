@@ -7,6 +7,8 @@ import de.eat4speed.repositories.OeffnungszeitenRepository;
 import de.eat4speed.services.OeffnungszeitenService;
 import de.eat4speed.services.interfaces.IOeffnungszeitenService;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +26,7 @@ public class OeffnungszeitenController {
 
     @POST
     @Path("setArbeitstag")
+    @RolesAllowed("restaurant")
     public Response add(Oeffnungszeiten zeit){
         oeffnungszeitenService.setArbeitstag(zeit);
 
@@ -32,6 +35,7 @@ public class OeffnungszeitenController {
 
     @PUT
     @Path("updateArbeitstag")
+    @RolesAllowed("restaurant")
     public Response updateArbeitstag(Oeffnungszeiten zeit)
     {
         return oeffnungszeitenService.updateArbeitstag(zeit);
@@ -39,6 +43,7 @@ public class OeffnungszeitenController {
 
     @GET
     @Path("/getAllZeiten/{id}")
+    @PermitAll
     public List getAllZeiten(@PathParam("id") int restaurant_id){
 
         return oeffnungszeitenService.getAllZeiten(restaurant_id);
