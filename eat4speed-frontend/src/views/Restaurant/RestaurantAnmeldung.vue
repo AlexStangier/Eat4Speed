@@ -47,7 +47,7 @@
                     <v-form ref="registerForm" v-model="valid">
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
-                          <v-text-field v-model="restaurant_name" :rules="[rules.required]" label="Restaurant-Name"
+                          <v-text-field v-model="restaurant_name" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Restaurant-Name"
                                         maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
@@ -55,11 +55,11 @@
                                         maxlength="200" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="firstName" :rules="[rules.required]" label="Vorname"
+                          <v-text-field v-model="firstName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Vorname"
                                         maxlength="20" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="lastName" :rules="[rules.required]" label="Nachname" maxlength="20"
+                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="20"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
@@ -395,7 +395,8 @@ export default {
       show1: false,
       rules: {
         required: value => !!value || "Required.",
-        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       }
     }
   }

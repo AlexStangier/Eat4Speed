@@ -402,6 +402,7 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   async created() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
+    await this.checkLoggedInUser();
     await this.getLoggedInKunde()
     this.loadRestaurant();
     this.displayGetraenke = false;
@@ -544,6 +545,7 @@ export default {
       this.version++;
     },
     async loadBewertungen() {
+      this.test123 = [];
 
       const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
 
