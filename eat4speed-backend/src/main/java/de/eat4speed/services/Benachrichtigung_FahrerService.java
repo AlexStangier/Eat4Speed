@@ -1,5 +1,6 @@
 package de.eat4speed.services;
 
+import de.eat4speed.entities.Benachrichtigung_Fahrer;
 import de.eat4speed.repositories.Benachrichtigung_FahrerRepository;
 import de.eat4speed.services.interfaces.IBenachrichtigung_FahrerService;
 
@@ -25,5 +26,25 @@ public class Benachrichtigung_FahrerService implements IBenachrichtigung_FahrerS
     @Override
     public void markAsGelesen(int benachrichtigungs_ID) {
         benachrichtigung_fahrerRepository.markAsGelesen(benachrichtigungs_ID);
+    }
+
+    @Override
+    public List listAll() {
+        return benachrichtigung_fahrerRepository.listAll();
+    }
+
+    @Override
+    public void addBenachrichtigung_Fahrer(Benachrichtigung_Fahrer benachrichtigung_fahrer) {
+        benachrichtigung_fahrerRepository.addBenachrichtigung_Fahrer(benachrichtigung_fahrer);
+    }
+
+    @Override
+    public int findIDByNachricht(String benachrichtigung, int fahrernummer) {
+        return benachrichtigung_fahrerRepository.findIDByNachricht(benachrichtigung, fahrernummer);
+    }
+
+    @Override
+    public void deleteBenachrichtigungFahrer(int benachrichtigungs_ID) {
+        benachrichtigung_fahrerRepository.deleteBenachrichtigungFahrer(benachrichtigungs_ID);
     }
 }

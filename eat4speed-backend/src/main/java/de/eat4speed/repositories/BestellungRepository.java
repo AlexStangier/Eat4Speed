@@ -3,6 +3,7 @@ package de.eat4speed.repositories;
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.*;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.json.JSONArray;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -73,6 +74,14 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     @Transactional
     public void updateBestellungStatus(Bestellung bestellung) {
         update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
+    }
+
+    public JSONArray getGerichteByAuftragID(int id)
+    {
+        Query query = entityManager.createNativeQuery("Select Gericht_IDs from eatforspeed.Bestellung " +
+                "Where Auftrags_ID= " + id);
+
+        return new JSONArray(query.getResultList());
     }
 
     @Transactional
