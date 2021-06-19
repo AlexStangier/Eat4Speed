@@ -1,9 +1,6 @@
 package de.eat4speed.services;
 
-import de.eat4speed.dto.OrderDto;
-import de.eat4speed.dto.PaymentDto;
-import de.eat4speed.dto.StatisticDto;
-import de.eat4speed.dto.StatisticDtoWrapper;
+import de.eat4speed.dto.*;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
@@ -336,15 +333,21 @@ public class BestellungService implements IBestellungService {
     }
 
     @Override
-    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+    public List getRestaurantBestellungen(String email) {
+        return _bestellungRepository.getRestaurantBestellungen(email);
+    }
 
     @Override
-    public Response updateBestellungStatus(Bestellung bestellung) {
+    public Response updateBestellungStatus(BestellungUpdateDto dto) {
+        Bestellung bestellung = _bestellungRepository.getBestellungByAuftragsId((int) dto.getAuftragsId());
+        bestellung.setStatus(dto.status);
         _bestellungRepository.updateBestellungStatus(bestellung);
         return Response.status(Response.Status.OK).entity(bestellung).build();
     }
 
     @Override
-    public List getProduktUndAnzahl(int id) {return _bestellungRepository.getProduktUndAnzahl(id);}
+    public List getProduktUndAnzahl(int id) {
+        return _bestellungRepository.getProduktUndAnzahl(id);
+    }
 
 }

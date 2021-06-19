@@ -62,27 +62,34 @@ public class BestellungController {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("getAllOrdersFromRestaurantId/{customerId}/{restaurantId}")
     public Integer getAllOrdersFromRestaurantId(@PathParam("customerId") int customerId, @PathParam("restaurantId") int restaurantId) {
-        return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId,customerId);
+        return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId, customerId);
     }
 
     @GET
     @Path("getRestaurantBestellungen/{email}")
-    public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
+    public List getRestaurantBestellungen(@PathParam("email") String email) {
+        return _bestellungen.getRestaurantBestellungen(email);
+    }
 
     @PUT
-    @Path("updateBestellungStatus")
-    public Response updateBestellungStatus(Bestellung bestellung) {
-        return _bestellungen.updateBestellungStatus(bestellung);
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("updateBestellungStatus/{id}/{status}")
+    public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
+        BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
+        return _bestellungen.updateBestellungStatus(dto);
     }
+
 
     @GET
     @Path("checkForUserOrders/{kundennummer}")
-    public List checkForUserOrders(@PathParam("kundennummer") int kundennummer)
-    {
+    public List checkForUserOrders(@PathParam("kundennummer") int kundennummer) {
         return bestellungRepository.checkForUserOrders(kundennummer);
     }
 
     @GET
     @Path("getProduktUndAnzahl/{id}")
-    public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
+    public List getProduktUndAnzahl(@PathParam("id") int id) {
+        return _bestellungen.getProduktUndAnzahl(id);
+    }
 }

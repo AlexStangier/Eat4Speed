@@ -1,5 +1,6 @@
 package de.eat4speed.services.interfaces;
 
+import de.eat4speed.dto.BestellungUpdateDto;
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.dto.StatisticDtoWrapper;
@@ -58,7 +59,7 @@ public interface IBestellungService {
 
     List getRestaurantBestellungen(String email);
 
-    Response updateBestellungStatus(Bestellung bestellung);
+    Response updateBestellungStatus(BestellungUpdateDto bestellung);
 
     List getProduktUndAnzahl(int id);
 
