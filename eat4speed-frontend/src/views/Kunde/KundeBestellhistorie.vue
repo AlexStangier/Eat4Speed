@@ -36,7 +36,27 @@
               <v-tab title="Abgeschlossen">
                 <p>Abgeschlossen</p>
               </v-tab>
-              <v-tab-item>sadf
+              <v-tab-item>
+                <v-list>
+                  <v-list-item v-for="itemAbgeschlossen in abgeschlosseneBestellungen" v-bind:key="itemAbgeschlossen.id" class="mb-12">
+                    <v-col cols="8" style="background-color: lightsteelblue">
+                      <v-card-title>#{{ itemAbgeschlossen.id }} Bestelldatum: {{ itemAbgeschlossen.date }}</v-card-title>
+                      <v-card-text>{{ itemAbgeschlossen.products }}</v-card-text>
+                      <v-card-text>{{ itemAbgeschlossen.count }}x</v-card-text>
+                      <div class="text-right">{{ itemAbgeschlossen.price }} €</div>
+                    </v-col>
+                    <div>
+                      <v-btn
+                          class="ml-1"
+                          color="red"
+                          tile
+                      >
+                        nochmal Bestellen
+                      </v-btn>
+                       geht noch nicht
+                    </div>
+                  </v-list-item>
+                </v-list>
               </v-tab-item>
               <v-tab title="Storniert">
                 <p>Storniert</p>
@@ -112,6 +132,7 @@ export default {
   created() {
     this.loadBestellungenOffen();
     this.loadBestellungenStorniert();
+    this.loadBestellungenAbgeschlossen();
     this.countDownTimer();
   },
   methods: {
@@ -183,8 +204,35 @@ export default {
       }
 
       console.log(ResponseBestellungen)
-    }
-    ,
+    },
+    async loadBestellungenAbgeschlossen() {
+
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'abgeliefert/' + this.$store.getters.getLoginData.auth.username);
+
+      let anzahl = ResponseBestellungen.data.length.toString();
+
+      console.log(anzahl)
+      let itemAbgeschlossen;
+      for (let i = 0; i < anzahl; i++) { // outer loop
+
+
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+
+        itemAbgeschlossen = {
+          id: (ResponseBestellungen.data[i][0]),
+          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          date: (ResponseBestellungen.data[i][1]),
+          products: (ResponseProdukte.data[0][0]),
+          count: (ResponseProdukte.data[0][1]),
+          zahl_number: (ResponseBestellungen.data[i][4])
+        }
+
+        this.abgeschlosseneBestellungen.push(itemAbgeschlossen)
+
+      }
+
+      console.log(ResponseBestellungen)
+    },
     countDownTimer() {
       if (this.number > 0) {
         setTimeout(() => {
@@ -208,8 +256,8 @@ export default {
 
     async changeBestellungStatus(bestellID) {
       let bestellung = {
-        status: 'storniert',
-        bestell_ID: bestellID
+        bestell_ID: bestellID,
+        status: 'storniert'
       }
       try {
         await axios.put("/Bestellung/updateBestellungStatus", bestellung);
@@ -231,6 +279,7 @@ export default {
     return {
       offeneBestellungen: [],
       stornierteBestellungen: [],
+      abgeschlosseneBestellungen: [],
       number: 300,
       dialog: false,
       accepted: false,
