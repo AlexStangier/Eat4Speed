@@ -1,20 +1,3 @@
-PASTEBIN
-API
-TOOLS
-FAQ
-paste
-LOGIN SIGN UP
-SHARE
-TWEET
-Guest User
-Untitled
-A GUEST
-JUN 13TH, 2021
-3
-24 HOURS
-Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
-19.54 KB
-
 <template>
   <v-main>
     <v-container
@@ -63,10 +46,11 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                         class="html-editor-align-right" small="true" right
-                          @mousedown="deleteFromFavorites"
-                          v-bind="attrs"
-                          v-on="on"
+                         class="html-editor-align-right" small right
+                         @mousedown="deleteFromFavorites"
+                         v-bind="attrs"
+                         v-on="on"
+                         icon
                       >
                         <v-icon>mdi-heart</v-icon>
                       </v-btn>
@@ -78,10 +62,11 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                          small="true" right
+                          small right
                           @mousedown="addToFavorites"
                           v-bind="attrs"
                           v-on="on"
+                          icon
                       >
                         <v-icon>mdi-heart-outline</v-icon>
                       </v-btn>
@@ -144,10 +129,20 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                               :items="test123"
                               :items-per-page="5"
                               class="elevation-1"
-                          ></v-data-table>
+                          >
+                            <template v-slot:item.reviewRating="{ item }">
+                              <v-rating
+                                  readonly
+                                  :value="item.reviewRating"
+                              >
+                              </v-rating>
+                            </template>
+                          </v-data-table>
 
                           <v-divider></v-divider>
-                          <v-card-actions>
+                          <v-card-actions
+                              v-if="isUserLoggedIn"
+                          >
                             <v-rating
                                 x-large
                                 v-model="userRating"
@@ -155,11 +150,14 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                             >
                             </v-rating>
                           </v-card-actions>
-                          <v-card-actions>
+                          <v-card-actions
+                              v-if="isUserLoggedIn"
+                          >
                             <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
                           </v-card-actions>
                           <v-card-actions class="justify-end">
                             <v-btn
+                                v-if="isUserLoggedIn"
                                 @click="addBewertung"
                                 @mouseup="dialog.value = false"
                                 color="primary"
@@ -250,19 +248,40 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
         </v-card-title>
         <v-divider></v-divider>
 
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gericht gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
+        </v-card>
+
         <v-virtual-scroll
             :items="items"
-            :item-height="200"
-            max-height="500"
+            :item-height="210"
+            max-height="450"
             :key="version"
         >
           <template v-slot:default="{ item }">
-
             <v-card
                 flat
                 tile
             >
-              <v-container class="pa-1">
+              <v-container v-if="amountGerichte === 0">
+                <v-card>
+
+                </v-card>
+              </v-container>
+              <v-container>
                 <v-row>
                   <v-col
                       cols="4"
@@ -310,7 +329,7 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                             flat
                         >
                           <v-btn
-                              small="true"
+                              small
                               bottom="bottom"
                               color="primary"
                               tile
@@ -322,6 +341,7 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
 
                           <v-menu
                               bottom
+                              left
                               offset-y
                               :close-on-content-click="false"
                           >
@@ -329,7 +349,7 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                               <v-btn
                                   v-bind="attrs"
                                   v-on="on"
-                                  small="true"
+                                  small
                                   bottom="bottom"
                                   class="ml-1"
                                   color="primary"
@@ -349,8 +369,9 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
                                 <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field> <!--TODO-->
                               </v-list-item>
                               <v-btn
+                                  :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
                                   @click="addToCart()"
-                                  small="small"
+                                  small
                                   color="primary"
                                   tile
                               >
@@ -366,7 +387,6 @@ Not a member of Pastebin yet? Sign Up, it unlocks many cool features!
               </v-container>
             </v-card>
             <v-divider></v-divider>
-
           </template>
         </v-virtual-scroll>
 
@@ -382,28 +402,42 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   async created() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
+    await this.checkLoggedInUser();
     await this.getLoggedInKunde()
     this.loadRestaurant();
     this.displayGetraenke = false;
     this.loadGerichte();
     this.loadBewertungen();
+    this.user = this.$cookies.get('emailAdresse');
   },
   methods: {
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
+    },
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
-      this.currentKunde_ID = response.data[0];
+      if(this.isUserLoggedInBoolean)
+      {
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        this.currentKunde_ID = response.data[0];
+      }
     },
     async loadRestaurant() {
 
       this.restaurantIsFav = false;
-      const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
-      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+
+      if(this.isUserLoggedInBoolean)
       {
-        let favData = ResponseFavoriten.data[i];
-        if(this.selectedRestaurant_ID === favData[0])
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
+        for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
-          this.restaurantIsFav = true;
+          let favData = ResponseFavoriten.data[i];
+          if(this.selectedRestaurant_ID === favData[0])
+          {
+            this.restaurantIsFav = true;
+          }
         }
       }
 
@@ -423,16 +457,19 @@ export default {
         this.restaurantBewertungCount = ResponseBewertung.data[0][1];
       }
 
+      if(this.isUserLoggedInBoolean)
+      {
+        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+        if(ResponseEntfernung.data.length>0)
+        {
+          this.entfernung = ResponseEntfernung.data[0];
+        }
+      }
+
       const config = { responseType:"arraybuffer" };
       const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.selectedRestaurant_ID,config);
 
       //console.log(responsePicture);
-
-      const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
-      if(ResponseEntfernung.data.length>0)
-      {
-        this.entfernung = ResponseEntfernung.data[0];
-      }
 
       if(responsePicture.status !== 204)
       {
@@ -508,6 +545,7 @@ export default {
       this.version++;
     },
     async loadBewertungen() {
+      this.test123 = [];
 
       const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
 
@@ -520,12 +558,15 @@ export default {
         this.test123.push({ reviewRating: bewertungData[3], reviewComment: bewertungData[4], reviewUsername: bewertungData[6] });
       }
 
-      const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
-
-      if(responseBewertung.data.length>0)
+      if(this.isUserLoggedInBoolean)
       {
-        this.userRating = responseBewertung.data[0][3];
-        this.userComment = responseBewertung.data[0][4];
+        const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+
+        if(responseBewertung.data.length>0)
+        {
+          this.userRating = responseBewertung.data[0][3];
+          this.userComment = responseBewertung.data[0][4];
+        }
       }
 
       this.amountReviews = 0;
@@ -533,6 +574,11 @@ export default {
       this.versionreview++;
     },
     async addBewertung(){
+      if(!this.isUserLoggedInBoolean)
+      {
+        alert("Sie müssen sich einloggen, um eine Bewertung hinzufügen zu können!")
+        return;
+      }
 
       var today = new Date();
 
@@ -579,12 +625,22 @@ export default {
       this.selectedItem = item;
     },
     async addToFavorites() {
+      if(!this.isUserLoggedInBoolean)
+      {
+        alert("Sie müssen sich einloggen, um Restaurants zu Ihren Favoriten hinzufügen zu können!");
+        return;
+      }
+
+      if(this.restaurantBestellradius<this.entfernung)
+      {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
       var today = new Date();
       const restaurantFavorite = {
         restaurant_ID: this.selectedRestaurant_ID,
         kundennummer: this.currentKunde_ID,
         hinzufuegedatum: today,
-        //TODO get anzahl_Bestellungen from Database
         anzahl_Bestellungen: 0
       }
 
@@ -597,12 +653,14 @@ export default {
     },
     addToCart() {
 
-      if(this.restaurantBestellradius<this.entfernung)
+      if(this.isUserLoggedInBoolean)
       {
-        alert("Sie befinden sich außerhalb des Bestellradius")
-        return;
+        if(this.restaurantBestellradius<this.entfernung)
+        {
+          alert("Sie befinden sich außerhalb des Bestellradius")
+          return;
+        }
       }
-
       //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
@@ -622,6 +680,7 @@ export default {
     selectedGericht_ID:"",
     selectedItem: "",
     gerichtAnzahl: 0,
+    isUserLoggedInBoolean: false,
     restaurantBewertungCount:0,
     displayGetraenke:"",
     names: [],
@@ -662,12 +721,23 @@ export default {
         sortable: false,
         value: 'reviewComment',
       },
+      {
+        text: 'Bewertung',
+        sortable: true,
+        value: 'reviewRating',
+      },
+      {
+        text: 'Benutzer',
+        sortable: false,
+        value: 'reviewUsername'
+      }
     ],
     countMinMaxRule:[
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
-      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+      v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     btnType: 0,
+    user: 0,
   }),
 
 
@@ -693,6 +763,9 @@ export default {
           rating: crating,
         }
       })
+    },
+    isUserLoggedIn() {
+      return this.user !== undefined;
     },
   }
 }

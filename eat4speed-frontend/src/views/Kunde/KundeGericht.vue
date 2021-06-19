@@ -4,7 +4,14 @@
       <v-row>
         <v-col cols="1"
         >
-          <v-btn small @click="returnToPreviousView">Zurück</v-btn>
+          <v-btn
+              color="primary"
+              tile
+              small
+              @click="returnToPreviousView"
+          >
+            Zurück
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -39,12 +46,13 @@
                   <v-content v-if="b === 10 & c === 1" class="text-center">
                     <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
                   </v-content>
-                  <v-content v-if="b === 10 & c === 2" class="text-center">
-                    Preis
-                    {{ gerichtPreis + '&euro;' }}
+                  <v-content v-if="b === 10 & c === 2" class="text-right">
+                    Preis:
+                    {{ (gerichtPreis * gerichtAnzahl) + ' &euro;' }}
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
                     <v-btn
+                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
                         small
                         @click="addToCart"
                         color="primary"
@@ -65,6 +73,7 @@
                 flat
                 outlined
                 tile
+                min-height="150"
             >
               {{ gerichtBeschreibung }}
             </v-card>
@@ -86,10 +95,18 @@ export default {
     this.loadGericht();
   },
   methods: {
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
+    },
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
-      this.loggedInKunde_ID = response.data[0];
+      if(this.isUserLoggedInBoolean)
+      {
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        this.loggedInKunde_ID = response.data[0];
+      }
     },
     async loadGericht() {
       const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID);
@@ -108,10 +125,13 @@ export default {
         this.restaurantMindestbestellwert = gerichtData[7];
         this.restaurantBestellradius = gerichtData[8];
 
-        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID);
-        if(ResponseEntfernung.data.length>0)
+        if(this.isUserLoggedInBoolean)
         {
-          this.entfernung = ResponseEntfernung.data[0];
+          const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID);
+          if(ResponseEntfernung.data.length>0)
+          {
+            this.entfernung = ResponseEntfernung.data[0];
+          }
         }
       }
 
@@ -144,10 +164,13 @@ export default {
 
     },
     addToCart() {
-      if(this.restaurantBestellradius<this.entfernung)
+      if(this.isUserLoggedInBoolean)
       {
-        alert("Sie befinden sich außerhalb des Bestellradius")
-        return;
+        if(this.restaurantBestellradius<this.entfernung)
+        {
+          alert("Sie befinden sich außerhalb des Bestellradius")
+          return;
+        }
       }
 
       let cartGericht = {
@@ -179,9 +202,10 @@ export default {
   data: () => ({
     gerichtName: "",
     loggedInKunde_ID: "",
+    isUserLoggedInBoolean: false,
     gerichtBeschreibung: "",
     gerichtBild: "",
-    gerichtPreis: 0.0,
+    gerichtPreis: 1.0,
     gerichtVerfuegbar: "",
     gerichtAnzahl: 1,
     cartGerichte: "",
@@ -194,7 +218,7 @@ export default {
     version: 0,
     countMinMaxRule:[
         v => (v && v >= 1) || "Bestellungen müssen größer als 1 sein",
-        v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+        v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
 
   }),

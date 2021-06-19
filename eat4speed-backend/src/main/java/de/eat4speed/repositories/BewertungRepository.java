@@ -69,6 +69,23 @@ public class BewertungRepository implements PanacheRepository<Bewertung> {
     }
 
     @Transactional
+    public List getAverageBewertungAndCountBewertungAllRestaurants()
+    {
+        List bewertungData;
+
+        Query query = entityManager.createQuery(
+                "SELECT AVG(b.sterne), count(b.sterne), r.restaurant_ID  " +
+                        "FROM Bewertung b, Restaurant r " +
+                        "WHERE b.restaurant_ID = r.restaurant_ID " +
+                        "GROUP BY r.restaurant_ID"
+        );
+
+        bewertungData = query.getResultList();
+
+        return bewertungData;
+    }
+
+    @Transactional
     public List getAverageBewertungAndCountBewertungByRestaurant_ID(int restaurant_ID)
     {
         List bewertungData;

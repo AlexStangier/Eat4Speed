@@ -49,6 +49,7 @@
       >
         <template v-slot:activator="{ on, attrs}">
           <v-btn
+              v-if="isUserLoggedIn"
               v-bind="attrs"
               v-on="on"
               class="ml-3"
@@ -74,20 +75,6 @@
               >
                 <v-icon>mdi-heart</v-icon>
                 Favoriten
-              </v-content>
-            </v-btn>
-          </v-list-item>
-          <v-list-item>
-            <v-btn
-                text
-                tile
-                width="200"
-            >
-              <v-content
-                  class="text-left"
-              >
-                <v-icon>mdi-map-clock</v-icon>
-                Lieferansicht
               </v-content>
             </v-btn>
           </v-list-item>

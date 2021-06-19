@@ -16,7 +16,7 @@
                   v-model="selectedBewertung"
                   label="Bewertung"
                   :items="selectRating"
-                  clearable="true"
+                  clearable
                   @change="applyBewertungFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -36,7 +36,8 @@
                   v-model="selectedEntfernung"
                   label="Entfernung"
                   :items="selectArea"
-                  clearable="true"
+                  :disabled="!isUserLoggedInBoolean"
+                  clearable
                   @change="applyDistanceFilterAndSearch"
               >
                 <template v-slot:selection="data">
@@ -97,7 +98,6 @@
                       <v-checkbox
                           label="Mindestbestellwert benutzen"
                           v-model="mindestbestellwertOptionActive"
-                          :disabled="!nameOptionActive"
                       ></v-checkbox>
                       <v-slider
                           v-model="selectedMindestbestellwert"
@@ -125,7 +125,6 @@
                       <v-checkbox
                           label="Kategorien benutzen"
                           v-model="kategorieOptionActive"
-                          :disabled="!nameOptionActive"
                       ></v-checkbox>
                       <v-select
                           ref="KategorieSelect"
@@ -138,7 +137,20 @@
                           block
                           :key="kategorieVersion"
                           v-if="kategorieOptionActive"
-                      ></v-select>
+                      >
+                        <template v-slot:selection="{ item, index}">
+                          <v-chip
+                              v-if="index < 3"
+                          >
+                            <span>{{ item }}</span>
+                          </v-chip>
+                          <v-chip
+                              v-if="index === 3"
+                          >
+                            (+ {{ selectedKategorien.length - 3 }} andere)
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-list-item>
                   <v-subheader
@@ -151,7 +163,6 @@
                       <v-checkbox
                           label="Allergene benutzen"
                           v-model="allergeneOptionActive"
-                          :disabled="!nameOptionActive"
                       ></v-checkbox>
                       <v-select
                           ref="AllergeneSelect"
@@ -164,7 +175,20 @@
                           block
                           :key="allergeneVersion"
                           v-if="allergeneOptionActive"
-                      ></v-select>
+                      >
+                        <template v-slot:selection="{ item, index}">
+                          <v-chip
+                              v-if="index < 3"
+                          >
+                            <span>{{ item }}</span>
+                          </v-chip>
+                          <v-chip
+                              v-if="index === 3"
+                          >
+                            (+ {{ selectedAllergene.length - 3 }} andere)
+                          </v-chip>
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-list-item>
                   <v-container>
@@ -175,7 +199,6 @@
                         <v-btn
                             color="error"
                             tile
-                            :disabled="!nameOptionActive"
                             @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
                         >
                           Filter löschen
@@ -187,7 +210,6 @@
                         <v-btn
                             color="primary"
                             tile
-                            :disabled="!nameOptionActive"
                             @click="applyFiltersAndSearch"
                         >
                           Filter anwenden
@@ -205,9 +227,16 @@
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
           <v-divider></v-divider>
+          <v-card
+              v-if="amountGerichte === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Gerichte gefunden
+          </v-card>
           <v-virtual-scroll
               :items="items"
-              :item-height="250"
+              :item-height="260"
               max-height="650"
           >
             <template v-slot:default="{ item }" v-resize>
@@ -216,7 +245,7 @@
                   flat
                   tile
               >
-                <v-container class="pa-1">
+                <v-container>
                   <v-row>
                     <v-col
                         cols="3"
@@ -261,6 +290,13 @@
                           <v-card
                               v-if="a === 2"
                               flat
+                              class="text-left"
+                          >
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
                               class="subtitle-1"
                           >
                             Entfernung: {{item.distance+' km'}}
@@ -293,7 +329,7 @@
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
                                       @mouseenter="selectItem(item)"
-                                      small="true"
+                                      small
                                       right
                                       @mousedown="deleteFromFavorites"
                                       @mouseup="()=>{this.amountGerichte=0;version++}"
@@ -311,7 +347,7 @@
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                      @mouseenter="selectItem(item)"  small="true" right
+                                      @mouseenter="selectItem(item)"  small right
                                       @mousedown="addToFavorites"
                                       @mouseup="()=>{this.amountGerichte=0;version++}"
                                       v-bind="attrs"
@@ -346,7 +382,7 @@
                               class="text-right"
                           >
                               <v-btn
-                                  small="true"
+                                  small
                                   color="primary"
                                   tile
                                   :to="{name: 'Gericht'}"
@@ -355,7 +391,7 @@
                                 Details
                               </v-btn>
                               <v-btn
-                                  small="true"
+                                  small
                                   class="ml-1"
                                   color="primary"
                                   tile
@@ -371,7 +407,7 @@
                                 <v-btn
                                     v-bind="attrs"
                                     v-on="on"
-                                    small="small"
+                                    small
                                     class="ml-1"
                                     color="primary"
                                     tile
@@ -452,7 +488,7 @@
                                 <v-btn
                                     v-bind="attrs"
                                     v-on="on"
-                                    small="true"
+                                    small
                                     class="ml-1"
                                     color="primary"
                                     tile
@@ -472,9 +508,10 @@
                                 </v-list-item>
                                 <v-btn
                                     @click="addToCart()"
-                                    small="small"
+                                    small
                                     color="primary"
                                     tile
+                                    :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
                                 >
                                   Zum Warenkorb hinzufügen
                                 </v-btn>
@@ -506,8 +543,9 @@ export default {
     this.searchOptions = this.$store.getters.searchOptions;
 
     //console.log(this.searchString);
+    await this.checkLoggedInUser();
     await this.getLoggedInKunde();
-    await this.getAllEntfernungen();
+    await this.getAllEntfernungenAndBewertungen();
     this.loadGerichte();
   },
   beforeRouteLeave(to, from, next) {
@@ -516,18 +554,36 @@ export default {
     next();
   },
   methods: {
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
+    },
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
-      this.loggedInKunde_ID = response.data[0];
-    },
-    async getAllEntfernungen()
-    {
-      const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
-      for(let i = 0; i<responseEntfernungen.data.length; i++)
+      if(this.isUserLoggedInBoolean)
       {
-        this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
-        this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+        this.loggedInKunde_ID = response.data[0];
+      }
+
+    },
+    async getAllEntfernungenAndBewertungen()
+    {
+      if(this.isUserLoggedInBoolean)
+      {
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
+        for(let i = 0; i<responseEntfernungen.data.length; i++)
+        {
+          this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
+          this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+        }
+      }
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
+      for(let i = 0; i<ResponseBewertungen.data.length;i++)
+      {
+        this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
+        this.bewertungRestaurants[i] = ResponseBewertungen.data[i][2];
       }
     },
     selectItem(item) {
@@ -637,6 +693,11 @@ export default {
 
     },
     async addToFavorites() {
+      if(!this.isUserLoggedInBoolean)
+      {
+        alert("Sie müssen sich einloggen, um Favoriten hinzufügen zu können!")
+        return;
+      }
 
       if(this.selectedItem.bestellradius<this.selectedItem.distance)
       {
@@ -660,17 +721,19 @@ export default {
     },
     async loadGerichte() {
 
+      this.gericht_IDs = [];
       this.favoritenlisteGerichte_IDs=[];
       this.hinzufuegedaten=[];
-
-      const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
-
-      //console.log(ResponseFavoriten);
-      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      if(this.isUserLoggedInBoolean)
       {
-        let favData = ResponseFavoriten.data[i];
-        this.favoritenlisteGerichte_IDs[i] = favData[0];
-        this.hinzufuegedaten[i]= favData[7];
+        const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        //console.log(ResponseFavoriten);
+        for(let i = 0; i < ResponseFavoriten.data.length; i++)
+        {
+          let favData = ResponseFavoriten.data[i];
+          this.favoritenlisteGerichte_IDs[i] = favData[0];
+          this.hinzufuegedaten[i]= favData[7];
+        }
       }
 
       const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
@@ -708,6 +771,17 @@ export default {
         {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
+        }
+        console.log(this.bewertungRestaurants);
+
+        if(this.bewertungRestaurants.includes(gerichtData[5])===true)
+        {
+          let index = this.bewertungRestaurants.indexOf(gerichtData[5]);
+          this.restaurantBewertungen[i] = this.bewertungAvgUnassigned[index];
+        }
+        else
+        {
+          this.restaurantBewertungen[i] = 0;
         }
 
         let index = this.distanceRestaurant_IDs.indexOf(gerichtData[5]);
@@ -882,12 +956,14 @@ export default {
     },
     addToCart() {
 
-      if(this.selectedItem.bestellradius<this.selectedItem.distance)
+      if(this.isUserLoggedInBoolean)
       {
-        alert("Sie befinden sich außerhalb des Bestellradius")
-        return;
+        if(this.selectedItem.bestellradius<this.selectedItem.distance)
+        {
+          alert("Sie befinden sich außerhalb des Bestellradius")
+          return;
+        }
       }
-
       //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
@@ -906,7 +982,10 @@ export default {
     loggedInKunde_ID: 0,
     amountGerichte: 4,
     selectedGericht_ID: "",
+    isUserLoggedInBoolean: false,
     selectedItem: "",
+    bewertungAvgUnassigned: [],
+    bewertungRestaurants: [],
     version: 0,
     kategorieVersion: 0,
     allergeneVersion: 0,
@@ -946,7 +1025,7 @@ export default {
     selectArea: [5,10,20,30,40],
     countMinMaxRule:[
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
-      v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
+      v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
   }),
   computed: {
@@ -966,6 +1045,7 @@ export default {
         const cisFav = this.isFavorite[i]
         const chinzufuegedatum = this.hinzufuegedatumAssigned[i]
         const cbestellradius = this.bestellradius[i]
+        const cbewertung = this.restaurantBewertungen[i]
         i++;
 
         return {
@@ -981,7 +1061,8 @@ export default {
           available: cavailable,
           isFav: cisFav,
           hinzufuegedatum: chinzufuegedatum,
-          bestellradius: cbestellradius
+          bestellradius: cbestellradius,
+          rating: cbewertung
         }
       })
     }

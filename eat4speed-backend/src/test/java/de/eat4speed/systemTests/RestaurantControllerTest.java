@@ -10,6 +10,7 @@ import de.eat4speed.repositories.RestaurantRepository;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -64,6 +65,7 @@ public class RestaurantControllerTest {
     }
 
     @Test  // TST010 (1)
+    @TestSecurity(authorizationEnabled = false)
     void trySetOrderRadius() {
         Restaurant restaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
         restaurant.setBestellradius(10);
@@ -80,6 +82,7 @@ public class RestaurantControllerTest {
     }
 
     @Test  // TST010 (2)
+    @TestSecurity(authorizationEnabled = false)
     void trySetInvalidOrderRadius() {
         Restaurant restaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
         restaurant.setBestellradius(-1);
@@ -93,6 +96,7 @@ public class RestaurantControllerTest {
     }
 
     @Test  // TST011 (1)
+    @TestSecurity(authorizationEnabled = false)
     void trySetMinimumOrderValue() {
         Restaurant restaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
         restaurant.setMindestbestellwert(20);
@@ -109,6 +113,7 @@ public class RestaurantControllerTest {
     }
 
     @Test  // TST011 (2)
+    @TestSecurity(authorizationEnabled = false)
     void trySetInvalidMinimumOrderValue() {
         Restaurant restaurant = _restaurantRepository.findByRestaurantnummer(this.mockRestaurantId);
         restaurant.setMindestbestellwert(-1);

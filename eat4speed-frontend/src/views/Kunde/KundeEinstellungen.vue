@@ -12,7 +12,7 @@
             <v-col>
               <v-text-field
                   v-model="firstname"
-                  :rules="[rules.required]"
+                  :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Vorname"
                   required
               ></v-text-field>
@@ -20,7 +20,7 @@
             <v-col>
               <v-text-field
                   v-model="lastname"
-                  :rules="[rules.required]"
+                  :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Nachname"
                   required
               ></v-text-field>
@@ -160,7 +160,7 @@ export default {
   methods: {
     async loadEinstellungen() {
 
-      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$cookies.get('emailAdresse'));
       let EinstellungenData = ResponseEinstellungen.data[0];
 
       console.log(ResponseEinstellungen);
@@ -342,7 +342,8 @@ export default {
     show1: false,
     rules: {
       required: value => !!value || "Required.",
-      min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+      min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+      lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
     },
     place: '',
     zip: '',

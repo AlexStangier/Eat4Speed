@@ -1,6 +1,5 @@
 package de.eat4speed.repositories;
 
-import de.eat4speed.entities.Gericht;
 import de.eat4speed.entities.Oeffnungszeiten;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
@@ -45,4 +44,8 @@ public class OeffnungszeitenRepository implements PanacheRepository<Oeffnungszei
         return allZeiten;
     }
 
+    @Transactional
+    public Oeffnungszeiten getOeffnungszeitenById(int openingHoursId) {
+        return find("Oeffnungszeiten_ID", openingHoursId).firstResult();
+    }
 }

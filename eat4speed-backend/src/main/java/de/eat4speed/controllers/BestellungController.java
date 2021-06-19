@@ -2,6 +2,8 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.dto.*;
 import de.eat4speed.entities.Bestellung;
+import de.eat4speed.repositories.BestellungRepository;
+import de.eat4speed.repositories.RestaurantRepository;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
@@ -9,6 +11,8 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,6 +21,9 @@ public class BestellungController {
 
     @Inject
     IBestellungService _bestellungen;
+
+    @Inject
+    BestellungRepository bestellungRepository;
 
     @POST
     @PermitAll
@@ -67,10 +74,45 @@ public class BestellungController {
     @PUT
     @Path("updateBestellungStatus")
     public Response updateBestellungStatus(Bestellung bestellung) {
-        return _bestellungen.updateBestellungStatus(bestellung);
+
+        Response response = _bestellungen.updateBestellungStatus(bestellung);
+
+        try {
+            URL url = new URL("http://localhost:1337/FahrerAuswahl/start/" + bestellung.getAuftrags_ID());
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("PUT");
+            http.setDoOutput(false);
+            http.setReadTimeout(10);
+            http.getInputStream();
+            http.disconnect();
+        } catch (Exception e) {
+        }
+
+        return response;
+    }
+
+    @GET
+    @Path("checkForUserOrders/{kundennummer}")
+    public List checkForUserOrders(@PathParam("kundennummer") int kundennummer)
+    {
+        return bestellungRepository.checkForUserOrders(kundennummer);
     }
 
     @GET
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String get(){
+        return _bestellungen.listAll().toString();
+    }
+
+    @GET
+    @Path("/{Auftrag_ID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@PathParam("Auftrag_ID") int Auftrag_ID) {
+
+        return Response.ok().entity(_bestellungen.getGerichteByAuftragID(Auftrag_ID).get(0)).build();
+    }
 }

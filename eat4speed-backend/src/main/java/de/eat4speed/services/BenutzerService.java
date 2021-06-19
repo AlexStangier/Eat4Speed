@@ -132,6 +132,16 @@ public class BenutzerService implements IBenutzerService {
         return _benutzer.getRestaurant_IDByBenutzername(username);
     }
 
+    @Override
+    public String getRoleById(long id) {
+        try {
+            return _benutzer.getRoleById(id);
+        } catch (Exception e) {
+            return "";
+        }
+
+    }
+
     private boolean isAnyFieldEmpty(Benutzer benutzer) {
         return benutzer.getBenutzername().isEmpty()
                 || benutzer.getPasswort().isEmpty()
@@ -149,5 +159,7 @@ public class BenutzerService implements IBenutzerService {
         }
         return true;
     }
+
+
 }
 

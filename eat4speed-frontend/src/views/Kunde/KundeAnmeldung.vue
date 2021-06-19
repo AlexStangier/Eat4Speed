@@ -44,18 +44,18 @@
               <v-tab-item>
                 <v-card class="px-4">
                   <v-card-text>
-                    <v-form ref="registerForm" v-model="valid" lazy-validation>
+                    <v-form ref="registerForm" v-model="isFormValid">
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
-                          <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
+                          <v-text-field v-model="salutation" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Anrede"
                                         maxlength="20" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="firstName" :rules="[rules.required]" label="Vorname"
+                          <v-text-field v-model="firstName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Vorname"
                                         maxlength="20" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="lastName" :rules="[rules.required]" label="Nachname" maxlength="20"
+                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="20"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
@@ -96,21 +96,22 @@
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'Passwort'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'Passwort'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
                           <v-btn color="primary"
                                  depressed tile
-                                 :disabled="!valid"
-                                 @click="validate">Register</v-btn>
+                                 :disabled="!isFormValid"
+                                 @click="validate">Register
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -169,143 +170,142 @@ export default {
     },
     async validate() {
 
-      if (this.$refs.loginForm.validate()) {
-        console.log("test");
+      console.log(this.valid);
 
-        var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
+      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
-        console.log(response.data.features[0].geometry.coordinates[0]);
-        console.log(response.data.features[0].geometry.coordinates[1]);
+      console.log(response.data.features[0].geometry.coordinates[0]);
+      console.log(response.data.features[0].geometry.coordinates[1]);
 
-        this.lng = response.data.features[0].geometry.coordinates[0];
-        this.lat = response.data.features[0].geometry.coordinates[1];
+      this.lng = response.data.features[0].geometry.coordinates[0];
+      this.lat = response.data.features[0].geometry.coordinates[1];
 
-        // Left_Bound: 47.698507, 7.510900
-        // Right_Bound: 47.667483, 9.212988
-        // Bottom_Bound: 47.533674, 7.687273
-        // Upper_Bound: 48.720036, 7.963793
+      // Left_Bound: 47.698507, 7.510900
+      // Right_Bound: 47.667483, 9.212988
+      // Bottom_Bound: 47.533674, 7.687273
+      // Upper_Bound: 48.720036, 7.963793
 
-        if (this.lng > 7.510900 && this.lng < 9.212988 && this.lat > 47.533674 && this.lat < 48.720036) {
+      if (this.lng > 7.510900 && this.lng < 9.212988 && this.lat > 47.533674 && this.lat < 48.720036) {
 
-          var benutzer = {
-            vorname: this.firstName,
-            nachname: this.lastName,
-            benutzername: this.username,
-            emailAdresse: this.email,
-            passwort: this.password,
-            telefonnummer: this.phoneNumber,
-            rolle: "kunde",
-            paypal_Account: this.paypal
-          };
+        var benutzer = {
+          vorname: this.firstName,
+          nachname: this.lastName,
+          benutzername: this.username,
+          emailAdresse: this.email,
+          passwort: this.password,
+          telefonnummer: this.phoneNumber,
+          rolle: "kunde",
+          paypal_Account: this.paypal
+        };
 
-          const responseBenutzer = await axios.post("/Benutzer", benutzer);
+        const responseBenutzer = await axios.post("/Benutzer", benutzer);
 
-          this.benutzer_ID = responseBenutzer.data.benutzer_ID;
+        this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
 
-          var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat");
+        var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat");
 
-          if (responseRestaurantsLngLat.data.length > 0) {
-            for (let i = 0; i < responseRestaurantsLngLat.data.length; i++) {
-              let resData = responseRestaurantsLngLat.data[i];
+        if (responseRestaurantsLngLat.data.length > 0) {
+          for (let i = 0; i < responseRestaurantsLngLat.data.length; i++) {
+            let resData = responseRestaurantsLngLat.data[i];
 
-              this.restaurant_IDs[i] = resData[0];
-              this.restaurantLngs[i] = resData[1];
-              this.restaurantLats[i] = resData[2];
+            this.restaurant_IDs[i] = resData[0];
+            this.restaurantLngs[i] = resData[1];
+            this.restaurantLats[i] = resData[2];
 
-              let entry = [];
-              entry[0] = resData[1];
-              entry[1] = resData[2];
+            let entry = [];
+            entry[0] = resData[1];
+            entry[1] = resData[2];
 
-              this.targets[i] = entry;
+            this.targets[i] = entry;
 
-            }
-
-            this.entry[0] = this.lng;
-            this.entry[1] = this.lat;
-
-            this.sources[0] = this.entry;
-
-            let config = {
-              headers: {
-                'Content-Type': 'application/json',
-              }
-            }
-
-            var data = {
-              mode: "drive",
-              sources: this.sources,
-              targets: this.targets
-            }
-
-            var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
-
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
-
-            for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
-              this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
-            }
-            console.log(this.distances);
           }
 
-          console.log(this.lng);
-          console.log(this.lat);
+          this.entry[0] = this.lng;
+          this.entry[1] = this.lat;
 
-          var adressen = {
-            strasse: this.street,
-            hausnummer: this.houseNumber,
-            ort: this.place,
-            postleitzahl: this.postCode,
-            lng: this.lng,
-            lat: this.lat
-          };
+          this.sources[0] = this.entry;
 
-          const responseAdressen = await axios.post("/Adressen", adressen);
-
-          console.log(responseAdressen);
-          console.log(responseAdressen.data);
-          console.log(responseAdressen.data.adress_ID);
-
-          this.adress_ID = responseAdressen.data.adress_ID;
-
-          var kunde = {
-            benutzer_ID: this.benutzer_ID,
-            anrede: this.salutation,
-            name: this.lastName,
-            vorname: this.firstName,
-            anschrift: this.adress_ID
-          };
-
-          var responseKunde = await axios.post("/Kunde", kunde);
-
-          console.log("somethin something")
-
-          console.log(responseKunde.data.kundennummer);
-          this.kundennummer = responseKunde.data.kundennummer;
-
-          console.log(this.kundennummer);
-          console.log(this.restaurant_IDs);
-          for (let i = 0; i < this.distances.length; i++) {
-            var entfernung = {
-              kundennummer: this.kundennummer,
-              restaurant_ID: this.restaurant_IDs[i],
-              entfernung: this.distances[i]
-            };
-
-            console.log(entfernung);
-
-            await axios.post("/EntfernungKundeRestaurant", entfernung);
+          let config = {
+            headers: {
+              'Content-Type': 'application/json',
+            }
           }
-        } else {
-          this.openSnackbar("Bitte gültiga Adresse eingeben!")
 
+          var data = {
+            mode: "drive",
+            sources: this.sources,
+            targets: this.targets
+          }
+
+          var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
+
+          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
+          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
+
+          for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
+            this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
+          }
+          console.log(this.distances);
         }
 
+        console.log(this.lng);
+        console.log(this.lat);
 
-        // submit form to server/
+        var adressen = {
+          strasse: this.street,
+          hausnummer: this.houseNumber,
+          ort: this.place,
+          postleitzahl: this.postCode,
+          lng: this.lng,
+          lat: this.lat
+        };
+
+        const responseAdressen = await axios.post("/Adressen", adressen);
+
+        console.log(responseAdressen);
+        console.log(responseAdressen.data);
+        console.log(responseAdressen.data.adress_ID);
+
+        this.adress_ID = responseAdressen.data.adress_ID;
+
+        var kunde = {
+          benutzer_ID: this.benutzer_ID,
+          anrede: this.salutation,
+          name: this.lastName,
+          vorname: this.firstName,
+          anschrift: this.adress_ID
+        };
+
+        var responseKunde = await axios.post("/Kunde", kunde);
+
+        console.log("somethin something")
+
+        console.log(responseKunde.data.kundennummer);
+        this.kundennummer = responseKunde.data.kundennummer;
+
+        console.log(this.kundennummer);
+        console.log(this.restaurant_IDs);
+        for (let i = 0; i < this.distances.length; i++) {
+          var entfernung = {
+            kundennummer: this.kundennummer,
+            restaurant_ID: this.restaurant_IDs[i],
+            entfernung: this.distances[i]
+          };
+
+          console.log(entfernung);
+
+          await axios.post("/EntfernungKundeRestaurant", entfernung);
+        }
+      } else {
+        this.openSnackbar("Bitte gültige Adresse eingeben!")
 
       }
+
+
+      // submit form to server/
+
+
     },
     reset() {
       this.$refs.form.reset();
@@ -326,7 +326,7 @@ export default {
         {name: "Registrieren", icon: "mdi-account-outline"}
       ],
       isFormValid: false,
-      valid: true,
+      valid: false,
       salutation: "",
       adress_ID: "",
       benutzer_ID: "",
@@ -369,7 +369,8 @@ export default {
       show1: false,
       rules: {
         required: value => !!value || "Required.",
-        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       }
     }
   }

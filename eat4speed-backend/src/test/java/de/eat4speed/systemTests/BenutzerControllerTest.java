@@ -6,6 +6,7 @@ import de.eat4speed.repositories.BenutzerRepository;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +34,7 @@ public class BenutzerControllerTest {
     BenutzerRepository _benutzerRepository;
 
     @Test  // TST001 (1)
+    @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUser() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
                 "Test", Benutzer.UserRole.KUNDE.toString(), "Test", 123);
@@ -51,6 +53,7 @@ public class BenutzerControllerTest {
     }
 
     @Test  // TST001 (1)
+    @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsRestaurant() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
                 "Test", Benutzer.UserRole.RESTAURANT.toString(), "Test", 123);
@@ -69,6 +72,7 @@ public class BenutzerControllerTest {
     }
 
     @Test  // TST001 (1)
+    @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsAdmin() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
                 "Test", Benutzer.UserRole.ADMIN.toString(), "Test", 123);
@@ -87,6 +91,7 @@ public class BenutzerControllerTest {
     }
 
     @Test  // TST001 (2)
+    @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWhichAlreadyExists() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
                 "Test", Benutzer.UserRole.KUNDE.toString(), "Test", 123);
@@ -102,6 +107,7 @@ public class BenutzerControllerTest {
     }
 
     @Test  // TST001 (3)
+    @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWithIncompleteInfo() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "",
                 "Test", Benutzer.UserRole.KUNDE.toString(), "", 123);
@@ -115,6 +121,7 @@ public class BenutzerControllerTest {
     }
 
     @Test  // TST001 (3)
+    @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWithInvalidRole() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
                 "Test", "invalid", "Test", 123);

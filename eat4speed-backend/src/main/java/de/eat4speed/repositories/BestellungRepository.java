@@ -3,6 +3,7 @@ package de.eat4speed.repositories;
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.*;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import org.json.JSONArray;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -75,6 +76,14 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
         update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
     }
 
+    public JSONArray getGerichteByAuftragID(int id)
+    {
+        Query query = entityManager.createNativeQuery("Select Gericht_IDs from eatforspeed.Bestellung " +
+                "Where Auftrags_ID= " + id);
+
+        return new JSONArray(query.getResultList());
+    }
+
     @Transactional
     public List getProduktUndAnzahl(int id) {
         List getProdutAndAnzahl;
@@ -88,6 +97,22 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "JSON_TABLE(Gericht_IDs, '$[*]' COLUMNS(Gericht_ID INT PATH '$')) json_as_rows where Bestell_ID = ?1 ) ) as A, " +
                         "(select count(Gericht_ID) as Anzahl FROM Bestellung best, " +
                         "JSON_TABLE(Gericht_IDs, '$[*]' COLUMNS(Gericht_ID INT PATH '$')) json_as_rows where Bestell_ID = ?1 group by Gericht_ID) as cnt").setParameter(1, id);
+        getProdutAndAnzahl = query.getResultList();
+        return getProdutAndAnzahl;
+    }
+
+    @Transactional
+    public List checkForUserOrders(int kundennummer) {
+        List getProdutAndAnzahl;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.bestell_ID " +
+                        "FROM Kunde k, Auftrag a, Bestellung b " +
+                        "WHERE k.kundennummer = a.kundennummer " +
+                        "AND a.auftrags_ID = b.auftrags_ID " +
+                        "AND k.kundennummer = ?1"
+        ).setParameter(1,kundennummer);
+
         getProdutAndAnzahl = query.getResultList();
         return getProdutAndAnzahl;
     }

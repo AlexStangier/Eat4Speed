@@ -16,14 +16,14 @@
                   v-model="selectedBewertung"
                   label="Bewertung"
                   :items="selectRating"
-                  clearable="true"
+                  clearable
                   @change="applyBewertungFilterAndSearch"
               >
                 <template v-slot:selection="data">
-                  {{data.item}} {{"Sterne"}}
+                  {{ data.item }} {{ "Sterne" }}
                 </template>
                 <template v-slot:item="data">
-                  {{data.item}} {{"Sterne"}}
+                  {{ data.item }} {{ "Sterne" }}
                 </template>
               </v-select>
             </v-card>
@@ -36,14 +36,15 @@
                   v-model="selectedEntfernung"
                   label="Entfernung"
                   :items="selectArea"
-                  clearable="true"
+                  :disabled="!isUserLoggedInBoolean"
+                  clearable
                   @change="applyDistanceFilterAndSearch"
               >
                 <template v-slot:selection="data">
-                  {{data.item}} {{"km"}}
+                  {{ data.item }} {{ "km" }}
                 </template>
                 <template v-slot:item="data">
-                  {{data.item}} {{"km"}}
+                  {{ data.item }} {{ "km" }}
                 </template>
               </v-select>
             </v-card>
@@ -65,8 +66,15 @@
       </v-container>
       <v-container>
         <v-card class="mx-auto">
-          <v-card-title> Gerichte </v-card-title>
+          <v-card-title> Gerichte</v-card-title>
           <v-divider></v-divider>
+          <v-card
+              v-if="amountRestaurants === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Restaurants gefunden
+          </v-card>
           <v-virtual-scroll
               :items="items"
               :item-height="250"
@@ -79,17 +87,18 @@
                   tile
                   outlined
               >
-                <v-container class="pa-1">
+                <v-container>
                   <v-row>
                     <v-col
                         cols="3"
                     >
                       <v-card
-                      flat
-                      tile
-                      outlined
+                          flat
+                          tile
+                          outlined
                       >
-                        <v-img alt="Bild von Essen" min-height="230" max-height="230" max-width="400" position="center center" :src="item.img"></v-img>
+                        <v-img alt="Bild von Essen" min-height="230" max-height="230" max-width="400"
+                               position="center center" :src="item.img"></v-img>
                       </v-card>
                     </v-col>
                     <v-col>
@@ -98,8 +107,8 @@
                           :key="a"
                       >
                         <v-col
-                          cols="4"
-                          >
+                            cols="4"
+                        >
                           <v-card
                               v-if="a === 1"
                               flat
@@ -119,27 +128,27 @@
                               flat
                               class="subtitle-1"
                           >
-                            Mindestbestellwert: {{item.mindestbestellwert+' €'}}
+                            Mindestbestellwert: {{ item.mindestbestellwert + ' €' }}
                           </v-card>
                           <v-crad
                               v-if="a === 2"
                               flat
                               class="subtitle-1"
                           >
-                            Bestellradius: {{item.bestellradius +' km'}}
+                            Bestellradius: {{ item.bestellradius + ' km' }}
                           </v-crad>
                         </v-col>
                         <v-col>
                           <v-card
-                            v-if="a === 1"
-                            flat
-                            class="text-right"
-                            >
+                              v-if="a === 1"
+                              flat
+                              class="text-right"
+                          >
                             <div v-if="item.isFav === true">
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                      @mouseenter="selectRestaurant(item)"  small="true" right
+                                      @mouseenter="selectRestaurant(item)"  small right
                                       @mousedown="deleteFromFavorites"
                                       @mouseup="()=>{this.amountRestaurants=0;version++}"
                                       v-bind="attrs"
@@ -149,14 +158,14 @@
                                     <v-icon>mdi-heart</v-icon>
                                   </v-btn>
                                 </template>
-                                <span>Hinzugefügt am {{item.hinzufuegedatum}}</span>
+                                <span>Hinzugefügt am {{ item.hinzufuegedatum }}</span>
                               </v-tooltip>
                             </div>
                             <div v-else>
                               <v-tooltip bottom>
                                 <template v-slot:activator="{ on, attrs }">
                                   <v-btn
-                                      @mouseenter="selectRestaurant(item)"  small="true" right
+                                      @mouseenter="selectRestaurant(item)"  small right
                                       @mousedown="addToFavorites"
                                       @mouseup="()=>{this.amountRestaurants=0;version++}"
                                       v-bind="attrs"
@@ -175,17 +184,17 @@
                               flat
                               class="text-right"
                           >
-                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
                           </v-card>
                           <v-card
-                            v-if="a === 3"
-                            flat
-                            class="text-right"
-                            >
+                              v-if="a === 3"
+                              flat
+                              class="text-right"
+                          >
                             <v-btn
                                 color="primary"
                                 tile
-                                small="true"
+                                small
                                 bottom="bottom"
                                 @mouseenter="selectRestaurant(item)"
                                 @click="setStoreSearchOptions"
@@ -218,27 +227,40 @@ export default {
     this.searchOptions = this.$store.getters.searchOptionsRestaurant;
 
     console.log(this.searchString);
+    await this.checkLoggedInUser();
     await this.getLoggedInKunde();
-
+    await this.getAllEntfernungenAndBewertungen();
     this.loadRestaurants();
   },
   methods: {
-    async getLoggedInKunde()
-    {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
-      this.loggedInKunde_ID = response.data[0];
+    async checkLoggedInUser() {
+      if (this.$cookies.get('emailAdresse') !== undefined) {
+        this.isUserLoggedInBoolean = true;
+      }
     },
-    async getAllEntfernungen()
-    {
-      const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
-      for(let i = 0; i<responseEntfernungen.data.length; i++)
+    async getLoggedInKunde() {
+      if (this.isUserLoggedInBoolean) {
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
+        this.loggedInKunde_ID = response.data[0];
+      }
+    },
+    async getAllEntfernungenAndBewertungen() {
+      if (this.isUserLoggedInBoolean) {
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/" + this.loggedInKunde_ID);
+        for (let i = 0; i < responseEntfernungen.data.length; i++) {
+          this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
+          this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+        }
+      }
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
+      for(let i = 0; i<ResponseBewertungen.data.length;i++)
       {
-        this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
-        this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
+        this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
+        this.bewertungRestaurants[i] = ResponseBewertungen.data[i][2];
       }
     },
     selectRestaurant(item) {
-      console.log("Restaurant selected "+item.restaurantid);
+      console.log("Restaurant selected " + item.restaurantid);
       this.selectedRestaurant = item.restaurantid;
     },
     getStoreSeachString() {
@@ -248,30 +270,32 @@ export default {
       this.searchOptions = this.$store.getters.searchOptionsRestaurant;
     },
     setStoreSearchString() {
-      this.$store.commit("changeSearchString",this.searchString);
-      console.log("changed searchString to "+this.$store.getters.searchString);
+      this.$store.commit("changeSearchString", this.searchString);
+      console.log("changed searchString to " + this.$store.getters.searchString);
     },
-    setStoreSearchOptions(){
+    setStoreSearchOptions() {
       this.$store.commit("changeSearchOptionsRestaurant", this.searchOptions);
       this.setStoreRestaurant_ID();
     },
     setStoreRestaurant_ID() {
-      this.$store.commit("changeSelectedRestaurant_ID",this.selectedRestaurant);
+      this.$store.commit("changeSelectedRestaurant_ID", this.selectedRestaurant);
       this.$router.push({name: "KundeAuswahlseiteRestaurant"});
     },
     async loadRestaurants() {
 
-      this.favoritenlisteRestaurants_IDs = [];
-      this.hinzufuegedaten = [];
-
-      const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
-
-      console.log(ResponseFavoriten);
-      for(let i = 0; i < ResponseFavoriten.data.length; i++)
+      if(this.isUserLoggedInBoolean)
       {
-        let favData = ResponseFavoriten.data[i];
-        this.favoritenlisteRestaurants_IDs[i] = favData[0];
-        this.hinzufuegedaten[i]= favData[12];
+        this.favoritenlisteRestaurants_IDs = [];
+        this.hinzufuegedaten = [];
+
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/" + this.loggedInKunde_ID);
+
+        console.log(ResponseFavoriten);
+        for (let i = 0; i < ResponseFavoriten.data.length; i++) {
+          let favData = ResponseFavoriten.data[i];
+          this.favoritenlisteRestaurants_IDs[i] = favData[0];
+          this.hinzufuegedaten[i] = favData[12];
+        }
       }
 
       const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
@@ -289,48 +313,52 @@ export default {
         this.lng[i] = restaurantData[10];
         this.lat[i] = restaurantData[11];
 
-        if(this.favoritenlisteRestaurants_IDs.includes(restaurantData[0]))
-        {
+        if (this.favoritenlisteRestaurants_IDs.includes(restaurantData[0])) {
           this.isFavorite[i] = true;
           let index = this.favoritenlisteRestaurants_IDs.indexOf(restaurantData[0]);
           this.hinzufuegedatumAssigned[i] = this.hinzufuegedaten[index];
-        }
-        else
-        {
+        } else {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
-        let index = this.distanceRestaurant_IDs.indexOf(restaurantData[0]);
-        this.distances[i] = this.distancesUnassigned[index];
+        if(this.isUserLoggedInBoolean)
+        {
+          let index = this.distanceRestaurant_IDs.indexOf(restaurantData[0]);
+          this.distances[i] = this.distancesUnassigned[index];
+        }
+        if(this.bewertungRestaurants.includes(restaurantData[0]))
+        {
+          let index = this.bewertungRestaurants.indexOf(restaurantData[0]);
+          this.ratings[i] = this.bewertungAvgUnassigned[index];
+        }
+        else
+        {
+          this.ratings[i] = 0;
+        }
 
       }
-      for(let i = 0; i < ResponseRestaurants.data.length; i++)
-      {
-        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.restaurant_IDs[i]);
+      for (let i = 0; i < ResponseRestaurants.data.length; i++) {
+        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/" + this.restaurant_IDs[i]);
         this.ratings[i] = ResponseBewertung.data[0][0];
       }
 
-      for (let i = 0; i < ResponseRestaurants.data.length; i++)
-      {
-        const config = { responseType:"arraybuffer" };
-        const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.restaurant_IDs[i],config);
+      for (let i = 0; i < ResponseRestaurants.data.length; i++) {
+        const config = {responseType: "arraybuffer"};
+        const responsePicture = await axios.get("/RestaurantBilder/getBild/" + this.restaurant_IDs[i], config);
 
         console.log(responsePicture);
 
-        if(responsePicture.status !== 204)
-        {
+        if (responsePicture.status !== 204) {
           console.log("received Picture")
           console.log(responsePicture.data);
 
-          let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
+          let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
           console.log(imageURL);
 
           this.imgs[i] = imageURL;
-        }
-        else
-        {
+        } else {
           this.imgs[i] = "";
         }
 
@@ -341,12 +369,9 @@ export default {
     },
     async applyBewertungFilterAndSearch() {
 
-      if(this.selectedBewertung!==null)
-      {
+      if (this.selectedBewertung !== null) {
         this.bewertungOptionActive = true;
-      }
-      else
-      {
+      } else {
         this.bewertungOptionActive = false;
         this.selectedBewertung = 0;
       }
@@ -370,12 +395,9 @@ export default {
     },
     async applyDistanceFilterAndSearch() {
 
-      if(this.selectedEntfernung!==null)
-      {
+      if (this.selectedEntfernung !== null) {
         this.entfernungOptionActive = true;
-      }
-      else
-      {
+      } else {
         this.entfernungOptionActive = false;
         this.selectedEntfernung = 0;
       }
@@ -415,20 +437,31 @@ export default {
       this.loadRestaurants();
     },
     async addToFavorites() {
+
+
+      if (!this.isUserLoggedInBoolean) {
+        alert("Sie müssen sich einloggen, um Favoriten hinzufügen zu können!")
+        return;
+      }
+
+      if (this.selectedItem.bestellradius < this.selectedItem.distance) {
+        alert("Sie befinden sich außerhalb des Bestellradius")
+        return;
+      }
+
       var today = new Date();
       const restaurantFavorite = {
         restaurant_ID: this.selectedRestaurant,
         kundennummer: this.loggedInKunde_ID,
         hinzufuegedatum: today,
-        //TODO get anzahl_Bestellungen from Database
         anzahl_Bestellungen: 0
       }
 
       await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
       this.loadRestaurants();
     },
-    async deleteFromFavorites(){
-      await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedRestaurant);
+    async deleteFromFavorites() {
+      await axios.delete("Favoritenliste_Restaurants/remove/" + this.loggedInKunde_ID + "/" + this.selectedRestaurant);
       this.loadRestaurants();
     },
 
@@ -439,11 +472,12 @@ export default {
     loggedInKunde_ID: 0,
     amountRestaurants: 4,
     selectedRestaurant: "",
+    isUserLoggedInBoolean: false,
     version: 0,
     descriptions: [],
     imgs: [],
     restaurant_IDs: [],
-    restaurantnamen:[],
+    restaurantnamen: [],
     distances: [],
     minimums: [],
     lng: [],
@@ -455,8 +489,10 @@ export default {
     hinzufuegedaten: [],
     hinzufuegedatumAssigned: [],
     isFavorite: [],
-    selectRating: [5,4,3,2,1],
-    selectArea: [5,10,20,30,40],
+    bewertungAvgUnassigned:[],
+    bewertungRestaurants: [],
+    selectRating: [5, 4, 3, 2, 1],
+    selectArea: [5, 10, 20, 30, 40],
     selectedMindestbestellwert: 0,
     selectedBewertung: 0,
     selectedEntfernung: 0,
@@ -467,9 +503,9 @@ export default {
     entfernungOptionActive: false
   }),
   computed: {
-    items(){
+    items() {
       let i = 0
-      return Array.from({ length: this.amountRestaurants}, () => {
+      return Array.from({length: this.amountRestaurants}, () => {
         const cdescription = this.descriptions[i]
         const cimg = this.imgs[i]
         const crestaurantid = this.restaurant_IDs[i]
@@ -501,8 +537,8 @@ export default {
       })
     }
   },
-  watch:{
-    '$store.state.searchOptionsRestaurant': function() {
+  watch: {
+    '$store.state.searchOptionsRestaurant': function () {
       this.getStoreSearchOptionsRestaurant();
       this.loadRestaurants();
     }
