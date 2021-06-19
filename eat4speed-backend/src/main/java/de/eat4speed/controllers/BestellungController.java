@@ -1,5 +1,6 @@
 package de.eat4speed.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eat4speed.dto.*;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.repositories.BestellungRepository;
@@ -70,6 +71,7 @@ public class BestellungController {
     public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
 
     @PUT
+    @JsonIgnore
     @Path("updateBestellungStatus")
     public Response updateBestellungStatus(Bestellung bestellung) {
         return _bestellungen.updateBestellungStatus(bestellung);

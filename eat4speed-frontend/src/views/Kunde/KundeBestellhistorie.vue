@@ -211,8 +211,11 @@ export default {
         status: 'storniert',
         bestell_ID: bestellID
       }
-
-      await axios.put("/Bestellung/updateBestellungStatus", bestellung);
+      try {
+        await axios.put("/Bestellung/updateBestellungStatus", bestellung);
+      } catch (error) {
+        console.log(error.response)
+      }
 
       this.accepted = false;
       window.location.reload();
