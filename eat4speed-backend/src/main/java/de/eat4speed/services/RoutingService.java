@@ -40,6 +40,18 @@ public class RoutingService implements IRoutingService {
     }
 
     @Override
+    public void accident(String email, String auftraege){
+        ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
+        ArrayList<String> auftrags_ids = new ArrayList<>();
+        for (String element : auftr){
+            if(!auftrags_ids.contains(element)){
+                auftrags_ids.add(element);
+            }
+        }
+        System.out.println(auftrags_ids);
+    }
+
+    @Override
     public void confirm(String auftrags_beschreibung, String auftraege, String data, String email){
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         if(auftrags_beschreibung.equals("Abholung")){

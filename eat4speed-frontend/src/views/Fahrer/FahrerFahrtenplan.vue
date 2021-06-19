@@ -18,6 +18,7 @@
               </v-icon>
               Schichtplan
             </v-btn>
+
             <v-col cols="6">
               <v-row>
                 Liefertermin: {{ getTermin() }}
@@ -26,6 +27,15 @@
                 restliche Stationen: {{ getStationen() }}
               </v-row>
             </v-col>
+          </v-container>
+          <v-container fluid>
+            <v-btn
+                class="white--text"
+                color="red"
+                @click="unfall_melden()"
+            >
+              Unfall melden
+            </v-btn>
           </v-container>
         </template>
 
@@ -42,7 +52,7 @@
                 fullscreenControl: true,
                 disableDefaultUi: false
                 }"
-              :zoom="7"
+                :zoom="7"
             >
               <DirectionsRenderer :destination="item.end" :origin="item.start" travelMode="DRIVING"/>
             </GmapMap>
@@ -68,48 +78,49 @@
         v-model="dialog"
         max-width="50%"
     >
-        <v-card>
-          <v-toolbar
-              color="primary"
-              dark
-          >
-            <div class="mx-auto">
-              <h2>Fahrt bestätigen</h2>
-            </div>
-          </v-toolbar>
-          <v-card-actions>
-            <v-container>
-              <row>
-                <v-col>
-                  <v-data-table
-                      :headers="headersAuftrag"
-                      :items="auftrags_IDs"
-                      :items-per-page="3"
-                      :single-select="false"
-                      class="elevation-1 pa-6"
-                      item-key="name"
-                  >
-                    <template v-slot:item.actions="{ item }">
-                      <v-btn
-                          color="primary"
-                          depressed
-                          tile
-                          @click="setAuftragFahrernummer(item.id)"
-                      >Bestätigen
-                      </v-btn>
-                    </template>
-                  </v-data-table>
-                </v-col>
-              </row>
-            </v-container>
-          </v-card-actions>
-          <v-card-actions>
-            <v-btn
-                text
-                @click="dialog = false"
-            >Schließen</v-btn>
-          </v-card-actions>
-        </v-card>
+      <v-card>
+        <v-toolbar
+            color="primary"
+            dark
+        >
+          <div class="mx-auto">
+            <h2>Fahrt bestätigen</h2>
+          </div>
+        </v-toolbar>
+        <v-card-actions>
+          <v-container>
+            <row>
+              <v-col>
+                <v-data-table
+                    :headers="headersAuftrag"
+                    :items="auftrags_IDs"
+                    :items-per-page="3"
+                    :single-select="false"
+                    class="elevation-1 pa-6"
+                    item-key="name"
+                >
+                  <template v-slot:item.actions="{ item }">
+                    <v-btn
+                        color="primary"
+                        depressed
+                        tile
+                        @click="setAuftragFahrernummer(item.id)"
+                    >Bestätigen
+                    </v-btn>
+                  </template>
+                </v-data-table>
+              </v-col>
+            </row>
+          </v-container>
+        </v-card-actions>
+        <v-card-actions>
+          <v-btn
+              text
+              @click="dialog = false"
+          >Schließen
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
 
   </v-main>
@@ -130,19 +141,17 @@ export default {
       this.polling = setInterval(() => {
         this.getBenachrichtigung();
         this.checkAuftraegeforFahrernummer();
-      },3000);
+      }, 3000);
     },
-    async getBenachrichtigung()
-    {
-      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/"+this.fahrernummer);
+    async getBenachrichtigung() {
+      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/" + this.fahrernummer);
 
-      for(let i = 0; i<responseBenachrichtigung.data.length; i++)
-      {
+      for (let i = 0; i < responseBenachrichtigung.data.length; i++) {
         let benachrichtigungs_ID = responseBenachrichtigung.data[i][0];
 
-        this.auftrags_IDs.push({ id: responseBenachrichtigung.data[i][1] });
+        this.auftrags_IDs.push({id: responseBenachrichtigung.data[i][1]});
 
-        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/"+benachrichtigungs_ID);
+        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/" + benachrichtigungs_ID);
       }
 
       if (responseBenachrichtigung.data.length > 0) {
@@ -150,46 +159,52 @@ export default {
       }
 
     },
-    async setAuftragFahrernummer(id)
-    {
-      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+id)
+    async setAuftragFahrernummer(id) {
+      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id)
 
-      if(response.data[0] !== 9999 && response.data[0] !== null)
-      {
+      if (response.data[0] !== 9999 && response.data[0] !== null) {
         alert("Auftrag bereits verteilt.");
-      }
-      else
-      {
-        await axios.put("Auftrag/updateAuftragFahrernummer/"+id+"/"+this.fahrernummer);
+      } else {
+        await axios.put("Auftrag/updateAuftragFahrernummer/" + id + "/" + this.fahrernummer);
         //this.active_auftrags_IDs.push(this.auftrags_IDs[index]);
-        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/"+this.fahrernummer+"/"+this.active_auftrags_IDs.length);
+        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs.length);
         //this.auftrags_IDs.splice(index,1);
       }
     },
-    async checkAuftraegeforFahrernummer(){
+    async checkAuftraegeforFahrernummer() {
       if (this.auftrags_IDs.length === 0) {
         this.dialog = false;
         return;
       }
 
-      for(let i = 0; i<this.auftrags_IDs.length;i++)
-      {
-        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/"+this.auftrags_IDs[i].id)
-        if(response.data[0] !== 9999 && response.data[0] !== null)
-        {
-          this.auftrags_IDs.splice(i,1);
+      for (let i = 0; i < this.auftrags_IDs.length; i++) {
+        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + this.auftrags_IDs[i].id)
+        if (response.data[0] !== 9999 && response.data[0] !== null) {
+          this.auftrags_IDs.splice(i, 1);
         }
       }
     },
     async abholungBestätigen(id) {
       Vue.set(id, 'hideButton', true);
-      if(id.beschreibung === 'Abholung'){
-        await this.$http.get('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$store.getters.getLoginData.auth.username);
+      if (id.beschreibung === 'Abholung') {
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$store.getters.getLoginData.auth.username);
+      } else {
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$store.getters.getLoginData.auth.username);
       }
-      else{
-        await this.$http.get('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email='+ this.$store.getters.getLoginData.auth.username);
+      id.hidebutton = true;
+    },
+    async unfall_melden() {
+      let auftrags_ids = this.data[0].auftrags_id + ", ";
+      for(let i = 1; i < this.data.length; i++){
+        if(i == this.data.length - 1){
+          auftrags_ids += this.data[i].auftrags_id
+        }
+        else {
+          auftrags_ids += this.data[i].auftrags_id + ", ";
+        }
       }
-      id.hidebutton=true;
+      await this.$http.put('/route/accident/' + this.$store.getters.getLoginData.auth.username + '?auftraege=' + auftrags_ids);
+      console.log(auftrags_ids);
     },
     getTermin() {
       return '12.12.2021';
@@ -202,10 +217,10 @@ export default {
     },
   },
   async mounted() {
-      await this.$http.get('/route/calculate/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
-      this.pollData();
-      //todo this fahrernummer = aktuelle Fahrernummer
-    },
+    await this.$http.get('/route/calculate/' + this.$store.getters.getLoginData.auth.username).then(response => this.data = response.data);
+    this.pollData();
+    //todo this fahrernummer = aktuelle Fahrernummer
+  },
   beforeDestroy() {
     clearInterval(this.polling);
   },
@@ -241,6 +256,11 @@ export default {
         {
           text: 'Beschreibung',
           value: 'beschreibung',
+          sortable: false
+        },
+        {
+          text: 'Kundenanschrift',
+          value: 'kunde',
           sortable: false
         },
         {
