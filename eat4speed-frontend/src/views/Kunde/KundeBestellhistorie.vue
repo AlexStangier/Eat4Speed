@@ -13,7 +13,8 @@
                 <v-list>
                   <v-list-item v-for="itemOffen in offeneBestellungen" v-bind:key="itemOffen.id" class="mb-12">
                     <v-col cols="8" style="background-color: lightsteelblue">
-                      <v-card-title>#{{ itemOffen.id }} Bestelldatum: {{ itemOffen.date }}</v-card-title>
+                      <div class="text-right">#{{ itemOffen.id }} Bestelldatum: {{ itemOffen.date }}</div>
+                      <v-card-title>{{ itemOffen.nameRestaurant }}</v-card-title>
                       <v-card-text>{{ itemOffen.products }}</v-card-text>
                       <v-card-text>{{ itemOffen.count }}x</v-card-text>
                       <div class="text-right">{{ itemOffen.price }} €</div>
@@ -38,9 +39,14 @@
               </v-tab>
               <v-tab-item>
                 <v-list>
-                  <v-list-item v-for="itemAbgeschlossen in abgeschlosseneBestellungen" v-bind:key="itemAbgeschlossen.id" class="mb-12">
+                  <v-list-item v-for="itemAbgeschlossen in abgeschlosseneBestellungen" v-bind:key="itemAbgeschlossen.id"
+                               class="mb-12">
                     <v-col cols="8" style="background-color: lightsteelblue">
-                      <v-card-title>#{{ itemAbgeschlossen.id }} Bestelldatum: {{ itemAbgeschlossen.date }}</v-card-title>
+                      <div class="text-right">#{{ itemAbgeschlossen.id }} Bestelldatum: {{
+                          itemAbgeschlossen.date
+                        }}
+                      </div>
+                      <v-card-title>{{ itemAbgeschlossen.nameRestaurant }}</v-card-title>
                       <v-card-text>{{ itemAbgeschlossen.products }}</v-card-text>
                       <v-card-text>{{ itemAbgeschlossen.count }}x</v-card-text>
                       <div class="text-right">{{ itemAbgeschlossen.price }} €</div>
@@ -48,12 +54,11 @@
                     <div>
                       <v-btn
                           class="ml-1"
-                          color="red"
+                          color="green"
                           tile
                       >
                         nochmal Bestellen
                       </v-btn>
-                       geht noch nicht
                     </div>
                   </v-list-item>
                 </v-list>
@@ -66,11 +71,12 @@
                   <v-list-item v-for="itemStorniert in stornierteBestellungen" v-bind:key="itemStorniert.id"
                                class="mb-12">
 
-                    <v-col cols="8" style="background-color: lightsteelblue">
-                      <v-card-title>#{{ itemStorniert.id }} Bestelldatum: {{ itemStorniert.date }}</v-card-title>
+                    <v-col cols="8" style="background-color: lightcoral">
+                      <div class="text-right">#{{ itemStorniert.id }} Bestelldatum: {{ itemStorniert.date }}</div>
+                      <v-card-title>{{ itemStorniert.nameRestaurant }}</v-card-title>
                       <v-card-text>{{ itemStorniert.products }}</v-card-text>
                       <v-card-text>{{ itemStorniert.count }}x</v-card-text>
-                      <div class="text-right">{{ itemStorniert.price }} €</div>
+                      <div class="text-right">{{ itemStorniert.price }} € wurden erstattet</div>
                     </v-col>
 
                   </v-list-item>
@@ -169,6 +175,7 @@ export default {
           date: (ResponseBestellungen.data[i][1]),
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
+          nameRestaurant: (ResponseProdukte.data[0][2]),
           zahl_number: sekunden
         }
 
@@ -196,6 +203,7 @@ export default {
           date: (ResponseBestellungen.data[i][1]),
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
+          nameRestaurant: (ResponseProdukte.data[0][2]),
           zahl_number: (ResponseBestellungen.data[i][4])
         }
 
@@ -224,6 +232,7 @@ export default {
           date: (ResponseBestellungen.data[i][1]),
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
+          nameRestaurant: (ResponseProdukte.data[0][2]),
           zahl_number: (ResponseBestellungen.data[i][4])
         }
 
