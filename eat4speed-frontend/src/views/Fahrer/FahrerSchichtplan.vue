@@ -184,8 +184,6 @@ export default {
 
       }
 
-      console.log(time)
-
       if(this.timeInDB){
         await axios.put("/Schichten/updateSchicht", time, this.$store.getters.getLoginData);
       }
@@ -208,8 +206,7 @@ export default {
       }
     },
     async loadZeiten(){
-      console.log("lol");
-      //await this.calcIfPause()
+
       const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username }, this.$store.getters.getLoginData);
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0];
