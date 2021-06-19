@@ -115,4 +115,9 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     public String getRoleById(long id) {
         return find("Benutzer_ID", id).firstResult().getRolle();
     }
+
+    @Transactional
+    public String getRoleByEmail(String email) {
+        return find("EmailAdresse", email).firstResult().getRolle();
+    }
 }

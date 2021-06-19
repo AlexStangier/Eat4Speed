@@ -2,6 +2,7 @@ package de.eat4speed.controllers;
 
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
+import de.eat4speed.repositories.BenutzerRepository;
 import de.eat4speed.services.interfaces.IBenutzerService;
 
 import javax.annotation.security.PermitAll;
@@ -19,6 +20,9 @@ public class BenutzerController {
 
     @Inject
     IBenutzerService _benutzer;
+
+    @Inject
+    BenutzerRepository benutzerRepository;
 
     @POST
     public Response add(Benutzer benutzer) {
@@ -74,5 +78,11 @@ public class BenutzerController {
     @Path("getRoleById/{id}")
     public String getRoleById(@PathParam("id") long id){
         return _benutzer.getRoleById(id);
+    }
+
+    @GET
+    @Path("getRoleByEmail/{email}")
+    public String getRoleById(@PathParam("email") String email){
+        return benutzerRepository.getRoleByEmail(email);
     }
 }

@@ -141,6 +141,7 @@ export default {
   async mounted() {
     this.searchDestination = "Gerichte";
     await this.checkLoggedInUser();
+    await this.redirectFahrer();
     await this.getLoggedInKunde();
     this.checkForOrders();
   },
@@ -153,6 +154,18 @@ export default {
     async checkLoggedInUser() {
       if (this.$cookies.get('emailAdresse') !== undefined) {
         this.isUserLoggedInBoolean = true;
+      }
+    },
+    async redirectFahrer()
+    {
+      if(this.isUserLoggedInBoolean)
+      {
+        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'));
+        console.log(responseRolle);
+        if(responseRolle.data==="fahrer")
+        {
+          this.$router.push({name: "FahrerFahrtenplan"});
+        }
       }
     },
     async getLoggedInKunde() {
