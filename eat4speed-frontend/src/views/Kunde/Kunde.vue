@@ -384,6 +384,7 @@
                                     small
                                     color="primary"
                                     tile
+                                    @mouseenter="fillAllergene(item)"
                                 >
                                   Allergene
                                 </v-btn>
@@ -393,7 +394,6 @@
                                   <v-container>
                                     <v-select
                                         readonly
-                                        disabled
                                         :items="allergeneGericht"
                                         v-model="allergeneGericht"
                                         chips
@@ -551,7 +551,7 @@
                                     small
                                     color="primary"
                                     tile
-                                    :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
+                                    :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50 || item.available !== 'verfügbar'"
                                 >
                                   Zum Warenkorb hinzufügen
                                 </v-btn>
@@ -966,6 +966,16 @@ export default {
 
       this.loadGerichte();
     },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+    },
     async applyBewertungFilterAndSearch() {
 
       if(this.selectedBewertung!==null)
@@ -1027,7 +1037,7 @@ export default {
     searchOptions: {},
     searchString: "",
     loggedInKunde_ID: 0,
-    amountGerichte: -1,
+    amountGerichte: 4,
     selectedGericht_ID: "",
     isUserLoggedInBoolean: false,
     selectedItem: "",
@@ -1074,7 +1084,7 @@ export default {
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
       v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
-    allergeneGericht: ['Allergen 1','Allergen 2','Allergen 3']
+    allergeneGericht: []
   }),
   computed: {
     items(){

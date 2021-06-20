@@ -93,4 +93,18 @@ public class BenutzerController {
         benutzerRepository.deleteBenutzerByEmail(email);
         return Response.status(Response.Status.OK).build();
     }
+
+    @GET
+    @Path("checkIfBenutzerIsGeloescht/{email}")
+    public List checkIfBenutzerIsGeloescht(@PathParam("email") String email)
+    {
+        return benutzerRepository.checkIfBenutzerIsGeloescht(email);
+    }
+
+    @GET
+    @Path("checkIfBenutzerIsBlacklist/{email}")
+    public List checkIfBenutzerIsBlacklist(@PathParam("email") String email)
+    {
+        return benutzerRepository.checkIfBenutzerIsBlacklist(email);
+    }
 }
