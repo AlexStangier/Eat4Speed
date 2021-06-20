@@ -156,6 +156,7 @@ export default {
 
       let anfang;
       let ende;
+      let nextday;
       switch (tag){
         case 0: {
           anfang = "7"
@@ -170,11 +171,18 @@ export default {
         case 2: {
           anfang = "23"
           ende = "7"
+          nextday = true
           break
         }
       }
       let anfangMoment = moment().second(0).hour(anfang).minute(0).toDate();
-      let endeMoment = moment().second(0).hour(ende).minute(0).toDate();
+      let endeMoment
+      if(nextday) {
+        endeMoment = moment().second(0).hour(ende).minute(0).add(1, "day").toDate();
+      }
+      else{
+        endeMoment = moment().second(0).hour(ende).minute(0).toDate();
+      }
 
       let time = {
 
@@ -215,12 +223,11 @@ export default {
       if(schichtdata.data.length == 0){
         this.timeInDB = false;
         this.pauseDisabled = true;
-        //this.confirm = false;
         document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
         this.calcVisibility()
       }
       else {
-        //this.confirm = true;
+        const schicht = schichtdata.data[0];
         if(await this.calcIfPause()){
           document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
           this.pauseDisabled = true;
@@ -228,7 +235,15 @@ export default {
           this.pause = 0
         }
         else {
-          this.pauseDisabled = false;
+          if(moment().isBetween(moment(schicht[0].substring(0, 19)+"+00:00"), moment(schicht[1].substring(0, 19)+"+00:00"), "minute")) {
+            this.pauseDisabled = false;
+          }
+          else{
+            document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
+            this.pauseDisabled = true;
+            this.pauseColor = "red"
+            this.pause = 0
+          }
           if (fahrer_id[1] == 1) {
             document.getElementById("pause").innerHTML = "Pause beenden..."
             this.pauseColor = "red"
@@ -239,16 +254,22 @@ export default {
             this.pause = 1
           }
         }
-        const schicht = schichtdata.data[0];
-        if(moment().isSameOrBefore(moment(schicht[0].substring(0, 19)+"+00:00"), 'day')){
+
+
+        this.calcVisibility();
+
+        //dieser Abschnitt nur für Fahrer die gerade in einer Schicht sind
+        if(moment().isSameOrBefore(moment(schicht[1].substring(0, 19)+"+00:00"), 'day')){
           if(moment().hour(7).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
             this.afternoon = true;
             this.night = true;
+            this.morning = false;
             this.morgenFarbe();
           }
           if(moment().hour(15).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
             this.morning = true;
             this.night = true;
+            this.afternoon = false;
             this.nachmittagFarbe();
           }
           if(moment().hour(23).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
@@ -256,12 +277,8 @@ export default {
             this.morning = true;
             this.nachtFarbe();
           }
-
           this.confirm = true;
         }
-
-        this.calcVisibility()
-
       }
     },
 
@@ -269,12 +286,15 @@ export default {
 
       if(moment().isBetween(moment().hour(7).minute(0), moment().hour(15).minute(0), 'minute')){
         this.morning = true;
+        this.afternoon = false;
+        this.night = false;
         if(!this.timeInDB) this.nachmittagFarbe();
 
       }
       if(moment().isBetween(moment().hour(15).minute(0), moment().hour(22).minute(0), 'minute')){
         this.morning = true;
         this.afternoon = true;
+        this.night = false;
         if(!this.timeInDB) this.nachtFarbe();
       }
       if(moment().isAfter(moment().hour(23).minute(0), "minute") || moment().isBefore(moment().hour(7).minute(0), "minute")){
