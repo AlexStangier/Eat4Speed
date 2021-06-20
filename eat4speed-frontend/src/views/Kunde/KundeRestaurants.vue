@@ -69,6 +69,13 @@
           <v-card-title> Gerichte</v-card-title>
           <v-divider></v-divider>
           <v-card
+              v-if="amountRestaurants === -1"
+              tile
+              class="text-center text-h5"
+          >
+            Ladet
+          </v-card>
+          <v-card
               v-if="amountRestaurants === 0"
               tile
               class="text-center text-h5"
@@ -470,7 +477,7 @@ export default {
     searchOptions: {},
     searchString: "",
     loggedInKunde_ID: 0,
-    amountRestaurants: 4,
+    amountRestaurants: -1,
     selectedRestaurant: "",
     isUserLoggedInBoolean: false,
     version: 0,
