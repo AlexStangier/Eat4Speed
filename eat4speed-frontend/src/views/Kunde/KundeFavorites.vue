@@ -445,7 +445,7 @@ export default {
   data: () => ({
     displayGerichte: true,
     loggedInKunde_ID: 0,
-    amountGerichte: 1,
+    amountGerichte: 4,
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
