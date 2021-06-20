@@ -227,16 +227,9 @@
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
           <v-divider></v-divider>
-          <v-card
-              v-if="amountGerichte === 0"
-              tile
-              class="text-center text-h5"
-          >
-            Es wurden keine Gerichte gefunden
-          </v-card>
           <v-virtual-scroll
               :items="items"
-              :item-height="260"
+              :item-height="270"
               max-height="650"
           >
             <template v-slot:default="{ item }" v-resize>
@@ -292,7 +285,7 @@
                               flat
                               class="text-left"
                           >
-                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
                           </v-card>
                           <v-card
                               v-if="a === 2"
@@ -377,6 +370,52 @@
                             Mindestbestellwert: {{item.minimum +' €'}}
                           </v-card>
                           <v-card
+                              v-if="a === 2"
+                              flat
+                              class="text-right"
+                          >
+                            <v-dialog
+                                max-width="50%"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small
+                                    color="primary"
+                                    tile
+                                >
+                                  Allergene
+                                </v-btn>
+                              </template>
+                              <template v-slot:default="dialog">
+                                <v-card>
+                                  <v-container>
+                                    <v-select
+                                        readonly
+                                        disabled
+                                        :items="allergeneGericht"
+                                        v-model="allergeneGericht"
+                                        chips
+                                        label="Allergene"
+                                        multiple
+                                    >
+
+                                    </v-select>
+                                    <v-btn
+                                        class="ml-1 justify-end"
+                                        @click="dialog.value = false"
+                                        color="error"
+                                        tile
+                                    >
+                                      Schließen
+                                    </v-btn>
+                                  </v-container>
+                                </v-card>
+                              </template>
+                            </v-dialog>
+                          </v-card>
+                          <v-card
                               v-if="a === 3"
                               flat
                               class="text-right"
@@ -385,6 +424,7 @@
                                   small
                                   color="primary"
                                   tile
+                                  class="ml-1"
                                   :to="{name: 'Gericht'}"
                                   @mouseover="selectGericht(item)"
                               >
@@ -527,6 +567,13 @@
               <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
+          <v-card
+              v-if="amountGerichte === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Gerichte gefunden
+          </v-card>
         </v-card>
       </v-container>
     </v-container>
@@ -980,7 +1027,7 @@ export default {
     searchOptions: {},
     searchString: "",
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: -1,
     selectedGericht_ID: "",
     isUserLoggedInBoolean: false,
     selectedItem: "",
@@ -1027,6 +1074,7 @@ export default {
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
       v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
+    allergeneGericht: ['Allergen 1','Allergen 2','Allergen 3']
   }),
   computed: {
     items(){

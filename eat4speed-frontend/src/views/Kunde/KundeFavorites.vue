@@ -30,7 +30,7 @@
         <v-divider></v-divider>
         <v-virtual-scroll
             :items="items"
-            :item-height="210"
+            :item-height="230"
             max-height="650"
         >
           <template v-slot:default="{ item }" v-resize>
@@ -38,7 +38,7 @@
                 flat
                 tile
             >
-              <v-container class="pa-1">
+              <v-container>
                 <v-row>
                   <v-col
                       cols="3"
@@ -121,6 +121,47 @@
                             flat
                             class="text-right"
                         >
+                          <v-dialog
+                              max-width="50%"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  small
+                                  color="primary"
+                                  tile
+                                  class="ml-1"
+                              >
+                                Allergene
+                              </v-btn>
+                            </template>
+                            <template v-slot:default="dialog">
+                              <v-card>
+                                <v-container>
+                                  <v-select
+                                      readonly
+                                      disabled
+                                      :items="allergeneGericht"
+                                      v-model="allergeneGericht"
+                                      chips
+                                      label="Allergene"
+                                      multiple
+                                  >
+
+                                  </v-select>
+                                  <v-btn
+                                      class="ml-1 justify-end"
+                                      @click="dialog.value = false"
+                                      color="error"
+                                      tile
+                                  >
+                                    Schließen
+                                  </v-btn>
+                                </v-container>
+                              </v-card>
+                            </template>
+                          </v-dialog>
                           <v-btn
                               v-if="displayGerichte===true"
                               color="primary"
@@ -404,7 +445,7 @@ export default {
   data: () => ({
     displayGerichte: true,
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: 1,
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
