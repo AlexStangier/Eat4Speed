@@ -772,7 +772,7 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
-        console.log(this.bewertungRestaurants);
+        //console.log(this.bewertungRestaurants);
 
         if(this.bewertungRestaurants.includes(gerichtData[5])===true)
         {

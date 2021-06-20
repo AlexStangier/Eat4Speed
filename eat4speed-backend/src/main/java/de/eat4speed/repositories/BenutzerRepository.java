@@ -96,6 +96,12 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return restaurant_ID;
     }
 
+    @Transactional
+    public void deleteBenutzerByEmail(String email)
+    {
+        update("geloescht = 1 where emailAdresse = ?1", email);
+    }
+
     /**
      * Should only be used in Test cleanup
      *

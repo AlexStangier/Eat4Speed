@@ -273,7 +273,7 @@ export default {
       }
       await axios.post("Blacklist",deleteBe);
 
-      await axios.delete("Restaurant/"+this.currentRowItem.restaurant_Id);
+      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email);
       this.reloadRestaurant();
     },
     async verifyBewerbung() {

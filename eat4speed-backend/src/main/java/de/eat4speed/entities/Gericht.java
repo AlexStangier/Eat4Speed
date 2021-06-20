@@ -49,6 +49,7 @@ public class Gericht extends PanacheEntityBase implements Serializable {
     private double preis;
     private byte verfuegbar;
     private byte ist_Getraenk;
+    private byte geloescht;
 
     public Gericht() {
 
@@ -128,17 +129,25 @@ public class Gericht extends PanacheEntityBase implements Serializable {
         this.ist_Getraenk = ist_Getraenk;
     }
 
+    public byte getGeloescht() {
+        return geloescht;
+    }
+
+    public void setGeloescht(byte geloescht) {
+        this.geloescht = geloescht;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Gericht gericht = (Gericht) o;
-        return gericht_ID == gericht.gericht_ID && restaurant_ID == gericht.restaurant_ID && Double.compare(gericht.preis, preis) == 0 && verfuegbar == gericht.verfuegbar && ist_Getraenk == gericht.ist_Getraenk && Objects.equals(name, gericht.name) && Objects.equals(beschreibung, gericht.beschreibung) && Objects.equals(abbildung, gericht.abbildung);
+        return gericht_ID == gericht.gericht_ID && restaurant_ID == gericht.restaurant_ID && Double.compare(gericht.preis, preis) == 0 && verfuegbar == gericht.verfuegbar && ist_Getraenk == gericht.ist_Getraenk && geloescht == gericht.geloescht && Objects.equals(name, gericht.name) && Objects.equals(beschreibung, gericht.beschreibung) && Objects.equals(abbildung, gericht.abbildung);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(gericht_ID, restaurant_ID, name, beschreibung, abbildung, preis, verfuegbar, ist_Getraenk);
+        return Objects.hash(gericht_ID, restaurant_ID, name, beschreibung, abbildung, preis, verfuegbar, ist_Getraenk, geloescht);
     }
 
     @Override
@@ -152,6 +161,7 @@ public class Gericht extends PanacheEntityBase implements Serializable {
                 ", preis=" + preis +
                 ", verfuegbar=" + verfuegbar +
                 ", ist_Getraenk=" + ist_Getraenk +
+                ", geloescht=" + geloescht +
                 '}';
     }
 }

@@ -505,7 +505,8 @@ export default {
           restaurant_ID: this.restaurantID,
           verfuegbar: this.gerichtVerfuegbar,
           preis: this.gerichtPreis,
-          ist_Getraenk: this.istGetraenk
+          ist_Getraenk: this.istGetraenk,
+          geloescht: 0
         }
 
         const responseGericht = await axios.post("/Gericht/addGericht", gericht);
@@ -676,7 +677,7 @@ export default {
     async deleteGericht() {
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id);
       await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id);
-      await axios.delete("Gericht/" + this.editedItem.id);
+      await axios.put("Gericht/deleteGerichtByGericht_ID/"+this.editedItem.id);
       this.loadGerichte();
     }
   },

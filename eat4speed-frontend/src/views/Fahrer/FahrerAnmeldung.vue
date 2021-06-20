@@ -290,7 +290,8 @@ export default {
         passwort: this.password,
         telefonnummer: this.phoneNumber,
         rolle: "fahrer",
-        paypal_Account: "dummy"
+        paypal_Account: "dummy",
+        geloescht: 0
       };
 
       const responseBenutzer = await axios.post("/Benutzer", benutzer);

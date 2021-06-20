@@ -85,4 +85,12 @@ public class BenutzerController {
     public String getRoleById(@PathParam("email") String email){
         return benutzerRepository.getRoleByEmail(email);
     }
+
+    @PUT
+    @Path("deleteBenutzerByEmail/{email}")
+    public Response deleteBenutzerByEmail(@PathParam("email") String email)
+    {
+        benutzerRepository.deleteBenutzerByEmail(email);
+        return Response.status(Response.Status.OK).build();
+    }
 }
