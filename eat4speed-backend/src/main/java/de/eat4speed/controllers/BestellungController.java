@@ -91,4 +91,9 @@ public class BestellungController {
     @GET
     @Path("getKundeBestellungen/{status}/{email}")
     public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
+
+    @GET
+    @Path("getKundeBestellungenAktiv/{email}")
+    public List getKundeBestellungenAktiv(@PathParam("email") String email) {return _bestellungen.getKundeBestellungenAktiv(email);}
+
 }

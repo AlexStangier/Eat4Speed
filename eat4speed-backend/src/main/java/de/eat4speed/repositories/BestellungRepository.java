@@ -124,7 +124,8 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
 
         Query query = entityManager.createNativeQuery(
                 "select best.Bestell_ID, DATE_FORMAT(best.Timestamp, '%d.%m.%y - %H:%i'), best.Status, r.Betrag," +
-                        "TIMESTAMPDIFF(SECOND, best.Timestamp, CURRENT_TIMESTAMP()) AS SECONDS " +
+                        "TIMESTAMPDIFF(SECOND, best.Timestamp, CURRENT_TIMESTAMP()) AS SECONDS," +
+                        "DATE_FORMAT(a.Timestamp_Lieferung, '%d.%m.%y - %H:%i') " +
                         "from Bestellung best, Auftrag a, Rechnung r " +
                         "where best.Auftrags_ID = a.Auftrags_ID " +
                         " AND best.STATUS =  ?1 " +
@@ -135,5 +136,25 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "order by best.Timestamp desc").setParameter(1, status).setParameter(2, email);
         getKundeBestellungen = query.getResultList();
         return getKundeBestellungen;
+    }
+
+    @Transactional
+    public List getKundeBestellungenAktiv(String email) {
+        List getKundeBestellungenAktiv;
+
+        Query query = entityManager.createNativeQuery(
+                "select best.Bestell_ID, DATE_FORMAT(best.Timestamp, '%d.%m.%y - %H:%i'), best.Status, r.Betrag," +
+                        "TIMESTAMPDIFF(SECOND, best.Timestamp, CURRENT_TIMESTAMP()) AS SECONDS," +
+                        "DATE_FORMAT(a.Timestamp_On_Customer_Demand, '%d.%m.%y - %H:%i') " +
+                        "from Bestellung best, Auftrag a, Rechnung r " +
+                        "where best.Auftrags_ID = a.Auftrags_ID " +
+                        " AND best.STATUS in ('bearbeitung', 'abholbereit', 'abgeholt') " +
+                        "and best.Rechnung = r.Rechnungs_ID " +
+                        "and a.Kundennummer = " +
+                        "(select Kundennummer from Kunde where Benutzer_ID = " +
+                        "(select Benutzer_ID from Benutzer where EmailAdresse = ?1)) " +
+                        "order by best.Timestamp desc").setParameter(1, email);
+        getKundeBestellungenAktiv = query.getResultList();
+        return getKundeBestellungenAktiv;
     }
 }

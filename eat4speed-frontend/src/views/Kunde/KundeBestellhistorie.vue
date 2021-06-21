@@ -34,6 +34,32 @@
                 </v-list>
               </v-tab-item>
 
+              <v-tab active title="Offen">
+                <p>Aktiv</p>
+              </v-tab>
+              <v-tab-item>
+                <v-list>
+                  <v-list-item v-for="itemAktiv in aktiveBestellungen" v-bind:key="itemAktiv.id" class="mb-12">
+                    <v-col cols="8" style="background-color: lightsteelblue">
+                      <div class="text-right">#{{ itemAktiv.id }} Bestelldatum: {{ itemAktiv.date }}</div>
+                      <v-card-title>{{ itemAktiv.nameRestaurant }}</v-card-title>
+                      <v-card-text>{{ itemAktiv.products }}</v-card-text>
+                      <v-card-text>{{ itemAktiv.count }}x</v-card-text>
+                      <div class="text-right">{{ itemAktiv.price }} €</div>
+                    </v-col>
+                    <div>
+                      <v-col>
+                        Status: {{ itemAktiv.state }}
+                      </v-col>
+                      <v-col>
+                        Ankunft: {{itemAktiv.ankunft_est}}
+                      </v-col>
+                    </div>
+
+                  </v-list-item>
+                </v-list>
+              </v-tab-item>
+
               <v-tab title="Abgeschlossen">
                 <p>Abgeschlossen</p>
               </v-tab>
@@ -52,6 +78,7 @@
                       <div class="text-right">{{ itemAbgeschlossen.price }} €</div>
                     </v-col>
                     <div>
+                      <v-col>
                       <v-btn
                           class="ml-1"
                           color="green"
@@ -59,6 +86,10 @@
                       >
                         nochmal Bestellen
                       </v-btn>
+                      </v-col>
+                      <v-col>
+                        Erhalten: {{ itemAbgeschlossen.ankunft_true }}
+                      </v-col>
                     </div>
                   </v-list-item>
                 </v-list>
@@ -139,6 +170,7 @@ export default {
     this.loadBestellungenOffen();
     this.loadBestellungenStorniert();
     this.loadBestellungenAbgeschlossen();
+    this.loadBestellungenAktive();
     this.countDownTimer();
   },
   methods: {
@@ -184,6 +216,39 @@ export default {
       }
 
     },
+
+    async loadBestellungenAktive() {
+
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungenAktiv/" + this.$store.getters.getLoginData.auth.username);
+
+      let anzahl = ResponseBestellungen.data.length.toString();
+
+      console.log(anzahl)
+      let itemAktiv;
+      for (let i = 0; i < anzahl; i++) { // outer loop
+
+
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+
+        itemAktiv = {
+          id: (ResponseBestellungen.data[i][0]),
+          price: parseFloat(ResponseBestellungen.data[i][3]).toFixed(2).toString(),
+          state: (ResponseBestellungen.data[i][2]),
+          date: (ResponseBestellungen.data[i][1]),
+          products: (ResponseProdukte.data[0][0]),
+          count: (ResponseProdukte.data[0][1]),
+          nameRestaurant: (ResponseProdukte.data[0][2]),
+          zahl_number: (ResponseBestellungen.data[i][4]),
+          ankunft_est: (ResponseBestellungen.data[i][5])
+        }
+
+        this.aktiveBestellungen.push(itemAktiv)
+
+      }
+
+      console.log(ResponseBestellungen)
+    },
+
     async loadBestellungenStorniert() {
 
       const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'storniert/' + this.$store.getters.getLoginData.auth.username);
@@ -233,7 +298,8 @@ export default {
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
           nameRestaurant: (ResponseProdukte.data[0][2]),
-          zahl_number: (ResponseBestellungen.data[i][4])
+          zahl_number: (ResponseBestellungen.data[i][4]),
+          ankunft_true: (ResponseBestellungen.data[i][5])
         }
 
         this.abgeschlosseneBestellungen.push(itemAbgeschlossen)
@@ -287,6 +353,7 @@ export default {
   data() {
     return {
       offeneBestellungen: [],
+      aktiveBestellungen: [],
       stornierteBestellungen: [],
       abgeschlosseneBestellungen: [],
       number: 300,

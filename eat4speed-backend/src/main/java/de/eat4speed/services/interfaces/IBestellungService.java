@@ -64,4 +64,6 @@ public interface IBestellungService {
 
     List getKundeBestellungen(String status, String email);
 
+    List getKundeBestellungenAktiv(String email);
+
 }
