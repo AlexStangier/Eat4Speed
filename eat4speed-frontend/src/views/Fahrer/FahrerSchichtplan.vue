@@ -227,6 +227,7 @@ export default {
         this.calcVisibility()
       }
       else {
+        this.timeInDB = true;
         const schicht = schichtdata.data[0];
         if(await this.calcIfPause()){
           document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
@@ -256,10 +257,12 @@ export default {
         }
 
 
-        this.calcVisibility();
+
 
         //dieser Abschnitt nur für Fahrer die gerade in einer Schicht sind
-        if(moment().isSameOrBefore(moment(schicht[1].substring(0, 19)+"+00:00"), 'day')){
+        if(moment().isSame(moment(schicht[0].substring(0, 19)+"+00:00"), 'day')
+        || (moment().hour(7).isSame(moment(schicht[1].substring(0, 19)+"+00:00"), 'hour')
+            && moment().isSameOrBefore(moment(schicht[1].substring(0, 19)+"+00:00"), 'minute'))){
           if(moment().hour(7).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
             this.afternoon = true;
             this.night = true;
@@ -272,12 +275,17 @@ export default {
             this.afternoon = false;
             this.nachmittagFarbe();
           }
-          if(moment().hour(23).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
+          if(moment().hour(23).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")
+              || moment().hour(7).isSame(moment(schicht[1].substring(0, 19)+"+00:00"), 'hour')){
             this.afternoon = true;
             this.morning = true;
+            this.night = false;
             this.nachtFarbe();
           }
           this.confirm = true;
+        }
+        else{
+          this.calcVisibility();
         }
       }
     },
@@ -288,14 +296,14 @@ export default {
         this.morning = true;
         this.afternoon = false;
         this.night = false;
-        if(!this.timeInDB) this.nachmittagFarbe();
+        this.nachmittagFarbe();
 
       }
       if(moment().isBetween(moment().hour(15).minute(0), moment().hour(22).minute(0), 'minute')){
         this.morning = true;
         this.afternoon = true;
         this.night = false;
-        if(!this.timeInDB) this.nachtFarbe();
+        this.nachtFarbe();
       }
       if(moment().isAfter(moment().hour(23).minute(0), "minute") || moment().isBefore(moment().hour(7).minute(0), "minute")){
         this.morning = true;
