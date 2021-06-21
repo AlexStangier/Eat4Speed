@@ -66,4 +66,6 @@ public interface IBestellungService {
 
     List getKundeBestellungenAktiv(String email);
 
+    List getGerichtIds(int id);
+
 }

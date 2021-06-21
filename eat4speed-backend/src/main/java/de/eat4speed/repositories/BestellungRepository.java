@@ -157,4 +157,14 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
         getKundeBestellungenAktiv = query.getResultList();
         return getKundeBestellungenAktiv;
     }
+
+    @Transactional
+    public List getGerichtIds(int id) {
+        List getGerichtIds;
+
+        Query query = entityManager.createNativeQuery(
+                "select best.Gericht_IDs from Bestellung best where best.Bestell_ID = ?1").setParameter(1, id);
+        getGerichtIds = query.getResultList();
+        return getGerichtIds;
+    }
 }

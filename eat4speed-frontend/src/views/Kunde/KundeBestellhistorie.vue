@@ -52,7 +52,7 @@
                         Status: {{ itemAktiv.state }}
                       </v-col>
                       <v-col>
-                        Ankunft: {{itemAktiv.ankunft_est}}
+                        geplante Ankunft: {{ itemAktiv.ankunft_est }}
                       </v-col>
                     </div>
 
@@ -79,13 +79,14 @@
                     </v-col>
                     <div>
                       <v-col>
-                      <v-btn
-                          class="ml-1"
-                          color="green"
-                          tile
-                      >
-                        nochmal Bestellen
-                      </v-btn>
+                        <v-btn
+                            class="ml-1"
+                            color="green"
+                            tile
+                            @click="addToCart(itemAbgeschlossen.id)"
+                        >
+                          nochmal Bestellen
+                        </v-btn>
                       </v-col>
                       <v-col>
                         Erhalten: {{ itemAbgeschlossen.ankunft_true }}
@@ -348,6 +349,53 @@ export default {
       inputNumber = inputNumber - 300;
       inputNumber = Math.max(0, inputNumber);
       return inputNumber
+    },
+
+    async addToCart(id) {
+
+      let idArray = await axios.get("/Bestellung/getGerichtIds/" + id);
+
+      console.log(idArray.data[0])
+      let replace = idArray.data[0].replaceAll('[', '').replaceAll(']', '')
+      let idsArray = replace.split(', ')
+
+      let map = idsArray.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
+      let entries = [...map.keys()]
+      let anzahl = [...map.values()]
+
+
+      let i
+      for (i = 0; i < entries.length; i++) {
+
+        const config = {responseType: "arraybuffer"};
+        const responsePicture = await axios.get("/GerichtBilder/getBild/" + entries[i], config);
+
+        let imageURL;
+
+        if (responsePicture.status !== 204) {
+
+          let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
+
+          imageURL = URL.createObjectURL(pictureBlob);
+
+        } else {
+          imageURL = "";
+        }
+
+        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + idsArray[i]);
+
+        let cartGericht = {
+          gericht_ID: (responseGericht.data[0][0]),
+          name: (responseGericht.data[0][1]),
+          thumbnail: imageURL,
+          quantity: (anzahl[i]),
+          price: (responseGericht.data[0][3])
+        }
+
+        this.$store.commit("addToCartGerichte", cartGericht);
+      }
+
+
     }
   },
   data() {

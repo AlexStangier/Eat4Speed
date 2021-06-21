@@ -96,4 +96,8 @@ public class BestellungController {
     @Path("getKundeBestellungenAktiv/{email}")
     public List getKundeBestellungenAktiv(@PathParam("email") String email) {return _bestellungen.getKundeBestellungenAktiv(email);}
 
+    @GET
+    @Path("getGerichtIds/{id}")
+    public List getGerichtIds(@PathParam("id") int id) {return _bestellungen.getGerichtIds(id);}
+
 }
