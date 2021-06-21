@@ -204,6 +204,47 @@
                               v-model="agbAccepted"
                           ></v-checkbox>
                         </v-col>
+                        <v-col cols="12" class="mt-n8">
+                          <v-dialog
+                              v-model="dialog"
+                              scrollable
+                              max-width="500px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-span
+                                  color="primary"
+                                  dark
+                                  v-bind="attrs"
+                                  v-on="on"
+                              >
+                                Zu den Allgemeinen Geschäftsbedingungen
+                              </v-span>
+                            </template>
+                            <v-card>
+                              <v-card-title>Allgemeine Geschäftsbedingungen</v-card-title>
+                              <v-divider></v-divider>
+                              <v-card-text style="height: 400px;">
+                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+                                Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+
+                                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+
+                                Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
+                              </v-card-text>
+                              <v-divider></v-divider>
+                              <v-card-actions>
+                                <v-btn
+                                    color="blue darken-1"
+                                    text
+                                    @click="dialog = false"
+                                >
+                                  Schließen
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                        </v-col>
                         <v-col class="text-left">
                           <v-btn
                               color="primary"
@@ -212,8 +253,7 @@
                               :disabled="!valid"
                               @click="validateVerification"
                           >Fahrerkonto erstellen
-                          </v-btn
-                          >
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -403,6 +443,7 @@ export default {
         min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       },
+      dialog: false
     };
   }
   ,
