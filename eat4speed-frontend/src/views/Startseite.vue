@@ -157,7 +157,7 @@ export default {
     },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$store.getters.getLoginData.auth.username)
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
         this.loggedInKunde_ID = response.data[0];
       }
     },

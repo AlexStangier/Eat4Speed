@@ -326,7 +326,7 @@ export default {
   methods: {
     async getLoggedInRestaurant()
     {
-      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.$store.getters.getLoginData.auth.username);
+      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.$cookies.get('emailAdresse'));
       this.restaurantID = response.data[0];
     },
     async checkIfVerified()

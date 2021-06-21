@@ -102,7 +102,7 @@ export default {
     },
     async loadBestellungen() {
 
-      const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$cookies.get('emailAdresse'));
 
 
       let anzahl = ResponseBestellungen.data.length.toString();

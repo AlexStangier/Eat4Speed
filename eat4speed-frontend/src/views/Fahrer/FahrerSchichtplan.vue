@@ -138,7 +138,7 @@ export default {
     },
 
     async setPause(){
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
       const fahrer_id = fahrer_id_data.data[0]
 
@@ -148,7 +148,7 @@ export default {
 
     async setSchicht(tag) {
 
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
       const fahrer_id = fahrer_id_data.data[0]
 
@@ -207,7 +207,7 @@ export default {
     },
     async loadZeiten(){
       //await this.calcIfPause()
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
       const fahrer_id = fahrer_id_data.data[0];
       const schichtdata = await axios.get("/Schichten/getSchicht/" + fahrer_id[0]);
