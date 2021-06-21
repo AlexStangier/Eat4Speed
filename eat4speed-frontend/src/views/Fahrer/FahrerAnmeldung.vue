@@ -197,7 +197,6 @@
                               required
                           ></v-combobox>
                         </v-col>
-                        <v-spacer></v-spacer>
                         <v-col cols="12">
                           <v-checkbox
                               label="AGB gelesen und akzeptiert"
