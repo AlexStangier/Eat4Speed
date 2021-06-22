@@ -34,6 +34,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     private String rolle;
     private String paypal_Account;
     private int telefonnummer;
+    private byte geloescht;
 
     public int getBenutzer_ID() {
         return benutzer_ID;
@@ -115,15 +116,24 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         Anschrift = anschrift;
     }*/
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Benutzer benutzer = (Benutzer) o;
-        return benutzer_ID == benutzer.benutzer_ID && telefonnummer == benutzer.telefonnummer && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(rolle, benutzer.rolle) && Objects.equals(paypal_Account, benutzer.paypal_Account);
+    public Benutzer() {
     }
 
-    public Benutzer() {
+    /**
+     * Searches Benutzer table for entries matching the benutzername
+     *
+     * @return Benutzer
+     */
+    public Benutzer findMatchingEntryByEmail() {
+        return find("EmailAdresse", emailAdresse).firstResult();
+    }
+
+    public byte getGeloescht() {
+        return geloescht;
+    }
+
+    public void setGeloescht(byte geloescht) {
+        this.geloescht = geloescht;
     }
 
     public Benutzer(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, int telefonnummer) {
@@ -137,18 +147,17 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.telefonnummer = telefonnummer;
     }
 
-    /**
-     * Searches Benutzer table for entries matching the benutzername
-     *
-     * @return Benutzer
-     */
-    public Benutzer findMatchingEntryByEmail() {
-        return find("EmailAdresse", emailAdresse).firstResult();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Benutzer benutzer = (Benutzer) o;
+        return benutzer_ID == benutzer.benutzer_ID && telefonnummer == benutzer.telefonnummer && geloescht == benutzer.geloescht && Objects.equals(benutzername, benutzer.benutzername) && Objects.equals(vorname, benutzer.vorname) && Objects.equals(nachname, benutzer.nachname) && Objects.equals(emailAdresse, benutzer.emailAdresse) && Objects.equals(passwort, benutzer.passwort) && Objects.equals(rolle, benutzer.rolle) && Objects.equals(paypal_Account, benutzer.paypal_Account);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(benutzer_ID, benutzername, vorname, nachname, emailAdresse, passwort, rolle, paypal_Account, telefonnummer);
+        return Objects.hash(benutzer_ID, benutzername, vorname, nachname, emailAdresse, passwort, rolle, paypal_Account, telefonnummer, geloescht);
     }
 
     @Override
@@ -163,6 +172,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
                 ", rolle='" + rolle + '\'' +
                 ", paypal_Account='" + paypal_Account + '\'' +
                 ", telefonnummer=" + telefonnummer +
+                ", geloescht=" + geloescht +
                 '}';
     }
 }

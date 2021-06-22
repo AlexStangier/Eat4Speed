@@ -1,6 +1,7 @@
 package de.eat4speed.controllers;
 
 
+import de.eat4speed.repositories.GerichtRepository;
 import de.eat4speed.searchOptions.DishSearchOptions;
 import de.eat4speed.entities.Gericht;
 import de.eat4speed.services.interfaces.IGerichtService;
@@ -19,6 +20,9 @@ public class GerichtController {
 
     @Inject
     IGerichtService gerichtService;
+
+    @Inject
+    GerichtRepository gerichtRepository;
 
     @POST
     @Path("addGericht")
@@ -105,6 +109,22 @@ public class GerichtController {
     public Response deleteGericht(@PathParam("id") int gericht_ID)
     {
         return gerichtService.deleteGericht(gericht_ID);
+    }
+
+    @PUT
+    @Path("deleteGerichtByGericht_ID/{gericht_ID}")
+    public Response deleteGerichtByGericht_ID(@PathParam("gericht_ID") int gericht_ID)
+    {
+        gerichtRepository.deleteGerichtByGericht_ID(gericht_ID);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @PUT
+    @Path("deleteGerichtByRestaurant_ID/{restaurant_ID}")
+    public Response deleteGerichtByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
+    {
+        gerichtRepository.deleteGerichtByRestaurant_ID(restaurant_ID);
+        return Response.status(Response.Status.OK).build();
     }
 
 }

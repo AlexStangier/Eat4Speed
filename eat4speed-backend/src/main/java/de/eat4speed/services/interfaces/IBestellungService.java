@@ -1,11 +1,11 @@
 package de.eat4speed.services.interfaces;
 
-import de.eat4speed.dto.BestellungUpdateDto;
 import de.eat4speed.dto.OrderDto;
 import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.dto.StatisticDtoWrapper;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
+import org.json.JSONArray;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -59,7 +59,12 @@ public interface IBestellungService {
 
     List getRestaurantBestellungen(String email);
 
-    Response updateBestellungStatusRestaurantUndKundeDontTouchThis(BestellungUpdateDto bestellung);
+    Response updateBestellungStatus(Bestellung bestellung);
+
+    List listAll();
+
+    JSONArray getGerichteByAuftragID(int Auftrag_ID);
+
 
     List getProduktUndAnzahl(int id);
 
@@ -70,7 +75,6 @@ public interface IBestellungService {
     List getGerichtIds(int id);
 
     List getAnzahlFertigerAuftraege(int id);
-
 
 
 }

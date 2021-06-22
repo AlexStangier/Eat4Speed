@@ -44,18 +44,18 @@
               <v-tab-item>
                 <v-card class="px-4">
                   <v-card-text>
-                    <v-form ref="registerForm" v-model="valid" lazy-validation>
+                    <v-form ref="registerForm" v-model="isFormValid">
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
-                          <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
+                          <v-text-field v-model="salutation" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Anrede"
                                         maxlength="20" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="firstName" :rules="[rules.required]" label="Vorname"
+                          <v-text-field v-model="firstName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Vorname"
                                         maxlength="20" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="lastName" :rules="[rules.required]" label="Nachname" maxlength="20"
+                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="20"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
@@ -96,20 +96,67 @@
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'Passwort'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'Passwort'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1"></v-text-field>
+                                        @click:append="show1 = !show1" required></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-checkbox
+                              label="AGB gelesen und akzeptiert"
+                              v-model="agbAccepted"
+                          ></v-checkbox>
+                        </v-col>
+                        <v-col cols="12" class="mt-n8">
+                          <v-dialog
+                              v-model="dialog"
+                              scrollable
+                              max-width="500px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-span
+                                  color="primary"
+                                  dark
+                                  v-bind="attrs"
+                                  v-on="on"
+                              >
+                                Zu den Allgemeinen Geschäftsbedingungen
+                              </v-span>
+                            </template>
+                            <v-card>
+                              <v-card-title>Allgemeine Geschäftsbedingungen</v-card-title>
+                              <v-divider></v-divider>
+                              <v-card-text style="height: 400px;">
+                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+                                Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+
+                                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+
+                                Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
+                              </v-card-text>
+                              <v-divider></v-divider>
+                              <v-card-actions>
+                                <v-btn
+                                    color="blue darken-1"
+                                    text
+                                    @click="dialog = false"
+                                >
+                                  Schließen
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
                           <v-btn color="primary"
                                  depressed tile
-                                 :disabled="!valid"
+                                 :disabled="!isFormValid"
                                  @click="validate">Register
                           </v-btn>
                         </v-col>
@@ -170,8 +217,7 @@ export default {
     },
     async validate() {
 
-
-      console.log("test");
+      console.log(this.valid);
 
       var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
@@ -196,7 +242,8 @@ export default {
           passwort: this.password,
           telefonnummer: this.phoneNumber,
           rolle: "kunde",
-          paypal_Account: this.paypal
+          paypal_Account: this.paypal,
+          geloescht: 0
         };
 
         const responseBenutzer = await axios.post("/Benutzer", benutzer);
@@ -299,7 +346,7 @@ export default {
           await axios.post("/EntfernungKundeRestaurant", entfernung);
         }
       } else {
-        this.openSnackbar("Bitte gültiga Adresse eingeben!")
+        this.openSnackbar("Bitte gültige Adresse eingeben!")
 
       }
 
@@ -327,7 +374,8 @@ export default {
         {name: "Registrieren", icon: "mdi-account-outline"}
       ],
       isFormValid: false,
-      valid: true,
+      valid: false,
+      agbAccepted: false,
       salutation: "",
       adress_ID: "",
       benutzer_ID: "",
@@ -370,7 +418,8 @@ export default {
       show1: false,
       rules: {
         required: value => !!value || "Required.",
-        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       }
     }
   }

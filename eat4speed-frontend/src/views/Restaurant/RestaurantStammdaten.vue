@@ -76,15 +76,15 @@
             <v-row>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="firstName" label="Vorname"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="50" :rules="[rules.required, rules.lettersAndSpacesOnly]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="lastName" label="Nachname"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="50" :rules="[rules.required, rules.lettersAndSpacesOnly]"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="12">
                 <v-text-field v-model="restaurant_name" label="Restaurant Name"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="50" :rules="[rules.required, rules.lettersAndSpacesOnly]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="radius" label="Radius"
@@ -128,6 +128,16 @@
                        color="red"
                        dark
                        :disabled="!valid">Speichern
+                </v-btn>
+              </v-col>
+              <v-col>
+                <v-btn
+                    color="error"
+                    tile
+                    class="ml-2"
+                    @click="deleteRestaurant"
+                >
+                  Konto löschen
                 </v-btn>
               </v-col>
             </v-row>
@@ -329,8 +339,12 @@ export default {
     openSnackbar(message) {
       this.popupData.display = true;
       this.popupData.message = message;
+    },
+    deleteRestaurant()
+    {
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email);
+      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+this.restaurant_ID);
     }
-
   },
   data() {
     return {
@@ -389,7 +403,8 @@ export default {
       show1: false,
       rules: {
         required: value => !!value || "Required.",
-        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       }
     }
   }
