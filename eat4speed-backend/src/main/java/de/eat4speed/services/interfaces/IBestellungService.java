@@ -59,7 +59,7 @@ public interface IBestellungService {
 
     List getRestaurantBestellungen(String email);
 
-    Response updateBestellungStatus(BestellungUpdateDto bestellung);
+    Response updateBestellungStatusRestaurantUndKundeDontTouchThis(BestellungUpdateDto bestellung);
 
     List getProduktUndAnzahl(int id);
 

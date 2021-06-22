@@ -157,12 +157,7 @@ export default {
         zustand = 'abholbereit';
       }
 
-      let bestellung = {
-        status: zustand,
-        bestell_ID: bestellID
-      }
-
-      await axios.put("/Bestellung/updateBestellungStatus", bestellung);
+      await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand);
 
       this.accepted = false;
 

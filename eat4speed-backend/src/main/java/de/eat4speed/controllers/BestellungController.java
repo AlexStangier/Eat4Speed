@@ -74,10 +74,10 @@ public class BestellungController {
     @PUT
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("updateBestellungStatus/{id}/{status}")
+    @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
     public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
         BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
-        return _bestellungen.updateBestellungStatus(dto);
+        return _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
     }
 
 

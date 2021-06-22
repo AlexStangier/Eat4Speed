@@ -338,10 +338,10 @@ public class BestellungService implements IBestellungService {
     }
 
     @Override
-    public Response updateBestellungStatus(BestellungUpdateDto dto) {
-        Bestellung bestellung = _bestellungRepository.getBestellungByAuftragsId((int) dto.getAuftragsId());
+    public Response updateBestellungStatusRestaurantUndKundeDontTouchThis(BestellungUpdateDto dto) {
+        Bestellung bestellung = _bestellungRepository.getBestellungByID((int) dto.getAuftragsId());
         bestellung.setStatus(dto.status);
-        _bestellungRepository.updateBestellungStatus(bestellung);
+        _bestellungRepository.updateBestellungStatusRestaurantUndKundeDontTouchThis(bestellung);
         return Response.status(Response.Status.OK).entity(bestellung).build();
     }
 
