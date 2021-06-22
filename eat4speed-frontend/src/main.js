@@ -32,12 +32,14 @@ router.beforeEach(async (to, from, next) => {
     const email = cookies.get('emailAdresse');
     let role = null;
 
-    if (email === undefined && to && !to.fullPath.includes('/anmeldung')) {
-        if (to.fullPath.includes('/admin') ||
-            to.fullPath.includes('/fahrer') ||
-            to.fullPath.includes('/restaurant')) {
-            next(from);
-            return;
+    if (email === undefined) {
+        if (to && !to.fullPath.includes('/anmeldung')) {
+            if (to.fullPath.includes('/admin') ||
+                to.fullPath.includes('/fahrer') ||
+                to.fullPath.includes('/restaurant')) {
+                next(from);
+                return;
+            }
         }
     } else {
         await axios.get(`Benutzer/getRoleByEmail/${email}`)
