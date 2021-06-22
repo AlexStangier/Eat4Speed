@@ -103,8 +103,8 @@ public class BestellungController {
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
 
     @GET
-    @Path("getKundeBestellungen/{status}/{email}")
-    public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
+    @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{status}/{email}")
+    public List updateBestellungStatusRestaurantUndKundeDontTouchThis(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(status, email);}
 
     @GET
     @Path("getKundeBestellungenAktiv/{email}")
