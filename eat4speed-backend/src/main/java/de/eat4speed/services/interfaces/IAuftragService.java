@@ -16,5 +16,7 @@ public interface IAuftragService {
     Response updateAuftragStatus(int id, String status);
     Response updateAuftragFahrernummer(int auftrags_ID, int fahrernummer);
 
-    List getAuftragFahrernummerByAuftrags_ID(int auftrags_ID);
+    List getAuftragFahrernummerByAuftrags_ID(int id);
+
+    Response setToErledigt(int id);
 }

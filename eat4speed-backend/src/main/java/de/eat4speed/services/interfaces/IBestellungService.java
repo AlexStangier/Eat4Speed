@@ -69,6 +69,8 @@ public interface IBestellungService {
 
     List getGerichtIds(int id);
 
+    List getAnzahlFertigerAuftraege(int id);
+
 
 
 }

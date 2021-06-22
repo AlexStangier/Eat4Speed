@@ -163,5 +163,24 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
         return getGerichtIds;
     }
 
+    @Transactional
+    public List getAnzahlFertigerAuftraege(int id) {
+        List getAnzahlFertigerAuftraege;
+
+        Query query = entityManager.createNativeQuery(
+                "SELECT ((select count(*) from Bestellung best " +
+                        "where best.Auftrags_ID = (select b.Auftrags_ID from Bestellung b where b.Bestell_ID = ?1)) " +
+                        "- " +
+                        "(select count(*) from Bestellung best " +
+                        "where best.Auftrags_ID = (select Auftrags_ID from Bestellung where Bestell_ID = ?1) " +
+                        "AND best.Status IN ('storniert', 'abgeliefert'))) as Anzahl," +
+                        " Auftrags_ID from Bestellung where Bestell_ID = ?1").setParameter(1, id);
+
+        getAnzahlFertigerAuftraege = query.getResultList();
+        return getAnzahlFertigerAuftraege;
+    }
+
+
+
 
 }

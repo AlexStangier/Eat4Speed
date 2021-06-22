@@ -359,4 +359,7 @@ public class BestellungService implements IBestellungService {
     @Override
     public List getGerichtIds(int id) {return _bestellungRepository.getGerichtIds(id);}
 
+    @Override
+    public List getAnzahlFertigerAuftraege(int id) {return _bestellungRepository.getAnzahlFertigerAuftraege(id);}
+
 }

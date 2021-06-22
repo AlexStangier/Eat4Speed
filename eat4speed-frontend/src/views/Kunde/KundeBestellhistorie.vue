@@ -338,6 +338,13 @@ export default {
         console.log(error.response)
       }
 
+      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
+
+      if(nochOffeneAuftraege.data[0][0] === 0){
+        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
+        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
+      }
+
       this.accepted = false;
       window.location.reload();
 
