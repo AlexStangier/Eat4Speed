@@ -195,7 +195,6 @@ export default {
       for (let i = 0; i < anzahl; i++) { // outer loop
 
         let sekunden = 300 - ResponseBestellungen.data[i][4];
-        console.log(sekunden)
         if (sekunden <= 0) {
           sekunden = -300;
         }
@@ -224,7 +223,6 @@ export default {
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
-      console.log(anzahl)
       let itemAktiv;
       for (let i = 0; i < anzahl; i++) { // outer loop
 
@@ -247,7 +245,6 @@ export default {
 
       }
 
-      console.log(ResponseBestellungen)
     },
 
     async loadBestellungenStorniert() {
@@ -256,7 +253,6 @@ export default {
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
-      console.log(anzahl)
       let itemStorniert;
       for (let i = 0; i < anzahl; i++) { // outer loop
 
@@ -277,7 +273,6 @@ export default {
 
       }
 
-      console.log(ResponseBestellungen)
     },
     async loadBestellungenAbgeschlossen() {
 
@@ -285,7 +280,6 @@ export default {
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
-      console.log(anzahl)
       let itemAbgeschlossen;
       for (let i = 0; i < anzahl; i++) { // outer loop
 
@@ -307,7 +301,6 @@ export default {
 
       }
 
-      console.log(ResponseBestellungen)
     },
     countDownTimer() {
       if (this.number > 0) {
@@ -320,7 +313,6 @@ export default {
     saveValues(bestellID, timeLeft) {
       timeLeft = timeLeft - 300;
       timeLeft = Math.max(0, timeLeft)
-      console.log(bestellID)
       if (timeLeft > 0) {
         this.stornierteBestellID = bestellID;
         if (!this.accepted) {
@@ -359,7 +351,6 @@ export default {
 
       let idArray = await axios.get("/Bestellung/getGerichtIds/" + id);
 
-      console.log(idArray.data[0])
       let replace = idArray.data[0].replaceAll('[', '').replaceAll(']', '')
       let idsArray = replace.split(', ')
 
