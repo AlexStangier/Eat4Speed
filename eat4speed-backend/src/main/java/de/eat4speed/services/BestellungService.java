@@ -350,4 +350,13 @@ public class BestellungService implements IBestellungService {
         return _bestellungRepository.getProduktUndAnzahl(id);
     }
 
+    @Override
+    public List getKundeBestellungen(String status, String email) {return _bestellungRepository.getKundeBestellungen(status, email);}
+
+    @Override
+    public List getKundeBestellungenAktiv(String email) {return _bestellungRepository.getKundeBestellungenAktiv(email);}
+
+    @Override
+    public List getGerichtIds(int id) {return _bestellungRepository.getGerichtIds(id);}
+
 }
