@@ -141,6 +141,7 @@ export default {
   async mounted() {
     this.searchDestination = "Gerichte";
     await this.checkLoggedInUser();
+    await this.redirectFahrer();
     await this.getLoggedInKunde();
     this.checkForOrders();
   },
@@ -155,14 +156,26 @@ export default {
         this.isUserLoggedInBoolean = true;
       }
     },
+    async redirectFahrer()
+    {
+      if(this.isUserLoggedInBoolean)
+      {
+        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'));
+        console.log(responseRolle);
+        if(responseRolle.data==="fahrer")
+        {
+          this.$router.push({name: "FahrerFahrtenplan"});
+        }
+      }
+    },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$store.getters.getLoginData.auth.username)
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async checkForOrders() {
-      if (this.isUserLoggedInBoolean) {
+      if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
         const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
         if (responseOrders.data.length === 0) {
           this.displayVorschlaege = false;

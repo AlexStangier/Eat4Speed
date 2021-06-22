@@ -6,6 +6,7 @@ import de.eat4speed.dto.PaymentDto;
 import de.eat4speed.dto.StatisticDtoWrapper;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.entities.Gericht;
+import org.json.JSONArray;
 
 import javax.ws.rs.core.Response;
 import java.sql.SQLException;
@@ -73,6 +74,9 @@ public interface IBestellungService {
 
     Response updateBestellungStatus(Bestellung bestellung);
 
+    List listAll();
+
+    JSONArray getGerichteByAuftragID(int Auftrag_ID);
 
 
 }

@@ -5,6 +5,7 @@ import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
 import io.vertx.core.json.Json;
+import org.json.JSONArray;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -367,5 +368,15 @@ public class BestellungService implements IBestellungService {
 
     @Override
     public List getAnzahlFertigerAuftraege(int id) {return _bestellungRepository.getAnzahlFertigerAuftraege(id);}
+
+    @Override
+    public List listAll() {
+        return _bestellungRepository.listAll();
+    }
+
+    @Override
+    public JSONArray getGerichteByAuftragID(int Auftrag_ID) {
+        return _bestellungRepository.getGerichteByAuftragID(Auftrag_ID);
+    }
 
 }

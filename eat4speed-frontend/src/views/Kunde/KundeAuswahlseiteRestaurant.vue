@@ -276,11 +276,6 @@
                 flat
                 tile
             >
-              <v-container v-if="amountGerichte === 0">
-                <v-card>
-
-                </v-card>
-              </v-container>
               <v-container>
                 <v-row>
                   <v-col
@@ -328,6 +323,47 @@
                             class="text-right"
                             flat
                         >
+                          <v-dialog
+                              max-width="50%"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  small
+                                  color="primary"
+                                  tile
+                                  class="ml-1"
+                              >
+                                Allergene
+                              </v-btn>
+                            </template>
+                            <template v-slot:default="dialog">
+                              <v-card>
+                                <v-container>
+                                  <v-select
+                                      readonly
+                                      disabled
+                                      :items="allergeneGericht"
+                                      v-model="allergeneGericht"
+                                      chips
+                                      label="Allergene"
+                                      multiple
+                                  >
+
+                                  </v-select>
+                                  <v-btn
+                                      class="ml-1 justify-end"
+                                      @click="dialog.value = false"
+                                      color="error"
+                                      tile
+                                  >
+                                    Schließen
+                                  </v-btn>
+                                </v-container>
+                              </v-card>
+                            </template>
+                          </v-dialog>
                           <v-btn
                               small
                               bottom="bottom"
@@ -335,6 +371,7 @@
                               tile
                               :to="{name: 'Gericht'}"
                               @mouseover="selectGericht(item)"
+                              class="ml-1"
                           >
                             Details
                           </v-btn>
@@ -402,6 +439,7 @@ export default {
   name: "KundeAuswahlseiteRestaurant",
   async created() {
     this.selectedRestaurant_ID = this.$store.getters.selectedRestaurant_ID;
+    await this.checkLoggedInUser();
     await this.getLoggedInKunde()
     this.loadRestaurant();
     this.displayGetraenke = false;
@@ -544,6 +582,7 @@ export default {
       this.version++;
     },
     async loadBewertungen() {
+      this.test123 = [];
 
       const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
 

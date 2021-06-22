@@ -12,7 +12,7 @@
             <v-col>
               <v-text-field
                   v-model="firstname"
-                  :rules="[rules.required]"
+                  :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Vorname"
                   required
               ></v-text-field>
@@ -20,7 +20,7 @@
             <v-col>
               <v-text-field
                   v-model="lastname"
-                  :rules="[rules.required]"
+                  :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Nachname"
                   required
               ></v-text-field>
@@ -136,6 +136,7 @@
                 color="error"
                 tile
                 class="ml-2"
+                @click="deleteKunde"
             >
               Konto löschen
             </v-btn>
@@ -299,6 +300,10 @@ export default {
     resetValidation() {
       this.$refs.form.resetValidation()
     },
+    deleteKunde()
+    {
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email);
+    },
     closeDialog: function () {
       this.dialog = false;
     },
@@ -342,7 +347,8 @@ export default {
     show1: false,
     rules: {
       required: value => !!value || "Required.",
-      min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+      min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+      lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
     },
     place: '',
     zip: '',

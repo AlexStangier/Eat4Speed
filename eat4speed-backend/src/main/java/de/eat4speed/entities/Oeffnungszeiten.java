@@ -2,7 +2,10 @@ package de.eat4speed.entities;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
@@ -10,7 +13,25 @@ import java.sql.Timestamp;
 @Entity
 public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
 
-    public Oeffnungszeiten(){}
+    public enum DayOfWeek {
+        MONDAY("Montag"),
+        TUESDAY("Dienstag"),
+        WEDNESDAY("Mittwoch"),
+        THURSDAY("Donnerstag"),
+        FRIDAY("Freitag"),
+        SATURDAY("Samstag"),
+        SUNDAY("Sonntag");
+
+        private final String value;
+
+        public String value() {
+            return this.value;
+        }
+
+        DayOfWeek(String value) {
+            this.value = value;
+        }
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,13 +41,23 @@ public class Oeffnungszeiten extends PanacheEntityBase implements Serializable {
     private String wochentag;
     private int restaurant_ID;
 
+    public Oeffnungszeiten() {
+
+    }
+
+    public Oeffnungszeiten(Timestamp anfang, Timestamp ende, String wochentag, int restaurant_ID) {
+        this.anfang = anfang;
+        this.ende = ende;
+        this.wochentag = wochentag;
+        this.restaurant_ID = restaurant_ID;
+    }
+
     public int getOeffnungszeiten_ID() {
         return oeffnungszeiten_ID;
     }
     public void setOeffnungszeiten_ID(int oeffnungszeitenId) {
         this.oeffnungszeiten_ID = oeffnungszeitenId;
     }
-
 
     public Timestamp getAnfang() {
         return anfang;

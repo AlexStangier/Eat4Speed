@@ -27,13 +27,21 @@ public class RoutingController {
     }
 
 
-    @GET
+    @PUT
     @Path("/confirm/{art}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String get_Sorted_Waypoints(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public void confirm_action(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
 
         _router.confirm(art, auftraege, data, email);
 
-        return "okay";
+    }
+
+    @PUT
+    @Path("/accident/{email}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public void report_accident(@PathParam("email") String email, @QueryParam("auftraege") String auftraege){
+        _router.accident(email, auftraege);
     }
 }
