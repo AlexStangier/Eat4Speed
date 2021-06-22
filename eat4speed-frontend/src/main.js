@@ -16,10 +16,10 @@ Vue.prototype.$cookies = cookies;
 
 //https://www.npmjs.com/package/vue2-google-maps
 Vue.use(VueGoogleMaps, {
-  load: {
-    key: 'AIzaSyCltkBHd3EaI9C9cUQvGYEMIjhLuETEFH4',
-    libraries: 'places'
-  },
+    load: {
+        key: 'AIzaSyCltkBHd3EaI9C9cUQvGYEMIjhLuETEFH4',
+        libraries: 'places'
+    },
 })
 
 Vue.component('video-background', VideoBackground);
@@ -28,9 +28,43 @@ moment.locale('de');
 
 Vue.use(VueMeta);
 
+router.beforeEach(async (to, from, next) => {
+    const email = cookies.get('emailAdresse');
+    let role = null;
+
+    if (email === undefined && to && !to.fullPath.includes('/anmeldung')) {
+        if (to.fullPath.includes('/admin') ||
+            to.fullPath.includes('/fahrer') ||
+            to.fullPath.includes('/restaurant')) {
+            next(from);
+            return;
+        }
+    } else {
+        await axios.get(`Benutzer/getRoleByEmail/${email}`)
+            .then((response) => {
+                if (response.status === 200) {
+                    role = response.data;
+                }
+            }, (error) => {
+                console.log(error);
+            });
+
+        if (role && to && !to.fullPath.includes('/anmeldung')) {
+            if ((to.fullPath.includes('/admin') && role !== 'admin') ||
+                (to.fullPath.includes('/fahrer') && role !== 'fahrer') ||
+                (to.fullPath.includes('/restaurant') && role !== 'restaurant')) {
+                next(from);
+                return;
+            }
+        }
+    }
+
+    next();
+})
+
 new Vue({
-  vuetify,
-  router,
-  store,
-  render: h => h(App)
+    vuetify,
+    router,
+    store,
+    render: h => h(App)
 }).$mount('#app')

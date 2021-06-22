@@ -175,7 +175,7 @@ export default {
       }
     },
     async checkForOrders() {
-      if (this.isUserLoggedInBoolean) {
+      if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
         const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
         if (responseOrders.data.length === 0) {
           this.displayVorschlaege = false;
