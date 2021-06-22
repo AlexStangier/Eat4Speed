@@ -1,5 +1,6 @@
 package de.eat4speed.controllers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.eat4speed.dto.*;
 import de.eat4speed.entities.Bestellung;
 import de.eat4speed.repositories.BestellungRepository;
@@ -80,6 +81,12 @@ public class BestellungController {
         return _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
     }
 
+    @PUT
+    @JsonIgnore
+    @Path("updateBestellungStatus")
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        return _bestellungen.updateBestellungStatus(bestellung);
+    }
 
     @GET
     @Path("checkForUserOrders/{kundennummer}")

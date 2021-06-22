@@ -346,6 +346,12 @@ public class BestellungService implements IBestellungService {
     }
 
     @Override
+    public Response updateBestellungStatus(Bestellung bestellung) {
+        _bestellungRepository.updateBestellungStatus(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
+
+    @Override
     public List getProduktUndAnzahl(int id) {
         return _bestellungRepository.getProduktUndAnzahl(id);
     }

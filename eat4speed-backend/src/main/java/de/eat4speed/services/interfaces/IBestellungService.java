@@ -71,6 +71,8 @@ public interface IBestellungService {
 
     List getAnzahlFertigerAuftraege(int id);
 
+    Response updateBestellungStatus(Bestellung bestellung);
+
 
 
 }

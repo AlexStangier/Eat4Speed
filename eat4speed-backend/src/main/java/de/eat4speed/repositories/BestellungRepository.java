@@ -76,6 +76,11 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     }
 
     @Transactional
+    public void updateBestellungStatus(Bestellung bestellung) {
+        update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
+    }
+
+    @Transactional
     public List getProduktUndAnzahl(int id) {
         List getProdutAndAnzahl;
 
