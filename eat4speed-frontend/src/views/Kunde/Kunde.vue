@@ -531,6 +531,7 @@
                                     small
                                     class="ml-1"
                                     color="primary"
+                                    :disabled="item.available !== 'verfügbar'"
                                     tile
                                     @mouseover="selectItem(item)"
                                     @click="gerichtAnzahl=1"
