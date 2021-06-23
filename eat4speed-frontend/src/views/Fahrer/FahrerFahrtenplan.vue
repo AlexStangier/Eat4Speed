@@ -21,7 +21,7 @@
 
             <v-col cols="6">
               <v-row>
-                Liefertermin: {{ getTermin() }}
+                Datum: {{ getTermin() }}
               </v-row>
               <v-row>
                 restliche Stationen: {{ getStationen() }}
@@ -208,7 +208,9 @@ export default {
       this.$forceUpdate();
     },
     getTermin() {
-      return '12.12.2021';
+      const current = new Date();
+      const date = `${current.getDate()}.${current.getMonth()+1}.${current.getFullYear()}`;
+      return date;
     },
     getStationen() {
       return this.data.length;
