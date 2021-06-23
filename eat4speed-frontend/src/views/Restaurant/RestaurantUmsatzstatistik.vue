@@ -178,7 +178,7 @@ export default {
       this.componentKey += 1;
     },
     async getLoggedInRestaurant() {
-      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$store.getters.getLoginData.auth.username);
+      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'));
       this.info.restaurantId = response.data[0];
     },
     async loadZeiten() {

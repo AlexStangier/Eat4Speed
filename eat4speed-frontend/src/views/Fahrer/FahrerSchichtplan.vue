@@ -140,7 +140,7 @@ export default {
     },
 
     async setPause(){
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
       const fahrer_id = fahrer_id_data.data[0]
 
@@ -150,12 +150,13 @@ export default {
 
     async setSchicht(tag) {
 
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username });
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
       const fahrer_id = fahrer_id_data.data[0]
 
       let anfang;
       let ende;
+      let nextday;
       switch (tag){
         case 0: {
           anfang = "7"
@@ -170,11 +171,18 @@ export default {
         case 2: {
           anfang = "23"
           ende = "7"
+          nextday = true
           break
         }
       }
       let anfangMoment = moment().second(0).hour(anfang).minute(0).toDate();
-      let endeMoment = moment().second(0).hour(ende).minute(0).toDate();
+      let endeMoment
+      if(nextday) {
+        endeMoment = moment().second(0).hour(ende).minute(0).add(1, "day").toDate();
+      }
+      else{
+        endeMoment = moment().second(0).hour(ende).minute(0).toDate();
+      }
 
       let time = {
 
@@ -207,7 +215,7 @@ export default {
     },
     async loadZeiten(){
 
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$store.getters.getLoginData.auth.username }, this.$store.getters.getLoginData);
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') }, this.$store.getters.getLoginData);
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0];
       const schichtdata = await axios.get("/Schichten/getSchicht/" + fahrer_id[0], this.$store.getters.getLoginData);
@@ -215,12 +223,12 @@ export default {
       if(schichtdata.data.length == 0){
         this.timeInDB = false;
         this.pauseDisabled = true;
-        //this.confirm = false;
         document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
         this.calcVisibility()
       }
       else {
-        //this.confirm = true;
+        this.timeInDB = true;
+        const schicht = schichtdata.data[0];
         if(await this.calcIfPause()){
           document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
           this.pauseDisabled = true;
@@ -228,7 +236,15 @@ export default {
           this.pause = 0
         }
         else {
-          this.pauseDisabled = false;
+          if(moment().isBetween(moment(schicht[0].substring(0, 19)+"+00:00"), moment(schicht[1].substring(0, 19)+"+00:00"), "minute")) {
+            this.pauseDisabled = false;
+          }
+          else{
+            document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
+            this.pauseDisabled = true;
+            this.pauseColor = "red"
+            this.pause = 0
+          }
           if (fahrer_id[1] == 1) {
             document.getElementById("pause").innerHTML = "Pause beenden..."
             this.pauseColor = "red"
@@ -239,29 +255,38 @@ export default {
             this.pause = 1
           }
         }
-        const schicht = schichtdata.data[0];
-        if(moment().isSameOrBefore(moment(schicht[0].substring(0, 19)+"+00:00"), 'day')){
+
+
+
+
+        //dieser Abschnitt nur für Fahrer die gerade in einer Schicht sind
+        if(moment().isSame(moment(schicht[0].substring(0, 19)+"+00:00"), 'day')
+        || (moment().hour(7).isSame(moment(schicht[1].substring(0, 19)+"+00:00"), 'hour')
+            && moment().isSameOrBefore(moment(schicht[1].substring(0, 19)+"+00:00"), 'minute'))){
           if(moment().hour(7).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
             this.afternoon = true;
             this.night = true;
+            this.morning = false;
             this.morgenFarbe();
           }
           if(moment().hour(15).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
             this.morning = true;
             this.night = true;
+            this.afternoon = false;
             this.nachmittagFarbe();
           }
-          if(moment().hour(23).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")){
+          if(moment().hour(23).isSame(moment(schicht[0].substring(0, 19)+"+00:00"), "hour")
+              || moment().hour(7).isSame(moment(schicht[1].substring(0, 19)+"+00:00"), 'hour')){
             this.afternoon = true;
             this.morning = true;
+            this.night = false;
             this.nachtFarbe();
           }
-
           this.confirm = true;
         }
-
-        this.calcVisibility()
-
+        else{
+          this.calcVisibility();
+        }
       }
     },
 
@@ -269,13 +294,16 @@ export default {
 
       if(moment().isBetween(moment().hour(7).minute(0), moment().hour(15).minute(0), 'minute')){
         this.morning = true;
-        if(!this.timeInDB) this.nachmittagFarbe();
+        this.afternoon = false;
+        this.night = false;
+        this.nachmittagFarbe();
 
       }
       if(moment().isBetween(moment().hour(15).minute(0), moment().hour(22).minute(0), 'minute')){
         this.morning = true;
         this.afternoon = true;
-        if(!this.timeInDB) this.nachtFarbe();
+        this.night = false;
+        this.nachtFarbe();
       }
       if(moment().isAfter(moment().hour(23).minute(0), "minute") || moment().isBefore(moment().hour(7).minute(0), "minute")){
         this.morning = true;

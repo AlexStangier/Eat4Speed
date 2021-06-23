@@ -247,24 +247,6 @@
           </v-col>
         </v-card-title>
         <v-divider></v-divider>
-
-        <v-card
-            v-if="amountGerichte === 0 && !displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Gericht gefunden
-        </v-card>
-        <v-card
-            v-if="amountGerichte === 0 && displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Getränke gefunden
-        </v-card>
-
         <v-virtual-scroll
             :items="items"
             :item-height="210"
@@ -333,8 +315,8 @@
                                   small
                                   color="primary"
                                   tile
-                                  @mouseenter="fillAllergene(item)"
                                   class="ml-1"
+                                  @mouseenter="fillAllergene(item)"
                               >
                                 Allergene
                               </v-btn>
@@ -342,25 +324,35 @@
                             <template v-slot:default="dialog">
                               <v-card>
                                 <v-container>
-                                  <v-select
-                                      readonly
-                                      disabled
-                                      :items="allergeneGericht"
-                                      v-model="allergeneGericht"
-                                      chips
-                                      label="Allergene"
-                                      multiple
+                                  <v-row
+                                      class="pa-2"
                                   >
+                                    <v-select
+                                        readonly
+                                        disabled
+                                        :items="allergeneGericht"
+                                        v-model="allergeneGericht"
+                                        chips
+                                        label="Allergene"
+                                        multiple
+                                        :key="allergeneKey"
+                                    >
 
-                                  </v-select>
-                                  <v-btn
-                                      class="ml-1 justify-end"
-                                      @click="dialog.value = false"
-                                      color="error"
-                                      tile
+                                    </v-select>
+                                  </v-row>
+                                  <v-row
+                                      class="pa-2"
+                                      justify="end"
                                   >
-                                    Schließen
-                                  </v-btn>
+                                    <v-btn
+                                        class="ml-1 justify-end"
+                                        @click="dialog.value = false"
+                                        color="error"
+                                        tile
+                                    >
+                                      Schließen
+                                    </v-btn>
+                                  </v-row>
                                 </v-container>
                               </v-card>
                             </template>
@@ -428,7 +420,36 @@
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
-
+        <v-card
+            v-if="amountGerichte === -1"
+            flat
+            tile
+        >
+          <v-row justify="center">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                :size="70"
+                :width="7"
+            ></v-progress-circular>
+          </v-row>
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gericht gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
+        </v-card>
       </v-card>
     </v-container>
   </v-main>
@@ -730,6 +751,17 @@ export default {
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey += 1;
+    },
   },
   data: () => ({
     selectedRestaurant_ID:"",
@@ -751,7 +783,7 @@ export default {
     minimums: [],
     ratings: [],
     availabilities: [],
-    amountGerichte:4,
+    amountGerichte: -1,
     amountReviews:4,
     version:0,
     version2:0,
@@ -765,7 +797,6 @@ export default {
     restaurantBestellradius:"",
     bewertung_ID:"",
     entfernung: "",
-    allergeneGericht: [],
     userRating:0,
     userComment:"",
     reviewUsername: [],
@@ -796,6 +827,8 @@ export default {
     ],
     btnType: 0,
     user: 0,
+    allergeneKey: 0,
+    allergeneGericht: [],
   }),
 
 

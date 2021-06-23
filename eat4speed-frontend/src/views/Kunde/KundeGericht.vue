@@ -34,7 +34,7 @@
                   align="center"
               >
                 <v-col
-                    v-for="c in 3"
+                    v-for="c in 4"
                     :key="c"
                 >
                   <v-content v-if="b === 1 & c === 1">
@@ -49,6 +49,10 @@
                   <v-content v-if="b === 10 & c === 2" class="text-right">
                     Preis:
                     {{ (gerichtPreis * gerichtAnzahl) + ' &euro;' }}
+                  </v-content>
+                  <v-content
+                      v-if="b === 10 & c === 3"
+                  >
                     <v-dialog
                         max-width="50%"
                     >
@@ -61,6 +65,7 @@
                             @mouseenter="fillAllergene()"
                             tile
                             class="ml-1"
+                            @mouseenter="fillAllergene(item)"
                         >
                           Allergene
                         </v-btn>
@@ -68,31 +73,41 @@
                       <template v-slot:default="dialog">
                         <v-card>
                           <v-container>
-                            <v-select
-                                readonly
-                                disabled
-                                :items="allergeneGericht"
-                                v-model="allergeneGericht"
-                                chips
-                                label="Allergene"
-                                multiple
+                            <v-row
+                                class="pa-2"
                             >
+                              <v-select
+                                  readonly
+                                  disabled
+                                  :items="allergeneGericht"
+                                  v-model="allergeneGericht"
+                                  chips
+                                  label="Allergene"
+                                  multiple
+                                  :key="allergeneKey"
+                              >
 
-                            </v-select>
-                            <v-btn
-                                class="ml-1 justify-end"
-                                @click="dialog.value = false"
-                                color="error"
-                                tile
+                              </v-select>
+                            </v-row>
+                            <v-row
+                                class="pa-2"
+                                justify="end"
                             >
-                              Schließen
-                            </v-btn>
+                              <v-btn
+                                  class="ml-1 justify-end"
+                                  @click="dialog.value = false"
+                                  color="error"
+                                  tile
+                              >
+                                Schließen
+                              </v-btn>
+                            </v-row>
                           </v-container>
                         </v-card>
                       </template>
                     </v-dialog>
                   </v-content>
-                  <v-content v-if="b === 10 & c === 3">
+                  <v-content v-if="b === 10 & c === 4">
                     <v-btn
                         :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50 || gerichtVerfuegbar === 0"
                         small
@@ -248,7 +263,18 @@ export default {
       {
         this.$router.push({name: "Favorites"})
       }
-    }
+    },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey += 1;
+    },
   },
   data: () => ({
     gerichtName: "",
@@ -272,6 +298,8 @@ export default {
         v => (v && v >= 1) || "Bestellungen müssen größer als 1 sein",
         v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
+    allergeneKey: 0,
+    allergeneGericht: [],
 
   }),
 }

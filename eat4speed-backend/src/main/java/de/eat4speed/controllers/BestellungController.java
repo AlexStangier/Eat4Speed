@@ -102,6 +102,30 @@ public class BestellungController {
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
 
+    @PUT
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
+    public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
+        BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
+        return _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
+    }
+    @GET
+    @Path("getKundeBestellungen/{status}/{email}")
+    public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
+
+    @GET
+    @Path("getKundeBestellungenAktiv/{email}")
+    public List getKundeBestellungenAktiv(@PathParam("email") String email) {return _bestellungen.getKundeBestellungenAktiv(email);}
+
+    @GET
+    @Path("getGerichtIds/{id}")
+    public List getGerichtIds(@PathParam("id") int id) {return _bestellungen.getGerichtIds(id);}
+
+    @GET
+    @Path("getAnzahlFertigerAuftraege/{id}")
+    public List getAnzahlFertigerAuftraege(@PathParam("id") int id) {return _bestellungen.getAnzahlFertigerAuftraege(id);}
+
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String get(){

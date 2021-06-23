@@ -13,6 +13,7 @@
                   :color="btnType === 0 ? 'primary' : 'blue-grey'"
                   class="mt-2 white--text"
                   width="150"
+                  tile
               >
                 Gerichte
               </v-btn>
@@ -21,6 +22,7 @@
                   :color="btnType === 1 ? 'primary' : 'blue-grey'"
                   class="mt-2 ml-2 white--text"
                   width="150"
+                  tile
               >
                 Restaurants
               </v-btn>
@@ -32,6 +34,7 @@
             :items="items"
             :item-height="230"
             max-height="650"
+            :key="favoritenKey"
         >
           <template v-slot:default="{ item }" v-resize>
             <v-card
@@ -132,7 +135,7 @@
                                   color="primary"
                                   @mouseenter="fillAllergene(item)"
                                   tile
-                                  class="ml-1"
+                                  @mouseenter="fillAllergene(item)"
                               >
                                 Allergene
                               </v-btn>
@@ -140,25 +143,34 @@
                             <template v-slot:default="dialog">
                               <v-card>
                                 <v-container>
-                                  <v-select
-                                      readonly
-                                      disabled
-                                      :items="allergeneGericht"
-                                      v-model="allergeneGericht"
-                                      chips
-                                      label="Allergene"
-                                      multiple
+                                  <v-row
+                                      class="pa-2"
                                   >
+                                    <v-select
+                                        readonly
+                                        :items="allergeneGericht"
+                                        v-model="allergeneGericht"
+                                        chips
+                                        label="Allergene"
+                                        multiple
+                                        :key="allergeneKey"
+                                    >
 
-                                  </v-select>
-                                  <v-btn
-                                      class="ml-1 justify-end"
-                                      @click="dialog.value = false"
-                                      color="error"
-                                      tile
+                                    </v-select>
+                                  </v-row>
+                                  <v-row
+                                      class="pa-2"
+                                      justify="end"
                                   >
-                                    Schließen
-                                  </v-btn>
+                                    <v-btn
+                                        class="ml-1 justify-end"
+                                        @click="dialog.value = false"
+                                        color="error"
+                                        tile
+                                    >
+                                      Schließen
+                                    </v-btn>
+                                  </v-row>
                                 </v-container>
                               </v-card>
                             </template>
@@ -237,6 +249,26 @@
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
+        <v-card
+            v-if="amountGerichte === -1"
+            tile
+        >
+          <v-row justify="center">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                :size="70"
+                :width="7"
+            ></v-progress-circular>
+          </v-row>
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0"
+            tile
+            class="text-center text-h5"
+        >
+          Keine Favoriten gefunden
+        </v-card>
       </v-card>
     </v-container>
 
@@ -271,7 +303,7 @@ export default {
     setDisplayGerichteToFalse() {
       this.btnType = 1;
       this.displayGerichte = false;
-      this.loadGerichte()
+      this.loadGerichte();
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurant_ID);
@@ -402,7 +434,7 @@ export default {
         this.amountGerichte = ResponseRestaurants.data.length;
       }
 
-      this.version++;
+      this.favoritenKey++;
     },
     selectItem(item) {
       console.log("Gericht selected "+item.id);
@@ -452,12 +484,23 @@ export default {
 
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
-    }
+    },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey += 1;
+    },
   },
   data: () => ({
     displayGerichte: true,
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: -1,
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
@@ -486,6 +529,9 @@ export default {
       v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     btnType: 0,
+    allergeneKey: 0,
+    favoritenKey: 0,
+    allergeneGericht: [],
   }),
   computed: {
     items(){

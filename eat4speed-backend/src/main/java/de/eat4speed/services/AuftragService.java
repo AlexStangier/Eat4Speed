@@ -56,4 +56,11 @@ public class AuftragService implements IAuftragService {
         return auftragRepository.getAuftragFahrernummerByAuftrags_ID(auftrags_ID);
     }
 
+    @Override
+    public Response setToErledigt(int id)
+    {
+        auftragRepository.setToErledigt(id);
+        return Response.status(Response.Status.OK).build();
+    }
+
 }

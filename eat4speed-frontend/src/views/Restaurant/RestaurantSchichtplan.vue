@@ -718,7 +718,7 @@ export default {
     },
     async loadZeiten() {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
       let StammdatenData = ResponseStammdaten.data[0];
 
       const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12]);
@@ -770,7 +770,7 @@ export default {
     },
     async setArbeitstag(pos, tag) {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
       let StammdatenData = ResponseStammdaten.data[0];
 
       let time = {
@@ -785,7 +785,7 @@ export default {
     },
     async updateArbeitstag(pos, tag) {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
       let StammdatenData = ResponseStammdaten.data[0];
 
       let time = {

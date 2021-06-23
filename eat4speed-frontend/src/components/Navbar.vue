@@ -55,6 +55,7 @@
               class="ml-3"
               color="primary"
               tile
+              depressed
           >
             <v-icon> mdi-account </v-icon>
             Konto

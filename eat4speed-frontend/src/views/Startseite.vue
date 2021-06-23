@@ -14,6 +14,7 @@
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
+                tile
             >Anmelden
             </v-btn>
           </template>
@@ -170,12 +171,12 @@ export default {
     },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$store.getters.getLoginData.auth.username)
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async checkForOrders() {
-      if (this.isUserLoggedInBoolean) {
+      if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
         const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
         if (responseOrders.data.length === 0) {
           this.displayVorschlaege = false;
