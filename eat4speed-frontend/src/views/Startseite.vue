@@ -9,7 +9,6 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-                v-if="!isUserLoggedIn"
                 class="ml-2"
                 color="primary"
                 v-bind="attrs"
