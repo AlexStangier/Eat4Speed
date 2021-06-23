@@ -65,7 +65,6 @@
                             @mouseenter="fillAllergene()"
                             tile
                             class="ml-1"
-                            @mouseenter="fillAllergene(item)"
                         >
                           Allergene
                         </v-btn>
@@ -220,15 +219,6 @@ export default {
       this.version++;
 
     },
-    async fillAllergene()
-    {
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.gericht_ID);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-    },
     addToCart() {
       if(this.isUserLoggedInBoolean)
       {
@@ -281,7 +271,6 @@ export default {
     loggedInKunde_ID: "",
     isUserLoggedInBoolean: false,
     gerichtBeschreibung: "",
-    allergeneGericht: [],
     gerichtBild: "",
     gerichtPreis: 1.0,
     gerichtVerfuegbar: "",
