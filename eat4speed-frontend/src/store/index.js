@@ -71,7 +71,9 @@ export default new Vuex.Store({
 
       for(let i = 0; i<state.cartGerichte.length;i++)
       {
-        if(state.cartGerichte[i].gericht_ID===payload.gericht_ID)
+        if(state.cartGerichte[i].gericht_ID === payload.gericht_ID &&
+            state.cartGerichte[i].quantity === payload.quantity &&
+            state.cartGerichte[i].num === payload.num)
         {
           state.cartGerichte.splice(i,1);
         }
