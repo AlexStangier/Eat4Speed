@@ -108,7 +108,23 @@ public class BestellungController {
     @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
     public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
         BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
-        return _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
+
+        //Response zwischen speichern, da nach Überprüfung erst nach Datenbank zugriff
+        Response response = _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
+
+        try {
+            //Überprüfung ob Fahrerauswahl starten soll
+            URL url = new URL("http://localhost:1337/FahrerAuswahl/start/" + id);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("PUT");
+            http.setDoOutput(false);
+            http.setReadTimeout(10);
+            http.getInputStream();
+            http.disconnect();
+        } catch (Exception e) {
+        }
+
+        return response;
     }
     @GET
     @Path("getKundeBestellungen/{status}/{email}")
