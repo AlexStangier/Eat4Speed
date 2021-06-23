@@ -40,13 +40,17 @@ public class RoutingService implements IRoutingService {
     }
 
     @Override
-    public void accident(String email, String auftraege){
+    public void accident(String auftraege){
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         ArrayList<String> auftrags_ids = new ArrayList<>();
         for (String element : auftr){
             if(!auftrags_ids.contains(element)){
                 auftrags_ids.add(element);
             }
+        }
+        for (String id : auftrags_ids){
+            _fahrer.accident_report_bestellunng(Long.parseLong(id));
+            _fahrer.accident_report_fahrer(Long.parseLong(id));
         }
         System.out.println(auftrags_ids);
     }
@@ -78,18 +82,13 @@ public class RoutingService implements IRoutingService {
                 Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
-                long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
+                //long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
 
                 return new JSONObject()
                         .put("id", id).put("pickup", new JSONObject()
                                 .put("location", new JSONArray()
                                         .put(src_lng).put(src_lat))
                                 .put("duration", 300)
-                                .put("time_windows", new JSONArray()
-                                        .put(new JSONArray()
-                                                .put(pickup_timewindow - 5 * 60).put(delivery_timewindow)
-                                        )
-                                )
                         )
                         .put("delivery", new JSONObject()
                                 .put("location", new JSONArray()
