@@ -157,7 +157,7 @@
                           <v-btn color="primary"
                                  depressed tile
                                  :disabled="!isFormValid"
-                                 @click="validate">Register
+                                 @click="validate">Registrieren
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -193,6 +193,12 @@ export default {
   methods: {
 
     async login() {
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      if(responseGeloescht.data[0]===1)
+      {
+        this.openSnackbar("Dieses Konto wurde gelöscht.");
+        return;
+      }
       this.$http.post('/Login/user', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
@@ -344,6 +350,8 @@ export default {
           console.log(entfernung);
 
           await axios.post("/EntfernungKundeRestaurant", entfernung);
+
+          this.$router.push({name: "Startseite"});
         }
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
@@ -375,6 +383,7 @@ export default {
       ],
       isFormValid: false,
       valid: false,
+      dialog: false,
       agbAccepted: false,
       salutation: "",
       adress_ID: "",

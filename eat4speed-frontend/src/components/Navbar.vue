@@ -111,7 +111,7 @@
         </v-list>
       </v-menu>
 
-      <Cart></Cart>
+      <Cart :isLoggedIn="isUserLoggedIn"></Cart>
 
     </v-app-bar>
   </v-card>

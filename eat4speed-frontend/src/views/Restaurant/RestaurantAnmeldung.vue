@@ -207,6 +207,18 @@ export default {
   },
   methods: {
     async login() {
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      if(responseGeloescht.data[0]===1)
+      {
+        this.openSnackbar("Dieses Konto wurde gelöscht.");
+        return;
+      }
+      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail);
+      if(responseBlacklist.data.length>0)
+      {
+        this.openSnackbar("Dieses Konto befindet sich auf der Blacklist wegen "+responseBlacklist.data[0]);
+        return;
+      }
       this.$http.post('/Login/restaurant', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
@@ -363,6 +375,7 @@ export default {
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
+            this.$router.push({name: "RestaurantControlPanel"});
           })
               .catch(function () {
                 console.log('Picture upload error');
@@ -398,6 +411,7 @@ export default {
       ],
       valid: true,
       agbAccepted: false,
+      dialog: false,
       paypal: "",
       restaurantBild: "",
       restaurant_name: "",

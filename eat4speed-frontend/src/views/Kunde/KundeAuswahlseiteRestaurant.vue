@@ -247,6 +247,24 @@
           </v-col>
         </v-card-title>
         <v-divider></v-divider>
+
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gericht gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
+        </v-card>
+
         <v-virtual-scroll
             :items="items"
             :item-height="210"
@@ -315,8 +333,8 @@
                                   small
                                   color="primary"
                                   tile
-                                  class="ml-1"
                                   @mouseenter="fillAllergene(item)"
+                                  class="ml-1"
                               >
                                 Allergene
                               </v-btn>
@@ -383,6 +401,7 @@
                                   bottom="bottom"
                                   class="ml-1"
                                   color="primary"
+                                  :disabled="item.available !== 'verfügbar'"
                                   tile
                                   @mouseover="selectItem(item)"
                                   @click="gerichtAnzahl=1"
@@ -571,6 +590,14 @@ export default {
         this.names[i] = gerichtData[1];
         this.descriptions[i] = gerichtData[2];
         this.prices[i] = gerichtData[3];
+        if(gerichtData[5] === 0)
+        {
+          this.availabilities[i] = "nicht verfügbar";
+        }
+        else
+        {
+          this.availabilities[i] = "verfügbar";
+        }
       }
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
@@ -602,6 +629,16 @@ export default {
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
+    },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
     },
     async loadBewertungen() {
       this.test123 = [];
@@ -732,17 +769,6 @@ export default {
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-      this.allergeneKey += 1;
-    },
   },
   data: () => ({
     selectedRestaurant_ID:"",
@@ -763,6 +789,7 @@ export default {
     gerichtIDs: [],
     minimums: [],
     ratings: [],
+    availabilities: [],
     amountGerichte: -1,
     amountReviews:4,
     version:0,
@@ -777,7 +804,7 @@ export default {
     restaurantBestellradius:"",
     bewertung_ID:"",
     entfernung: "",
-
+    allergeneGericht: [],
     userRating:0,
     userComment:"",
     reviewUsername: [],
@@ -809,7 +836,6 @@ export default {
     btnType: 0,
     user: 0,
     allergeneKey: 0,
-    allergeneGericht: [],
   }),
 
 
@@ -824,6 +850,7 @@ export default {
         const cprice = this.prices[i]
         const cimg = this.imgs[i]
         const crating = this.ratings[i]
+        const cavailable = this.availabilities[i]
         i++;
 
         return {
@@ -833,6 +860,7 @@ export default {
           price: cprice,
           img: cimg,
           rating: crating,
+          available: cavailable
         }
       })
     },

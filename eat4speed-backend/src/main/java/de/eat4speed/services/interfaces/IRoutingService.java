@@ -17,7 +17,7 @@ public interface IRoutingService {
 
     JSONArray get_best_Route(String email) throws Exception;
 
-    public void accident(String email, String auftraege);
+    public void accident(String auftraege);
 
     //JSONObject db_test(String email);
 

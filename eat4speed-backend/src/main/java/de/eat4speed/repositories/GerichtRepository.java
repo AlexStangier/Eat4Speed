@@ -34,7 +34,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List allGerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID,g.verfuegbar " +
                         "FROM Gericht g " +
                         "WHERE g.restaurant_ID = ?1 " +
                         "AND g.ist_Getraenk = 0 " +
@@ -52,7 +52,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List allGerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID,g.verfuegbar " +
                         "FROM Gericht g " +
                         "WHERE g.restaurant_ID = ?1 " +
                         "AND g.ist_Getraenk = 1 " +

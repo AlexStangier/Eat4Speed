@@ -133,6 +133,7 @@
                                   v-on="on"
                                   small
                                   color="primary"
+                                  @mouseenter="fillAllergene(item)"
                                   tile
                                   @mouseenter="fillAllergene(item)"
                               >
@@ -212,6 +213,7 @@
                                   v-bind="attrs"
                                   v-on="on"
                                   small="true"
+                                  :disabled="item.available !== 'verfügbar'"
                                   bottom="bottom"
                                   @mouseover="selectItem(item)"
                                   @click="gerichtAnzahl=0"
@@ -447,6 +449,16 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+    },
     async deleteFromFavorites(){
       if(this.displayGerichte===true)
       {
@@ -473,17 +485,6 @@ export default {
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-      this.allergeneKey += 1;
-    },
   },
   data: () => ({
     displayGerichte: true,
@@ -503,6 +504,7 @@ export default {
     distances: [],
     minimums: [],
     availabilities: [],
+    allergeneGericht: [],
     anzahlBestellungen: [],
     kategorien: [],
     selectedKategorien: [],
@@ -518,7 +520,6 @@ export default {
     btnType: 0,
     allergeneKey: 0,
     favoritenKey: 0,
-    allergeneGericht: [],
   }),
   computed: {
     items(){

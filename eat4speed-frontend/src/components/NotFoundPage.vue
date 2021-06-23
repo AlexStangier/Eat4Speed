@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-main>
     <div class="main">
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="470" height="290" viewBox="0 0 470 290">
         <defs>
@@ -47,13 +47,13 @@
 
     </div>
 
-    <v-row class="mt-2">
+    <v-row class="ma-2">
       <v-col align="center" justify="center">
         <v-btn align="center" justify="center" :to="{ name: 'Startseite'}" width="200px" color="primary" depressed tile>Zur Startseite</v-btn>
       </v-col>
     </v-row>
 
-  </div>
+  </v-main>
 </template>
 
 <style scoped>

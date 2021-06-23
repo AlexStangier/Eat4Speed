@@ -148,7 +148,7 @@
       </v-container>
       <v-container>
         <v-card class="mx-auto">
-          <v-card-title> Gerichte</v-card-title>
+          <v-card-title> Restaurants</v-card-title>
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"

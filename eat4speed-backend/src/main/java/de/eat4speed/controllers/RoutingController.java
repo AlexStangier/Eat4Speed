@@ -38,10 +38,10 @@ public class RoutingController {
     }
 
     @PUT
-    @Path("/accident/{email}")
+    @Path("/accident/")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public void report_accident(@PathParam("email") String email, @QueryParam("auftraege") String auftraege){
-        _router.accident(email, auftraege);
+    public void report_accident(@QueryParam("auftraege") String auftraege){
+        _router.accident(auftraege);
     }
 }

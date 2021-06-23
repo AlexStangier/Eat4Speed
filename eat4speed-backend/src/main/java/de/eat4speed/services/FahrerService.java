@@ -125,5 +125,11 @@ public class FahrerService implements IFahrerService {
     @Override
     public void set_Bestellung_abgeliefert(int auftr_id){ fahrerRepository.set_Bestellung_abgeliefert(auftr_id);}
 
+    @Override
+    public void accident_report_bestellunng(long auftrags_id){fahrerRepository.accident_report_bestellunng(auftrags_id);}
+
+    @Override
+    public void accident_report_fahrer(long auftrags_id){fahrerRepository.accident_report_fahrer(auftrags_id);}
+
 
 }

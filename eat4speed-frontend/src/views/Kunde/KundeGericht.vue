@@ -62,9 +62,9 @@
                             v-on="on"
                             small
                             color="primary"
+                            @mouseenter="fillAllergene()"
                             tile
                             class="ml-1"
-                            @mouseenter="fillAllergene(item)"
                         >
                           Allergene
                         </v-btn>
@@ -108,7 +108,7 @@
                   </v-content>
                   <v-content v-if="b === 10 & c === 4">
                     <v-btn
-                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
+                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50 || gerichtVerfuegbar === 0"
                         small
                         @click="addToCart"
                         color="primary"
@@ -271,6 +271,7 @@ export default {
     loggedInKunde_ID: "",
     isUserLoggedInBoolean: false,
     gerichtBeschreibung: "",
+    allergeneGericht: [],
     gerichtBild: "",
     gerichtPreis: 1.0,
     gerichtVerfuegbar: "",
@@ -288,7 +289,6 @@ export default {
         v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     allergeneKey: 0,
-    allergeneGericht: [],
 
   }),
 }
