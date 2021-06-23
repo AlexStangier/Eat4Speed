@@ -133,7 +133,7 @@
                                   v-on="on"
                                   small
                                   color="primary"
-                                  @mouseenter="fillAllergene(item)"
+                                  class="ml-1"
                                   tile
                                   @mouseenter="fillAllergene(item)"
                               >
@@ -449,16 +449,6 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-    },
     async deleteFromFavorites(){
       if(this.displayGerichte===true)
       {
@@ -531,7 +521,6 @@ export default {
     btnType: 0,
     allergeneKey: 0,
     favoritenKey: 0,
-    allergeneGericht: [],
   }),
   computed: {
     items(){
