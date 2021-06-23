@@ -95,7 +95,7 @@
                 <v-card color="primary" width="200px" height="200px">
 
                   <v-card-text class="white--text" align="center">
-                  Spesekarte bearbeiten
+                  Speisekarte bearbeiten
                   </v-card-text>
                  <div align="center">
                   <v-icon color="white" align="center" size="100px" class="justify-center">mdi-silverware</v-icon>
