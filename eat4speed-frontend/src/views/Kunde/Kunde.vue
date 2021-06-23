@@ -231,6 +231,7 @@
               :items="items"
               :item-height="270"
               max-height="650"
+              :key="gerichteKey"
           >
             <template v-slot:default="{ item }" v-resize>
 
@@ -392,24 +393,35 @@
                               <template v-slot:default="dialog">
                                 <v-card>
                                   <v-container>
-                                    <v-select
-                                        readonly
-                                        :items="allergeneGericht"
-                                        v-model="allergeneGericht"
-                                        chips
-                                        label="Allergene"
-                                        multiple
+                                    <v-row
+                                        class="pa-2"
                                     >
+                                      <v-select
+                                          readonly
+                                          disabled
+                                          :items="allergeneGericht"
+                                          v-model="allergeneGericht"
+                                          chips
+                                          label="Allergene"
+                                          multiple
+                                          :key="allergeneKey"
+                                      >
 
-                                    </v-select>
-                                    <v-btn
-                                        class="ml-1 justify-end"
-                                        @click="dialog.value = false"
-                                        color="error"
-                                        tile
+                                      </v-select>
+                                    </v-row>
+                                    <v-row
+                                        class="pa-2"
+                                        justify="end"
                                     >
-                                      Schließen
-                                    </v-btn>
+                                      <v-btn
+                                          class="ml-1 justify-end"
+                                          @click="dialog.value = false"
+                                          color="error"
+                                          tile
+                                      >
+                                        Schließen
+                                      </v-btn>
+                                    </v-row>
                                   </v-container>
                                 </v-card>
                               </template>
@@ -567,6 +579,19 @@
               <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
+          <v-card
+              v-if="amountGerichte === -1"
+              tile
+          >
+            <v-row justify="center">
+              <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  :size="70"
+                  :width="7"
+              ></v-progress-circular>
+            </v-row>
+          </v-card>
           <v-card
               v-if="amountGerichte === 0"
               tile
@@ -737,6 +762,7 @@ export default {
       this.amountGerichte = 0;
       this.amountGerichte = responseAlternatives.data.length;
       this.version++;
+      this.gerichteKey++;
 
     },
     async addToFavorites() {
@@ -867,6 +893,7 @@ export default {
       this.amountGerichte = 0;
       this.amountGerichte = this.gericht_IDs.length;
       this.version++;
+      this.gerichteKey++;
     },
     async loadKategorien() {
       const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id);
@@ -975,6 +1002,7 @@ export default {
       {
         this.allergeneGericht[i] = responseAllergene.data[i];
       }
+      this.allergeneKey += 1;
     },
     async applyBewertungFilterAndSearch() {
 
@@ -1037,7 +1065,7 @@ export default {
     searchOptions: {},
     searchString: "",
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: -1,
     selectedGericht_ID: "",
     isUserLoggedInBoolean: false,
     selectedItem: "",
@@ -1084,7 +1112,9 @@ export default {
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
       v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
-    allergeneGericht: []
+    allergeneGericht: [],
+    allergeneKey: 0,
+    gerichteKey: 0,
   }),
   computed: {
     items(){

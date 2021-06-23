@@ -53,13 +53,95 @@
                 flat
                 class="text-right"
             >
-              <v-btn
-                  disabled
-                  color="primary"
+              <v-menu
+                  bottom
+                  left
+                  offset-y
                   tile
+                  :close-on-content-click="false"
+                  max-width="400"
+                  min-width="400"
+                  max-height="400"
               >
-                Fliter
-              </v-btn>
+                <template v-slot:activator="{ on, attrs}">
+                  <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      color="primary"
+                      tile
+                  >
+                    Filter
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item>
+                    <h2
+                        class="text-uppercase"
+                    >
+                      Filter
+                    </h2>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-checkbox
+                        label="Suche benutzen"
+                        v-model="nameOptionActive"
+                    ></v-checkbox>
+                  </v-list-item>
+                  <v-subheader
+                      class="text-uppercase"
+                  >
+                    Mindestbestellwert
+                  </v-subheader>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Mindestbestellwert benutzen"
+                          v-model="mindestbestellwertOptionActive"
+                      ></v-checkbox>
+                      <v-slider
+                          v-model="selectedMindestbestellwert"
+                          min="5"
+                          max="100"
+                          step="5"
+                          thumb-label
+                          prepend-icon="mdi-cash"
+                          append-icon="mdi-cash-multiple"
+                          v-if="mindestbestellwertOptionActive"
+                      >
+                        <template v-slot:thumb-label="{ value }">
+                          {{value}} {{"€"}}
+                        </template>
+                      </v-slider>
+                    </v-container>
+                  </v-list-item>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                          class="justify-start"
+                      >
+                        <v-btn
+                            color="error"
+                            tile
+                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                        >
+                          Filter löschen
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                          class="justify-end"
+                      >
+                        <v-btn
+                            color="primary"
+                            tile
+                            @click="applyFiltersAndSearch"
+                        >
+                          Filter anwenden
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-list>
+              </v-menu>
             </v-card>
           </v-col>
         </v-row>
@@ -68,24 +150,11 @@
         <v-card class="mx-auto">
           <v-card-title> Gerichte</v-card-title>
           <v-divider></v-divider>
-          <v-card
-              v-if="amountRestaurants === -1"
-              tile
-              class="text-center text-h5"
-          >
-            Ladet
-          </v-card>
-          <v-card
-              v-if="amountRestaurants === 0"
-              tile
-              class="text-center text-h5"
-          >
-            Es wurden keine Restaurants gefunden
-          </v-card>
           <v-virtual-scroll
               :items="items"
               :item-height="250"
               max-height="650"
+              :key="restaurantsKey"
           >
             <template v-slot:default="{ item }" v-resize>
 
@@ -218,6 +287,26 @@
               <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
+          <v-card
+              v-if="amountRestaurants === -1"
+              tile
+          >
+            <v-row justify="center">
+              <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  :size="70"
+                  :width="7"
+              ></v-progress-circular>
+            </v-row>
+          </v-card>
+          <v-card
+              v-if="amountRestaurants === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Restaurants gefunden
+          </v-card>
         </v-card>
       </v-container>
     </v-container>
@@ -373,6 +462,7 @@ export default {
       this.amountRestaurants = 0;
       this.amountRestaurants = ResponseRestaurants.data.length;
       this.version++;
+      this.restaurantsKey++;
     },
     async applyBewertungFilterAndSearch() {
 
@@ -507,7 +597,8 @@ export default {
     nameOptionActive: true,
     mindestbestellwertOptionActive: false,
     bewertungOptionActive: false,
-    entfernungOptionActive: false
+    entfernungOptionActive: false,
+    restaurantsKey: 0,
   }),
   computed: {
     items() {

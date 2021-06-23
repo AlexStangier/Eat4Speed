@@ -14,6 +14,7 @@
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
+                tile
             >Anmelden
             </v-btn>
           </template>
