@@ -6,7 +6,7 @@
 
 # Running at 🚀
 
-[Eat4Speed](http://195.90.210.214:1337/#/)
+[Eat4Speed](https://eat4speed.xyz/#/)
 
 # eat4speed project 🔧
 
