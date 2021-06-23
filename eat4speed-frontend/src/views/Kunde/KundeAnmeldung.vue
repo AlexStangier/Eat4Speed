@@ -193,6 +193,12 @@ export default {
   methods: {
 
     async login() {
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      if(responseGeloescht.data[0]===1)
+      {
+        this.openSnackbar("Dieses Konto wurde gelöscht.");
+        return;
+      }
       this.$http.post('/Login/user', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)

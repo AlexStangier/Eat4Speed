@@ -72,4 +72,8 @@ public class AuftragRepository implements PanacheRepository<Auftrag> {
     public List<Auftrag> getAllAuftaregeByKundenId(long id){
         return find("Kundennummer", id).list();
     }
+
+    @Transactional
+    public void setToErledigt(int id) { update("status = 'erledigt' where id = ?1", (long) id);
+    }
 }

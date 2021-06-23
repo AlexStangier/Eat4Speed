@@ -72,6 +72,11 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     }
 
     @Transactional
+    public void updateBestellungStatusRestaurantUndKundeDontTouchThis(Bestellung bestellung) {
+        update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
+    }
+
+    @Transactional
     public void updateBestellungStatus(Bestellung bestellung) {
         update("status = ?1 where bestell_ID = ?2", bestellung.getStatus(), bestellung.getBestell_ID());
     }
@@ -121,4 +126,75 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
     public List<Bestellung> getAllBestellungenByRestaurantId(Integer restaurantId){
         return find("restaurant_ID", restaurantId).list();
     }
+
+    @Transactional
+    public List getKundeBestellungen(String status, String email) {
+        List getKundeBestellungen;
+
+        Query query = entityManager.createNativeQuery(
+                "select best.Bestell_ID, DATE_FORMAT(best.Timestamp, '%d.%m.%y - %H:%i'), best.Status, r.Betrag," +
+                        "TIMESTAMPDIFF(SECOND, best.Timestamp, CURRENT_TIMESTAMP()) AS SECONDS," +
+                        "DATE_FORMAT(a.Timestamp_Lieferung, '%d.%m.%y - %H:%i') " +
+                        "from Bestellung best, Auftrag a, Rechnung r " +
+                        "where best.Auftrags_ID = a.Auftrags_ID " +
+                        " AND best.STATUS =  ?1 " +
+                        "and best.Rechnung = r.Rechnungs_ID " +
+                        "and a.Kundennummer = " +
+                        "(select Kundennummer from Kunde where Benutzer_ID = " +
+                        "(select Benutzer_ID from Benutzer where EmailAdresse = ?2)) " +
+                        "order by best.Timestamp desc").setParameter(1, status).setParameter(2, email);
+        getKundeBestellungen = query.getResultList();
+        return getKundeBestellungen;
+    }
+
+    @Transactional
+    public List getKundeBestellungenAktiv(String email) {
+        List getKundeBestellungenAktiv;
+
+        Query query = entityManager.createNativeQuery(
+                "select best.Bestell_ID, DATE_FORMAT(best.Timestamp, '%d.%m.%y - %H:%i'), best.Status, r.Betrag," +
+                        "TIMESTAMPDIFF(SECOND, best.Timestamp, CURRENT_TIMESTAMP()) AS SECONDS," +
+                        "DATE_FORMAT(a.Timestamp_On_Customer_Demand, '%d.%m.%y - %H:%i') " +
+                        "from Bestellung best, Auftrag a, Rechnung r " +
+                        "where best.Auftrags_ID = a.Auftrags_ID " +
+                        " AND best.STATUS in ('bearbeitung', 'abholbereit', 'abgeholt') " +
+                        "and best.Rechnung = r.Rechnungs_ID " +
+                        "and a.Kundennummer = " +
+                        "(select Kundennummer from Kunde where Benutzer_ID = " +
+                        "(select Benutzer_ID from Benutzer where EmailAdresse = ?1)) " +
+                        "order by best.Timestamp desc").setParameter(1, email);
+        getKundeBestellungenAktiv = query.getResultList();
+        return getKundeBestellungenAktiv;
+    }
+
+    @Transactional
+    public List getGerichtIds(int id) {
+        List getGerichtIds;
+
+        Query query = entityManager.createNativeQuery(
+                "select best.Gericht_IDs from Bestellung best where best.Bestell_ID = ?1").setParameter(1, id);
+        getGerichtIds = query.getResultList();
+        return getGerichtIds;
+    }
+
+    @Transactional
+    public List getAnzahlFertigerAuftraege(int id) {
+        List getAnzahlFertigerAuftraege;
+
+        Query query = entityManager.createNativeQuery(
+                "SELECT ((select count(*) from Bestellung best " +
+                        "where best.Auftrags_ID = (select b.Auftrags_ID from Bestellung b where b.Bestell_ID = ?1)) " +
+                        "- " +
+                        "(select count(*) from Bestellung best " +
+                        "where best.Auftrags_ID = (select Auftrags_ID from Bestellung where Bestell_ID = ?1) " +
+                        "AND best.Status IN ('storniert', 'abgeliefert'))) as Anzahl," +
+                        " Auftrags_ID from Bestellung where Bestell_ID = ?1").setParameter(1, id);
+
+        getAnzahlFertigerAuftraege = query.getResultList();
+        return getAnzahlFertigerAuftraege;
+    }
+
+
+
+
 }

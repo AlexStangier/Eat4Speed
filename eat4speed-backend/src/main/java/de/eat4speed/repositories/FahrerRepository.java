@@ -339,4 +339,20 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         ).setParameter(1, dt).setParameter(2, auftr_id);
         query.executeUpdate();
     }
+
+    @Transactional
+    public void accident_report_bestellunng(long auftrags_id){
+        Query query = entityManager.createNativeQuery(
+                "UPDATE Bestellung SET status = 'bezahlt' WHERE auftrags_ID = ?1 AND status = 'abgeholt' "
+        ).setParameter(1, auftrags_id);
+        query.executeUpdate();
+    }
+
+    @Transactional
+    public void accident_report_fahrer(long auftrags_id){
+        Query query = entityManager.createNativeQuery(
+                "UPDATE Auftrag SET fahrernummer = '9999' WHERE auftrags_ID = ?1 "
+        ).setParameter(1, auftrags_id);
+        query.executeUpdate();
+    }
 }

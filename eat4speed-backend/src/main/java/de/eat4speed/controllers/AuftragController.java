@@ -63,4 +63,11 @@ public class AuftragController {
         return auftragService.getAuftragFahrernummerByAuftrags_ID(auftrags_ID);
     }
 
+    @PUT
+    @Path("setToErledigt/{auftrags_ID}")
+    public Response setToErledigt(@PathParam("auftrags_ID") int auftrags_ID)
+    {
+        return auftragService.setToErledigt(auftrags_ID);
+    }
+
 }

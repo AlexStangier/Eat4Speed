@@ -27,11 +27,11 @@ public class Algo_FahrerAuswalController {
     }
 
     @PUT
-    @Path("start/{Auftrag_ID}")
-    public void startFahrerAuswahl(@PathParam("Auftrag_ID") int Auftrag_ID)
+    @Path("start/{Bestell_ID}")
+    public void startFahrerAuswahl(@PathParam("Bestell_ID") int Bestell_ID)
     {
         BestellungRepository bestellungRepository = new BestellungRepository();
-        List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", Auftrag_ID).list();
+        List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", bestellungRepository.getBestellungByID(Bestell_ID).getAuftrags_ID()).list();
 
         int count = 0;
         for (Bestellung b : bestellungen)
@@ -45,7 +45,7 @@ public class Algo_FahrerAuswalController {
         if (count == bestellungen.size())
         {
             try {
-                URL url = new URL("http://localhost:1337/FahrerAuswahl/" + Auftrag_ID);
+                URL url = new URL("http://localhost:1337/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("PUT");
                 http.setDoOutput(false);
