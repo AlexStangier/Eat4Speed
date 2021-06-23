@@ -130,6 +130,16 @@
                        :disabled="!valid">Speichern
                 </v-btn>
               </v-col>
+              <v-col>
+                <v-btn
+                    color="error"
+                    tile
+                    class="ml-2"
+                    @click="deleteRestaurant"
+                >
+                  Konto löschen
+                </v-btn>
+              </v-col>
             </v-row>
           </v-form>
         </v-flex>
@@ -329,8 +339,12 @@ export default {
     openSnackbar(message) {
       this.popupData.display = true;
       this.popupData.message = message;
+    },
+    deleteRestaurant()
+    {
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email);
+      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+this.restaurant_ID);
     }
-
   },
   data() {
     return {

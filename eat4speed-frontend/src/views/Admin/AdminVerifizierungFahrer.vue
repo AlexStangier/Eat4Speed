@@ -226,7 +226,7 @@ export default {
       }
       await axios.post("Blacklist",deleteBe);
 
-      await this.$http.delete("Fahrer/"+this.currentRowItem.fahrernummer);
+      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email);
       this.reloadFahrer();
     },
     async verifyBewerbung() {

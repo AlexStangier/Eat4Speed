@@ -49,10 +49,52 @@
                   <v-content v-if="b === 10 & c === 2" class="text-right">
                     Preis:
                     {{ (gerichtPreis * gerichtAnzahl) + ' &euro;' }}
+                    <v-dialog
+                        max-width="50%"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            small
+                            color="primary"
+                            @mouseenter="fillAllergene()"
+                            tile
+                            class="ml-1"
+                        >
+                          Allergene
+                        </v-btn>
+                      </template>
+                      <template v-slot:default="dialog">
+                        <v-card>
+                          <v-container>
+                            <v-select
+                                readonly
+                                disabled
+                                :items="allergeneGericht"
+                                v-model="allergeneGericht"
+                                chips
+                                label="Allergene"
+                                multiple
+                            >
+
+                            </v-select>
+                            <v-btn
+                                class="ml-1 justify-end"
+                                @click="dialog.value = false"
+                                color="error"
+                                tile
+                            >
+                              Schließen
+                            </v-btn>
+                          </v-container>
+                        </v-card>
+                      </template>
+                    </v-dialog>
                   </v-content>
                   <v-content v-if="b === 10 & c === 3">
                     <v-btn
-                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
+                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50 || gerichtVerfuegbar === 0"
                         small
                         @click="addToCart"
                         color="primary"
@@ -163,6 +205,15 @@ export default {
       this.version++;
 
     },
+    async fillAllergene()
+    {
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.gericht_ID);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+    },
     addToCart() {
       if(this.isUserLoggedInBoolean)
       {
@@ -204,6 +255,7 @@ export default {
     loggedInKunde_ID: "",
     isUserLoggedInBoolean: false,
     gerichtBeschreibung: "",
+    allergeneGericht: [],
     gerichtBild: "",
     gerichtPreis: 1.0,
     gerichtVerfuegbar: "",

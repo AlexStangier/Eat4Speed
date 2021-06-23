@@ -34,10 +34,11 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List allGerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID,g.verfuegbar " +
                         "FROM Gericht g " +
                         "WHERE g.restaurant_ID = ?1 " +
-                        "AND g.ist_Getraenk = 0"
+                        "AND g.ist_Getraenk = 0 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,restaurant_ID);
 
         allGerichteData = query.getResultList();
@@ -51,10 +52,11 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         List allGerichteData;
 
         Query query = entityManager.createQuery(
-                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID " +
+                "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.gericht_ID,g.verfuegbar " +
                         "FROM Gericht g " +
                         "WHERE g.restaurant_ID = ?1 " +
-                        "AND g.ist_Getraenk = 1"
+                        "AND g.ist_Getraenk = 1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,restaurant_ID);
 
         allGerichteData = query.getResultList();
@@ -73,7 +75,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                 "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, r.restaurant_ID, r.name_des_Restaurants, r.mindestbestellwert " +
                         "FROM Gericht g, Restaurant r " +
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
-                        "AND g.name LIKE ?1"
+                        "AND g.name LIKE ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,likeName);
 
         gerichteData = query.getResultList();
@@ -91,7 +94,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         Query query = entityManager.createQuery(
                 "SELECT g.gericht_ID " +
                         "FROM Gericht g " +
-                        "WHERE g.name LIKE ?1"
+                        "WHERE g.name LIKE ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,likeName);
 
         gerichteData = query.getResultList();
@@ -110,7 +114,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                 "SELECT g.gericht_ID " +
                         "FROM Gericht g, Gericht_Kategorie kg " +
                         "WHERE g.gericht_ID = kg.gericht_ID " +
-                        "AND kg.kategorie LIKE ?1"
+                        "AND kg.kategorie LIKE ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,likeKategorie);
 
         gerichteData = query.getResultList();
@@ -129,7 +134,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                 "SELECT g.gericht_ID " +
                         "FROM Gericht g, Gericht_Allergene ka " +
                         "WHERE g.gericht_ID = ka.gericht_ID " +
-                        "AND ka.allergen LIKE ?1"
+                        "AND ka.allergen LIKE ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,likeAllergen);
 
         gerichteData = query.getResultList();
@@ -146,7 +152,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                 "SELECT g.gericht_ID " +
                         "FROM Gericht g, Restaurant r " +
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
-                        "AND r.mindestbestellwert > ?1"
+                        "AND r.mindestbestellwert > ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,mindestbestellwert);
 
         gerichteData = query.getResultList();
@@ -164,6 +171,7 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "FROM Gericht g, Restaurant r, Bewertung b " +
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
                         "AND b.restaurant_ID = r.restaurant_ID " +
+                        "AND g.geloescht = 0 " +
                         "GROUP BY g.gericht_ID " +
                         "HAVING AVG(b.sterne) >= ?1"
         ).setParameter(1,bewertung);
@@ -186,7 +194,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "AND r.restaurant_ID = ekr.restaurant_ID " +
                         "AND k.kundennummer = ekr.kundennummer " +
                         "AND k.kundennummer = ?1 " +
-                        "AND ekr.entfernung > ?2"
+                        "AND ekr.entfernung > ?2 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,kundennummer).setParameter(2,distance);
 
         gerichteData = query.getResultList();
@@ -203,7 +212,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                 "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar, r.restaurant_ID, r.name_des_Restaurants, r.mindestbestellwert, r.bestellradius " +
                         "FROM Gericht g, Restaurant r " +
                         "WHERE g.restaurant_ID = r.restaurant_ID " +
-                        "AND g.gericht_ID = ?1"
+                        "AND g.gericht_ID = ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,gericht_ID);
 
         gerichteData = query.getResultList();
@@ -222,7 +232,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                 "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
                         "FROM Gericht g, Gericht_Kategorie kg " +
                         "WHERE g.gericht_ID = kg.gericht_ID " +
-                        "AND kg.kategorie LIKE ?1"
+                        "AND kg.kategorie LIKE ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,likeKategorie);
 
         gerichteData = query.getResultList();
@@ -238,7 +249,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
         Query query = entityManager.createQuery(
                 "SELECT g.gericht_ID, g.name, g.beschreibung, g.preis, g.verfuegbar " +
                         "FROM Gericht g " +
-                        "WHERE g.restaurant_ID = ?1 "
+                        "WHERE g.restaurant_ID = ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,restaurant_ID);
 
         gerichteData = query.getResultList();
@@ -257,7 +269,8 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "WHERE g.gericht_ID = fg.gericht_ID " +
                         "AND k.kundennummer = fg.kundennummer " +
                         "AND g.restaurant_ID = r.restaurant_ID " +
-                        "AND k.kundennummer = ?1"
+                        "AND k.kundennummer = ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,kundennummer);
 
         gerichteData = query.getResultList();
@@ -275,12 +288,25 @@ public class GerichtRepository implements PanacheRepository<Gericht> {
                         "FROM Gericht g, Bestellung b, Kunde k, Bestellzuordnung bz " +
                         "WHERE b.bestell_ID = bz.bestell_ID " +
                         "AND bz.gericht_ID = g.gericht_ID " +
-                        "AND k.kundennummer = ?1"
+                        "AND k.kundennummer = ?1 " +
+                        "AND g.geloescht = 0"
         ).setParameter(1,kundennummer);
 
         gerichteData = query.getResultList();
 
         return gerichteData;
+    }
+
+    @Transactional
+    public void deleteGerichtByGericht_ID(int gericht_ID)
+    {
+        update("geloescht = 1 where gericht_ID = ?1", gericht_ID);
+    }
+
+    @Transactional
+    public void deleteGerichtByRestaurant_ID(int restaurant_ID)
+    {
+        update("geloescht = 1 where restaurant_ID = ?1", restaurant_ID);
     }
 
     @Transactional

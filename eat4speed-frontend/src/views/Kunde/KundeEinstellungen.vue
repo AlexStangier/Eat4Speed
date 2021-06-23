@@ -136,6 +136,7 @@
                 color="error"
                 tile
                 class="ml-2"
+                @click="deleteKunde"
             >
               Konto löschen
             </v-btn>
@@ -298,6 +299,10 @@ export default {
     },
     resetValidation() {
       this.$refs.form.resetValidation()
+    },
+    deleteKunde()
+    {
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email);
     },
     closeDialog: function () {
       this.dialog = false;

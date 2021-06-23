@@ -276,11 +276,6 @@
                 flat
                 tile
             >
-              <v-container v-if="amountGerichte === 0">
-                <v-card>
-
-                </v-card>
-              </v-container>
               <v-container>
                 <v-row>
                   <v-col
@@ -328,6 +323,48 @@
                             class="text-right"
                             flat
                         >
+                          <v-dialog
+                              max-width="50%"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  small
+                                  color="primary"
+                                  tile
+                                  @mouseenter="fillAllergene(item)"
+                                  class="ml-1"
+                              >
+                                Allergene
+                              </v-btn>
+                            </template>
+                            <template v-slot:default="dialog">
+                              <v-card>
+                                <v-container>
+                                  <v-select
+                                      readonly
+                                      disabled
+                                      :items="allergeneGericht"
+                                      v-model="allergeneGericht"
+                                      chips
+                                      label="Allergene"
+                                      multiple
+                                  >
+
+                                  </v-select>
+                                  <v-btn
+                                      class="ml-1 justify-end"
+                                      @click="dialog.value = false"
+                                      color="error"
+                                      tile
+                                  >
+                                    Schließen
+                                  </v-btn>
+                                </v-container>
+                              </v-card>
+                            </template>
+                          </v-dialog>
                           <v-btn
                               small
                               bottom="bottom"
@@ -335,6 +372,7 @@
                               tile
                               :to="{name: 'Gericht'}"
                               @mouseover="selectGericht(item)"
+                              class="ml-1"
                           >
                             Details
                           </v-btn>
@@ -353,6 +391,7 @@
                                   bottom="bottom"
                                   class="ml-1"
                                   color="primary"
+                                  :disabled="item.available !== 'verfügbar'"
                                   tile
                                   @mouseover="selectItem(item)"
                                   @click="gerichtAnzahl=1"
@@ -512,6 +551,14 @@ export default {
         this.names[i] = gerichtData[1];
         this.descriptions[i] = gerichtData[2];
         this.prices[i] = gerichtData[3];
+        if(gerichtData[5] === 0)
+        {
+          this.availabilities[i] = "nicht verfügbar";
+        }
+        else
+        {
+          this.availabilities[i] = "verfügbar";
+        }
       }
 
       for (let i = 0; i < ResponseGerichte.data.length; i++)
@@ -543,6 +590,16 @@ export default {
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
+    },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
     },
     async loadBewertungen() {
       this.test123 = [];
@@ -693,6 +750,7 @@ export default {
     gerichtIDs: [],
     minimums: [],
     ratings: [],
+    availabilities: [],
     amountGerichte:4,
     amountReviews:4,
     version:0,
@@ -707,7 +765,7 @@ export default {
     restaurantBestellradius:"",
     bewertung_ID:"",
     entfernung: "",
-
+    allergeneGericht: [],
     userRating:0,
     userComment:"",
     reviewUsername: [],
@@ -752,6 +810,7 @@ export default {
         const cprice = this.prices[i]
         const cimg = this.imgs[i]
         const crating = this.ratings[i]
+        const cavailable = this.availabilities[i]
         i++;
 
         return {
@@ -761,6 +820,7 @@ export default {
           price: cprice,
           img: cimg,
           rating: crating,
+          available: cavailable
         }
       })
     },
