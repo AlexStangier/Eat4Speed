@@ -139,37 +139,40 @@ export default {
 
     },
     async changeBestellungStatus(bestellID, zustand) {
-      if (zustand === 'stornieren') {
-        if (!this.accepted) {
-          this.dialog = true;
-          this.bestellungStatus = {bestellID: bestellID, zustand: zustand};
-          return;
+      this.calls++;
+      if(this.calls%2 == 0) {
+        if (zustand === 'stornieren') {
+          if (!this.accepted) {
+            this.dialog = true;
+            this.bestellungStatus = {bestellID: bestellID, zustand: zustand};
+            return;
+          }
+          zustand = 'storniert';
         }
-        zustand = 'storniert';
-      }
-      if (zustand === 'Bereit') {
-        zustand = 'bezahlt';
-      }
-      if (zustand === 'In Zubereitung') {
-        zustand = 'bearbeitung';
-      }
-      if (zustand === 'Abholbereit') {
-        zustand = 'abholbereit';
-      }
+        if (zustand === 'Bereit') {
+          zustand = 'bezahlt';
+        }
+        if (zustand === 'In Zubereitung') {
+          zustand = 'bearbeitung';
+        }
+        if (zustand === 'Abholbereit') {
+          zustand = 'abholbereit';
+        }
 
-      await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand);
+        await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand);
 
-      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
+        const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
 
-      if(nochOffeneAuftraege.data[0][0] === 0){
-        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
-        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
-      }
+        if (nochOffeneAuftraege.data[0][0] === 0) {
+          await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
+          await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
+        }
 
-      this.accepted = false;
+        this.accepted = false;
 
-      if (zustand === 'storniert') {
-        window.location.reload();
+        if (zustand === 'storniert') {
+          window.location.reload();
+        }
       }
     }
   },
@@ -180,7 +183,8 @@ export default {
       eingegangeneBestellungen: [],
       dialog: false,
       accepted: false,
-      bestellungStatus: {}
+      bestellungStatus: {},
+      calls: 0
     }
   },
 }
