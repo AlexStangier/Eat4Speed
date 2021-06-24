@@ -78,7 +78,7 @@
             <v-col class="d-flex justify-space-between mb-6">
               <v-card-title class="text-h4"> Speisekarte</v-card-title>
               <v-btn
-                  color="red"
+                  :color="selectedButton === 0 ? 'primary' : 'blue-grey'"
                   dark
                   align="right"
                   class="mt-5"
@@ -87,7 +87,7 @@
                 Gerichte
               </v-btn>
               <v-btn
-                  color="red"
+                  :color="selectedButton === 1 ? 'primary' : 'blue-grey'"
                   dark
                   align="right"
                   class="mt-5"
@@ -126,7 +126,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-btn
-                            color="red"
+                            color="primary"
                             dark
                             v-bind="attrs"
                             v-on="on"
@@ -194,7 +194,7 @@
                               <v-row>
                                 <v-btn
                                     @click="changeGericht(); artDialog = false"
-                                    color="red"
+                                    color="primary"
                                     dark
                                     class="justify-center"
                                     :disabled="!valifUpdate"
@@ -204,7 +204,7 @@
                                 <v-spacer class="mr-2"></v-spacer>
                                 <v-btn
                                     @click="deleteGericht(); artDialog = false"
-                                    color="red"
+                                    color="primary"
                                     dark
                                     class="justify-center"
                                 >
@@ -213,7 +213,7 @@
                                 <v-spacer class="mr-2"></v-spacer>
                                 <v-btn
                                     @click="artDialog = false; test();"
-                                    color="red"
+                                    color="primary"
                                     dark
                                     justify
                                 >
@@ -238,7 +238,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                    color="red"
+                    color="primary"
                     dark
                     v-bind="attrs"
                     v-on="on"
@@ -302,7 +302,7 @@
                       <v-row>
                         <v-btn
                             @click="addGericht(); artDialog2 = false"
-                            color="red"
+                            color="primary"
                             dark
                             class="justify-center"
                             :disabled="!validAdd"
@@ -312,7 +312,7 @@
                         <v-spacer class="mr-2"></v-spacer>
                         <v-btn
                             @click="artDialog2 = false; test();"
-                            color="red"
+                            color="primary"
                             dark
                             justify
                         >
@@ -345,6 +345,12 @@ export default {
     this.loadGerichte()
   },
   methods: {
+    selectGerichte(){
+      this.selectedButton = 0;
+    },
+    selectGetraenke(){
+      this.selectedButton = 1;
+    },
     async getLoggedInRestaurant() {
       const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'));
       this.restaurantID = response.data[0];
@@ -411,6 +417,7 @@ export default {
       this.version++;
     },
     changeDisplayGetraenke() {
+      this.selectGetraenke();
       if (this.displayGetraenke === false) {
         this.displayGetraenke = !this.displayGetraenke;
         this.loadGerichte();
@@ -418,6 +425,7 @@ export default {
 
     },
     changeDisplayGerichte() {
+      this.selectGerichte();
       if (this.displayGetraenke === true) {
         this.displayGetraenke = !this.displayGetraenke;
         this.loadGerichte();
@@ -715,6 +723,7 @@ export default {
     istGetraenk: "",
     displayGetraenke: false,
     currentlyAdding: false,
+    selectedButton: 0, //0 = Gerichte; 1 = Getränke
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
