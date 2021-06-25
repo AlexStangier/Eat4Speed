@@ -1,19 +1,86 @@
 <template>
   <v-main>
+    <v-app-bar color="primary"  dark>
+      <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
+      <v-toolbar-title>Offene Bestellungen</v-toolbar-title>
+    </v-app-bar>
+    <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        temporary
+    >
+      <v-list
+          nav
+          dense
+      >
+        <v-list-item-group
+            v-model="group"
+            active-class="deep-purple--text text--accent-4"
+        >
+          <router-link  to="/restaurant/controlpanel">
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-home</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Startseite</v-list-item-title>
+            </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-silverware</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Speisekarte bearbeiten</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/bestellungen"><v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-view-headline</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Offene Bestellungen</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link to="/restaurant/schichtplan">
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-watch</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Schichtplan</v-list-item-title>
+            </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/stammdaten"><v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-account</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>Stammdaten</v-list-item-title>
+          </v-list-item>
+          </router-link>
+          <router-link  to="/restaurant/umsatzstatistik">
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-margin</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Umsatzstatistik</v-list-item-title>
+            </v-list-item>
+          </router-link>
+
+        </v-list-item-group>
+      </v-list>
+    </v-navigation-drawer>
     <v-container fill-height fluid>
+
       <v-layout align-center justify-center>
-        <v-flex md6 sm6 xs12>
+        <v-flex md10 sm10 xs12>
           <h1 class="mb-5">Offene Bestellungen</h1>
           <v-list>
             <v-list-item class="mb-12" v-for="item in eingegangeneBestellungen" v-bind:key="item.id">
 
-                <v-col style="background-color: lightsteelblue" >
-                  <div  class="text-right">{{ item.date }}</div>
-                  <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
-                  <v-card-text>{{ item.products }}</v-card-text>
-                  <v-card-text>{{ item.count }}x</v-card-text>
-                  <div  class="text-right">{{ item.price }} €</div>
-                </v-col>
+              <v-col style="background-color: lightsteelblue" >
+                <div  class="text-right">{{ item.date }}</div>
+                <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
+                <v-card-text>{{ item.products }}</v-card-text>
+                <v-card-text>{{ item.count }}x</v-card-text>
+                <div  class="text-right">{{ item.price }} €</div>
+              </v-col>
 
               <v-slider
                   :value="item.currentState"
@@ -139,52 +206,49 @@ export default {
 
     },
     async changeBestellungStatus(bestellID, zustand) {
-      this.calls++;
-      if(this.calls%2 == 0) {
-        if (zustand === 'stornieren') {
-          if (!this.accepted) {
-            this.dialog = true;
-            this.bestellungStatus = {bestellID: bestellID, zustand: zustand};
-            return;
-          }
-          zustand = 'storniert';
+      if (zustand === 'stornieren') {
+        if (!this.accepted) {
+          this.dialog = true;
+          this.bestellungStatus = {bestellID: bestellID, zustand: zustand};
+          return;
         }
-        if (zustand === 'Bereit') {
-          zustand = 'bezahlt';
-        }
-        if (zustand === 'In Zubereitung') {
-          zustand = 'bearbeitung';
-        }
-        if (zustand === 'Abholbereit') {
-          zustand = 'abholbereit';
-        }
+        zustand = 'storniert';
+      }
+      if (zustand === 'Bereit') {
+        zustand = 'bezahlt';
+      }
+      if (zustand === 'In Zubereitung') {
+        zustand = 'bearbeitung';
+      }
+      if (zustand === 'Abholbereit') {
+        zustand = 'abholbereit';
+      }
 
-        await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand);
+      await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand);
 
-        const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
+      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
 
-        if (nochOffeneAuftraege.data[0][0] === 0) {
-          await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
-          await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
-        }
+      if(nochOffeneAuftraege.data[0][0] === 0){
+        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
+        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
+      }
 
-        this.accepted = false;
+      this.accepted = false;
 
-        if (zustand === 'storniert') {
-          window.location.reload();
-        }
+      if (zustand === 'storniert') {
+        window.location.reload();
       }
     }
   },
   data() {
     return {
+      drawer: false,
       bestellstati: ['stornieren', 'Bereit', 'In Zubereitung', 'Abholbereit'],
       bestellstatifarben: ['red', 'yellow', 'green'],
       eingegangeneBestellungen: [],
       dialog: false,
       accepted: false,
-      bestellungStatus: {},
-      calls: 0
+      bestellungStatus: {}
     }
   },
 }
