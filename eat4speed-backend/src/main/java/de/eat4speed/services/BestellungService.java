@@ -113,6 +113,11 @@ public class BestellungService implements IBestellungService {
 
             try {
                 auftrag = new Auftrag(safeItems.get(0).getRestaurant_ID(), new Timestamp(date.getTime()), kunde.getAnschrift(), 0.0, kunde.getKundennummer(), "offen", 0);
+                if (obj.timestamp > 0)
+                {
+                    Timestamp orderedTo = new Timestamp(obj.timestamp*1000L);
+                    auftrag.setTimestamp_On_Customer_Demand(orderedTo);
+                }
             } catch (Exception e) {
                 System.out.println("Failed while creating auftrag:" + e);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -358,16 +363,24 @@ public class BestellungService implements IBestellungService {
     }
 
     @Override
-    public List getKundeBestellungen(String status, String email) {return _bestellungRepository.getKundeBestellungen(status, email);}
+    public List getKundeBestellungen(String status, String email) {
+        return _bestellungRepository.getKundeBestellungen(status, email);
+    }
 
     @Override
-    public List getKundeBestellungenAktiv(String email) {return _bestellungRepository.getKundeBestellungenAktiv(email);}
+    public List getKundeBestellungenAktiv(String email) {
+        return _bestellungRepository.getKundeBestellungenAktiv(email);
+    }
 
     @Override
-    public List getGerichtIds(int id) {return _bestellungRepository.getGerichtIds(id);}
+    public List getGerichtIds(int id) {
+        return _bestellungRepository.getGerichtIds(id);
+    }
 
     @Override
-    public List getAnzahlFertigerAuftraege(int id) {return _bestellungRepository.getAnzahlFertigerAuftraege(id);}
+    public List getAnzahlFertigerAuftraege(int id) {
+        return _bestellungRepository.getAnzahlFertigerAuftraege(id);
+    }
 
     @Override
     public List listAll() {
