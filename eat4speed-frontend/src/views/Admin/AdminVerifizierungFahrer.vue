@@ -1,7 +1,12 @@
 <template>
   <v-main>
     <h1 class="subheading">Verifizierung Fahrer</h1>
-    <v-card class="mx-5 my-5">
+    <v-card>
+      <v-row class="ma-2">
+        <v-col>
+          <v-btn :to="{ name: 'AdminVerifizierungRestaurants'}" width="275px" color="primary" depressed tile>Zur Restaurant Verifizierung</v-btn>
+        </v-col>
+      </v-row>
       <v-data-table
           :headers="headers"
           :items="data"

@@ -2,7 +2,12 @@
   <v-app>
     <v-main>
       <h1 class="subheading">Verifizierung Restaurant</h1>
-      <v-card class="mx-5 my-5">
+      <v-card>
+        <v-row class="ma-2">
+          <v-col>
+            <v-btn :to="{ name: 'AdminVerifizierungFahrer'}" width="275px" color="primary" depressed tile>Zur Fahrer Verifizierung</v-btn>
+          </v-col>
+        </v-row>
         <v-data-table
             :headers="headers"
             :items="data"

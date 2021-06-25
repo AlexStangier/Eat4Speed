@@ -384,6 +384,7 @@ export default {
       await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
+        this.$router.push({name: "FahrerSchichtplan"});
         // submit form to server/API here...
       }
     }

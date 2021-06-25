@@ -51,7 +51,7 @@
         <h2 class="pt-2">Endpreis: {{ parseFloat(calculateCartPrice()).toFixed(2) }} &euro;</h2>
 
         <v-card-actions>
-          <v-btn block color="primary" depressed tile @click="paypalRequest()">
+          <v-btn block color="primary" depressed tile :disabled="!isLoggedIn" @click="paypalRequest()">
             Checkout
           </v-btn>
         </v-card-actions>
@@ -70,8 +70,18 @@
 <script>
 export default {
   name: "Cart",
+  props: {
+    isLoggedIn: {
+      type: Boolean
+    }
+  },
   mounted() {
     this.loadGerichteFromStore();
+  },
+  computed: {
+    isUserLoggedIn() {
+      return this.$cookies.get('emailAdresse') !== undefined;
+    }
   },
   methods: {
     roundToTwo(num) {

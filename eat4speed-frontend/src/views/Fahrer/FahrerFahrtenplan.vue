@@ -21,7 +21,7 @@
 
             <v-col cols="6">
               <v-row>
-                Liefertermin: {{ getTermin() }}
+                Datum: {{ getTermin() }}
               </v-row>
               <v-row>
                 restliche Stationen: {{ getStationen() }}
@@ -203,11 +203,14 @@ export default {
           auftrags_ids += this.data[i].auftrags_id + ", ";
         }
       }
-      await this.$http.put('/route/accident/' + this.$cookies.get('emailAdresse') + '?auftraege=' + auftrags_ids);
+      await this.$http.put('/route/accident/?auftraege=' + auftrags_ids);
       console.log(auftrags_ids);
+      this.$forceUpdate();
     },
     getTermin() {
-      return '12.12.2021';
+      const current = new Date();
+      const date = `${current.getDate()}.${current.getMonth()+1}.${current.getFullYear()}`;
+      return date;
     },
     getStationen() {
       return this.data.length;

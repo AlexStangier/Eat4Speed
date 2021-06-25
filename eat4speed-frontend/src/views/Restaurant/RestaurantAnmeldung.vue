@@ -375,6 +375,7 @@ export default {
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
+            this.$router.push({name: "RestaurantControlPanel"});
           })
               .catch(function () {
                 console.log('Picture upload error');
@@ -410,6 +411,7 @@ export default {
       ],
       valid: true,
       agbAccepted: false,
+      dialog: false,
       paypal: "",
       restaurantBild: "",
       restaurant_name: "",

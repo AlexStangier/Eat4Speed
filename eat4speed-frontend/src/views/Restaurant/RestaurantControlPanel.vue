@@ -3,7 +3,7 @@
     <v-card class="mx-5 my-5">
     <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title>ControlPanel</v-toolbar-title>
+      <v-toolbar-title>Startseite</v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer
         v-model="drawer"
@@ -23,7 +23,7 @@
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>ControlPanel</v-list-item-title>
+            <v-list-item-title>Startseite</v-list-item-title>
           </v-list-item>
           </router-link>
           <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
@@ -95,7 +95,7 @@
                 <v-card color="primary" width="200px" height="200px">
 
                   <v-card-text class="white--text" align="center">
-                  Spesekarte bearbeiten
+                  Speisekarte bearbeiten
                   </v-card-text>
                  <div align="center">
                   <v-icon color="white" align="center" size="100px" class="justify-center">mdi-silverware</v-icon>

@@ -157,7 +157,7 @@
                           <v-btn color="primary"
                                  depressed tile
                                  :disabled="!isFormValid"
-                                 @click="validate">Register
+                                 @click="validate">Registrieren
                           </v-btn>
                         </v-col>
                       </v-row>
@@ -350,6 +350,8 @@ export default {
           console.log(entfernung);
 
           await axios.post("/EntfernungKundeRestaurant", entfernung);
+
+          this.$router.push({name: "Startseite"});
         }
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
@@ -381,6 +383,7 @@ export default {
       ],
       isFormValid: false,
       valid: false,
+      dialog: false,
       agbAccepted: false,
       salutation: "",
       adress_ID: "",
