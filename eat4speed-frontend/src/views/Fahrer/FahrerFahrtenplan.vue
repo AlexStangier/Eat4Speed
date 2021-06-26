@@ -204,7 +204,6 @@ export default {
         }
       }
       await this.$http.put('/route/accident/?auftraege=' + auftrags_ids);
-      console.log(auftrags_ids);
       this.$forceUpdate();
     },
     getTermin() {

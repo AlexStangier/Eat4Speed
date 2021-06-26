@@ -141,8 +141,6 @@ export default {
 
       const customerId = await this.getCustomerId();
 
-      console.log(customerId);
-
       this.$http.post('/Bestellung/add', {
         items: items,
         customerId: customerId

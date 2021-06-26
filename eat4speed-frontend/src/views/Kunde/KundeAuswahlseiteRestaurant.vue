@@ -508,17 +508,11 @@ export default {
       const config = { responseType:"arraybuffer" };
       const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.selectedRestaurant_ID,config);
 
-      //console.log(responsePicture);
-
       if(responsePicture.status !== 204)
       {
-        //console.log("received Picture")
-        //console.log(responsePicture.data);
-
         let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
         let imageURL = URL.createObjectURL(pictureBlob);
-        //console.log(imageURL);
 
         this.img = imageURL;
       }
@@ -543,8 +537,6 @@ export default {
 
       const ResponseGerichte = await axios.get(gerichtPath + this.selectedRestaurant_ID);
 
-      //console.log(ResponseGerichte);
-
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
         this.gerichtIDs[i] = gerichtData[0];
@@ -566,17 +558,11 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gerichtIDs[i],config);
 
-        //console.log(responsePicture);
-
         if(responsePicture.status !== 204)
         {
-          //console.log("received Picture")
-          //console.log(responsePicture.data);
-
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          //console.log(imageURL);
 
           this.imgs[i] = imageURL;
         }
@@ -584,9 +570,8 @@ export default {
         {
           this.imgs[i] = "";
         }
-
       }
-      //console.log(this.imgs);
+
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -670,13 +655,11 @@ export default {
 
     },
     selectGericht(item) {
-      //console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      //console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     selectItem(item) {
       this.selectedItem = item;
@@ -718,7 +701,6 @@ export default {
           return;
         }
       }
-      //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
@@ -728,7 +710,6 @@ export default {
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
   },
   data: () => ({
@@ -797,8 +778,6 @@ export default {
     btnType: 0,
     user: 0,
   }),
-
-
 
   computed: {
     items(){

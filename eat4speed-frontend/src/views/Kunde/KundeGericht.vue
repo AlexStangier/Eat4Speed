@@ -153,8 +153,6 @@ export default {
     async loadGericht() {
       const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID);
 
-      console.log(ResponseGerichte);
-
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
 
@@ -182,17 +180,11 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_ID,config);
 
-        console.log(responsePicture);
-
         if(responsePicture.status !== 204)
         {
-          console.log("received Picture")
-          console.log(responsePicture.data);
-
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
 
           this.gerichtBild = imageURL;
         }
@@ -200,7 +192,6 @@ export default {
         {
           this.gerichtBild = "";
         }
-
       }
       this.version++;
 
@@ -233,7 +224,6 @@ export default {
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
     returnToPreviousView() {
       if(this.$store.getters.searchType==="Gerichte")
@@ -272,7 +262,6 @@ export default {
         v => (v && v >= 1) || "Bestellungen müssen größer als 1 sein",
         v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
-
   }),
 }
 </script>

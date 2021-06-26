@@ -164,8 +164,6 @@ export default {
       const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$cookies.get('emailAdresse'));
       let EinstellungenData = ResponseEinstellungen.data[0];
 
-      console.log(ResponseEinstellungen);
-
       this.firstname = EinstellungenData[0];
       this.lastname = EinstellungenData[1];
       this.email = EinstellungenData[2];
@@ -175,24 +173,16 @@ export default {
       this.zip = EinstellungenData[6];
       this.houseNumber = EinstellungenData[7];
 
-
       // For Update
       this.benutzer_ID = EinstellungenData[8];
       this.adress_ID = EinstellungenData[9];
       this.kundennummer = EinstellungenData[10];
-
-      // console.log(this.benutzer_ID);
-      // console.log(this.restaurant_ID);
-      // console.log(this.adress_ID);
     },
     async validate() {
       // if (this.$refs.form.validate()) {
         this.snackbar = true
 
         var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
-
-        console.log(response.data.features[0].geometry.coordinates[0]);
-        console.log(response.data.features[0].geometry.coordinates[1]);
 
         this.lng = response.data.features[0].geometry.coordinates[0];
         this.lat = response.data.features[0].geometry.coordinates[1];
@@ -216,7 +206,6 @@ export default {
               entry[1] = resData[2];
 
               this.targets[i] = entry;
-
             }
 
             this.entry[0] = this.lng;
@@ -238,13 +227,9 @@ export default {
 
             var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
 
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
-
             for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
               this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
             }
-            console.log(this.distances);
           }
 
           for (let i = 0; i < this.distances.length; i++) {
@@ -253,8 +238,6 @@ export default {
               restaurant_ID: this.restaurant_IDs[i],
               entfernung: this.distances[i]
             };
-
-            console.log(entfernung);
 
             await axios.post("/EntfernungKundeRestaurant", entfernung);
           }
@@ -286,13 +269,8 @@ export default {
           const responseBenutzerKundeToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer);
           const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse);
           const responseKundeToAlter = await axios.put("/Kunde/updateKundeEinstellungen", kunde);
-
-          console.log(responseBenutzerKundeToAlter);
-          console.log(responseAdresseToAlter);
-          console.log(responseKundeToAlter);
         } else {
           this.openSnackbar("Bitte gültige Adresse eingeben!")
-
         }
       // }
       this.closeDialog();
@@ -360,7 +338,6 @@ export default {
     phone: '',
     dialog: false
   })
-
 }
 </script>
 

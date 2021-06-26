@@ -243,7 +243,6 @@ export default {
     },
     selectedPicture() {
       this.restaurantBild = this.$refs.file.files[0];
-      console.log(this.restaurantBild);
     },
     async validate() {
       // if (this.$refs.loginForm.validate()) {
@@ -270,7 +269,6 @@ export default {
 
         this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
-
         var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
 
         if (responseKundenLngLat.data.length > 0) {
@@ -286,7 +284,6 @@ export default {
             entry[1] = resData[2];
 
             this.targets[i] = entry;
-
           }
 
           this.entry[0] = this.lng;
@@ -308,13 +305,9 @@ export default {
 
           var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
 
-          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
-
           for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
             this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
           }
-          console.log(this.distances);
         }
 
         var adressen = {
@@ -327,10 +320,6 @@ export default {
         };
 
         const responseAdressen = await axios.post("/Adressen", adressen);
-
-        console.log(responseAdressen);
-        console.log(responseAdressen.data);
-        console.log(responseAdressen.data.adress_ID);
 
         this.adress_ID = responseAdressen.data.adress_ID;
 
@@ -355,10 +344,7 @@ export default {
             entfernung: this.distances[i]
           };
 
-          console.log(entfernung);
-
           await axios.post("/EntfernungKundeRestaurant", entfernung);
-
         }
         if (this.restaurantBild !== null) {
           const picturedata = new FormData();
@@ -380,13 +366,10 @@ export default {
               .catch(function () {
                 console.log('Picture upload error');
               });
-
-          console.log(responsePictureUpload);
         }
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
       }
-
 
       // submit form to server/API here...
       // }

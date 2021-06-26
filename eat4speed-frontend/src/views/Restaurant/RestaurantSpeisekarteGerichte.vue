@@ -379,8 +379,6 @@ export default {
 
       const ResponseGerichte = await axios.get(gerichtPath + this.restaurantID);
 
-      console.log(ResponseGerichte);
-
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
 
@@ -394,24 +392,17 @@ export default {
         const config = {responseType: "arraybuffer"};
         const responsePicture = await axios.get("/GerichtBilder/getBild/" + this.gerichtIDs[i], config);
 
-        console.log(responsePicture);
-
         if (responsePicture.status !== 204) {
-          console.log("received Picture")
-          console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
 
           this.imgs[i] = imageURL;
         } else {
           this.imgs[i] = "";
         }
-
       }
-      console.log(this.imgs);
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -451,49 +442,36 @@ export default {
         }
         this.computedItems[i] = entry;
       }
-      console.log(this.computedItems);
-      console.log(this.items);
-
     },
     async loadKategorien() {
       const ResponseAllKategorien = await axios.get("/Kategorie");
 
-      console.log(ResponseAllKategorien);
       let arrayKategorien = [];
       let it;
       for (it = 0; it < ResponseAllKategorien.data.length; it++) {
         let kategorie = ResponseAllKategorien.data[it];
 
         arrayKategorien[it] = kategorie;
-
       }
-      console.log(arrayKategorien);
       this.kategorien = arrayKategorien;
     },
     async test() {
-      console.log(this.value);
-      console.log(this.valueA);
+      // console.log(this.value);
+      // console.log(this.valueA);
     },
     async loadAllergene() {
       const ResponseAllAllegergene = await axios.get("/Allergene");
 
-      console.log(ResponseAllAllegergene);
       let arrayAllergene = [];
       let it;
       for (it = 0; it < ResponseAllAllegergene.data.length; it++) {
         let allergen = ResponseAllAllegergene.data[it];
 
         arrayAllergene[it] = allergen;
-
       }
-      console.log(arrayAllergene);
       this.allergen = arrayAllergene;
-
     },
     async addGericht() {
-
-      console.log("it's fine");
-
       if (this.isVerified) {
         if (this.gerichtVerfuegbar === true) {
           this.gerichtVerfuegbar = 1;
@@ -557,23 +535,17 @@ export default {
               .catch(function () {
                 console.log('Picture upload error');
               });
-
-          console.log(responsePictureUpload);
         }
         this.loadGerichte();
       } else {
         alert("Nicht verifiziert!");
       }
-
     },
     async fillDataOfGerichtToAlter(item) {
       this.editedItem = item;
-
       this.gerichtBild = null;
 
       //this.gerichtName = item.id;
-      console.log(item.id);
-      console.log(this.editedItem.id);
 
       const responseGetGericht = await axios.get("/Gericht/" + this.editedItem.id);
 
@@ -598,13 +570,8 @@ export default {
       for (let i = 0; i < responseGetKategorie.data.length; i++) {
         this.selectedKategorien[i] = responseGetKategorie.data[i];
       }
-
-      console.log(responseGetGericht);
     },
     async changeGericht() {
-
-      console.log("fuck this shit")
-
       if (this.gerichtVerfuegbar === true) {
         this.gerichtVerfuegbar = 1;
       } else {
@@ -628,8 +595,6 @@ export default {
       }
 
       const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht);
-
-      console.log(responseGerichtToAlter);
 
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id);
       await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id);
@@ -670,8 +635,6 @@ export default {
             .catch(function () {
               console.log('Picture upload error');
             });
-
-        console.log(responsePictureUpload);
       }
 
       this.version++;
@@ -680,7 +643,6 @@ export default {
     },
     selectedPicture() {
       this.gerichtBild = this.$refs.file.files[0];
-      console.log(this.gerichtBild);
     },
     async deleteGericht() {
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id);
@@ -734,7 +696,6 @@ export default {
   computed: {
     items() {
       let i = 0
-      console.log("compute");
       return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
@@ -742,8 +703,6 @@ export default {
         const cimg = this.imgs[i]
         const cid = this.gerichtIDs[i]
         i++;
-
-        //console.log(this.version);
 
         return {
           name: cname,

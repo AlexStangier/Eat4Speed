@@ -145,19 +145,10 @@ export default {
   methods: {
     async reloadRestaurant(){
 
-      console.log(this.select);
-      console.log(this.select.value)
-
       if(this.select.value === 1) {
         const ResponseAllRestaurant = await axios.get("/Restaurant/ALL");
 
-        console.log(ResponseAllRestaurant);
-        console.log(ResponseAllRestaurant.data);
-        console.log(ResponseAllRestaurant.data[0])
-
         var test = ResponseAllRestaurant.data[0];
-
-        console.log(test[0]);
 
         this.allRestaurant = ResponseAllRestaurant;
 
@@ -180,22 +171,13 @@ export default {
             email: restaurant[9]
           };
           arrayAllRestaurant[it] = entry;
-
         }
 
-
-
         this.data = arrayAllRestaurant;
-
-        console.log(arrayAllRestaurant);
       }
 
       if(this.select.value === 2) {
         const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED");
-
-        console.log(ResponseNotVerifiedRestaurant);
-        console.log(ResponseNotVerifiedRestaurant.data);
-        console.log(ResponseNotVerifiedRestaurant.data[0])
 
         this.allRestaurant = ResponseNotVerifiedRestaurant;
 
@@ -218,21 +200,13 @@ export default {
             email: restaurant[9]
           };
           arrayNotVerifiedRestaurant[it] = entry;
-
         }
 
-
         this.data = arrayNotVerifiedRestaurant;
-
-        console.log(arrayNotVerifiedRestaurant);
       }
 
       if(this.select.value === 3) {
         const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED");
-
-        console.log(ResponseVerifiedRestaurant);
-        console.log(ResponseVerifiedRestaurant.data);
-        console.log(ResponseVerifiedRestaurant.data[0])
 
         this.allRestaurant = ResponseVerifiedRestaurant;
 
@@ -255,20 +229,14 @@ export default {
             email: restaurant[9]
           };
           arrayVerifiedRestaurant[it] = entry;
-
         }
 
         this.data = arrayVerifiedRestaurant;
-
-        console.log(arrayVerifiedRestaurant);
       }
-
     },
     setCurrentRowItem(item)
     {
       this.currentRowItem = item;
-      console.log(item);
-      console.log(this.currentRowItem);
     },
     async deleteBewerbung() {
 
@@ -282,12 +250,7 @@ export default {
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
-
       await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
-
-      console.log(this.currentRowItem);
-      console.log(this.currentRowItem.restaurant_Id);
-
       this.reloadRestaurant();
     }
   },

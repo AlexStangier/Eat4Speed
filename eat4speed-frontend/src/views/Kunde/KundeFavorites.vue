@@ -283,10 +283,6 @@ export default {
       {
         const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
 
-        console.log(ResponseGerichte);
-
-        //console.log("Verarbeite ResponseGerichte")
-
         for (let i = 0; i < ResponseGerichte.data.length; i++) {
           let gerichtData = ResponseGerichte.data[i];
 
@@ -309,7 +305,6 @@ export default {
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
           let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
-          console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
           {
@@ -317,24 +312,16 @@ export default {
           }
         }
 
-        //console.log("Suche nach Bildern");
-
         for (let i = 0; i < ResponseGerichte.data.length; i++)
         {
           const config = { responseType:"arraybuffer" };
           const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-          console.log(responsePicture);
-
           if(responsePicture.status !== 204)
           {
-            console.log("received Picture")
-            console.log(responsePicture.data);
-
             let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
             let imageURL = URL.createObjectURL(pictureBlob);
-            console.log(imageURL);
 
             this.imgs[i] = imageURL;
           }
@@ -342,11 +329,8 @@ export default {
           {
             this.imgs[i] = "";
           }
-
         }
 
-        //console.log("Verarbeitung abgeschlossen")
-        console.log(this.imgs);
         this.amountGerichte = 0;
         this.amountGerichte = ResponseGerichte.data.length;
       }
@@ -363,13 +347,11 @@ export default {
           this.hinzufuegedaten[i] = restaurantData[12];
 
           let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
-          console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
           {
             this.anzahlBestellungen[i] = ResponseAmount.data;
           }
-
         }
 
         for (let i = 0; i < ResponseRestaurants.data.length; i++)
@@ -377,17 +359,11 @@ export default {
           const config = { responseType:"arraybuffer" };
           const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.restaurant_IDs[i],config);
 
-          console.log(responsePicture);
-
           if(responsePicture.status !== 204)
           {
-            console.log("received Picture")
-            console.log(responsePicture.data);
-
             let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
             let imageURL = URL.createObjectURL(pictureBlob);
-            console.log(imageURL);
 
             this.imgs[i] = imageURL;
           }
@@ -395,7 +371,6 @@ export default {
           {
             this.imgs[i] = "";
           }
-
         }
 
         this.amountGerichte = 0;
@@ -405,17 +380,14 @@ export default {
       this.version++;
     },
     selectItem(item) {
-      console.log("Gericht selected "+item.id);
       this.selectedItem = item;
     },
     selectGericht(item) {
-      console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     async fillAllergene(item)
     {
@@ -441,7 +413,6 @@ export default {
     },
     addToCart() {
 
-      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
@@ -451,7 +422,6 @@ export default {
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     }
   },
   data: () => ({

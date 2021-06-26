@@ -590,7 +590,6 @@ export default {
     this.searchString = this.$store.getters.searchString;
     this.searchOptions = this.$store.getters.searchOptions;
 
-    //console.log(this.searchString);
     await this.checkLoggedInUser();
     await this.getLoggedInKunde();
     await this.getAllEntfernungenAndBewertungen();
@@ -614,7 +613,6 @@ export default {
         const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
         this.loggedInKunde_ID = response.data[0];
       }
-
     },
     async getAllEntfernungenAndBewertungen()
     {
@@ -635,11 +633,9 @@ export default {
       }
     },
     selectItem(item) {
-      //console.log("Gericht selected "+item.id);
       this.selectedItem = item;
     },
     selectGericht(item) {
-      //console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
@@ -652,14 +648,12 @@ export default {
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString",this.searchString);
-      //console.log("changed searchString to "+this.$store.getters.searchString);
     },
     setStoreSearchOptions(){
       this.$store.commit("changeSearchOptions", this.searchOptions);
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      //console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurantid);
@@ -714,17 +708,11 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-        //console.log(responsePicture);
-
         if(responsePicture.status !== 204)
         {
-          //console.log("received Picture")
-          //console.log(responsePicture.data);
-
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          //console.log(imageURL);
 
           this.imgs[i] = imageURL;
         }
@@ -732,13 +720,11 @@ export default {
         {
           this.imgs[i] = "";
         }
-
       }
-      //console.log(this.imgs);
+
       this.amountGerichte = 0;
       this.amountGerichte = responseAlternatives.data.length;
       this.version++;
-
     },
     async addToFavorites() {
       if(!this.isUserLoggedInBoolean)
@@ -775,7 +761,6 @@ export default {
       if(this.isUserLoggedInBoolean)
       {
         const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
-        //console.log(ResponseFavoriten);
         for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
           let favData = ResponseFavoriten.data[i];
@@ -785,8 +770,6 @@ export default {
       }
 
       const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
-
-      //console.log(ResponseGerichte);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -820,7 +803,6 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
-        //console.log(this.bewertungRestaurants);
 
         if(this.bewertungRestaurants.includes(gerichtData[5])===true)
         {
@@ -841,17 +823,12 @@ export default {
         const config = { responseType:"arraybuffer" };
         const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-        //console.log(responsePicture);
-
         if(responsePicture.status !== 204)
         {
-          //console.log("received Picture")
-          //console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          //console.log(imageURL);
 
           this.imgs[i] = imageURL;
         }
@@ -859,11 +836,7 @@ export default {
         {
           this.imgs[i] = "";
         }
-
       }
-
-      //console.log("Verarbeitung abgeschlossen")
-      //console.log(this.imgs);
 
       this.amountGerichte = 0;
       this.amountGerichte = this.gericht_IDs.length;
@@ -989,7 +962,6 @@ export default {
         this.selectedBewertung = 0;
       }
       this.nameOptionActive = true;
-      //console.log(this.selectedBewertung);
 
       const searchOptions = {
         gericht_ID: -1,
@@ -1022,7 +994,6 @@ export default {
           return;
         }
       }
-      //console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
@@ -1032,7 +1003,6 @@ export default {
         num: Math.random() * (999999 - 1) + 1
       }
       this.$store.commit("addToCartGerichte", cartGericht);
-      //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     }
   },
   data: () => ({
