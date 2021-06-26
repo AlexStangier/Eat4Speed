@@ -160,7 +160,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'));
+        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
         console.log(responseRolle);
         if(responseRolle.data==="fahrer")
         {
@@ -170,13 +170,13 @@ export default {
     },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async checkForOrders() {
       if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
-        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
+        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
         if (responseOrders.data.length === 0) {
           this.displayVorschlaege = false;
         } else {
@@ -185,7 +185,7 @@ export default {
       }
     },
     async getVorschlaege() {
-      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID);
+      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
       console.log(responsePreferences);
       console.log(responsePreferences.data);
       console.log(responsePreferences.data.data);

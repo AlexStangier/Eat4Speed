@@ -207,13 +207,13 @@ export default {
   },
   methods: {
     async login() {
-      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail, this.$store.getters.getLoginData);
       if(responseGeloescht.data[0]===1)
       {
         this.openSnackbar("Dieses Konto wurde gelöscht.");
         return;
       }
-      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail);
+      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail, this.$store.getters.getLoginData);
       if(responseBlacklist.data.length>0)
       {
         this.openSnackbar("Dieses Konto befindet sich auf der Blacklist wegen "+responseBlacklist.data[0]);
@@ -222,7 +222,7 @@ export default {
       this.$http.post('/Login/restaurant', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
-      })
+      }, this.$store.getters.getLoginData)
           .then((response) => {
             if (response.status === 200) {
               const payload = {
@@ -266,12 +266,12 @@ export default {
           geloescht: 0
         };
 
-        const responseBenutzer = await axios.post("/Benutzer", benutzer);
+        const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
 
         this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
 
-        var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
+        var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat", this.$store.getters.getLoginData);
 
         if (responseKundenLngLat.data.length > 0) {
           for (let i = 0; i < responseKundenLngLat.data.length; i++) {
@@ -326,7 +326,7 @@ export default {
           lat: this.lat
         };
 
-        const responseAdressen = await axios.post("/Adressen", adressen);
+        const responseAdressen = await axios.post("/Adressen", adressen, this.$store.getters.getLoginData);
 
         console.log(responseAdressen);
         console.log(responseAdressen.data);
@@ -344,7 +344,7 @@ export default {
           bestellradius: this.bestellradius
         };
 
-        var responseRestaurant = await axios.post("/Restaurant", restaurant);
+        var responseRestaurant = await axios.post("/Restaurant", restaurant, this.$store.getters.getLoginData);
 
         this.restaurant_ID = responseRestaurant.data.restaurant_ID;
 
@@ -357,7 +357,7 @@ export default {
 
           console.log(entfernung);
 
-          await axios.post("/EntfernungKundeRestaurant", entfernung);
+          await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
 
         }
         if (this.restaurantBild !== null) {
