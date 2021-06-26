@@ -2,6 +2,7 @@ package de.eat4speed.controllers;
 
 
 import de.eat4speed.entities.Oeffnungszeiten;
+import de.eat4speed.repositories.OeffnungszeitenRepository;
 import de.eat4speed.services.interfaces.IOeffnungszeitenService;
 
 import javax.inject.Inject;
@@ -19,6 +20,9 @@ public class OeffnungszeitenController {
     @Inject
     IOeffnungszeitenService oeffnungszeitenService;
 
+    @Inject
+    OeffnungszeitenRepository oeffnungszeitenRepository;
+
     @POST
     @Path("setArbeitstag")
     public Response add(Oeffnungszeiten zeit){
@@ -35,6 +39,40 @@ public class OeffnungszeitenController {
     @Path("/getAllZeiten/{id}")
     public List getAllZeiten(@PathParam("id") int restaurant_id) {
         return oeffnungszeitenService.getAllZeiten(restaurant_id);
+    }
+
+    @GET
+    @Path("/getAllZeitenWochentag/{id}/{wochentag}")
+    public List getAllZeitenWochentag(@PathParam("id") int restaurant_id, @PathParam("wochentag") int wochentag) {
+
+        String tag = "";
+
+        switch(wochentag)
+        {
+            case 0: tag = "Sonntag";
+
+                break;
+            case 1: tag = "Montag";
+
+                break;
+            case 2: tag = "Dienstag";
+
+                break;
+            case 3: tag = "Mittwoch";
+
+                break;
+            case 4: tag = "Donnerstag";
+
+                break;
+            case 5: tag = "Freitag";
+
+                break;
+            case 6: tag = "Samstag";
+
+                break;
+        }
+
+        return oeffnungszeitenRepository.getAllZeitenWochentag(restaurant_id, tag);
     }
 
 }

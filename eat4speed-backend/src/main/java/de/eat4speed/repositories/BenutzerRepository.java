@@ -128,6 +128,21 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     }
 
     @Transactional
+    public List getFahrernummerByBenutzername(String username) {
+        List restaurant_ID;
+
+        Query query = entityManager.createQuery(
+                "SELECT f.fahrernummer " +
+                        "from Benutzer b, Fahrer f " +
+                        "where b.emailAdresse LIKE ?1 " +
+                        "and f.benutzer_ID = b.benutzer_ID"
+        ).setParameter(1, username);
+
+        restaurant_ID = query.getResultList();
+        return restaurant_ID;
+    }
+
+    @Transactional
     public void deleteBenutzerByEmail(String email)
     {
         update("geloescht = 1 where emailAdresse = ?1", email);

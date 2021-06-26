@@ -271,7 +271,6 @@ export default {
     loggedInKunde_ID: "",
     isUserLoggedInBoolean: false,
     gerichtBeschreibung: "",
-    allergeneGericht: [],
     gerichtBild: "",
     gerichtPreis: 1.0,
     gerichtVerfuegbar: "",

@@ -324,7 +324,6 @@
                                   small
                                   color="primary"
                                   tile
-                                  @mouseenter="fillAllergene(item)"
                                   class="ml-1"
                               >
                                 Allergene
@@ -637,16 +636,6 @@ export default {
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-    },
     async loadBewertungen() {
       this.test123 = [];
 
@@ -770,7 +759,9 @@ export default {
         name: this.selectedItem.name,
         thumbnail: this.selectedItem.img,
         quantity: this.gerichtAnzahl,
-        price: this.selectedItem.price
+        price: this.selectedItem.price,
+        restaurant_ID: this.selectedRestaurant_ID,
+        num: Math.random() * (999999 - 1) + 1
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
@@ -811,7 +802,6 @@ export default {
     restaurantBestellradius:"",
     bewertung_ID:"",
     entfernung: "",
-    allergeneGericht: [],
     userRating:0,
     userComment:"",
     reviewUsername: [],

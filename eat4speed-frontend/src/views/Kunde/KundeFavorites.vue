@@ -133,6 +133,7 @@
                                   v-on="on"
                                   small
                                   color="primary"
+                                  class="ml-1"
                                   @mouseenter="fillAllergene(item)"
                                   tile
                               >
@@ -480,7 +481,9 @@ export default {
         name: this.selectedItem.name,
         thumbnail: this.selectedItem.img,
         quantity: this.gerichtAnzahl,
-        price: this.selectedItem.price
+        price: this.selectedItem.price,
+        restaurant_ID: this.selectedItem.restaurant_ID,
+        num: Math.random() * (999999 - 1) + 1
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
