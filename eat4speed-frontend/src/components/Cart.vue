@@ -68,6 +68,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import moment from "moment";
+
 export default {
   name: "Cart",
   props: {
@@ -130,7 +133,109 @@ export default {
 
       return id;
     },
+    setTimespamp()
+    {
+      if(this.demandIsNow === true)
+      {
+        this.timestampCustomerDemand = moment().format("HH:mm");
+      }
+
+
+    },
+    async checkOeffnungszeiten()
+    {
+      //let demandDay = this.timestampCustomerDemand.getDay();
+      this.problemGerichte = [];
+      const format = "HH:mm";
+
+
+
+      if(this.demandIsNow === true)
+      {
+        this.timestampCustomerDemand = moment().format("HH:mm");
+        console.log(this.timestampCustomerDemand);
+        this.timestampCustomerDemand = moment(this.timestampCustomerDemand,format);
+        console.log(this.timestampCustomerDemand);
+
+        let dateTimespamp = this.timestampCustomerDemand.toDate();
+        console.log(dateTimespamp.getDay());
+        this.dayOfWeek = dateTimespamp.getDay();
+      }
+
+      let demandDay = this.dayOfWeek;
+
+      //this.timestampCustomerDemand = moment("10:00", format);
+
+      //var demandTime = moment("",format);
+
+      let demandTime = this.timestampCustomerDemand;
+
+      var cartItems = this.$store.getters.getCartGerichte;
+      for(let i = 0; i<cartItems.length; i++)
+      {
+        let resOk = false;
+        let responseOeffnungszeiten = await axios.get("Oeffnungszeiten/getAllZeitenWochentag/"+cartItems[i].restaurant_ID+"/"+demandDay);
+        for(let e = 0; e< responseOeffnungszeiten.data.length; e++)
+        {
+          let anfang = responseOeffnungszeiten.data[e][0];
+          let ende = responseOeffnungszeiten.data[e][1];
+          let anfangTime = moment(anfang.substring(0, 19)+"+00:00").format("HH:mm");
+          let anfangTimeTwo = moment(anfangTime,format);
+          let endeTime = moment(ende.substring(0, 19)+"+00:00").format("HH:mm");
+          let endeTimeTwo = moment(endeTime,format);
+          console.log(anfangTime);
+          console.log(anfangTimeTwo);
+          console.log(endeTime);
+          console.log(endeTimeTwo);
+          if(demandTime.isBetween(anfangTimeTwo,endeTimeTwo))
+          {
+            resOk = true;
+            console.log("ok "+e);
+          }
+        }
+        if(resOk===false)
+        {
+          this.problemGerichte.push(cartItems[i].name);
+          this.oeffnungszeitenOkay = false;
+        }
+      }
+
+      if(this.problemGerichte.length===0)
+      {
+        //this.oeffnungszeitenOkay = true;
+        console.log("test");
+      }
+      else {
+        let alertString = "Die folgenden Gerichte können zu der ausgewählten Öffnungszeit nicht bestellt werden: ";
+
+        let alertStingGerichte = "";
+        for(let i = 0; i<this.problemGerichte.length; i++)
+        {
+          alertStingGerichte = alertStingGerichte + " " + this.problemGerichte[i]
+          if(i<this.problemGerichte.length-1)
+          {
+            alertStingGerichte = alertStingGerichte + ",";
+          }
+          else{
+            alertStingGerichte = alertStingGerichte + ""
+          }
+        }
+
+        alertString = alertString + alertStingGerichte;
+
+        alert(alertString);
+      }
+
+    },
     async paypalRequest() {
+
+      await this.checkOeffnungszeiten();
+
+      if(this.oeffnungszeitenOkay === false)
+      {
+        return;
+      }
+
       const items = [];
 
       this.$store.getters.getCartGerichte.forEach(item => {
@@ -166,6 +271,13 @@ export default {
     return {
       carts: [],
       version: 0,
+      demandIsNow: true,
+      hour: "",
+      minute: "",
+      dayOfWeek:"",
+      problemGerichte: [],
+      timestampCustomerDemand: "",
+      oeffnungszeitenOkay: false,
       selectedGericht: ""
     };
   },

@@ -75,6 +75,13 @@ public class BenutzerController {
     }
 
     @GET
+    @Path("getFahrernummerByBenutzername/{username}")
+    public List getFahrernummerByBenutzername(@PathParam("username") String username)
+    {
+        return benutzerRepository.getFahrernummerByBenutzername(username);
+    }
+
+    @GET
     @Path("getRoleById/{id}")
     public String getRoleById(@PathParam("id") long id){
         return _benutzer.getRoleById(id);

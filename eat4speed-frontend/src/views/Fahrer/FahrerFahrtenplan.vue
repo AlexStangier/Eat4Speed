@@ -218,11 +218,17 @@ export default {
     convertToKM(meters) {
       return meters / 1000;
     },
+    async getLoggedInFahrer()
+    {
+      const response = await axios.get("Benutzer/getFahrernummerByBenutzername"+this.$cookies.get('emailAdresse'))
+      this.fahrernummer = response.data[0];
+    },
   },
   async mounted() {
     await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data);
+    await this.getLoggedInFahrer();
     this.pollData();
-    //todo this fahrernummer = aktuelle Fahrernummer
+
   },
   beforeDestroy() {
     clearInterval(this.polling);
@@ -230,7 +236,7 @@ export default {
   data() {
     return {
       data: [],
-      fahrernummer: 12,
+      fahrernummer: 0,
       auftrags_IDs: [],
       active_auftrags_IDs: [],
       auftrags_IDs_index: 0,
