@@ -75,7 +75,7 @@
             <v-list-item class="mb-12" v-for="item in eingegangeneBestellungen" v-bind:key="item.id">
 
               <v-col style="background-color: lightsteelblue" >
-                <div  class="text-right">{{ item.date }}</div>
+                <div  class="text-left">Bestellt: {{ item.date }} // Termin: [{{item.customerDate}}]</div>
                 <v-card-title>Bestellung {{ item.id }} - {{ item.name }}</v-card-title>
                 <v-card-text>{{ item.products }}</v-card-text>
                 <v-card-text>{{ item.count }}x</v-card-text>
@@ -190,6 +190,11 @@ export default {
 
         const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
 
+        let wunschdatum = ResponseBestellungen.data[i][5];
+        if(wunschdatum === null){
+          wunschdatum = '-'
+        }
+
         item = {
           id: (ResponseBestellungen.data[i][0]),
           name: (ResponseBestellungen.data[i][1]),
@@ -197,6 +202,7 @@ export default {
           date: (ResponseBestellungen.data[i][4]),
           products: (ResponseProdukte.data[0][0]),
           count: (ResponseProdukte.data[0][1]),
+          customerDate: (wunschdatum),
           currentState: statusNummer
         }
 
