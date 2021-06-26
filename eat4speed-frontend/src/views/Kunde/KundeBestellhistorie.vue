@@ -358,6 +358,7 @@ export default {
       let entries = [...map.keys()]
       let anzahl = [...map.values()]
 
+      console.log(entries)
 
       let i
       for (i = 0; i < entries.length; i++) {
@@ -377,7 +378,7 @@ export default {
           imageURL = "";
         }
 
-        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + idsArray[i]);
+        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + entries[i]);
 
         let cartGericht = {
           gericht_ID: (responseGericht.data[0][0]),
