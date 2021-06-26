@@ -220,7 +220,7 @@ export default {
     },
     async getLoggedInFahrer()
     {
-      const response = await axios.get("Benutzer/getFahrernummerByBenutzername"+this.$cookies.get('emailAdresse'))
+      const response = await axios.get("Benutzer/getFahrernummerByBenutzername/"+this.$cookies.get('emailAdresse'))
       this.fahrernummer = response.data[0];
     },
   },
