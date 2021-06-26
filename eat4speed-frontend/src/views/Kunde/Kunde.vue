@@ -291,6 +291,7 @@
                               flat
                               class="subtitle-1"
                           >
+                            <v-icon>mdi-home</v-icon>
                             {{item.restaurant}}
                           </v-card>
                           <v-card
