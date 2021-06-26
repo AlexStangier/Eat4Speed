@@ -69,6 +69,7 @@ public class BestellungController {
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("getRestaurantBestellungen/{email}")
     public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
 
@@ -88,6 +89,7 @@ public class BestellungController {
     }
 
     @GET
+    @RolesAllowed({"kunde","restaurant"})
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
 
@@ -116,18 +118,22 @@ public class BestellungController {
         return response;
     }
     @GET
+    @RolesAllowed("kunde")
     @Path("getKundeBestellungen/{status}/{email}")
     public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getKundeBestellungenAktiv/{email}")
     public List getKundeBestellungenAktiv(@PathParam("email") String email) {return _bestellungen.getKundeBestellungenAktiv(email);}
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getGerichtIds/{id}")
     public List getGerichtIds(@PathParam("id") int id) {return _bestellungen.getGerichtIds(id);}
 
     @GET
+    @RolesAllowed({"kunde","restaurant"})
     @Path("getAnzahlFertigerAuftraege/{id}")
     public List getAnzahlFertigerAuftraege(@PathParam("id") int id) {return _bestellungen.getAnzahlFertigerAuftraege(id);}
 

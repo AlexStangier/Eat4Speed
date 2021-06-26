@@ -5,6 +5,7 @@ import de.eat4speed.dto.CategoriePreferences;
 import de.eat4speed.entities.Kategorie;
 import de.eat4speed.services.interfaces.IKategorieService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,6 +33,7 @@ public class KategorieController {
     }
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getPreferences/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)

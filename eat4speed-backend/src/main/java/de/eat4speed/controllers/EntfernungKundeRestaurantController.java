@@ -32,7 +32,6 @@ public class EntfernungKundeRestaurantController {
 
     @GET
     @Path("/getEntfernungByKundennummerRestaurant_ID/{kundennummer}/{restaurant_ID}")
-    @RolesAllowed("kunde")
     public List getEntfernungByKundennummerRestaurant_ID(@PathParam("kundennummer") int kundennummer, @PathParam("restaurant_ID") int restaurant_ID)
     {
         return entfernungKundeRestaurantService.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
@@ -40,7 +39,6 @@ public class EntfernungKundeRestaurantController {
 
     @GET
     @Path("/getEntfernungByKundennummer/{kundennummer}")
-    @RolesAllowed("kunde")
     public List getEntfernungByKundennummer(@PathParam("kundennummer") int kundennummer)
     {
         return entfernungKundeRestaurantRepository.getEntfernungByKundennummer(kundennummer);
@@ -56,7 +54,7 @@ public class EntfernungKundeRestaurantController {
 
     @DELETE
     @Path("/deleteEntfernungByRestaurant_ID/{restaurant_ID}")
-    @RolesAllowed("kunde")
+    @RolesAllowed("restaurant")
     public Response deleteEntfernungByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
     {
         return entfernungKundeRestaurantService.deleteEntfernungByRestaurant_ID(restaurant_ID);

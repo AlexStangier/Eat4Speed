@@ -531,6 +531,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment";
 
 export default {
   name: "KundeAuswahlseiteRestaurant",
@@ -542,6 +543,7 @@ export default {
     this.displayGetraenke = false;
     this.loadGerichte();
     this.loadBewertungen();
+    this.loadOeffnungszeiten();
     this.user = this.$cookies.get('emailAdresse');
   },
   methods: {
@@ -714,6 +716,17 @@ export default {
       this.amountReviews = 0;
       this.amountReviews = responseBewertungen.data.length;
       this.versionreview++;
+    },
+    async loadOeffnungszeiten()
+    {
+      this.timeItems = [];
+
+      const responseOeffnungszeiten = await axios.get("Oeffnungszeiten/getAllZeitenRestaurant_ID/"+this.selectedRestaurant_ID);
+      for(let i = 0; i<responseOeffnungszeiten.data.length;i++)
+      {
+        let zeitData = responseOeffnungszeiten.data[i];
+        this.timeItems.push({weekDay: zeitData[0] , von: moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm"), bis: moment(zeitData[2].substring(0, 19)+"+00:00").format("HH:mm")})
+      }
     },
     async addBewertung(){
       if(!this.isUserLoggedInBoolean)
@@ -891,9 +904,14 @@ export default {
         value: 'weekDay'
       },
       {
-        text: 'Öffnungszeiten',
+        text: 'Von',
         sortable: false,
-        value: 'timeOpen'
+        value: 'von'
+      },
+      {
+        text: 'Bis',
+        sortable: false,
+        value: 'bis'
       }
     ],
     weekDay: [],

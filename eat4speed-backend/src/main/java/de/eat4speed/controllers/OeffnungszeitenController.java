@@ -33,18 +33,21 @@ public class OeffnungszeitenController {
     }
 
     @PUT
+    @RolesAllowed("restaurant")
     @Path("updateArbeitstag")
     public Response updateArbeitstag(Oeffnungszeiten zeit) {
         return oeffnungszeitenService.updateArbeitstag(zeit);
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("/getAllZeiten/{id}")
     public List getAllZeiten(@PathParam("id") int restaurant_id) {
         return oeffnungszeitenService.getAllZeiten(restaurant_id);
     }
 
     @GET
+    @RolesAllowed("kunde")
     @Path("/getAllZeitenWochentag/{id}/{wochentag}")
     public List getAllZeitenWochentag(@PathParam("id") int restaurant_id, @PathParam("wochentag") int wochentag) {
 
@@ -76,6 +79,13 @@ public class OeffnungszeitenController {
         }
 
         return oeffnungszeitenRepository.getAllZeitenWochentag(restaurant_id, tag);
+    }
+
+    @GET
+    @Path("getAllZeitenRestaurant_ID/{id}")
+    public List getAllZeitenRestaurant_ID(@PathParam("id") int restaurant_ID)
+    {
+        return oeffnungszeitenRepository.getAllZeitenRestaurant_ID(restaurant_ID);
     }
 
 }

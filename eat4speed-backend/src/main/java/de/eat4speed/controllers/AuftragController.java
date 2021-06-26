@@ -45,12 +45,14 @@ public class AuftragController {
 
     @GET
     @Path("{id}")
+    @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     public String get(@PathParam("id") long id) {
         return auftragRepository.findById(id).toString();
     }
 
     @PUT
+    @RolesAllowed({"fahrer,kunde,restaurant"})
     @Path("updateAuftragFahrernummer/{auftrags_ID}/{fahrernummer}")
     public Response updateAuftragFahrernummer(@PathParam("auftrags_ID") int auftrags_ID, @PathParam("fahrernummer") int fahrernummer)
     {
@@ -65,6 +67,7 @@ public class AuftragController {
     }
 
     @PUT
+    @RolesAllowed({"kunde", "restaurant"})
     @Path("setToErledigt/{auftrags_ID}")
     public Response setToErledigt(@PathParam("auftrags_ID") int auftrags_ID)
     {

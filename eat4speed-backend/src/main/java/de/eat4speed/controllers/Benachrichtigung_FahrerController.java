@@ -8,6 +8,7 @@ import de.eat4speed.repositories.FahrzeugRepository;
 import de.eat4speed.services.interfaces.IBenachrichtigung_FahrerService;
 import org.json.JSONObject;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -29,6 +30,7 @@ public class Benachrichtigung_FahrerController {
     IBenachrichtigung_FahrerService benachrichtigung_fahrerService;
 
     @PUT
+    @RolesAllowed("fahrer")
     @Path("/markAsGelesen/{benachrichtigungs_ID}")
     public void markAsGelesen(@PathParam("benachrichtigungs_ID") int benachrichtigungs_ID)
     {
@@ -36,6 +38,7 @@ public class Benachrichtigung_FahrerController {
     }
 
     @GET
+    @RolesAllowed("fahrer")
     @Path("/getAllBenachrichtigungFahrerUngelesen/{fahrernummer}")
     public List getAllBenachrichtigung_Fahrer_ungelesen(@PathParam("fahrernummer") int fahrernummer)
     {
@@ -102,6 +105,7 @@ public class Benachrichtigung_FahrerController {
     }
 
     @DELETE
+    @RolesAllowed("fahrer")
     @Path("/{Benachrichtigungs_ID}")
     public Response delete(@PathParam("Benachrichtigungs_ID") int benachrichtigungs_ID) {
 

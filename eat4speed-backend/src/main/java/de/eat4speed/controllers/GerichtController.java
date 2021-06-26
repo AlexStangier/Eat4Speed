@@ -94,7 +94,6 @@ public class GerichtController {
 
     @GET
     @Path("/getGerichtDataByGericht_ID/{id}")
-    @PermitAll
     public List getGerichtDataByGericht_ID(@PathParam("id") int gericht_ID)
     {
         return gerichtService.getGerichtDataByGericht_ID(gericht_ID);
@@ -110,7 +109,6 @@ public class GerichtController {
 
     @POST()
     @Path("/searchGerichte")
-    @PermitAll
     public List searchGerichte(DishSearchOptions options)
     {
         return gerichtService.searchGerichte(options);
@@ -127,6 +125,7 @@ public class GerichtController {
 
     @PUT
     @Path("deleteGerichtByGericht_ID/{gericht_ID}")
+    @RolesAllowed("restaurant")
     public Response deleteGerichtByGericht_ID(@PathParam("gericht_ID") int gericht_ID)
     {
         gerichtRepository.deleteGerichtByGericht_ID(gericht_ID);
@@ -134,6 +133,7 @@ public class GerichtController {
     }
 
     @PUT
+    @RolesAllowed("restaurant")
     @Path("deleteGerichtByRestaurant_ID/{restaurant_ID}")
     public Response deleteGerichtByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
     {

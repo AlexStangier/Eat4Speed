@@ -62,6 +62,22 @@ public class OeffnungszeitenRepository implements PanacheRepository<Oeffnungszei
     }
 
     @Transactional
+    public List getAllZeitenRestaurant_ID(int restaurant_ID)
+    {
+        List allZeiten;
+
+        Query query = entityManager.createQuery(
+                "SELECT t.wochentag, t.anfang, t.ende " +
+                        "FROM Oeffnungszeiten t " +
+                        "WHERE t.restaurant_ID = ?1"
+        ).setParameter(1,restaurant_ID);
+
+        allZeiten = query.getResultList();
+
+        return allZeiten;
+    }
+
+    @Transactional
     public Oeffnungszeiten getOeffnungszeitenById(int openingHoursId) {
         return find("Oeffnungszeiten_ID", openingHoursId).firstResult();
     }

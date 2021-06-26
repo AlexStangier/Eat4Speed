@@ -29,13 +29,6 @@ public class BenutzerController {
         return _benutzer.addBenutzer(benutzer);
     }
 
-    @GET
-    @RolesAllowed("user")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get() {
-        return _benutzer.listAll();
-    }
-
     @POST
     @PermitAll
     @Path("getIdByEmail")
@@ -45,18 +38,21 @@ public class BenutzerController {
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("getBenutzerByLogin/{email}")
     public List getBenutzerByLogin(@PathParam("email") String email) {
         return _benutzer.getBenutzerByLogin(email);
     }
 
     @PUT
+    @RolesAllowed({"kunde","restaurant"})
     @Path("updateBenutzerRestaurant")
     public Response updateBenutzerRestaurant(Benutzer benutzer) {
         return _benutzer.updateBenutzerRestaurant(benutzer);
     }
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getBenutzerKundeEinstellungenByLogin/{email}")
     public List getBenutzerKundeEinstellungenByLogin(@PathParam("email") String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
 
@@ -68,6 +64,7 @@ public class BenutzerController {
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("getRestaurant_IDByBenutzername/{username}")
     public List getRestaurant_IDByBenutzername(@PathParam("username") String username)
     {
@@ -75,6 +72,7 @@ public class BenutzerController {
     }
 
     @GET
+    @RolesAllowed("fahrer")
     @Path("getFahrernummerByBenutzername/{username}")
     public List getFahrernummerByBenutzername(@PathParam("username") String username)
     {
@@ -94,6 +92,7 @@ public class BenutzerController {
     }
 
     @PUT
+    @RolesAllowed({"kunde","admin","restaurant"})
     @Path("deleteBenutzerByEmail/{email}")
     public Response deleteBenutzerByEmail(@PathParam("email") String email)
     {

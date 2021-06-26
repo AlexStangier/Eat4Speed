@@ -18,6 +18,7 @@ public class SchichtController {
 
 
     @POST
+    @RolesAllowed("fahrer")
     @Path("/setSchicht")
     public Response add(Schicht zeit){
         schichtplanService.setSchicht(zeit);
