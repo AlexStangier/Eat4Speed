@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <v-container>
-      <v-container>
+      <v-container fluid>
         <v-row no-gutters class="align-center">
           <v-col
               v-for="k in 4"
@@ -83,10 +83,12 @@
                     </h2>
                   </v-list-item>
                   <v-list-item>
-                    <v-checkbox
-                        label="Suche benutzen"
-                        v-model="nameOptionActive"
-                    ></v-checkbox>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Suchbegriff benutzen"
+                          v-model="nameOptionActive"
+                      ></v-checkbox>
+                    </v-container>
                   </v-list-item>
                   <v-subheader
                       class="text-uppercase"
@@ -223,7 +225,7 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-container>
+      <v-container fluid>
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
           <v-divider></v-divider>
@@ -239,7 +241,7 @@
                   flat
                   tile
               >
-                <v-container>
+                <v-container fluid>
                   <v-row>
                     <v-col
                         cols="3"
@@ -258,7 +260,7 @@
                           :key="a"
                       >
                         <v-col
-                            cols="4"
+                            cols="5"
                         >
                           <v-card
                               v-if="a === 1"
@@ -268,11 +270,21 @@
                             {{ item.name }}
                           </v-card>
                           <v-card
+                              ref="cardDescription"
                               v-if="a === 1"
                               flat
                               class="subtitle-1"
                           >
-                            {{ item.description }}
+                            <span
+                                v-if="item.description.length <= 40"
+                            >
+                              {{ item.description }}
+                            </span>
+                            <span
+                                v-else
+                            >
+                              {{ item.description.substring(0,38)+".." }}
+                            </span>
                           </v-card>
                           <v-card
                               v-if="a === 2"
@@ -289,7 +301,7 @@
                             <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
                           </v-card>
                           <v-card
-                              v-if="a === 2"
+                              v-if="a === 2 && isUserLoggedInBoolean"
                               flat
                               class="subtitle-1"
                           >
@@ -428,9 +440,9 @@
                             </v-dialog>
                           </v-card>
                           <v-card
-                              v-if="a === 3"
+                              v-if="a === 2"
                               flat
-                              class="text-right"
+                              class="text-right pt-2"
                           >
                               <v-btn
                                   small
@@ -1003,7 +1015,7 @@ export default {
       {
         this.allergeneGericht[i] = responseAllergene.data[i];
       }
-      this.allergeneKey += 1;
+      this.allergeneKey++;
     },
     async applyBewertungFilterAndSearch() {
 

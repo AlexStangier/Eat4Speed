@@ -247,24 +247,6 @@
           </v-col>
         </v-card-title>
         <v-divider></v-divider>
-
-        <v-card
-            v-if="amountGerichte === 0 && !displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Gericht gefunden
-        </v-card>
-        <v-card
-            v-if="amountGerichte === 0 && displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Getränke gefunden
-        </v-card>
-
         <v-virtual-scroll
             :items="items"
             :item-height="210"
@@ -307,7 +289,16 @@
                             class="text-subtitle-1"
                             flat
                         >
-                          {{ item.description }}
+                          <span
+                              v-if="item.description.length <= 40"
+                          >
+                              {{ item.description }}
+                            </span>
+                          <span
+                              v-else
+                          >
+                              {{ item.description.substring(0,38)+".." }}
+                            </span>
                         </v-card>
                       </v-col>
                       <v-col>
@@ -450,6 +441,22 @@
                 :width="7"
             ></v-progress-circular>
           </v-row>
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gericht gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
         </v-card>
         <v-card
             v-if="amountGerichte === 0 && !displayGetraenke"
