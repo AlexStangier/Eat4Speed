@@ -135,7 +135,6 @@
                                   color="primary"
                                   @mouseenter="fillAllergene(item)"
                                   tile
-                                  @mouseenter="fillAllergene(item)"
                               >
                                 Allergene
                               </v-btn>
@@ -148,6 +147,7 @@
                                   >
                                     <v-select
                                         readonly
+                                        disabled
                                         :items="allergeneGericht"
                                         v-model="allergeneGericht"
                                         chips
@@ -458,6 +458,7 @@ export default {
       {
         this.allergeneGericht[i] = responseAllergene.data[i];
       }
+      this.allergeneKey++;
     },
     async deleteFromFavorites(){
       if(this.displayGerichte===true)

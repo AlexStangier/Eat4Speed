@@ -82,10 +82,12 @@
                     </h2>
                   </v-list-item>
                   <v-list-item>
-                    <v-checkbox
-                        label="Suche benutzen"
-                        v-model="nameOptionActive"
-                    ></v-checkbox>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Suchbegriff benutzen"
+                          v-model="nameOptionActive"
+                      ></v-checkbox>
+                    </v-container>
                   </v-list-item>
                   <v-subheader
                       class="text-uppercase"

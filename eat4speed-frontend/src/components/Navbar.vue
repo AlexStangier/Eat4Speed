@@ -40,7 +40,31 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn
+          v-if="!isUserLoggedIn"
+          :to=" {name: 'Startseite' }"
+          class="ml-3"
+          color="primary"
+          tile
+          depressed
+      >
+        <v-icon> mdi-home </v-icon>
+        Startseite
+      </v-btn>
+      <v-btn
+          v-if="isUserLoggedIn"
+          :to=" {name: 'RestaurantControlPanel' }"
+          class="ml-3"
+          color="primary"
+          tile
+          depressed
+      >
+        <v-icon> mdi-home </v-icon>
+        ControlPanel
+      </v-btn>
+
       <v-menu
+          v-if="isUserLoggedIn"
           bottom
           left
           offset-y
@@ -49,7 +73,6 @@
       >
         <template v-slot:activator="{ on, attrs}">
           <v-btn
-              v-if="isUserLoggedIn"
               v-bind="attrs"
               v-on="on"
               class="ml-3"
@@ -64,6 +87,22 @@
         <v-list
             max-width="400"
         >
+          <v-list-item>
+            <v-btn
+                :to=" {name: 'Startseite' }"
+                text
+                tile
+                width="200"
+                depressed
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon> mdi-home </v-icon>
+                Startseite
+              </v-content>
+            </v-btn>
+          </v-list-item>
           <v-list-item>
             <v-btn
                 :to="{name: 'Favorites'}"
@@ -81,6 +120,7 @@
           </v-list-item>
           <v-list-item>
             <v-btn
+                :to="{name: 'KundeBestellhistorie'}"
                 text
                 tile
                 width="200"
@@ -140,7 +180,7 @@ export default {
   computed: {
     hideSearchBar() {
       const path = this.$route.path;
-      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path === '/';
+      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path.includes('/anmeldung') || path === '/';
     },
     isUserLoggedIn() {
       return this.user !== undefined;
