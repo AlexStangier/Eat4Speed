@@ -144,7 +144,7 @@ export default {
   methods: {
     async reloadFahrer(){
       if (this.select.value === 1) {
-        const ResponseAllFahrer = await axios.get("/Fahrer/ALL");
+        const ResponseAllFahrer = await axios.get("/Fahrer/ALL", this.$store.getters.getLoginData);
 
         this.allFahrer = ResponseAllFahrer;
 
@@ -169,7 +169,7 @@ export default {
       }
 
       if (this.select.value === 2) {
-        const ResponseNotVerifiedFahrer = await axios.get("/Fahrer/NOT_VERIFIED");
+        const ResponseNotVerifiedFahrer = await axios.get("/Fahrer/NOT_VERIFIED", this.$store.getters.getLoginData);
 
         this.allFahrer = ResponseNotVerifiedFahrer;
 
@@ -195,7 +195,7 @@ export default {
       }
 
       if(this.select.value === 3) {
-        const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED");
+        const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED", this.$store.getters.getLoginData);
 
         this.allFahrer = ResponseVerifiedFahrer;
 
@@ -229,13 +229,13 @@ export default {
         emailAdresse: this.currentRowItem.email,
         loeschbegruendung: this.deleteReason
       }
-      await axios.post("Blacklist",deleteBe);
+      await axios.post("Blacklist",deleteBe, this.$store.getters.getLoginData);
 
-      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email);
+      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email, this.$store.getters.getLoginData);
       this.reloadFahrer();
     },
     async verifyBewerbung() {
-      await this.$http.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer);
+      await this.$http.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer, this.$store.getters.getLoginData);
       this.reloadFahrer();
     }
   },

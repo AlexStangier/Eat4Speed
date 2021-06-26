@@ -149,7 +149,7 @@ export default {
       console.log(this.select.value)
 
       if(this.select.value === 1) {
-        const ResponseAllRestaurant = await axios.get("/Restaurant/ALL");
+        const ResponseAllRestaurant = await axios.get("/Restaurant/ALL", this.$store.getters.getLoginData);
 
         console.log(ResponseAllRestaurant);
         console.log(ResponseAllRestaurant.data);
@@ -191,7 +191,7 @@ export default {
       }
 
       if(this.select.value === 2) {
-        const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED");
+        const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED", this.$store.getters.getLoginData);
 
         console.log(ResponseNotVerifiedRestaurant);
         console.log(ResponseNotVerifiedRestaurant.data);
@@ -228,7 +228,7 @@ export default {
       }
 
       if(this.select.value === 3) {
-        const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED");
+        const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED", this.$store.getters.getLoginData);
 
         console.log(ResponseVerifiedRestaurant);
         console.log(ResponseVerifiedRestaurant.data);
@@ -276,14 +276,14 @@ export default {
         emailAdresse: this.currentRowItem.email,
         loeschbegruendung: this.deleteReason
       }
-      await axios.post("Blacklist",deleteBe);
+      await axios.post("Blacklist",deleteBe, this.$store.getters.getLoginData);
 
-      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email);
+      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email, this.$store.getters.getLoginData);
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
 
-      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
+      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id, this.$store.getters.getLoginData);
 
       console.log(this.currentRowItem);
       console.log(this.currentRowItem.restaurant_Id);

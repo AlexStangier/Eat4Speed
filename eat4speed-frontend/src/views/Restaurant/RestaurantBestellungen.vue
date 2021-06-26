@@ -169,7 +169,7 @@ export default {
     },
     async loadBestellungen() {
 
-      const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$cookies.get('emailAdresse'));
+      const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
 
 
       let anzahl = ResponseBestellungen.data.length.toString();
@@ -188,7 +188,7 @@ export default {
           statusNummer = 3;
         }
 
-        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0], this.$store.getters.getLoginData);
 
         let wunschdatum = ResponseBestellungen.data[i][5];
         if(wunschdatum === null){
@@ -230,13 +230,13 @@ export default {
         zustand = 'abholbereit';
       }
 
-      await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand);
+      await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + "/" + zustand, this.$store.getters.getLoginData);
 
-      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
+      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID, this.$store.getters.getLoginData);
 
       if(nochOffeneAuftraege.data[0][0] === 0){
-        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
-        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
+        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1], this.$store.getters.getLoginData);
+        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999', this.$store.getters.getLoginData);
       }
 
       this.accepted = false;

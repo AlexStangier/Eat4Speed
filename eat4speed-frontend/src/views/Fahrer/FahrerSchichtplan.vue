@@ -140,18 +140,18 @@ export default {
     },
 
     async setPause(){
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
-      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') }, this.$store.getters.getLoginData);
+      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0]
 
-      await axios.put("Fahrer/setPause/" + fahrer_id[0] + "/" + this.pause)
+      await axios.put("Fahrer/setPause/" + fahrer_id[0] + "/" + this.pause, this.$store.getters.getLoginData)
       await this.loadZeiten()
     },
 
     async setSchicht(tag) {
 
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
-      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') }, this.$store.getters.getLoginData);
+      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0]
 
       let anfang;
