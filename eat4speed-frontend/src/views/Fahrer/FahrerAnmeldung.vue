@@ -297,13 +297,13 @@ export default {
       //}
     },
     async login() {
-      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail, this.$store.getters.getLoginData);
       if(responseGeloescht.data[0]===1)
       {
         this.openSnackbar("Dieses Konto wurde gelöscht.");
         return;
       }
-      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail);
+      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail, this.$store.getters.getLoginData);
       if(responseBlacklist.data.length>0)
       {
         this.openSnackbar("Dieses Konto befindet sich auf der Blacklist wegen "+responseBlacklist.data[0]);
@@ -345,7 +345,7 @@ export default {
         geloescht: 0
       };
 
-      const responseBenutzer = await axios.post("/Benutzer", benutzer);
+      const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
@@ -358,7 +358,7 @@ export default {
         verifiziert: 0
       };
 
-      const responseFahrer = await axios.post("/Fahrer", fahrer)
+      const responseFahrer = await axios.post("/Fahrer", fahrer, this.$store.getters.getLoginData)
 
       this.fahrer_ID = responseFahrer.data.fahrernummer;
       if (this.$refs.registrationForm.validate()) {
@@ -372,7 +372,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
+      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug, this.$store.getters.getLoginData);
 
       this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_ID;
 
@@ -381,7 +381,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug, this.$store.getters.getLoginData);
 
       if (this.$refs.verificationForm.validate()) {
         this.$router.push({name: "FahrerSchichtplan"});

@@ -178,14 +178,14 @@ export default {
       this.componentKey += 1;
     },
     async getLoggedInRestaurant() {
-      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'));
+      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       this.info.restaurantId = response.data[0];
     },
     async loadZeiten() {
       this.info.start = moment(this.dates[0]).unix() * 1000;
       this.info.end = moment(this.dates[1]).unix() * 1000;
 
-      const ResponseUmsatz = await axios.post("Bestellung/getStatistic/", this.info);
+      const ResponseUmsatz = await axios.post("Bestellung/getStatistic/", this.info, this.$store.getters.getLoginData);
       let formattedData = {};
       let formattedDataTable = [];
 

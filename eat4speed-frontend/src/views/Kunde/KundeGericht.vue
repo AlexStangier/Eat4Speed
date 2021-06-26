@@ -160,12 +160,12 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async loadGericht() {
-      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID);
+      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID, this.$store.getters.getLoginData);
 
       console.log(ResponseGerichte);
 
@@ -183,7 +183,7 @@ export default {
 
         if(this.isUserLoggedInBoolean)
         {
-          const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID);
+          const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID, this.$store.getters.getLoginData);
           if(ResponseEntfernung.data.length>0)
           {
             this.entfernung = ResponseEntfernung.data[0];
@@ -258,7 +258,7 @@ export default {
     {
       this.selectedItem = item;
       this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
       for(let i = 0; i<responseAllergene.data.length; i++)
       {
         this.allergeneGericht[i] = responseAllergene.data[i];

@@ -293,7 +293,7 @@ export default {
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
       this.loggedInKunde_ID = response.data[0];
     },
     setDisplayGerichteToTrue() {
@@ -314,7 +314,7 @@ export default {
 
       if(this.displayGerichte === true)
       {
-        const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
         console.log(ResponseGerichte);
 
@@ -341,7 +341,7 @@ export default {
           this.minimums[i] = gerichtData[7];
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
-          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0], this.$store.getters.getLoginData);
           console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
@@ -384,7 +384,7 @@ export default {
         this.amountGerichte = ResponseGerichte.data.length;
       }
       else {
-        const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
         for (let i = 0; i < ResponseRestaurants.data.length; i++) {
           let restaurantData = ResponseRestaurants.data[i];
@@ -395,7 +395,7 @@ export default {
           this.anzahlBestellungen[i] = restaurantData[11];
           this.hinzufuegedaten[i] = restaurantData[12];
 
-          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0], this.$store.getters.getLoginData);
           console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
@@ -454,7 +454,7 @@ export default {
     {
       this.selectedItem = item;
       this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
       for(let i = 0; i<responseAllergene.data.length; i++)
       {
         this.allergeneGericht[i] = responseAllergene.data[i];
@@ -464,11 +464,11 @@ export default {
     async deleteFromFavorites(){
       if(this.displayGerichte===true)
       {
-        await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+        await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id, this.$store.getters.getLoginData);
       }
       else
       {
-        await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.restaurant_ID)
+        await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.restaurant_ID, this.$store.getters.getLoginData)
       }
 
       this.loadGerichte();

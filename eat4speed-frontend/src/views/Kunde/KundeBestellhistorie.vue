@@ -187,7 +187,7 @@ export default {
     },
     async loadBestellungenOffen() {
 
-      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'bezahlt/' + this.$store.getters.getLoginData.auth.username);
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'bezahlt/' + this.$store.getters.getLoginData.auth.username, this.$store.getters.getLoginData);
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
@@ -199,7 +199,7 @@ export default {
           sekunden = -300;
         }
 
-        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0], this.$store.getters.getLoginData);
 
         itemOffen = {
           id: (ResponseBestellungen.data[i][0]),
@@ -219,7 +219,7 @@ export default {
 
     async loadBestellungenAktive() {
 
-      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungenAktiv/" + this.$store.getters.getLoginData.auth.username);
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungenAktiv/" + this.$store.getters.getLoginData.auth.username, this.$store.getters.getLoginData);
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
@@ -227,7 +227,7 @@ export default {
       for (let i = 0; i < anzahl; i++) { // outer loop
 
 
-        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0], this.$store.getters.getLoginData);
 
         itemAktiv = {
           id: (ResponseBestellungen.data[i][0]),
@@ -249,7 +249,7 @@ export default {
 
     async loadBestellungenStorniert() {
 
-      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'storniert/' + this.$store.getters.getLoginData.auth.username);
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'storniert/' + this.$store.getters.getLoginData.auth.username, this.$store.getters.getLoginData);
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
@@ -257,7 +257,7 @@ export default {
       for (let i = 0; i < anzahl; i++) { // outer loop
 
 
-        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0], this.$store.getters.getLoginData);
 
         itemStorniert = {
           id: (ResponseBestellungen.data[i][0]),
@@ -276,7 +276,7 @@ export default {
     },
     async loadBestellungenAbgeschlossen() {
 
-      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'abgeliefert/' + this.$store.getters.getLoginData.auth.username);
+      const ResponseBestellungen = await axios.get("Bestellung/getKundeBestellungen/" + 'abgeliefert/' + this.$store.getters.getLoginData.auth.username, this.$store.getters.getLoginData);
 
       let anzahl = ResponseBestellungen.data.length.toString();
 
@@ -284,7 +284,7 @@ export default {
       for (let i = 0; i < anzahl; i++) { // outer loop
 
 
-        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0]);
+        const ResponseProdukte = await axios.get("Bestellung/getProduktUndAnzahl/" + ResponseBestellungen.data[i][0], this.$store.getters.getLoginData);
 
         itemAbgeschlossen = {
           id: (ResponseBestellungen.data[i][0]),
@@ -325,16 +325,16 @@ export default {
     async changeBestellungStatus(bestellID) {
 
       try {
-        await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + '/storniert');
+        await axios.put("/Bestellung/updateBestellungStatusRestaurantUndKundeDontTouchThis/" + bestellID + '/storniert', this.$store.getters.getLoginData);
       } catch (error) {
         console.log(error.response)
       }
 
-      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID);
+      const nochOffeneAuftraege = await axios.get("/Bestellung/getAnzahlFertigerAuftraege/" + bestellID, this.$store.getters.getLoginData);
 
       if(nochOffeneAuftraege.data[0][0] === 0){
-        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1]);
-        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999');
+        await axios.put("/Auftrag/setToErledigt/" + nochOffeneAuftraege.data[0][1], this.$store.getters.getLoginData);
+        await axios.put("/Auftrag/updateAuftragFahrernummer/" + nochOffeneAuftraege.data[0][1] + '/9999', this.$store.getters.getLoginData);
       }
 
       this.accepted = false;
@@ -349,7 +349,7 @@ export default {
 
     async addToCart(id) {
 
-      let idArray = await axios.get("/Bestellung/getGerichtIds/" + id);
+      let idArray = await axios.get("/Bestellung/getGerichtIds/" + id, this.$store.getters.getLoginData);
 
       let replace = idArray.data[0].replaceAll('[', '').replaceAll(']', '')
       let idsArray = replace.split(', ')
@@ -377,7 +377,7 @@ export default {
           imageURL = "";
         }
 
-        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + idsArray[i]);
+        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + idsArray[i], this.$store.getters.getLoginData);
 
         let cartGericht = {
           gericht_ID: (responseGericht.data[0][0]),

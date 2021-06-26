@@ -144,14 +144,14 @@ export default {
       }, 3000);
     },
     async getBenachrichtigung() {
-      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/" + this.fahrernummer);
+      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/" + this.fahrernummer, this.$store.getters.getLoginData);
 
       for (let i = 0; i < responseBenachrichtigung.data.length; i++) {
         let benachrichtigungs_ID = responseBenachrichtigung.data[i][0];
 
         this.auftrags_IDs.push({id: responseBenachrichtigung.data[i][1]});
 
-        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/" + benachrichtigungs_ID);
+        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/" + benachrichtigungs_ID, this.$store.getters.getLoginData);
       }
 
       if (responseBenachrichtigung.data.length > 0) {
@@ -160,14 +160,14 @@ export default {
 
     },
     async setAuftragFahrernummer(id) {
-      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id)
+      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id, this.$store.getters.getLoginData)
 
       if (response.data[0] !== 9999 && response.data[0] !== null) {
         alert("Auftrag bereits verteilt.");
       } else {
-        await axios.put("Auftrag/updateAuftragFahrernummer/" + id + "/" + this.fahrernummer);
+        await axios.put("Auftrag/updateAuftragFahrernummer/" + id + "/" + this.fahrernummer, this.$store.getters.getLoginData);
         //this.active_auftrags_IDs.push(this.auftrags_IDs[index]);
-        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs.length);
+        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs.length, this.$store.getters.getLoginData);
         //this.auftrags_IDs.splice(index,1);
       }
     },
@@ -178,7 +178,7 @@ export default {
       }
 
       for (let i = 0; i < this.auftrags_IDs.length; i++) {
-        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + this.auftrags_IDs[i].id)
+        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + this.auftrags_IDs[i].id, this.$store.getters.getLoginData)
         if (response.data[0] !== 9999 && response.data[0] !== null) {
           this.auftrags_IDs.splice(i, 1);
         }
@@ -220,7 +220,7 @@ export default {
     },
     async getLoggedInFahrer()
     {
-      const response = await axios.get("Benutzer/getFahrernummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+      const response = await axios.get("Benutzer/getFahrernummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
       this.fahrernummer = response.data[0];
     },
   },

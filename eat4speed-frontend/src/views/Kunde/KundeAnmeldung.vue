@@ -193,7 +193,7 @@ export default {
   methods: {
 
     async login() {
-      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail, this.$store.getters.getLoginData);
       if(responseGeloescht.data[0]===1)
       {
         this.openSnackbar("Dieses Konto wurde gelöscht.");
@@ -225,7 +225,7 @@ export default {
 
       console.log(this.valid);
 
-      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
+      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04", this.$store.getters.getLoginData);
 
       console.log(response.data.features[0].geometry.coordinates[0]);
       console.log(response.data.features[0].geometry.coordinates[1]);
@@ -252,12 +252,12 @@ export default {
           geloescht: 0
         };
 
-        const responseBenutzer = await axios.post("/Benutzer", benutzer);
+        const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
 
         this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
 
-        var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat");
+        var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat", this.$store.getters.getLoginData);
 
         if (responseRestaurantsLngLat.data.length > 0) {
           for (let i = 0; i < responseRestaurantsLngLat.data.length; i++) {
@@ -315,7 +315,7 @@ export default {
           lat: this.lat
         };
 
-        const responseAdressen = await axios.post("/Adressen", adressen);
+        const responseAdressen = await axios.post("/Adressen", adressen, this.$store.getters.getLoginData);
 
         console.log(responseAdressen);
         console.log(responseAdressen.data);
@@ -331,7 +331,7 @@ export default {
           anschrift: this.adress_ID
         };
 
-        var responseKunde = await axios.post("/Kunde", kunde);
+        var responseKunde = await axios.post("/Kunde", kunde, this.$store.getters.getLoginData);
 
         console.log("somethin something")
 
@@ -349,7 +349,7 @@ export default {
 
           console.log(entfernung);
 
-          await axios.post("/EntfernungKundeRestaurant", entfernung);
+          await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
 
           this.$router.push({name: "Startseite"});
         }
