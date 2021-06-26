@@ -89,7 +89,6 @@
                           prepend-icon="mdi-calendar"
                           readonly
                           v-bind="attrs"
-                          @blur="date = parseDate(dateFormatted)"
                           v-on="on"
                       >
                       </v-text-field>
@@ -270,23 +269,55 @@ export default {
 
 
 
-      if(this.demandIsNow === true)
+      if(this.manLiefertermin === false)
       {
         this.timestampCustomerDemand = moment().format("HH:mm");
-        console.log(this.timestampCustomerDemand);
+        //console.log(this.timestampCustomerDemand);
         this.timestampCustomerDemand = moment(this.timestampCustomerDemand,format);
-        console.log(this.timestampCustomerDemand);
+        //console.log(this.timestampCustomerDemand);
+        this.timestampCustomerDemandDatabase = this.timestampCustomerDemand;
 
         let dateTimespamp = this.timestampCustomerDemand.toDate();
-        console.log(dateTimespamp.getDay());
+        //console.log(dateTimespamp.getDay());
         this.dayOfWeek = dateTimespamp.getDay();
+      }
+      else
+      {
+        let now = moment().format("HH:mm");
+        //console.log(this.timestampCustomerDemand);
+        let nowFormatted = moment(now,format);
+
+        //console.log(this.date);
+        //console.log(moment(this.date,"YYYY/MM/DD"));
+        let demandMoment = moment(this.date,"YYYY/MM/DD");
+        console.log(demandMoment);
+        let demandMomentDate = demandMoment.toDate();
+        this.dayOfWeek = demandMomentDate.getDay();
+        //console.log(this.dayOfWeek);
+
+        console.log(this.time);
+
+        let demandMomentTime = moment(this.time,format);
+        console.log(demandMomentTime);
+        demandMomentDate.setHours(demandMomentTime.hours());
+        demandMomentDate.setMinutes(demandMomentTime.minutes());
+        console.log(demandMomentDate);
+
+        let trueDate = moment(demandMomentDate);
+        console.log(trueDate);
+
+        if(trueDate.isBefore(nowFormatted))
+        {
+          alert("Datum/ Uhrzeit ungültig");
+          this.oeffnungszeitenOkay = false;
+          return;
+        }
+
+        this.timestampCustomerDemand = demandMomentTime;
+        this.timestampCustomerDemandDatabase = trueDate;
       }
 
       let demandDay = this.dayOfWeek;
-
-      //this.timestampCustomerDemand = moment("10:00", format);
-
-      //var demandTime = moment("",format);
 
       let demandTime = this.timestampCustomerDemand;
 
@@ -303,10 +334,7 @@ export default {
           let anfangTimeTwo = moment(anfangTime,format);
           let endeTime = moment(ende.substring(0, 19)+"+00:00").format("HH:mm");
           let endeTimeTwo = moment(endeTime,format);
-          console.log(anfangTime);
-          console.log(anfangTimeTwo);
-          console.log(endeTime);
-          console.log(endeTimeTwo);
+
           if(demandTime.isBetween(anfangTimeTwo,endeTimeTwo))
           {
             resOk = true;
@@ -322,7 +350,7 @@ export default {
 
       if(this.problemGerichte.length===0)
       {
-        //this.oeffnungszeitenOkay = true;
+        this.oeffnungszeitenOkay = true;
         console.log("test");
       }
       else {
@@ -370,7 +398,8 @@ export default {
 
       this.$http.post('/Bestellung/add', {
         items: items,
-        customerId: customerId
+        customerId: customerId,
+        timestamp: moment(this.timestampCustomerDemandDatabase).unix()
       }).then((response) => {
         if (response.status === 201) {
 
@@ -410,6 +439,7 @@ export default {
       dayOfWeek:"",
       problemGerichte: [],
       timestampCustomerDemand: "",
+      timestampCustomerDemandDatabase: "",
       oeffnungszeitenOkay: false,
     };
   },
