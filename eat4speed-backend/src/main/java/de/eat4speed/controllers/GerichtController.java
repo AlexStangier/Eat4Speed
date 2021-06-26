@@ -54,7 +54,6 @@ public class GerichtController {
 
     @GET
     @Path("/getAllGerichtDataRestaurantSpeisekarte/{id}")
-    @PermitAll
     public List getAllGerichtDataRestaurantSpeisekarte(@PathParam("id") int restaurant_id){
 
         return gerichtService.getAllGerichteDataRestaurantSpeisekarte(restaurant_id);
@@ -62,7 +61,6 @@ public class GerichtController {
 
     @GET
     @Path("/getAllGetraenkDataRestaurantSpeisekarte/{id}")
-    @PermitAll
     public List getAllGetraenkDataRestaurantSpeisekarte(@PathParam("id") int restaurant_id){
 
         return gerichtService.getAllGetraenkeDataRestaurantSpeiseKarte(restaurant_id);
@@ -70,7 +68,6 @@ public class GerichtController {
 
     @GET
     @Path("/getGerichtDataByGerichtName/{name}")
-    @PermitAll
     public List getGerichtDataByGerichtName(@PathParam("name") String gerichtName)
     {
         return gerichtService.getGerichtDataByGerichtName(gerichtName);
@@ -107,13 +104,12 @@ public class GerichtController {
         return gerichtService.getGerichtDataByKundennummer_Favoriten(kundennummer);
     }
 
-    @POST()
+    @POST
     @Path("/searchGerichte")
     public List searchGerichte(DishSearchOptions options)
     {
         return gerichtService.searchGerichte(options);
     }
-
 
     @DELETE
     @Path("{id}")

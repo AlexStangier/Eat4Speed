@@ -665,7 +665,7 @@ export default {
           this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
         }
       }
-      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants", this.$store.getters.getLoginData);
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
       for(let i = 0; i<ResponseBewertungen.data.length;i++)
       {
         this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
@@ -724,7 +724,7 @@ export default {
 
       this.searchOptions = searchOptions;
 
-      const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions, this.$store.getters.getLoginData);
+      const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
 
       for (let i = 0; i < responseAlternatives.data.length; i++) {
         let gerichtData = responseAlternatives.data[i];
@@ -823,7 +823,7 @@ export default {
         }
       }
 
-      const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions, this.$store.getters.getLoginData)
+      const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
 
       //console.log(ResponseGerichte);
 
@@ -910,7 +910,7 @@ export default {
       this.gerichteKey++;
     },
     async loadKategorien() {
-      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
+      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id);
 
       let arrayKategorien = [];
       for(let i = 0; i<responseGetKategorie.data.length;i++)
@@ -1011,7 +1011,7 @@ export default {
     {
       this.selectedItem = item;
       this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
       for(let i = 0; i<responseAllergene.data.length; i++)
       {
         this.allergeneGericht[i] = responseAllergene.data[i];

@@ -18,7 +18,6 @@ public class SchichtController {
 
 
     @POST
-    @RolesAllowed("fahrer")
     @Path("/setSchicht")
     @RolesAllowed("fahrer")
     public Response add(Schicht zeit){

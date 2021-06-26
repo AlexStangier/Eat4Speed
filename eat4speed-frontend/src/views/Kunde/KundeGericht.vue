@@ -165,7 +165,7 @@ export default {
       }
     },
     async loadGericht() {
-      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID, this.$store.getters.getLoginData);
+      const ResponseGerichte = await axios.get("Gericht/getGerichtDataByGericht_ID/" + this.gericht_ID);
 
       console.log(ResponseGerichte);
 
@@ -254,11 +254,10 @@ export default {
         this.$router.push({name: "Favorites"})
       }
     },
-    async fillAllergene(item)
+    async fillAllergene()
     {
-      this.selectedItem = item;
       this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.gericht_ID);
       for(let i = 0; i<responseAllergene.data.length; i++)
       {
         this.allergeneGericht[i] = responseAllergene.data[i];

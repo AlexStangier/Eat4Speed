@@ -577,7 +577,7 @@ export default {
         }
       }
 
-      const ResponseRestaurant = await axios.get("Restaurant/getAllRestaurantDataByRestaurant_ID/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
+      const ResponseRestaurant = await axios.get("Restaurant/getAllRestaurantDataByRestaurant_ID/"+this.selectedRestaurant_ID);
       let restaurantData = ResponseRestaurant.data[0];
       this.restaurantName = restaurantData[1];
       this.restaurantDescription = restaurantData[2];
@@ -586,7 +586,7 @@ export default {
       this.restaurantAddress=restaurantData[5]+" "+restaurantData[6]+" "+ restaurantData[7]+" "+restaurantData[8];
       this.restaurantPhoneNumber=restaurantData[9]
 
-      const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
+      const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
       if(ResponseBewertung.data.length>0)
       {
         this.restaurantRating = ResponseBewertung.data[0][0];
@@ -638,7 +638,7 @@ export default {
         gerichtPath = "Gericht/getAllGetraenkDataRestaurantSpeisekarte/";
       }
 
-      const ResponseGerichte = await axios.get(gerichtPath + this.selectedRestaurant_ID, this.$store.getters.getLoginData);
+      const ResponseGerichte = await axios.get(gerichtPath + this.selectedRestaurant_ID);
 
       //console.log(ResponseGerichte);
 
@@ -691,7 +691,7 @@ export default {
     async loadBewertungen() {
       this.test123 = [];
 
-      const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
+      const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
 
       for (let i = 0; i < responseBewertungen.data.length; i++) {
         let bewertungData = responseBewertungen.data[i];
@@ -704,7 +704,7 @@ export default {
 
       if(this.isUserLoggedInBoolean)
       {
-        const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
+        const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
 
         if(responseBewertung.data.length>0)
         {

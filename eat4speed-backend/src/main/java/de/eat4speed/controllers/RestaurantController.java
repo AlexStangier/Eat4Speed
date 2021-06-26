@@ -74,7 +74,6 @@ public class RestaurantController {
 
     @GET
     @Path("getAllRestaurantDataByRestaurant_ID/{id}")
-    @PermitAll
     public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID) {
         return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
     }

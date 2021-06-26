@@ -587,13 +587,13 @@ export default {
         this.gerichtVerfuegbar = true;
       }
 
-      const responseGetAllergene = await axios.get("/Gericht_Allergene/getGericht_AllergeneByGericht_ID/" + this.editedItem.id, this.$store.getters.getLoginData);
+      const responseGetAllergene = await axios.get("/Gericht_Allergene/getGericht_AllergeneByGericht_ID/" + this.editedItem.id);
 
       for (let i = 0; i < responseGetAllergene.data.length; i++) {
         this.selectedAllergene[i] = responseGetAllergene.data[i];
       }
 
-      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/" + this.editedItem.id, this.$store.getters.getLoginData);
+      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/" + this.editedItem.id);
 
       for (let i = 0; i < responseGetKategorie.data.length; i++) {
         this.selectedKategorien[i] = responseGetKategorie.data[i];

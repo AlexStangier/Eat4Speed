@@ -350,7 +350,7 @@ export default {
           this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
         }
       }
-      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants", this.$store.getters.getLoginData);
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
       for(let i = 0; i<ResponseBewertungen.data.length;i++)
       {
         this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
@@ -396,7 +396,7 @@ export default {
         }
       }
 
-      const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions, this.$store.getters.getLoginData);
+      const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
 
       console.log(ResponseRestaurants);
 
@@ -436,7 +436,7 @@ export default {
 
       }
       for (let i = 0; i < ResponseRestaurants.data.length; i++) {
-        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/" + this.restaurant_IDs[i], this.$store.getters.getLoginData);
+        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/" + this.restaurant_IDs[i]);
         this.ratings[i] = ResponseBewertung.data[0][0];
       }
 
