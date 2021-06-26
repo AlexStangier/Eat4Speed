@@ -67,103 +67,106 @@
                 Zeitraum wählen
               </v-btn>
             </template>
-            <v-card>
-              <v-card-title>
-                Zeitraum wählen
-              </v-card-title>
-              <v-card-text>
-                <v-checkbox label="Liefertermin wählen" v-model="manLiefertermin" ></v-checkbox>
-                <v-container fluid>
-                  <v-dialog
-                      v-if="manLiefertermin"
-                      ref="dialogDate"
-                      v-model="dateDialog"
-                      :return-value.sync="date"
-                      persistent
-                      width="290px"
-                  >
-                    <template v-slot:activator="{ on,attrs }">
-                      <v-text-field
-                          v-model="dateFormatted"
-                          label="Liefertermin"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                      >
-                      </v-text-field>
-                    </template>
-                    <v-date-picker
-                        v-model="date"
-                        :first-day-of-week="1"
-                        locale="DE-de"
+            <template v-slot:default="dialog">
+              <v-card>
+                <v-card-title>
+                  Zeitraum wählen
+                </v-card-title>
+                <v-card-text>
+                  <span>Sie können hier Ihren Wunschtermin wählen</span>
+                  <v-checkbox label="Liefertermin wählen" v-model="manLiefertermin" ></v-checkbox>
+                  <v-container fluid>
+                    <v-dialog
+                        v-if="manLiefertermin"
+                        ref="dialogDate"
+                        v-model="dateDialog"
+                        :return-value.sync="date"
+                        persistent
+                        width="290px"
                     >
-                      <v-spacer></v-spacer>
-                      <v-btn
-                          text
-                          color="error"
-                          @click="dateDialog = false"
+                      <template v-slot:activator="{ on,attrs }">
+                        <v-text-field
+                            v-model="dateFormatted"
+                            label="Liefertermin"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                        >
+                        </v-text-field>
+                      </template>
+                      <v-date-picker
+                          v-model="date"
+                          :first-day-of-week="1"
+                          locale="DE-de"
                       >
-                        Abbrechen
-                      </v-btn>
-                      <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.dialogDate.save(date)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-date-picker>
-                  </v-dialog>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            text
+                            color="error"
+                            @click="dateDialog = false"
+                        >
+                          Abbrechen
+                        </v-btn>
+                        <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialogDate.save(date)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-date-picker>
+                    </v-dialog>
 
-                  <v-dialog
-                      v-if="manLiefertermin"
-                      ref="dialogTime"
-                      v-model="timeDialog"
-                      :return-value.sync="time"
-                      persistent
-                      width="290px"
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-text-field
-                          v-model="time"
-                          label="Lieferzeit"
-                          prepend-icon="mdi-clock-time-four-outline"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                      ></v-text-field>
-                    </template>
-                    <v-time-picker
-                        v-model="time"
-                        full-width
-                        format="24hr"
+                    <v-dialog
+                        v-if="manLiefertermin"
+                        ref="dialogTime"
+                        v-model="timeDialog"
+                        :return-value.sync="time"
+                        persistent
+                        width="290px"
                     >
-                      <v-spacer></v-spacer>
-                      <v-btn
-                          text
-                          color="error"
-                          @click="timeDialog = false"
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                            v-model="time"
+                            label="Lieferzeit"
+                            prepend-icon="mdi-clock-time-four-outline"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                          v-model="time"
+                          full-width
+                          format="24hr"
                       >
-                        Abbrechen
-                      </v-btn>
-                      <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.dialogTime.save(time)"
-                      >
-                        OK
-                      </v-btn>
-                    </v-time-picker>
-                  </v-dialog>
-                </v-container>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn block color="primary" depressed tile :disabled="!isLoggedIn" @click="paypalRequest()">
-                  Checkout
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            text
+                            color="error"
+                            @click="timeDialog = false"
+                        >
+                          Abbrechen
+                        </v-btn>
+                        <v-btn
+                            text
+                            color="primary"
+                            @click="$refs.dialogTime.save(time)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-btn block color="primary" depressed tile :disabled="!isLoggedIn" @click="paypalRequest(), dialog.value = false">
+                    Checkout
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </template>
           </v-dialog>
         </v-card-actions>
       </v-card-text>

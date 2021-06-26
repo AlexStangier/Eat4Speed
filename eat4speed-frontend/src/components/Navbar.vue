@@ -41,7 +41,7 @@
       <v-spacer></v-spacer>
 
       <v-btn
-          v-if="!isUserLoggedIn"
+          v-if="!isUserLoggedIn && !hideKontoBtn"
           :to=" {name: 'Startseite' }"
           class="ml-3"
           color="primary"
@@ -52,7 +52,7 @@
         Startseite
       </v-btn>
       <v-btn
-          v-if="isUserLoggedIn"
+          v-if="isUserLoggedIn && hideControllPanelBtn"
           :to=" {name: 'RestaurantControlPanel' }"
           class="ml-3"
           color="primary"
@@ -64,7 +64,7 @@
       </v-btn>
 
       <v-menu
-          v-if="isUserLoggedIn"
+          v-if="isUserLoggedIn && !hideKontoBtn"
           bottom
           left
           offset-y
@@ -191,6 +191,14 @@ export default {
         return 'Angemeldet als: ' + email;
       }
       return 'Du bist nicht angemeldet';
+    },
+    hideControllPanelBtn() {
+      const path = this.$route.path;
+      return path.includes('/restaurant');
+    },
+    hideKontoBtn() {
+      const path = this.$route.path;
+      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path.includes('/anmeldung');
     },
   },
   beforeRouteLeave(to, from, next) {
