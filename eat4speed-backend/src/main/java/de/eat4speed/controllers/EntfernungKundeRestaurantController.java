@@ -5,6 +5,7 @@ import de.eat4speed.entities.EntfernungKundeRestaurant;
 import de.eat4speed.repositories.EntfernungKundeRestaurantRepository;
 import de.eat4speed.services.interfaces.IEntfernungKundeRestaurantService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -31,6 +32,7 @@ public class EntfernungKundeRestaurantController {
 
     @GET
     @Path("/getEntfernungByKundennummerRestaurant_ID/{kundennummer}/{restaurant_ID}")
+    @RolesAllowed("kunde")
     public List getEntfernungByKundennummerRestaurant_ID(@PathParam("kundennummer") int kundennummer, @PathParam("restaurant_ID") int restaurant_ID)
     {
         return entfernungKundeRestaurantService.getEntfernungByKundennummerRestaurant_ID(kundennummer, restaurant_ID);
@@ -38,6 +40,7 @@ public class EntfernungKundeRestaurantController {
 
     @GET
     @Path("/getEntfernungByKundennummer/{kundennummer}")
+    @RolesAllowed("kunde")
     public List getEntfernungByKundennummer(@PathParam("kundennummer") int kundennummer)
     {
         return entfernungKundeRestaurantRepository.getEntfernungByKundennummer(kundennummer);
@@ -45,6 +48,7 @@ public class EntfernungKundeRestaurantController {
 
     @DELETE
     @Path("/deleteEntfernungByKundennummer/{kundennummer}")
+    @RolesAllowed("kunde")
     public Response deleteEntfernungByKundennummer(@PathParam("kundennummer") int kundennummer)
     {
         return entfernungKundeRestaurantService.deleteEntfernungByKundennummer(kundennummer);
@@ -52,6 +56,7 @@ public class EntfernungKundeRestaurantController {
 
     @DELETE
     @Path("/deleteEntfernungByRestaurant_ID/{restaurant_ID}")
+    @RolesAllowed("kunde")
     public Response deleteEntfernungByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
     {
         return entfernungKundeRestaurantService.deleteEntfernungByRestaurant_ID(restaurant_ID);
