@@ -377,7 +377,7 @@ export default {
           imageURL = "";
         }
 
-        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + idsArray[i], this.$store.getters.getLoginData);
+        let responseGericht = await axios.get("/Gericht/getGerichtDataByGericht_ID/" + entries[i], this.$store.getters.getLoginData);
 
         let cartGericht = {
           gericht_ID: (responseGericht.data[0][0]),

@@ -20,9 +20,9 @@ public class SchichtController {
     @POST
     @RolesAllowed("fahrer")
     @Path("/setSchicht")
+    @RolesAllowed("fahrer")
     public Response add(Schicht zeit){
         schichtplanService.setSchicht(zeit);
-
         return Response.status(Response.Status.CREATED).entity(zeit).build();
     };
 
