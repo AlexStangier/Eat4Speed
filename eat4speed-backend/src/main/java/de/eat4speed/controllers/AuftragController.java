@@ -5,6 +5,7 @@ import de.eat4speed.entities.Auftrag;
 import de.eat4speed.repositories.AuftragRepository;
 import de.eat4speed.services.interfaces.IAuftragService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.*;

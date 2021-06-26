@@ -554,7 +554,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
         this.currentKunde_ID = response.data[0];
       }
     },
@@ -564,7 +564,7 @@ export default {
 
       if(this.isUserLoggedInBoolean)
       {
-        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID, this.$store.getters.getLoginData);
         for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
           let favData = ResponseFavoriten.data[i];
@@ -575,7 +575,7 @@ export default {
         }
       }
 
-      const ResponseRestaurant = await axios.get("Restaurant/getAllRestaurantDataByRestaurant_ID/"+this.selectedRestaurant_ID);
+      const ResponseRestaurant = await axios.get("Restaurant/getAllRestaurantDataByRestaurant_ID/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
       let restaurantData = ResponseRestaurant.data[0];
       this.restaurantName = restaurantData[1];
       this.restaurantDescription = restaurantData[2];
@@ -584,7 +584,7 @@ export default {
       this.restaurantAddress=restaurantData[5]+" "+restaurantData[6]+" "+ restaurantData[7]+" "+restaurantData[8];
       this.restaurantPhoneNumber=restaurantData[9]
 
-      const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
+      const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
       if(ResponseBewertung.data.length>0)
       {
         this.restaurantRating = ResponseBewertung.data[0][0];
@@ -593,7 +593,7 @@ export default {
 
       if(this.isUserLoggedInBoolean)
       {
-        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
         if(ResponseEntfernung.data.length>0)
         {
           this.entfernung = ResponseEntfernung.data[0];
@@ -636,7 +636,7 @@ export default {
         gerichtPath = "Gericht/getAllGetraenkDataRestaurantSpeisekarte/";
       }
 
-      const ResponseGerichte = await axios.get(gerichtPath + this.selectedRestaurant_ID);
+      const ResponseGerichte = await axios.get(gerichtPath + this.selectedRestaurant_ID, this.$store.getters.getLoginData);
 
       //console.log(ResponseGerichte);
 
@@ -689,7 +689,7 @@ export default {
     async loadBewertungen() {
       this.test123 = [];
 
-      const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID);
+      const responseBewertungen = await axios.get("Bewertung/getBewertungDataByRestaurant_ID/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
 
       for (let i = 0; i < responseBewertungen.data.length; i++) {
         let bewertungData = responseBewertungen.data[i];
@@ -702,7 +702,7 @@ export default {
 
       if(this.isUserLoggedInBoolean)
       {
-        const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+        const responseBewertung = await axios.get("Bewertung/getBewertungDataByKundennummerAndRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
 
         if(responseBewertung.data.length>0)
         {
@@ -732,7 +732,7 @@ export default {
         datum: today
       }
 
-      await axios.put("Bewertung",bewertung);
+      await axios.put("Bewertung",bewertung, this.$store.getters.getLoginData);
 
       this.loadBewertungen();
     },
@@ -786,11 +786,11 @@ export default {
         anzahl_Bestellungen: 0
       }
 
-      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite, this.$store.getters.getLoginData);
       this.loadRestaurant();
     },
     async deleteFromFavorites(){
-      await axios.delete("Favoritenliste_Restaurants/remove/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+      await axios.delete("Favoritenliste_Restaurants/remove/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
       this.loadRestaurant();
     },
     addToCart() {

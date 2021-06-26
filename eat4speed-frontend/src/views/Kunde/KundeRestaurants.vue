@@ -338,19 +338,19 @@ export default {
     },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async getAllEntfernungenAndBewertungen() {
       if (this.isUserLoggedInBoolean) {
-        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/" + this.loggedInKunde_ID);
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
         for (let i = 0; i < responseEntfernungen.data.length; i++) {
           this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
           this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
         }
       }
-      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants", this.$store.getters.getLoginData);
       for(let i = 0; i<ResponseBewertungen.data.length;i++)
       {
         this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
@@ -386,7 +386,7 @@ export default {
         this.favoritenlisteRestaurants_IDs = [];
         this.hinzufuegedaten = [];
 
-        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/" + this.loggedInKunde_ID);
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
         console.log(ResponseFavoriten);
         for (let i = 0; i < ResponseFavoriten.data.length; i++) {
@@ -396,7 +396,7 @@ export default {
         }
       }
 
-      const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
+      const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions, this.$store.getters.getLoginData);
 
       console.log(ResponseRestaurants);
 
@@ -436,7 +436,7 @@ export default {
 
       }
       for (let i = 0; i < ResponseRestaurants.data.length; i++) {
-        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/" + this.restaurant_IDs[i]);
+        let ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/" + this.restaurant_IDs[i], this.$store.getters.getLoginData);
         this.ratings[i] = ResponseBewertung.data[0][0];
       }
 
@@ -556,11 +556,11 @@ export default {
         anzahl_Bestellungen: 0
       }
 
-      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite, this.$store.getters.getLoginData);
       this.loadRestaurants();
     },
     async deleteFromFavorites() {
-      await axios.delete("Favoritenliste_Restaurants/remove/" + this.loggedInKunde_ID + "/" + this.selectedRestaurant);
+      await axios.delete("Favoritenliste_Restaurants/remove/" + this.loggedInKunde_ID + "/" + this.selectedRestaurant, this.$store.getters.getLoginData);
       this.loadRestaurants();
     },
 

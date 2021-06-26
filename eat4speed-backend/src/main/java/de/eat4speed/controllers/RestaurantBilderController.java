@@ -7,6 +7,8 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -34,6 +36,7 @@ public class RestaurantBilderController {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/upload")
+    @RolesAllowed("restaurant")
     public Response upload(@MultipartForm MultipartBody data) throws IOException {
 
         byte[] picture = IOUtils.toByteArray(data.file);
@@ -51,6 +54,7 @@ public class RestaurantBilderController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces("image/png")
     @Path("/getBild/{id}")
+    @PermitAll
     public byte[] getBildByID(@PathParam("id")int id) throws IOException {
         final String picturePath = projectDirectoryNoTarget+path+"Bild"+id+".png";
 

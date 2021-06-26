@@ -7,6 +7,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -43,6 +45,7 @@ public class GerichtBilderController {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/upload")
+    @RolesAllowed("restaurant")
     public Response upload(@MultipartForm MultipartBody data) throws IOException {
 
         if (data == null || !data.fileName.matches("^Bild[0-9]+$")) {
@@ -75,6 +78,7 @@ public class GerichtBilderController {
     @GET
     @Produces("image/png")
     @Path("/getBild/{id}")
+    @PermitAll
     public Response getBildByID(@PathParam("id") int id) throws IOException {
 
         File pictureFile = new File(this.imageDatabasePath + "Bild" + id + ".png");
