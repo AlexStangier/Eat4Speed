@@ -288,7 +288,6 @@ export default {
         v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     allergeneKey: 0,
-    allergeneGericht: [],
 
   }),
 }

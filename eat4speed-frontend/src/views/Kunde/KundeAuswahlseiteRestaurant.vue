@@ -247,6 +247,24 @@
           </v-col>
         </v-card-title>
         <v-divider></v-divider>
+
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gericht gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
+        </v-card>
+
         <v-virtual-scroll
             :items="items"
             :item-height="210"
@@ -316,7 +334,6 @@
                                   color="primary"
                                   tile
                                   class="ml-1"
-                                  @mouseenter="fillAllergene(item)"
                               >
                                 Allergene
                               </v-btn>
@@ -741,17 +758,6 @@ export default {
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-      this.allergeneKey += 1;
-    },
   },
   data: () => ({
     selectedRestaurant_ID:"",
@@ -818,7 +824,6 @@ export default {
     btnType: 0,
     user: 0,
     allergeneKey: 0,
-    allergeneGericht: [],
   }),
 
 

@@ -475,17 +475,6 @@ export default {
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-      this.allergeneKey += 1;
-    },
   },
   data: () => ({
     displayGerichte: true,
