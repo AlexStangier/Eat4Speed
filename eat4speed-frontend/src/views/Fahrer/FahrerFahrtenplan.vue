@@ -187,9 +187,9 @@ export default {
     async abholungBestätigen(id) {
       Vue.set(id, 'hideButton', true);
       if (id.beschreibung === 'Abholung') {
-        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$cookies.get('emailAdresse'));
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       } else {
-        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$cookies.get('emailAdresse'));
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       }
       id.hidebutton = true;
     },
@@ -203,7 +203,7 @@ export default {
           auftrags_ids += this.data[i].auftrags_id + ", ";
         }
       }
-      await this.$http.put('/route/accident/?auftraege=' + auftrags_ids);
+      await this.$http.put('/route/accident/?auftraege=' + auftrags_ids, this.$store.getters.getLoginData);
       console.log(auftrags_ids);
       this.$forceUpdate();
     },
@@ -225,7 +225,7 @@ export default {
     },
   },
   async mounted() {
-    await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data);
+    await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data, this.$store.getters.getLoginData);
     await this.getLoggedInFahrer();
     this.pollData();
 

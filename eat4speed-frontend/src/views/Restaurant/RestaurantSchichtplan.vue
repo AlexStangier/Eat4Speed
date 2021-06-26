@@ -735,7 +735,7 @@ export default {
       const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
-      const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12]);
+      const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12], this.$store.getters.getLoginData);
 
       for (let i = 0; i < ResponseZeiten.data.length; i++) {
         let zeitData = ResponseZeiten.data[i];
@@ -784,7 +784,7 @@ export default {
     },
     async setArbeitstag(pos, tag) {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
       let time = {
@@ -795,11 +795,11 @@ export default {
         restaurant_ID: StammdatenData[12]
       }
 
-      await axios.post("/Oeffnungszeiten/setArbeitstag", time);
+      await axios.post("/Oeffnungszeiten/setArbeitstag", time, this.$store.getters.getLoginData);
     },
     async updateArbeitstag(pos, tag) {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
       let time = {
@@ -810,7 +810,7 @@ export default {
         restaurant_ID: StammdatenData[12]
       }
 
-      await axios.put("/Oeffnungszeiten/updateArbeitstag", time);
+      await axios.put("/Oeffnungszeiten/updateArbeitstag", time, this.$store.getters.getLoginData);
 
     },
 

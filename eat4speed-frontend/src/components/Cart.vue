@@ -242,7 +242,7 @@ export default {
       let id;
       await this.$http.post('/Benutzer/getIdByEmail', {
         email: this.$cookies.get('emailAdresse')
-      }).then((response) => {
+      }, this.$store.getters.getLoginData).then((response) => {
         if (response.status === 200) {
           id = response.data;
         }
@@ -325,7 +325,7 @@ export default {
       for(let i = 0; i<cartItems.length; i++)
       {
         let resOk = false;
-        let responseOeffnungszeiten = await axios.get("Oeffnungszeiten/getAllZeitenWochentag/"+cartItems[i].restaurant_ID+"/"+demandDay);
+        let responseOeffnungszeiten = await axios.get("Oeffnungszeiten/getAllZeitenWochentag/"+cartItems[i].restaurant_ID+"/"+demandDay, this.$store.getters.getLoginData);
         for(let e = 0; e< responseOeffnungszeiten.data.length; e++)
         {
           let anfang = responseOeffnungszeiten.data[e][0];
@@ -400,12 +400,12 @@ export default {
         items: items,
         customerId: customerId,
         timestamp: moment(this.timestampCustomerDemandDatabase).unix()
-      }).then((response) => {
+      }, this.$store.getters.getLoginData).then((response) => {
         if (response.status === 201) {
 
           this.$http.post('/Bestellung/pay', {
             jobId: response.data.auftrags_ID
-          }).then((response) => {
+          }, this.$store.getters.getLoginData).then((response) => {
             if (response.status === 200) {
               this.$store.commit("deleteCartGerichte");
               this.version++;

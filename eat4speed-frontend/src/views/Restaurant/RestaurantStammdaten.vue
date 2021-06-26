@@ -166,7 +166,7 @@ export default {
   methods: {
     async loadStammdaten() {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
       // console.log(ResponseStammdaten);
@@ -204,9 +204,9 @@ export default {
 
         if (this.lng > 7.510900 && this.lng < 9.212988 && this.lat > 47.533674 && this.lat < 48.720036) {
 
-          await axios.delete("EntfernungKundeRestaurant/deleteEntfernungByRestaurant_ID/"+this.restaurant_ID);
+          await axios.delete("EntfernungKundeRestaurant/deleteEntfernungByRestaurant_ID/"+this.restaurant_ID, this.$store.getters.getLoginData);
 
-          var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
+          var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat", this.$store.getters.getLoginData);
 
           if (responseKundenLngLat.data.length > 0) {
             for (let i = 0; i < responseKundenLngLat.data.length; i++) {
@@ -261,7 +261,7 @@ export default {
 
             console.log(entfernung);
 
-            await axios.post("/EntfernungKundeRestaurant", entfernung);
+            await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
           }
 
           let benutzer = {
@@ -289,9 +289,9 @@ export default {
             restaurant_ID: this.restaurant_ID
           }
 
-          const responseBenutzerRestaurantToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer);
-          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse);
-          const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant);
+          const responseBenutzerRestaurantToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
+          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
+          const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant, this.$store.getters.getLoginData);
 
           console.log(responseBenutzerRestaurantToAlter);
           console.log(responseAdresseToAlter);
@@ -342,8 +342,8 @@ export default {
     },
     deleteRestaurant()
     {
-      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email);
-      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+this.restaurant_ID);
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email, this.$store.getters.getLoginData);
+      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+this.restaurant_ID, this.$store.getters.getLoginData);
     }
   },
   data() {

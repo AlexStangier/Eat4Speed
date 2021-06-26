@@ -648,7 +648,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
 
@@ -657,14 +657,14 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
         for(let i = 0; i<responseEntfernungen.data.length; i++)
         {
           this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
           this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
         }
       }
-      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants");
+      const ResponseBewertungen = await axios.get("Bewertung/getAverageBewertungAndCountBewertungAllRestaurants", this.$store.getters.getLoginData);
       for(let i = 0; i<ResponseBewertungen.data.length;i++)
       {
         this.bewertungAvgUnassigned[i] = ResponseBewertungen.data[i][0];
@@ -723,7 +723,7 @@ export default {
 
       this.searchOptions = searchOptions;
 
-      const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
+      const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions, this.$store.getters.getLoginData);
 
       for (let i = 0; i < responseAlternatives.data.length; i++) {
         let gerichtData = responseAlternatives.data[i];
@@ -798,11 +798,11 @@ export default {
         anzahl_Bestellungen: 0
       }
 
-      await axios.post("Favoritenliste_Gerichte", gerichtFavorite);
+      await axios.post("Favoritenliste_Gerichte", gerichtFavorite, this.$store.getters.getLoginData);
       this.loadGerichte();
     },
     async deleteFromFavorites(){
-      await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+      await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id, this.$store.getters.getLoginData);
       this.loadGerichte();
     },
     async loadGerichte() {
@@ -812,7 +812,7 @@ export default {
       this.hinzufuegedaten=[];
       if(this.isUserLoggedInBoolean)
       {
-        const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
         //console.log(ResponseFavoriten);
         for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
@@ -822,7 +822,7 @@ export default {
         }
       }
 
-      const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions)
+      const ResponseGerichte = await axios.post("Gericht/searchGerichte", this.searchOptions, this.$store.getters.getLoginData)
 
       //console.log(ResponseGerichte);
 
@@ -909,7 +909,7 @@ export default {
       this.gerichteKey++;
     },
     async loadKategorien() {
-      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id);
+      const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
 
       let arrayKategorien = [];
       for(let i = 0; i<responseGetKategorie.data.length;i++)
@@ -924,7 +924,7 @@ export default {
       this.loadAllAllergene();
     },
     async loadAllKategorien() {
-      const responseGetKategorie = await axios.get("Kategorie");
+      const responseGetKategorie = await axios.get("Kategorie", this.$store.getters.getLoginData);
 
       let arrayKategorien = [];
       for(let i = 0; i<responseGetKategorie.data.length;i++)
@@ -935,7 +935,7 @@ export default {
       this.kategorieVersion++;
     },
     async loadAllAllergene() {
-      const responseGetAllergene = await axios.get("Allergene");
+      const responseGetAllergene = await axios.get("Allergene", this.$store.getters.getLoginData);
 
       let arrayAllergene = [];
       for(let i = 0; i<responseGetAllergene.data.length;i++)
@@ -1010,7 +1010,7 @@ export default {
     {
       this.selectedItem = item;
       this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id, this.$store.getters.getLoginData);
       for(let i = 0; i<responseAllergene.data.length; i++)
       {
         this.allergeneGericht[i] = responseAllergene.data[i];
