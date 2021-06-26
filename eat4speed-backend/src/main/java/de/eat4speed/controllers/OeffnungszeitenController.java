@@ -33,7 +33,6 @@ public class OeffnungszeitenController {
     }
 
     @PUT
-    @RolesAllowed("restaurant")
     @Path("updateArbeitstag")
     @RolesAllowed("restaurant")
     public Response updateArbeitstag(Oeffnungszeiten zeit) {
