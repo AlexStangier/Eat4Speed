@@ -96,7 +96,7 @@
                       <span
                           class="ml-1"
                       >
-                     {{restaurantRating}}
+                     {{parseFloat(restaurantRating).toFixed(2)}}
                    </span>
                     </v-row>
                   </v-card>
@@ -106,7 +106,6 @@
                       class="text-right"
                       flat
                   >
-                    <!--ToDO-->
                     <v-dialog
                         max-width="50%"
                     >
@@ -165,6 +164,57 @@
                             >
                               Bewerten
                             </v-btn>
+                            <v-btn
+                                @click="dialog.value = false"
+                                color="error"
+                                tile
+                                class="ml-2"
+                            >
+                              Schließen
+                            </v-btn>
+                          </v-card-actions>
+                        </v-card>
+                      </template>
+                    </v-dialog>
+                  </v-card>
+                  <v-card
+                      v-if="b === 3 && c === 2"
+                      class="text-right"
+                      flat
+                  >
+                    <v-dialog
+                        max-width="50%"
+                    >
+                      <template v-slot:activator="{ on, attrs}">
+                        <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            color="primary"
+                            tile
+                        >
+                          Öffnungszeiten
+                        </v-btn>
+                      </template>
+                      <template v-slot:default="dialog">
+                        <v-card>
+                          <v-toolbar class="text-h4">Öffnungszeiten</v-toolbar>
+
+                          <v-data-table
+                              :headers="timeHeaders"
+                              :items="timeItems"
+                              :items-per-page="7"
+                              class="elevation-1"
+                          >
+                            <template v-slot:item.reviewRating="{ item }">
+                              <v-rating
+                                  readonly
+                                  :value="item.reviewRating"
+                              >
+                              </v-rating>
+                            </template>
+                          </v-data-table>
+
+                          <v-card-actions class="justify-end">
                             <v-btn
                                 @click="dialog.value = false"
                                 color="error"
@@ -448,7 +498,7 @@
             tile
             class="text-center text-h5"
         >
-          Es wurden keine Gericht gefunden
+          Es wurden keine Gerichte gefunden
         </v-card>
         <v-card
             v-if="amountGerichte === 0 && displayGetraenke"
@@ -833,6 +883,22 @@ export default {
     btnType: 0,
     user: 0,
     allergeneKey: 0,
+    timeHeaders: [
+      {
+        text: 'Tag',
+        align: 'start',
+        sortable: false,
+        value: 'weekDay'
+      },
+      {
+        text: 'Öffnungszeiten',
+        sortable: false,
+        value: 'timeOpen'
+      }
+    ],
+    weekDay: [],
+    timeOpen: [],
+    timeItems: [],
   }),
 
 
