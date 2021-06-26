@@ -73,22 +73,9 @@ public class BestellungController {
 
     @PUT
     @Path("updateBestellungStatus")
-    public Response updateBestellungStatus(Bestellung bestellung) {
-
-        Response response = _bestellungen.updateBestellungStatus(bestellung);
-
-        try {
-            URL url = new URL("http://localhost:1337/FahrerAuswahl/start/" + bestellung.getAuftrags_ID());
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("PUT");
-            http.setDoOutput(false);
-            http.setReadTimeout(10);
-            http.getInputStream();
-            http.disconnect();
-        } catch (Exception e) {
-        }
-
-        return response;
+    public Response updateBestellungStatus(Bestellung bestellung)
+    {
+        return _bestellungen.updateBestellungStatus(bestellung);
     }
 
     @GET

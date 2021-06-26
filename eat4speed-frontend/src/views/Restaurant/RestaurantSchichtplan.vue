@@ -23,7 +23,7 @@
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>ControlPanel</v-list-item-title>
+            <v-list-item-title>Startseite</v-list-item-title>
           </v-list-item>
           </router-link>
           <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
@@ -637,16 +637,29 @@
                     </v-dialog>
                   </v-col>
                 </v-row>
-                <v-btn
-                    @click="executeAll"
-                    class = "mb-2"
-                    color="red"
-                    dark
-                    small
-                    bottom
+
+                <v-dialog
+                    v-model="ok"
+                    persistent
+                    min-height="100"
+                    max-width="240"
                 >
-                  Änderungen speichern
-                </v-btn>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        @click="executeAll"
+                        class = "mb-2"
+                        color="primary"
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      Änderungen speichern
+                    </v-btn>
+                  </template>
+                  <v-card class="pa-2" align="center">
+                    <h3>Schicht festgelegt</h3>
+                    <v-btn color="primary mt-2" @click="ok = false">Ok</v-btn>
+                  </v-card>
+                </v-dialog>
               </v-col>
             </v-card>
           </template>
@@ -690,6 +703,7 @@ export default {
     enabled5: false,
     enabled6: false,
     enabledException: false,
+    ok: false,
 
     updated: [false, false, false, false, false, false, false]
   }),
