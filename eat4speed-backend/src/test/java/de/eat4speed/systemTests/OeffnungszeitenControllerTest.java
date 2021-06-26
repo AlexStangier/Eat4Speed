@@ -12,6 +12,7 @@ import de.eat4speed.repositories.RestaurantRepository;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -73,6 +74,7 @@ public class OeffnungszeitenControllerTest {
     }
 
     @Test  // TST009 (1)
+    @TestSecurity(authorizationEnabled = false)
     void trySetOpeningHours() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         Timestamp open = new Timestamp(dateFormat.parse("12:00").getTime());
@@ -97,6 +99,7 @@ public class OeffnungszeitenControllerTest {
     }
 
     @Test  // TST009 (2)
+    @TestSecurity(authorizationEnabled = false)
     void trySetInvalidOpeningHours() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         Timestamp open = new Timestamp(dateFormat.parse("20:00").getTime());
