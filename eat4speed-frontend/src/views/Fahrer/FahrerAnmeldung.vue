@@ -297,13 +297,14 @@ export default {
       //}
     },
     async login() {
-      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail, this.$store.getters.getLoginData);
+      console.log(this.loginEmail)
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
       if(responseGeloescht.data[0]===1)
       {
         this.openSnackbar("Dieses Konto wurde gelöscht.");
         return;
       }
-      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail, this.$store.getters.getLoginData);
+      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail);
       if(responseBlacklist.data.length>0)
       {
         this.openSnackbar("Dieses Konto befindet sich auf der Blacklist wegen "+responseBlacklist.data[0]);
@@ -312,7 +313,7 @@ export default {
       this.$http.post('/Login/driver', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
-      }, this.$store.getters.getLoginData)
+      })
           .then((response) => {
             if (response.status === 200) {
               const payload = {

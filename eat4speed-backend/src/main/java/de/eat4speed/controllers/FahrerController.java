@@ -71,7 +71,7 @@ public class FahrerController {
 
     @GET
     @Path("get/{id}")
-    @RolesAllowed("admin")
+    @RolesAllowed("fahrer")
     public List getFahrerByID(@PathParam("id") int benutzer_ID) {
         return _fahrer.getFahrerByID(benutzer_ID);
     }
