@@ -149,6 +149,7 @@
                                 label="Artikelname"
                                 required
                                 :rules="[rules.required, rules.lettersAndSpacesOnly]"
+                                maxlength="50"
                             ></v-text-field>
                             <v-textarea
                                 v-model="gerichtBeschreibung"
@@ -156,6 +157,7 @@
                                 label="Artikelbeschreibung"
                                 required
                                 :rules="[rules.required]"
+                                maxlength="100"
                             ></v-textarea>
                             <label>
                               Bild auswählen
@@ -255,9 +257,10 @@
                   <v-col>
                     <v-text-field
                         v-model="gerichtName"
-                        :counter="20"
+                        :counter="50"
                         label="Artikelname"
                         required
+                        maxlength="50"
                         :rules="[rules.required, rules.lettersAndSpacesOnly]"
                     ></v-text-field>
                     <v-textarea
@@ -266,6 +269,7 @@
                         label="Artikelbeschreibung"
                         :rules="[rules.required]"
                         required
+                        maxlength="100"
                     ></v-textarea>
                     <label>
                       Bild auswählen

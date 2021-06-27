@@ -508,22 +508,6 @@
         >
           Es wurden keine Getränke gefunden
         </v-card>
-        <v-card
-            v-if="amountGerichte === 0 && !displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Gericht gefunden
-        </v-card>
-        <v-card
-            v-if="amountGerichte === 0 && displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Getränke gefunden
-        </v-card>
       </v-card>
     </v-container>
   </v-main>

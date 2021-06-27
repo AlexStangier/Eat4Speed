@@ -15,6 +15,7 @@
                   :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Vorname"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -23,6 +24,7 @@
                   :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Nachname"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -33,6 +35,7 @@
                   :rules="[rules.required]"
                   label="Strasse"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -41,6 +44,7 @@
                   :rules="[rules.required]"
                   label="Hausnummer"
                   required
+                  maxlength="10"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -51,6 +55,7 @@
                   :rules="[rules.required]"
                   label="Ort"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -59,6 +64,7 @@
                   :rules="[rules.required]"
                   label="Postleitzahl"
                   required
+                  maxlength="7"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -70,6 +76,7 @@
                   :rules="emailRules"
                   label="E-mail"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -78,6 +85,7 @@
                   :rules="[rules.required]"
                   label="Telefonnummer"
                   required
+                  maxlength="20"
               ></v-text-field>
             </v-col>
           </v-row>
