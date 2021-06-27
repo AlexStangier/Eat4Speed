@@ -223,7 +223,7 @@ export default {
       this.$http.post('/Login/restaurant', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
-      }, this.$store.getters.getLoginData)
+      })
           .then((response) => {
             if (response.status === 200) {
               const payload = {

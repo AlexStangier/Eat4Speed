@@ -18,7 +18,6 @@ public class LoginController {
     IBenutzerService _benutzer;
 
     @POST
-    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Path("admin")
     public Response checkAdminCredentials(Benutzer requestedUser) {
@@ -26,7 +25,6 @@ public class LoginController {
     }
 
     @POST
-    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Path("user")
     public Response checkCustomerCredentials(Benutzer requestedUser) {
@@ -34,7 +32,6 @@ public class LoginController {
     }
 
     @POST
-    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Path("restaurant")
     public Response checkRestaurantCredentials(Benutzer requestedUser) {
@@ -42,7 +39,6 @@ public class LoginController {
     }
 
     @POST
-    @PermitAll
     @Produces(MediaType.APPLICATION_JSON)
     @Path("driver")
     public Response checkDriverCredentials(Benutzer requestedUser) {
