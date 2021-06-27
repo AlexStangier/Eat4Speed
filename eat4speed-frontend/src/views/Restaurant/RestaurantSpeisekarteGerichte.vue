@@ -74,7 +74,7 @@
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
           <v-flex md6 sm6 xs12>
-            <div class="text-h3 mb-10"> Restaurantname</div>
+            <div class="text-h3 mb-10" id="restaurantName"></div>
             <v-col class="d-flex justify-space-between mb-6">
               <v-card-title class="text-h4"> Speisekarte</v-card-title>
               <v-btn
@@ -108,7 +108,7 @@
                     <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
                   </v-list-item-content>
                   <v-list-item-content>
-                    <v-list-item-group align="left">
+                    <v-list-item-group align="left" class="ml-5">
                       <v-list-item-title>{{ item.name }}</v-list-item-title>
                       <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
                       <br>
@@ -346,7 +346,8 @@ export default {
 
     await this.getLoggedInRestaurant();
     await this.checkIfVerified();
-    this.loadGerichte()
+    await this.loadRestaurantName();
+    await this.loadGerichte();
   },
   methods: {
     selectGerichte(){
@@ -371,6 +372,12 @@ export default {
         this.isVerified = false;
       }
     },
+    async loadRestaurantName() {
+      const ResponseRestaurant = await axios.get(
+          "Restaurant/getAllRestaurantDataByRestaurant_ID/" + this.restaurantID, this.$store.getters.getLoginData);
+      const RestaurantData = ResponseRestaurant.data[0];
+      document.getElementById("restaurantName").innerHTML = RestaurantData[1];
+    },
     async loadGerichte() {
 
       let gerichtPath;
@@ -382,8 +389,6 @@ export default {
       }
 
       const ResponseGerichte = await axios.get(gerichtPath + this.restaurantID, this.$store.getters.getLoginData);
-
-      console.log(ResponseGerichte);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -398,16 +403,11 @@ export default {
         const config = {responseType: "arraybuffer"};
         const responsePicture = await axios.get("/GerichtBilder/getBild/" + this.gerichtIDs[i], config);
 
-        console.log(responsePicture);
-
         if (responsePicture.status !== 204) {
-          console.log("received Picture")
-          console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
 
           this.imgs[i] = imageURL;
         } else {
@@ -415,7 +415,6 @@ export default {
         }
 
       }
-      console.log(this.imgs);
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
@@ -455,14 +454,10 @@ export default {
         }
         this.computedItems[i] = entry;
       }
-      console.log(this.computedItems);
-      console.log(this.items);
-
     },
     async loadKategorien() {
       const ResponseAllKategorien = await axios.get("/Kategorie");
 
-      console.log(ResponseAllKategorien);
       let arrayKategorien = [];
       let it;
       for (it = 0; it < ResponseAllKategorien.data.length; it++) {
@@ -471,17 +466,15 @@ export default {
         arrayKategorien[it] = kategorie;
 
       }
-      console.log(arrayKategorien);
       this.kategorien = arrayKategorien;
     },
     async test() {
-      console.log(this.value);
-      console.log(this.valueA);
+      //console.log(this.value);
+      //console.log(this.valueA);
     },
     async loadAllergene() {
       const ResponseAllAllegergene = await axios.get("/Allergene");
 
-      console.log(ResponseAllAllegergene);
       let arrayAllergene = [];
       let it;
       for (it = 0; it < ResponseAllAllegergene.data.length; it++) {
@@ -490,13 +483,10 @@ export default {
         arrayAllergene[it] = allergen;
 
       }
-      console.log(arrayAllergene);
       this.allergen = arrayAllergene;
 
     },
     async addGericht() {
-
-      console.log("it's fine");
 
       if (this.isVerified) {
         if (this.gerichtVerfuegbar === true) {
@@ -553,7 +543,7 @@ export default {
             }
           };
 
-          const responsePictureUpload = await axios.post('/GerichtBilder/upload',
+          await axios.post('/GerichtBilder/upload',
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
@@ -562,7 +552,6 @@ export default {
                 console.log('Picture upload error');
               });
 
-          console.log(responsePictureUpload);
         }
         this.loadGerichte();
       } else {
@@ -576,8 +565,8 @@ export default {
       this.gerichtBild = null;
 
       //this.gerichtName = item.id;
-      console.log(item.id);
-      console.log(this.editedItem.id);
+      //console.log(item.id);
+      //console.log(this.editedItem.id);
 
       const responseGetGericht = await axios.get("/Gericht/" + this.editedItem.id, this.$store.getters.getLoginData);
 
@@ -602,12 +591,8 @@ export default {
       for (let i = 0; i < responseGetKategorie.data.length; i++) {
         this.selectedKategorien[i] = responseGetKategorie.data[i];
       }
-
-      console.log(responseGetGericht);
     },
     async changeGericht() {
-
-      console.log("fuck this shit")
 
       if (this.gerichtVerfuegbar === true) {
         this.gerichtVerfuegbar = 1;
@@ -631,9 +616,7 @@ export default {
         ist_Getraenk: this.istGetraenk
       }
 
-      const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht, this.$store.getters.getLoginData);
-
-      console.log(responseGerichtToAlter);
+      await axios.put("/Gericht/updateGerichtAllData", gericht, this.$store.getters.getLoginData);
 
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
       await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
@@ -666,16 +649,14 @@ export default {
           }
         };
 
-        const responsePictureUpload = await axios.post('/GerichtBilder/upload',
+        await axios.post('/GerichtBilder/upload',
             picturedata, options
         ).then(function () {
-          console.log('Picture successfully uploaded');
+          //console.log('Picture successfully uploaded');
         })
             .catch(function () {
-              console.log('Picture upload error');
+              //console.log('Picture upload error');
             });
-
-        console.log(responsePictureUpload);
       }
 
       this.version++;
@@ -684,7 +665,6 @@ export default {
     },
     selectedPicture() {
       this.gerichtBild = this.$refs.file.files[0];
-      console.log(this.gerichtBild);
     },
     async deleteGericht() {
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
@@ -738,7 +718,6 @@ export default {
   computed: {
     items() {
       let i = 0
-      console.log("compute");
       return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]
