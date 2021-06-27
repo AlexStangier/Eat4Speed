@@ -1,13 +1,11 @@
 package de.eat4speed.services;
 
-import de.eat4speed.dto.OrderDto;
-import de.eat4speed.dto.PaymentDto;
-import de.eat4speed.dto.StatisticDto;
-import de.eat4speed.dto.StatisticDtoWrapper;
+import de.eat4speed.dto.*;
 import de.eat4speed.entities.*;
 import de.eat4speed.repositories.*;
 import de.eat4speed.services.interfaces.IBestellungService;
 import io.vertx.core.json.Json;
+import org.json.JSONArray;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -115,6 +113,11 @@ public class BestellungService implements IBestellungService {
 
             try {
                 auftrag = new Auftrag(safeItems.get(0).getRestaurant_ID(), new Timestamp(date.getTime()), kunde.getAnschrift(), 0.0, kunde.getKundennummer(), "offen", 0);
+                if (obj.timestamp > 0)
+                {
+                    Timestamp orderedTo = new Timestamp(obj.timestamp*1000L);
+                    auftrag.setTimestamp_On_Customer_Demand(orderedTo);
+                }
             } catch (Exception e) {
                 System.out.println("Failed while creating auftrag:" + e);
                 return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
@@ -336,7 +339,17 @@ public class BestellungService implements IBestellungService {
     }
 
     @Override
-    public List getRestaurantBestellungen(String email) {return _bestellungRepository.getRestaurantBestellungen(email);}
+    public List getRestaurantBestellungen(String email) {
+        return _bestellungRepository.getRestaurantBestellungen(email);
+    }
+
+    @Override
+    public Response updateBestellungStatusRestaurantUndKundeDontTouchThis(BestellungUpdateDto dto) {
+        Bestellung bestellung = _bestellungRepository.getBestellungByID((int) dto.getAuftragsId());
+        bestellung.setStatus(dto.status);
+        _bestellungRepository.updateBestellungStatusRestaurantUndKundeDontTouchThis(bestellung);
+        return Response.status(Response.Status.OK).entity(bestellung).build();
+    }
 
     @Override
     public Response updateBestellungStatus(Bestellung bestellung) {
@@ -345,6 +358,38 @@ public class BestellungService implements IBestellungService {
     }
 
     @Override
-    public List getProduktUndAnzahl(int id) {return _bestellungRepository.getProduktUndAnzahl(id);}
+    public List getProduktUndAnzahl(int id) {
+        return _bestellungRepository.getProduktUndAnzahl(id);
+    }
+
+    @Override
+    public List getKundeBestellungen(String status, String email) {
+        return _bestellungRepository.getKundeBestellungen(status, email);
+    }
+
+    @Override
+    public List getKundeBestellungenAktiv(String email) {
+        return _bestellungRepository.getKundeBestellungenAktiv(email);
+    }
+
+    @Override
+    public List getGerichtIds(int id) {
+        return _bestellungRepository.getGerichtIds(id);
+    }
+
+    @Override
+    public List getAnzahlFertigerAuftraege(int id) {
+        return _bestellungRepository.getAnzahlFertigerAuftraege(id);
+    }
+
+    @Override
+    public List listAll() {
+        return _bestellungRepository.listAll();
+    }
+
+    @Override
+    public JSONArray getGerichteByAuftragID(int Auftrag_ID) {
+        return _bestellungRepository.getGerichteByAuftragID(Auftrag_ID);
+    }
 
 }

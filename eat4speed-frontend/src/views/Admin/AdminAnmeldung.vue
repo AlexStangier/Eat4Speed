@@ -7,7 +7,7 @@
             <v-toolbar color="primary" dark>
               <v-toolbar-title>Administrations Login</v-toolbar-title>
             </v-toolbar>
-            <v-card class="px-4">
+            <v-card class="pa-4">
               <v-form ref="loginForm">
                 <v-row>
                   <v-col cols="12">
@@ -48,7 +48,7 @@ export default {
       this.$http.post('/Login/admin', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
-      })
+      }, this.$store.getters.getLoginData)
       .then((response) => {
         if (response.status === 200) {
           const payload = {

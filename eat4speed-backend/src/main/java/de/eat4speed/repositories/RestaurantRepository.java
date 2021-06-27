@@ -36,10 +36,11 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List allRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert, b.emailAdresse  " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_ID " +
-                        "AND r.benutzer_ID = b.benutzer_ID "
+                        "AND r.benutzer_ID = b.benutzer_ID " +
+                        "AND b.geloescht = 0"
 
         );
         allRestaurantData = query.getResultList();
@@ -55,8 +56,10 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID, r.name_des_Restaurants, r.allgemeine_Beschreibung, r.mindestbestellwert, r.bestellradius " +
-                        "FROM Restaurant r " +
-                        "WHERE r.name_des_Restaurants LIKE ?1 "
+                        "FROM Restaurant r, Benutzer b " +
+                        "WHERE r.name_des_Restaurants LIKE ?1 " +
+                        "AND r.benutzer_ID = b.benutzer_ID " +
+                        "AND b.geloescht = 0"
         ).setParameter(1, likeName);
 
         restaurantsData = query.getResultList();
@@ -73,7 +76,8 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
                         "FROM Restaurant r, Adressen a, Benutzer b " +
                         "WHERE r.benutzer_ID = b.benutzer_ID " +
                         "AND r.anschrift = a.adress_ID " +
-                        "AND r.restaurant_ID = ?1"
+                        "AND r.restaurant_ID = ?1 " +
+                        "AND b.geloescht = 0"
         ).setParameter(1, restaurant_ID);
 
         restaurantsData = query.getResultList();
@@ -86,11 +90,12 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List notVerifiedRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert, b.emailAdresse " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_ID " +
                         "AND r.benutzer_ID = b.benutzer_ID " +
-                        "AND r.verifiziert = 0"
+                        "AND r.verifiziert = 0 " +
+                        "AND b.geloescht = 0"
 
         );
         notVerifiedRestaurantData = query.getResultList();
@@ -103,11 +108,12 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
         List verifiedRestaurantData;
 
         Query query = entityManager.createQuery(
-                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert  " +
+                "SELECT b.vorname, b.nachname, r.restaurant_ID, r.name_des_Restaurants, a.strasse, a.hausnummer, a.ort, a.postleitzahl, r.verifiziert, b.emailAdresse " +
                         "FROM Restaurant r, Benutzer b, Adressen a " +
                         "WHERE r.anschrift = a.adress_ID " +
                         "AND r.benutzer_ID = b.benutzer_ID " +
-                        "AND r.verifiziert = 1"
+                        "AND r.verifiziert = 1 " +
+                        "AND b.geloescht = 0"
 
         );
         verifiedRestaurantData = query.getResultList();
@@ -124,8 +130,10 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID " +
-                        "FROM Restaurant r " +
-                        "WHERE r.name_des_Restaurants LIKE ?1"
+                        "FROM Restaurant r, Benutzer b " +
+                        "WHERE r.name_des_Restaurants LIKE ?1 " +
+                        "AND r.benutzer_ID = b.benutzer_ID " +
+                        "AND b.geloescht = 0"
         ).setParameter(1,likeName);
 
         restaurantData = query.getResultList();
@@ -140,8 +148,10 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID " +
-                        "FROM Restaurant r " +
-                        "WHERE r.mindestbestellwert > ?1"
+                        "FROM Restaurant r, Benutzer b " +
+                        "WHERE r.mindestbestellwert > ?1 " +
+                        "AND r.benutzer_ID = b.benutzer_ID " +
+                        "AND b.geloescht = 0"
         ).setParameter(1,mindestbestellwert);
 
         restaurantData = query.getResultList();
@@ -156,8 +166,10 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID " +
-                        "FROM Restaurant r, Bewertung b " +
+                        "FROM Restaurant r, Bewertung b, Benutzer ben " +
                         "WHERE b.restaurant_ID = r.restaurant_ID " +
+                        "AND ben.benutzer_ID = r.benutzer_ID " +
+                        "AND ben.geloescht = 0 " +
                         "GROUP BY r.restaurant_ID " +
                         "HAVING AVG(b.sterne) >= ?1"
         ).setParameter(1,bewertung);
@@ -175,8 +187,10 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID " +
-                        "FROM Kunde k, Restaurant r, EntfernungKundeRestaurant ekr " +
+                        "FROM Kunde k, Restaurant r, EntfernungKundeRestaurant ekr, Benutzer b " +
                         "WHERE r.restaurant_ID = ekr.restaurant_ID " +
+                        "AND b.benutzer_ID = r.benutzer_ID " +
+                        "AND b.geloescht = 0 " +
                         "AND k.kundennummer = ekr.kundennummer " +
                         "AND k.kundennummer = ?1 " +
                         "AND ekr.entfernung > ?2"
@@ -194,8 +208,10 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
         Query query = entityManager.createQuery(
                 "SELECT r.restaurant_ID, r.name_des_Restaurants, r.allgemeine_Beschreibung, r.mindestbestellwert, r.bestellradius, a.strasse, a.hausnummer, a.postleitzahl, a.ort, a.lng, a.lat, fr.anzahl_Bestellungen, fr.hinzufuegedatum " +
-                        "FROM Restaurant r, Kunde k, Favoritenliste_Restaurants fr, Adressen a " +
+                        "FROM Restaurant r, Kunde k, Favoritenliste_Restaurants fr, Adressen a, Benutzer b " +
                         "WHERE r.restaurant_ID = fr.restaurant_ID " +
+                        "AND b.benutzer_ID = r.benutzer_ID " +
+                        "AND b.geloescht = 0 " +
                         "AND k.kundennummer = fr.kundennummer " +
                         "AND a.adress_ID = r.anschrift " +
                         "AND k.kundennummer = ?1"
@@ -216,6 +232,11 @@ public class RestaurantRepository implements PanacheRepository<Restaurant> {
 
     public Restaurant findByRestaurantnummer(int restaurant_ID) {
         return find("restaurant_ID", restaurant_ID).firstResult();
+    }
+
+    public int findAnschriftIDFromRestaurant(int restaurant_ID)
+    {
+        return find("restaurant_ID", restaurant_ID).firstResult().getAnschrift();
     }
 
     @Transactional

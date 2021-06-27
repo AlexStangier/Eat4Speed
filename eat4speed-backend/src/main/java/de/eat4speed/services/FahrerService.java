@@ -8,6 +8,7 @@ import de.eat4speed.services.interfaces.IFahrerService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -95,19 +96,40 @@ public class FahrerService implements IFahrerService {
     }
 
     @Override
-    public List get_Fahrer_Fzg_Pos() {
-        return fahrerRepository.get_Fahrer_Fzg_Pos();
+    public ArrayList<String> get_Fahrer_Fzg_Pos(String email) {
+        return fahrerRepository.get_Fahrer_Fzg_Pos(email);
     }
 
     @Override
-    public List get_Restaurant_Lng_Lat() {
-        return fahrerRepository.get_Restautant_Lng_Lat();
+    public ArrayList<String> get_Restaurant_Lng_Lat(String email) {
+        return fahrerRepository.get_Restautant_Lng_Lat(email);
     }
 
     @Override
-    public List get_Kunde_Lng_Lat() {
-        return fahrerRepository.get_Kunde_Lng_Lat();
+    public ArrayList<String> get_Kunde_Lng_Lat(String email) {
+        return fahrerRepository.get_Kunde_Lng_Lat(email);
     }
+
+    @Override
+    public void set_auftrags_zeit(long auftr_id, java.sql.Timestamp dt){ fahrerRepository.set_auftrags_zeit(auftr_id, dt);}
+
+    @Override
+    public void set_Bestellung_abgeholt(String rest_name, int auftr_id){ fahrerRepository.set_Bestellung_abgeholt(rest_name, auftr_id);}
+
+    @Override
+    public void set_Fahrer_aktuellePos_Abholung(String restaurant_name, String email){ fahrerRepository.set_Fahrer_aktuellePos_Abholung(restaurant_name, email);}
+
+    @Override
+    public void set_Fahrer_aktuellePos_Ablieferung(long auftrags_id, String email){ fahrerRepository.set_Fahrer_aktuellePos_Ablieferung(auftrags_id, email);}
+
+    @Override
+    public void set_Bestellung_abgeliefert(int auftr_id){ fahrerRepository.set_Bestellung_abgeliefert(auftr_id);}
+
+    @Override
+    public void accident_report_bestellunng(long auftrags_id){fahrerRepository.accident_report_bestellunng(auftrags_id);}
+
+    @Override
+    public void accident_report_fahrer(long auftrags_id){fahrerRepository.accident_report_fahrer(auftrags_id);}
 
 
 }

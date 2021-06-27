@@ -53,12 +53,11 @@
                   <v-card-text>
                     <v-form
                         ref="registrationForm"
-                        v-model="registrationValid"
-                        lazy-validation
+                        v-model="valid"
                     >
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
-                          <v-text-field v-model="salutation" :rules="[rules.required]" label="Anrede"
+                          <v-text-field v-model="salutation" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Anrede"
                                         maxlength="20" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
@@ -68,7 +67,7 @@
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field
                               v-model="firstName"
-                              :rules="[rules.required]"
+                              :rules="[rules.required, rules.lettersAndSpacesOnly]"
                               label="Vorname"
                               maxlength="20"
                               required
@@ -77,7 +76,7 @@
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field
                               v-model="lastName"
-                              :rules="[rules.required]"
+                              :rules="[rules.required, rules.lettersAndSpacesOnly]"
                               label="Nachname"
                               maxlength="20"
                               required
@@ -146,6 +145,7 @@
                               label="Passwort"
                               name="input-10-1"
                               @click:append="show1 = !show1"
+                              required
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
@@ -159,6 +159,7 @@
                               label="Passwort bestätigen"
                               name="input-10-1"
                               @click:append="show1 = !show1"
+                              required
                           ></v-text-field>
                         </v-col>
                         <v-spacer></v-spacer>
@@ -196,22 +197,62 @@
                               required
                           ></v-combobox>
                         </v-col>
-                        <v-spacer></v-spacer>
                         <v-col cols="12">
                           <v-checkbox
                               label="AGB gelesen und akzeptiert"
                               v-model="agbAccepted"
                           ></v-checkbox>
                         </v-col>
+                        <v-col cols="12" class="mt-n8">
+                          <v-dialog
+                              v-model="dialog"
+                              scrollable
+                              max-width="500px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-span
+                                  color="primary"
+                                  dark
+                                  v-bind="attrs"
+                                  v-on="on"
+                              >
+                                Zu den Allgemeinen Geschäftsbedingungen
+                              </v-span>
+                            </template>
+                            <v-card>
+                              <v-card-title>Allgemeine Geschäftsbedingungen</v-card-title>
+                              <v-divider></v-divider>
+                              <v-card-text style="height: 400px;">
+                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+                                Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+
+                                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+
+                                Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
+                              </v-card-text>
+                              <v-divider></v-divider>
+                              <v-card-actions>
+                                <v-btn
+                                    color="blue darken-1"
+                                    text
+                                    @click="dialog = false"
+                                >
+                                  Schließen
+                                </v-btn>
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                        </v-col>
                         <v-col class="text-left">
                           <v-btn
                               color="primary"
                               depressed
                               tile
+                              :disabled="!valid"
                               @click="validateVerification"
                           >Fahrerkonto erstellen
-                          </v-btn
-                          >
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-form>
@@ -256,6 +297,19 @@ export default {
       //}
     },
     async login() {
+      console.log(this.loginEmail)
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
+      if(responseGeloescht.data[0]===1)
+      {
+        this.openSnackbar("Dieses Konto wurde gelöscht.");
+        return;
+      }
+      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail);
+      if(responseBlacklist.data.length>0)
+      {
+        this.openSnackbar("Dieses Konto befindet sich auf der Blacklist wegen "+responseBlacklist.data[0]);
+        return;
+      }
       this.$http.post('/Login/driver', {
         emailAdresse: this.loginEmail,
         passwort: btoa(this.loginPassword)
@@ -288,10 +342,11 @@ export default {
         passwort: this.password,
         telefonnummer: this.phoneNumber,
         rolle: "fahrer",
-        paypal_Account: "dummy"
+        paypal_Account: "dummy",
+        geloescht: 0
       };
 
-      const responseBenutzer = await axios.post("/Benutzer", benutzer);
+      const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
@@ -304,7 +359,7 @@ export default {
         verifiziert: 0
       };
 
-      const responseFahrer = await axios.post("/Fahrer", fahrer)
+      const responseFahrer = await axios.post("/Fahrer", fahrer, this.$store.getters.getLoginData)
 
       this.fahrer_ID = responseFahrer.data.fahrernummer;
       if (this.$refs.registrationForm.validate()) {
@@ -318,7 +373,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
+      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug, this.$store.getters.getLoginData);
 
       this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_ID;
 
@@ -327,9 +382,10 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
+      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug, this.$store.getters.getLoginData);
 
       if (this.$refs.verificationForm.validate()) {
+        this.$router.push({name: "FahrerSchichtplan"});
         // submit form to server/API here...
       }
     }
@@ -360,6 +416,7 @@ export default {
       vehicle: "",
       fahrzeug_ID: "",
       fahrer_ID: "",
+      valid: false,
       driverLicense: "",
       licensePlate: "",
       agbAccepted: false,
@@ -397,7 +454,9 @@ export default {
       rules: {
         required: (value) => !!value || "Required.",
         min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       },
+      dialog: false
     };
   }
   ,

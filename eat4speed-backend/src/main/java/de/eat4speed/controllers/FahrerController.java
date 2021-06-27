@@ -44,7 +44,6 @@ public class FahrerController {
 
     @PUT
     @Path("updateFahrzeugId/{id}")
-    @RolesAllowed("fahrer")
     public Response updateFahrer_Fahrzeug_Id(@PathParam("id") int id, Fahrzeug fahrzeug) {
         return _fahrer.updateFahrer_Fahrzeug_Id(id, fahrzeug);
     }
@@ -72,7 +71,7 @@ public class FahrerController {
 
     @GET
     @Path("get/{id}")
-    @RolesAllowed("admin")
+    @RolesAllowed("fahrer")
     public List getFahrerByID(@PathParam("id") int benutzer_ID) {
         return _fahrer.getFahrerByID(benutzer_ID);
     }

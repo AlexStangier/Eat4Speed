@@ -9,11 +9,11 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-                v-if="!isUserLoggedIn"
                 class="ml-2"
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
+                tile
             >Anmelden
             </v-btn>
           </template>
@@ -141,6 +141,7 @@ export default {
   async mounted() {
     this.searchDestination = "Gerichte";
     await this.checkLoggedInUser();
+    await this.redirectFahrer();
     await this.getLoggedInKunde();
     this.checkForOrders();
   },
@@ -155,15 +156,27 @@ export default {
         this.isUserLoggedInBoolean = true;
       }
     },
+    async redirectFahrer()
+    {
+      if(this.isUserLoggedInBoolean)
+      {
+        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+        console.log(responseRolle);
+        if(responseRolle.data==="fahrer")
+        {
+          this.$router.push({name: "FahrerFahrtenplan"});
+        }
+      }
+    },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$store.getters.getLoginData.auth.username)
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async checkForOrders() {
-      if (this.isUserLoggedInBoolean) {
-        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
+      if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
+        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
         if (responseOrders.data.length === 0) {
           this.displayVorschlaege = false;
         } else {
@@ -172,7 +185,7 @@ export default {
       }
     },
     async getVorschlaege() {
-      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID);
+      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
       console.log(responsePreferences);
       console.log(responsePreferences.data);
       console.log(responsePreferences.data.data);

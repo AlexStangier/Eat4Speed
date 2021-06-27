@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <v-container>
-      <v-container>
+      <v-container fluid>
         <v-row no-gutters class="align-center">
           <v-col
               v-for="k in 4"
@@ -83,10 +83,12 @@
                     </h2>
                   </v-list-item>
                   <v-list-item>
-                    <v-checkbox
-                        label="Suche benutzen"
-                        v-model="nameOptionActive"
-                    ></v-checkbox>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Suchbegriff benutzen"
+                          v-model="nameOptionActive"
+                      ></v-checkbox>
+                    </v-container>
                   </v-list-item>
                   <v-subheader
                       class="text-uppercase"
@@ -223,21 +225,15 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-container>
+      <v-container fluid>
         <v-card class="mx-auto">
           <v-card-title> Gerichte </v-card-title>
           <v-divider></v-divider>
-          <v-card
-              v-if="amountGerichte === 0"
-              tile
-              class="text-center text-h5"
-          >
-            Es wurden keine Gerichte gefunden
-          </v-card>
           <v-virtual-scroll
               :items="items"
-              :item-height="260"
+              :item-height="270"
               max-height="650"
+              :key="gerichteKey"
           >
             <template v-slot:default="{ item }" v-resize>
 
@@ -245,7 +241,7 @@
                   flat
                   tile
               >
-                <v-container>
+                <v-container fluid>
                   <v-row>
                     <v-col
                         cols="3"
@@ -264,7 +260,7 @@
                           :key="a"
                       >
                         <v-col
-                            cols="4"
+                            cols="5"
                         >
                           <v-card
                               v-if="a === 1"
@@ -274,17 +270,28 @@
                             {{ item.name }}
                           </v-card>
                           <v-card
+                              ref="cardDescription"
                               v-if="a === 1"
                               flat
                               class="subtitle-1"
                           >
-                            {{ item.description }}
+                            <span
+                                v-if="item.description.length <= 40"
+                            >
+                              {{ item.description }}
+                            </span>
+                            <span
+                                v-else
+                            >
+                              {{ item.description.substring(0,38)+".." }}
+                            </span>
                           </v-card>
                           <v-card
                               v-if="a === 2"
                               flat
                               class="subtitle-1"
                           >
+                            <v-icon>mdi-home</v-icon>
                             {{item.restaurant}}
                           </v-card>
                           <v-card
@@ -292,10 +299,10 @@
                               flat
                               class="text-left"
                           >
-                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small="true" :value="item.rating"></v-rating>
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
                           </v-card>
                           <v-card
-                              v-if="a === 2"
+                              v-if="a === 2 && isUserLoggedInBoolean"
                               flat
                               class="subtitle-1"
                           >
@@ -377,14 +384,72 @@
                             Mindestbestellwert: {{item.minimum +' €'}}
                           </v-card>
                           <v-card
-                              v-if="a === 3"
+                              v-if="a === 2"
                               flat
                               class="text-right"
+                          >
+                            <v-dialog
+                                max-width="50%"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small
+                                    color="primary"
+                                    tile
+                                    @mouseenter="fillAllergene(item)"
+                                >
+                                  Allergene
+                                </v-btn>
+                              </template>
+                              <template v-slot:default="dialog">
+                                <v-card>
+                                  <v-container>
+                                    <v-row
+                                        class="pa-2"
+                                    >
+                                      <v-select
+                                          readonly
+                                          disabled
+                                          :items="allergeneGericht"
+                                          v-model="allergeneGericht"
+                                          chips
+                                          label="Allergene"
+                                          multiple
+                                          :key="allergeneKey"
+                                      >
+
+                                      </v-select>
+                                    </v-row>
+                                    <v-row
+                                        class="pa-2"
+                                        justify="end"
+                                    >
+                                      <v-btn
+                                          class="ml-1 justify-end"
+                                          @click="dialog.value = false"
+                                          color="error"
+                                          tile
+                                      >
+                                        Schließen
+                                      </v-btn>
+                                    </v-row>
+                                  </v-container>
+                                </v-card>
+                              </template>
+                            </v-dialog>
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="text-right pt-2"
                           >
                               <v-btn
                                   small
                                   color="primary"
                                   tile
+                                  class="ml-1"
                                   :to="{name: 'Gericht'}"
                                   @mouseover="selectGericht(item)"
                               >
@@ -491,6 +556,7 @@
                                     small
                                     class="ml-1"
                                     color="primary"
+                                    :disabled="item.available !== 'verfügbar'"
                                     tile
                                     @mouseover="selectItem(item)"
                                     @click="gerichtAnzahl=1"
@@ -511,7 +577,7 @@
                                     small
                                     color="primary"
                                     tile
-                                    :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
+                                    :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50 || item.available !== 'verfügbar'"
                                 >
                                   Zum Warenkorb hinzufügen
                                 </v-btn>
@@ -527,6 +593,26 @@
               <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
+          <v-card
+              v-if="amountGerichte === -1"
+              tile
+          >
+            <v-row justify="center">
+              <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  :size="70"
+                  :width="7"
+              ></v-progress-circular>
+            </v-row>
+          </v-card>
+          <v-card
+              v-if="amountGerichte === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Gerichte gefunden
+          </v-card>
         </v-card>
       </v-container>
     </v-container>
@@ -563,7 +649,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
 
@@ -572,7 +658,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID);
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
         for(let i = 0; i<responseEntfernungen.data.length; i++)
         {
           this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
@@ -690,6 +776,7 @@ export default {
       this.amountGerichte = 0;
       this.amountGerichte = responseAlternatives.data.length;
       this.version++;
+      this.gerichteKey++;
 
     },
     async addToFavorites() {
@@ -712,11 +799,11 @@ export default {
         anzahl_Bestellungen: 0
       }
 
-      await axios.post("Favoritenliste_Gerichte", gerichtFavorite);
+      await axios.post("Favoritenliste_Gerichte", gerichtFavorite, this.$store.getters.getLoginData);
       this.loadGerichte();
     },
     async deleteFromFavorites(){
-      await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+      await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id, this.$store.getters.getLoginData);
       this.loadGerichte();
     },
     async loadGerichte() {
@@ -726,7 +813,7 @@ export default {
       this.hinzufuegedaten=[];
       if(this.isUserLoggedInBoolean)
       {
-        const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseFavoriten = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
         //console.log(ResponseFavoriten);
         for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
@@ -772,7 +859,7 @@ export default {
           this.isFavorite[i] = false;
           this.hinzufuegedatumAssigned[i] = null;
         }
-        console.log(this.bewertungRestaurants);
+        //console.log(this.bewertungRestaurants);
 
         if(this.bewertungRestaurants.includes(gerichtData[5])===true)
         {
@@ -820,6 +907,7 @@ export default {
       this.amountGerichte = 0;
       this.amountGerichte = this.gericht_IDs.length;
       this.version++;
+      this.gerichteKey++;
     },
     async loadKategorien() {
       const responseGetKategorie = await axios.get("/Gericht_Kategorie/getGericht_KategorieByGericht_ID/"+this.selectedItem.id);
@@ -837,7 +925,7 @@ export default {
       this.loadAllAllergene();
     },
     async loadAllKategorien() {
-      const responseGetKategorie = await axios.get("Kategorie");
+      const responseGetKategorie = await axios.get("Kategorie", this.$store.getters.getLoginData);
 
       let arrayKategorien = [];
       for(let i = 0; i<responseGetKategorie.data.length;i++)
@@ -848,7 +936,7 @@ export default {
       this.kategorieVersion++;
     },
     async loadAllAllergene() {
-      const responseGetAllergene = await axios.get("Allergene");
+      const responseGetAllergene = await axios.get("Allergene", this.$store.getters.getLoginData);
 
       let arrayAllergene = [];
       for(let i = 0; i<responseGetAllergene.data.length;i++)
@@ -919,6 +1007,17 @@ export default {
 
       this.loadGerichte();
     },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey++;
+    },
     async applyBewertungFilterAndSearch() {
 
       if(this.selectedBewertung!==null)
@@ -970,7 +1069,9 @@ export default {
         name: this.selectedItem.name,
         thumbnail: this.selectedItem.img,
         quantity: this.gerichtAnzahl,
-        price: this.selectedItem.price
+        price: this.selectedItem.price,
+        restaurant_ID: this.selectedItem.restaurantid,
+        num: Math.random() * (999999 - 1) + 1
       }
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
@@ -980,7 +1081,7 @@ export default {
     searchOptions: {},
     searchString: "",
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: -1,
     selectedGericht_ID: "",
     isUserLoggedInBoolean: false,
     selectedItem: "",
@@ -1027,6 +1128,9 @@ export default {
       v => (v && v >= 1) || "Bestellungen müssen über 1 sein",
       v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
+    allergeneGericht: [],
+    allergeneKey: 0,
+    gerichteKey: 0,
   }),
   computed: {
     items(){

@@ -3,7 +3,7 @@
     <v-card class="mx-5 my-5">
     <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title>ControlPanel</v-toolbar-title>
+      <v-toolbar-title>Startseite</v-toolbar-title>
     </v-app-bar>
     <v-navigation-drawer
         v-model="drawer"
@@ -23,7 +23,7 @@
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>ControlPanel</v-list-item-title>
+            <v-list-item-title>Startseite</v-list-item-title>
           </v-list-item>
           </router-link>
           <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
@@ -71,7 +71,7 @@
 
       <v-layout  justify-center>
 
-        <v-flex md6 sm6 xs12>
+        <v-flex md12 sm6 xs12>
 
 
 
@@ -87,16 +87,15 @@
           </div>
 
 
+          <v-container  fluid  class="pa-2   d-flex flex-wrap flex-column flex-row justify-space-between align-center "  width="20000px">
+          <v-row width="2000"  >
 
-          <div  class="d-flex flex-column justify-space-between align-center" >
-          <v-row>
-
-              <v-col >
-                <div class="pa-4"><router-link   to="/restaurant/speisekarteGerichte">
+              <v-col cols="12" md="4" sm="4" class="flex-grow-1" width="200px" height="200px">
+                <div class="pa-2 " width="200px" height="200px"><router-link width="200px" height="200px"  to="/restaurant/speisekarteGerichte">
                 <v-card color="primary" width="200px" height="200px">
 
                   <v-card-text class="white--text" align="center">
-                  Spesekarte bearbeiten
+                  Speisekarte bearbeiten
                   </v-card-text>
                  <div align="center">
                   <v-icon color="white" align="center" size="100px" class="justify-center">mdi-silverware</v-icon>
@@ -106,8 +105,8 @@
               </v-col>
 
 
-              <v-col >
-                <div class="pa-4"><router-link  to="/restaurant/bestellungen">
+              <v-col cols="12" md="4" sm="4" width="200px" height="200px">
+                <div class="pa-2"><router-link  to="/restaurant/bestellungen">
                   <v-card color="primary" width="200px" height="200px">
 
                     <v-card-text class="white--text" align="center">
@@ -121,8 +120,8 @@
               </v-col>
 
 
-              <v-col >
-                <div class="pa-4"><router-link  to="/restaurant/schichtplan">
+              <v-col cols="12" md="4" sm="4" width="200px" height="200px">
+                <div class="pa-2"><router-link  to="/restaurant/schichtplan">
                   <v-card color="primary" width="200px" height="200px">
 
                     <v-card-text class="white--text" align="center">
@@ -136,10 +135,10 @@
                 </div>
               </v-col>
           </v-row>
-          <v-row>
+          <v-row >
 
-              <v-col >
-                <div class="pa-4">
+              <v-col cols="12" md="6" sm="6">
+                <div class="pa-2">
                 <router-link  to="/restaurant/stammdaten">
                   <v-card color="primary" width="200px" height="200px">
 
@@ -153,8 +152,8 @@
                 </router-link>
                 </div>
               </v-col>
-              <v-col >
-                <div class="pa-4">
+              <v-col cols="12" md="6" sm="6">
+                <div class="pa-2">
                 <router-link  to="/restaurant/umsatzstatistik">
                   <v-card color="primary" width="200px" height="200px">
 
@@ -170,7 +169,7 @@
               </v-col>
 
           </v-row>
-          </div>
+          </v-container>
 
 
         </v-flex>

@@ -61,7 +61,6 @@ public class RestaurantController {
 
     @POST
     @Path("searchRestaurants")
-    @PermitAll
     public List searchRestaurants(RestaurantSearchOptions options){
         return _restaurant.searchRestaurants(options);
     }
@@ -75,14 +74,13 @@ public class RestaurantController {
 
     @GET
     @Path("getAllRestaurantDataByRestaurant_ID/{id}")
-    @PermitAll
     public List getAllRestaurantDataByRestaurant_ID(@PathParam("id") int restaurant_ID) {
         return _restaurant.getAllRestaurantDataByRestaurant_ID(restaurant_ID);
     }
 
     @GET
     @Path("getRestaurantDataByKundennummer_Favoriten/{kundennummer}")
-    @PermitAll
+    @RolesAllowed("kunde")
     public List getRestaurantDataByKundennummer_Favoriten(@PathParam("kundennummer") int kundennummer)
     {
         return _restaurant.getRestaurantDataByKundennummer_Favoriten(kundennummer);
@@ -97,7 +95,7 @@ public class RestaurantController {
 
     @PUT
     @Path("updateRestaurantStammdaten")
-    @PermitAll
+    @RolesAllowed("restaurant")
     public Response updateRestaurantStammdaten(Restaurant restaurant) {
         return _restaurant.updateRestaurantStammdaten(restaurant);
     }

@@ -10,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.sql.Timestamp;
 
 @Path("/Urlaub")
 public class UrlaubController {
@@ -23,6 +22,13 @@ public class UrlaubController {
     @Produces(MediaType.TEXT_PLAIN)
     public String get(){
         return urlaubRepository.listAll().toString();
+    }
+
+    @GET
+    @Path("/HeuteUrlaub/{fahrernummer}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public int getHeuteUrlaub(@PathParam("fahrernummer") int fahrernummer){
+        return urlaubRepository.istFahrer_im_Urlaub(fahrernummer);
     }
 
 }

@@ -40,7 +40,31 @@
 
       <v-spacer></v-spacer>
 
+      <v-btn
+          v-if="!isUserLoggedIn && !hideKontoBtn"
+          :to=" {name: 'Startseite' }"
+          class="ml-3"
+          color="primary"
+          tile
+          depressed
+      >
+        <v-icon> mdi-home </v-icon>
+        Startseite
+      </v-btn>
+      <v-btn
+          v-if="isUserLoggedIn && hideControllPanelBtn"
+          :to=" {name: 'RestaurantControlPanel' }"
+          class="ml-3"
+          color="primary"
+          tile
+          depressed
+      >
+        <v-icon> mdi-home </v-icon>
+        ControlPanel
+      </v-btn>
+
       <v-menu
+          v-if="isUserLoggedIn && !hideKontoBtn"
           bottom
           left
           offset-y
@@ -49,12 +73,12 @@
       >
         <template v-slot:activator="{ on, attrs}">
           <v-btn
-              v-if="isUserLoggedIn"
               v-bind="attrs"
               v-on="on"
               class="ml-3"
               color="primary"
               tile
+              depressed
           >
             <v-icon> mdi-account </v-icon>
             Konto
@@ -63,6 +87,22 @@
         <v-list
             max-width="400"
         >
+          <v-list-item>
+            <v-btn
+                :to=" {name: 'Startseite' }"
+                text
+                tile
+                width="200"
+                depressed
+            >
+              <v-content
+                  class="text-left"
+              >
+                <v-icon> mdi-home </v-icon>
+                Startseite
+              </v-content>
+            </v-btn>
+          </v-list-item>
           <v-list-item>
             <v-btn
                 :to="{name: 'Favorites'}"
@@ -80,6 +120,7 @@
           </v-list-item>
           <v-list-item>
             <v-btn
+                :to="{name: 'KundeBestellhistorie'}"
                 text
                 tile
                 width="200"
@@ -110,7 +151,7 @@
         </v-list>
       </v-menu>
 
-      <Cart></Cart>
+      <Cart :isLoggedIn="isUserLoggedIn"></Cart>
 
     </v-app-bar>
   </v-card>
@@ -139,7 +180,7 @@ export default {
   computed: {
     hideSearchBar() {
       const path = this.$route.path;
-      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path === '/';
+      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path.includes('/anmeldung') || path === '/';
     },
     isUserLoggedIn() {
       return this.user !== undefined;
@@ -150,6 +191,14 @@ export default {
         return 'Angemeldet als: ' + email;
       }
       return 'Du bist nicht angemeldet';
+    },
+    hideControllPanelBtn() {
+      const path = this.$route.path;
+      return path.includes('/restaurant');
+    },
+    hideKontoBtn() {
+      const path = this.$route.path;
+      return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path.includes('/anmeldung');
     },
   },
   beforeRouteLeave(to, from, next) {

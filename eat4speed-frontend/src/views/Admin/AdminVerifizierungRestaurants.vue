@@ -2,7 +2,12 @@
   <v-app>
     <v-main>
       <h1 class="subheading">Verifizierung Restaurant</h1>
-      <v-card class="mx-5 my-5">
+      <v-card>
+        <v-row class="ma-2">
+          <v-col>
+            <v-btn :to="{ name: 'AdminVerifizierungFahrer'}" width="275px" color="primary" depressed tile>Zur Fahrer Verifizierung</v-btn>
+          </v-col>
+        </v-row>
         <v-data-table
             :headers="headers"
             :items="data"
@@ -105,16 +110,16 @@
                   <v-container>
                     <v-row>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unseriös'" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
                       </v-col>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Spam'" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
                       </v-col>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unvollständig'" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
                       </v-col>
                       <v-col align="center" justify="center">
-                        <v-btn color="primary" depressed tile width="200" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
+                        <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Keine Angabe'" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
                       </v-col>
                       <v-col cols="12"></v-col>
                       <v-col align="center" justify="center">
@@ -144,7 +149,7 @@ export default {
       console.log(this.select.value)
 
       if(this.select.value === 1) {
-        const ResponseAllRestaurant = await axios.get("/Restaurant/ALL");
+        const ResponseAllRestaurant = await axios.get("/Restaurant/ALL", this.$store.getters.getLoginData);
 
         console.log(ResponseAllRestaurant);
         console.log(ResponseAllRestaurant.data);
@@ -171,7 +176,8 @@ export default {
             hausnummer: restaurant[5],
             ort: restaurant[6],
             postleitzahl: restaurant[7],
-            verifiziert: restaurant[8]
+            verifiziert: restaurant[8],
+            email: restaurant[9]
           };
           arrayAllRestaurant[it] = entry;
 
@@ -185,7 +191,7 @@ export default {
       }
 
       if(this.select.value === 2) {
-        const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED");
+        const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED", this.$store.getters.getLoginData);
 
         console.log(ResponseNotVerifiedRestaurant);
         console.log(ResponseNotVerifiedRestaurant.data);
@@ -208,7 +214,8 @@ export default {
             hausnummer: restaurant[5],
             ort: restaurant[6],
             postleitzahl: restaurant[7],
-            verifiziert: restaurant[8]
+            verifiziert: restaurant[8],
+            email: restaurant[9]
           };
           arrayNotVerifiedRestaurant[it] = entry;
 
@@ -221,7 +228,7 @@ export default {
       }
 
       if(this.select.value === 3) {
-        const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED");
+        const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED", this.$store.getters.getLoginData);
 
         console.log(ResponseVerifiedRestaurant);
         console.log(ResponseVerifiedRestaurant.data);
@@ -244,7 +251,8 @@ export default {
             hausnummer: restaurant[5],
             ort: restaurant[6],
             postleitzahl: restaurant[7],
-            verifiziert: restaurant[8]
+            verifiziert: restaurant[8],
+            email: restaurant[9]
           };
           arrayVerifiedRestaurant[it] = entry;
 
@@ -264,13 +272,18 @@ export default {
     },
     async deleteBewerbung() {
 
-      await axios.delete("Restaurant/"+this.currentRowItem.restaurant_Id);
+      const deleteBe = {
+        emailAdresse: this.currentRowItem.email,
+        loeschbegruendung: this.deleteReason
+      }
+      await axios.post("Blacklist",deleteBe, this.$store.getters.getLoginData);
 
+      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email, this.$store.getters.getLoginData);
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
 
-      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
+      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id, this.$store.getters.getLoginData);
 
       console.log(this.currentRowItem);
       console.log(this.currentRowItem.restaurant_Id);
@@ -295,6 +308,7 @@ export default {
       currentRowItem: "",
       restaurantSelection: "",
       search: '',
+      deleteReason: "",
       select: {text: 'Alle Bewerbungen', value: 1},
       items: [
         {text: 'Alle Bewerbungen', value: 1},
@@ -302,6 +316,10 @@ export default {
         {text: 'Verifizierte Restaurants', value: 3},
       ],
       headers: [
+        {
+          text: "Email",
+          value: "email"
+        },
         {
           text: 'Vorname',
           value: 'vorname'

@@ -6,6 +6,7 @@ import de.eat4speed.repositories.AuftragRepository;
 import de.eat4speed.services.interfaces.IAuftragService;
 
 import javax.annotation.security.RolesAllowed;
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,6 +27,7 @@ public class AuftragController {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @PermitAll
     public String get(){
         Auftrag auftrag = new Auftrag();
 
@@ -43,12 +45,14 @@ public class AuftragController {
 
     @GET
     @Path("{id}")
+    @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     public String get(@PathParam("id") long id) {
         return auftragRepository.findById(id).toString();
     }
 
     @PUT
+    @RolesAllowed({"fahrer,kunde,restaurant"})
     @Path("updateAuftragFahrernummer/{auftrags_ID}/{fahrernummer}")
     public Response updateAuftragFahrernummer(@PathParam("auftrags_ID") int auftrags_ID, @PathParam("fahrernummer") int fahrernummer)
     {
@@ -60,6 +64,14 @@ public class AuftragController {
     public List getAuftragFahrernummerByAuftrags_ID(@PathParam("auftrags_ID") int auftrags_ID)
     {
         return auftragService.getAuftragFahrernummerByAuftrags_ID(auftrags_ID);
+    }
+
+    @PUT
+    @RolesAllowed({"kunde", "restaurant"})
+    @Path("setToErledigt/{auftrags_ID}")
+    public Response setToErledigt(@PathParam("auftrags_ID") int auftrags_ID)
+    {
+        return auftragService.setToErledigt(auftrags_ID);
     }
 
 }

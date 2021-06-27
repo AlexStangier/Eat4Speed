@@ -30,28 +30,24 @@ public class BewertungController {
 
     @GET
     @Path("/getBewertungDataByKundennummerAndRestaurant_ID/{kundennummer}/{restaurant_ID}")
-    @PermitAll
     public List getBewertungDataByKundennummerAndRestaurant_ID(@PathParam("kundennummer") int kundennummer, @PathParam("restaurant_ID") int restaurant_ID) {
         return bewertungService.getBewertungDataByKundennummerAndRestaurant_ID(kundennummer, restaurant_ID);
     }
 
     @GET
     @Path("/getBewertungDataByRestaurant_ID/{restaurant_ID}")
-    @PermitAll
     public List getBewertungDataByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID) {
         return bewertungService.getBewertungDataByRestaurant_ID(restaurant_ID);
     }
 
     @GET
     @Path("/getAverageBewertungAndCountBewertungByRestaurant_ID/{restaurant_ID}")
-    @PermitAll
     public List getAverageBewertungAndCountBewertungByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID) {
         return bewertungService.getAverageBewertungAndCountBewertungByRestaurant_ID(restaurant_ID);
     }
 
     @GET
     @Path("getAverageBewertungAndCountBewertungAllRestaurants")
-    @PermitAll
     public List getAverageBewertungAndCountBewertungAllRestaurants()
     {
         return bewertungRepository.getAverageBewertungAndCountBewertungAllRestaurants();

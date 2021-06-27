@@ -23,7 +23,7 @@
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>ControlPanel</v-list-item-title>
+            <v-list-item-title>Startseite</v-list-item-title>
           </v-list-item>
           </router-link>
           <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
@@ -76,15 +76,15 @@
             <v-row>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="firstName" label="Vorname"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="50" :rules="[rules.required, rules.lettersAndSpacesOnly]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="lastName" label="Nachname"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="50" :rules="[rules.required, rules.lettersAndSpacesOnly]"></v-text-field>
               </v-col>
               <v-col cols="12" md="12" sm="12">
                 <v-text-field v-model="restaurant_name" label="Restaurant Name"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="50" :rules="[rules.required, rules.lettersAndSpacesOnly]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="radius" label="Radius"
@@ -130,6 +130,16 @@
                        :disabled="!valid">Speichern
                 </v-btn>
               </v-col>
+              <v-col>
+                <v-btn
+                    color="error"
+                    tile
+                    class="ml-2"
+                    @click="deleteRestaurant"
+                >
+                  Konto löschen
+                </v-btn>
+              </v-col>
             </v-row>
           </v-form>
         </v-flex>
@@ -156,7 +166,7 @@ export default {
   methods: {
     async loadStammdaten() {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
       // console.log(ResponseStammdaten);
@@ -194,9 +204,9 @@ export default {
 
         if (this.lng > 7.510900 && this.lng < 9.212988 && this.lat > 47.533674 && this.lat < 48.720036) {
 
-          await axios.delete("EntfernungKundeRestaurant/deleteEntfernungByRestaurant_ID/"+this.restaurant_ID);
+          await axios.delete("EntfernungKundeRestaurant/deleteEntfernungByRestaurant_ID/"+this.restaurant_ID, this.$store.getters.getLoginData);
 
-          var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
+          var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat", this.$store.getters.getLoginData);
 
           if (responseKundenLngLat.data.length > 0) {
             for (let i = 0; i < responseKundenLngLat.data.length; i++) {
@@ -251,7 +261,7 @@ export default {
 
             console.log(entfernung);
 
-            await axios.post("/EntfernungKundeRestaurant", entfernung);
+            await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
           }
 
           let benutzer = {
@@ -279,9 +289,9 @@ export default {
             restaurant_ID: this.restaurant_ID
           }
 
-          const responseBenutzerRestaurantToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer);
-          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse);
-          const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant);
+          const responseBenutzerRestaurantToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
+          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
+          const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant, this.$store.getters.getLoginData);
 
           console.log(responseBenutzerRestaurantToAlter);
           console.log(responseAdresseToAlter);
@@ -329,8 +339,12 @@ export default {
     openSnackbar(message) {
       this.popupData.display = true;
       this.popupData.message = message;
+    },
+    deleteRestaurant()
+    {
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email, this.$store.getters.getLoginData);
+      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+this.restaurant_ID, this.$store.getters.getLoginData);
     }
-
   },
   data() {
     return {
@@ -389,7 +403,8 @@ export default {
       show1: false,
       rules: {
         required: value => !!value || "Required.",
-        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen"
+        min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       }
     }
   }

@@ -34,7 +34,7 @@
                   align="center"
               >
                 <v-col
-                    v-for="c in 3"
+                    v-for="c in 4"
                     :key="c"
                 >
                   <v-content v-if="b === 1 & c === 1">
@@ -50,9 +50,65 @@
                     Preis:
                     {{ (gerichtPreis * gerichtAnzahl) + ' &euro;' }}
                   </v-content>
-                  <v-content v-if="b === 10 & c === 3">
+                  <v-content
+                      v-if="b === 10 & c === 3"
+                  >
+                    <v-dialog
+                        max-width="50%"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            small
+                            color="primary"
+                            @mouseenter="fillAllergene()"
+                            tile
+                            class="ml-1"
+                        >
+                          Allergene
+                        </v-btn>
+                      </template>
+                      <template v-slot:default="dialog">
+                        <v-card>
+                          <v-container>
+                            <v-row
+                                class="pa-2"
+                            >
+                              <v-select
+                                  readonly
+                                  disabled
+                                  :items="allergeneGericht"
+                                  v-model="allergeneGericht"
+                                  chips
+                                  label="Allergene"
+                                  multiple
+                                  :key="allergeneKey"
+                              >
+
+                              </v-select>
+                            </v-row>
+                            <v-row
+                                class="pa-2"
+                                justify="end"
+                            >
+                              <v-btn
+                                  class="ml-1 justify-end"
+                                  @click="dialog.value = false"
+                                  color="error"
+                                  tile
+                              >
+                                Schließen
+                              </v-btn>
+                            </v-row>
+                          </v-container>
+                        </v-card>
+                      </template>
+                    </v-dialog>
+                  </v-content>
+                  <v-content v-if="b === 10 & c === 4">
                     <v-btn
-                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
+                        :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50 || gerichtVerfuegbar === 0"
                         small
                         @click="addToCart"
                         color="primary"
@@ -104,7 +160,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
         this.loggedInKunde_ID = response.data[0];
       }
     },
@@ -127,7 +183,7 @@ export default {
 
         if(this.isUserLoggedInBoolean)
         {
-          const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID);
+          const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.loggedInKunde_ID+"/"+this.restaurant_ID, this.$store.getters.getLoginData);
           if(ResponseEntfernung.data.length>0)
           {
             this.entfernung = ResponseEntfernung.data[0];
@@ -197,7 +253,17 @@ export default {
       {
         this.$router.push({name: "Favorites"})
       }
-    }
+    },
+    async fillAllergene()
+    {
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.gericht_ID);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey += 1;
+    },
   },
   data: () => ({
     gerichtName: "",
@@ -220,6 +286,7 @@ export default {
         v => (v && v >= 1) || "Bestellungen müssen größer als 1 sein",
         v => (v && v <= 50) || "Bestellungen über 50 Stück geht nicht",
     ],
+    allergeneKey: 0,
 
   }),
 }

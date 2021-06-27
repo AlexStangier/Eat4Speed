@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -67,13 +69,14 @@ public class BestellungController {
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("getRestaurantBestellungen/{email}")
     public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
 
     @PUT
     @Path("updateBestellungStatus")
-    @RolesAllowed("restaurant")
-    public Response updateBestellungStatus(Bestellung bestellung) {
+    public Response updateBestellungStatus(Bestellung bestellung)
+    {
         return _bestellungen.updateBestellungStatus(bestellung);
     }
 
@@ -86,6 +89,65 @@ public class BestellungController {
     }
 
     @GET
+    @RolesAllowed({"kunde","restaurant"})
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
+
+    @PUT
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
+    public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
+        BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
+
+        //Response zwischen speichern, da nach Überprüfung erst nach Datenbank zugriff
+        Response response = _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
+
+        try {
+            //Überprüfung ob Fahrerauswahl starten soll
+            URL url = new URL("http://localhost:1337/FahrerAuswahl/start/" + id);
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestMethod("PUT");
+            http.setDoOutput(false);
+            http.setReadTimeout(10);
+            http.getInputStream();
+            http.disconnect();
+        } catch (Exception e) {
+        }
+
+        return response;
+    }
+    @GET
+    @RolesAllowed("kunde")
+    @Path("getKundeBestellungen/{status}/{email}")
+    public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
+
+    @GET
+    @RolesAllowed("kunde")
+    @Path("getKundeBestellungenAktiv/{email}")
+    public List getKundeBestellungenAktiv(@PathParam("email") String email) {return _bestellungen.getKundeBestellungenAktiv(email);}
+
+    @GET
+    @RolesAllowed("kunde")
+    @Path("getGerichtIds/{id}")
+    public List getGerichtIds(@PathParam("id") int id) {return _bestellungen.getGerichtIds(id);}
+
+    @GET
+    @RolesAllowed({"kunde","restaurant"})
+    @Path("getAnzahlFertigerAuftraege/{id}")
+    public List getAnzahlFertigerAuftraege(@PathParam("id") int id) {return _bestellungen.getAnzahlFertigerAuftraege(id);}
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String get(){
+        return _bestellungen.listAll().toString();
+    }
+
+    @GET
+    @Path("/{Auftrag_ID}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response delete(@PathParam("Auftrag_ID") int Auftrag_ID) {
+
+        return Response.ok().entity(_bestellungen.getGerichteByAuftragID(Auftrag_ID).get(0)).build();
+    }
 }

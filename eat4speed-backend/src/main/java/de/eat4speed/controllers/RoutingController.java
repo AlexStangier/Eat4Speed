@@ -5,7 +5,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 import de.eat4speed.services.interfaces.IRoutingService;
-import org.json.JSONObject;
 
 @Path("/route")
 public class RoutingController {
@@ -13,28 +12,36 @@ public class RoutingController {
     @Inject
     IRoutingService _router;
 
-    /**
-     * @Daniel Zum Testen mit mehr / weniger Wegpunkten, den Return unten auskommentieren, den darüber wieder zulassen und in der Klasse "RoutingService.java",
-     * in der Funktion "get_best_route()", noch ein "add_shipment()" hinzufügen oder wegmachen.
-     * Bitte auf richitge Koordianten im Bereich um Freiburg herum achten.
-     */
-
     @GET
+    @Path("/calculate/{email}")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public String get_Sorted_Waypoints_test() throws Exception {
+    public String get_Sorted_Waypoints_test(@PathParam("email") String email) {
 
-        return _router.get_best_Route().toString();
-        //return "{\"sorted_waypoints\":[[7.84529,47.993263],[7.862707,48.01426],[7.862707,48.01426],[7.857937,48.011837],[7.819171,48.017708],[7.823581,48.01125],[7.827899,48.010338],[7.830039,48.009247],[7.840162,48.018658],[7.840162,48.018658]]}";
+        try {
+            return _router.get_best_Route(email).toString();
+        } catch (Exception e) {
+            System.out.println("Null was returned: " + e.getMessage());
+            return null;
+        }
     }
 
 
-    @GET
-    @Path("/test")
-    @Produces(MediaType.APPLICATION_JSON)
-    public String get_Sorted_Waypoints() throws Exception {
+    @PUT
+    @Path("/confirm/{art}")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public void confirm_action(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
 
-        return _router.db_test().toString();
+        _router.confirm(art, auftraege, data, email);
+
     }
 
-
+    @PUT
+    @Path("/accident/")
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.TEXT_PLAIN)
+    public void report_accident(@QueryParam("auftraege") String auftraege){
+        _router.accident(auftraege);
+    }
 }

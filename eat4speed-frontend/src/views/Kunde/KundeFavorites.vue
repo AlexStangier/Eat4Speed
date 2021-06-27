@@ -13,6 +13,7 @@
                   :color="btnType === 0 ? 'primary' : 'blue-grey'"
                   class="mt-2 white--text"
                   width="150"
+                  tile
               >
                 Gerichte
               </v-btn>
@@ -21,6 +22,7 @@
                   :color="btnType === 1 ? 'primary' : 'blue-grey'"
                   class="mt-2 ml-2 white--text"
                   width="150"
+                  tile
               >
                 Restaurants
               </v-btn>
@@ -30,15 +32,16 @@
         <v-divider></v-divider>
         <v-virtual-scroll
             :items="items"
-            :item-height="210"
+            :item-height="230"
             max-height="650"
+            :key="favoritenKey"
         >
           <template v-slot:default="{ item }" v-resize>
             <v-card
                 flat
                 tile
             >
-              <v-container class="pa-1">
+              <v-container>
                 <v-row>
                   <v-col
                       cols="3"
@@ -121,6 +124,58 @@
                             flat
                             class="text-right"
                         >
+                          <v-dialog
+                              max-width="50%"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                  v-bind="attrs"
+                                  v-on="on"
+                                  small
+                                  color="primary"
+                                  class="ml-1"
+                                  @mouseenter="fillAllergene(item)"
+                                  tile
+                              >
+                                Allergene
+                              </v-btn>
+                            </template>
+                            <template v-slot:default="dialog">
+                              <v-card>
+                                <v-container>
+                                  <v-row
+                                      class="pa-2"
+                                  >
+                                    <v-select
+                                        readonly
+                                        disabled
+                                        :items="allergeneGericht"
+                                        v-model="allergeneGericht"
+                                        chips
+                                        label="Allergene"
+                                        multiple
+                                        :key="allergeneKey"
+                                    >
+
+                                    </v-select>
+                                  </v-row>
+                                  <v-row
+                                      class="pa-2"
+                                      justify="end"
+                                  >
+                                    <v-btn
+                                        class="ml-1 justify-end"
+                                        @click="dialog.value = false"
+                                        color="error"
+                                        tile
+                                    >
+                                      Schließen
+                                    </v-btn>
+                                  </v-row>
+                                </v-container>
+                              </v-card>
+                            </template>
+                          </v-dialog>
                           <v-btn
                               v-if="displayGerichte===true"
                               color="primary"
@@ -159,6 +214,7 @@
                                   v-bind="attrs"
                                   v-on="on"
                                   small="true"
+                                  :disabled="item.available !== 'verfügbar'"
                                   bottom="bottom"
                                   @mouseover="selectItem(item)"
                                   @click="gerichtAnzahl=0"
@@ -194,6 +250,26 @@
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
+        <v-card
+            v-if="amountGerichte === -1"
+            tile
+        >
+          <v-row justify="center">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                :size="70"
+                :width="7"
+            ></v-progress-circular>
+          </v-row>
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0"
+            tile
+            class="text-center text-h5"
+        >
+          Keine Favoriten gefunden
+        </v-card>
       </v-card>
     </v-container>
 
@@ -217,7 +293,7 @@ export default {
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
       this.loggedInKunde_ID = response.data[0];
     },
     setDisplayGerichteToTrue() {
@@ -228,7 +304,7 @@ export default {
     setDisplayGerichteToFalse() {
       this.btnType = 1;
       this.displayGerichte = false;
-      this.loadGerichte()
+      this.loadGerichte();
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurant_ID);
@@ -238,7 +314,7 @@ export default {
 
       if(this.displayGerichte === true)
       {
-        const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
         console.log(ResponseGerichte);
 
@@ -265,7 +341,7 @@ export default {
           this.minimums[i] = gerichtData[7];
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
-          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0], this.$store.getters.getLoginData);
           console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
@@ -308,7 +384,7 @@ export default {
         this.amountGerichte = ResponseGerichte.data.length;
       }
       else {
-        const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
         for (let i = 0; i < ResponseRestaurants.data.length; i++) {
           let restaurantData = ResponseRestaurants.data[i];
@@ -319,7 +395,7 @@ export default {
           this.anzahlBestellungen[i] = restaurantData[11];
           this.hinzufuegedaten[i] = restaurantData[12];
 
-          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0], this.$store.getters.getLoginData);
           console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
@@ -359,7 +435,7 @@ export default {
         this.amountGerichte = ResponseRestaurants.data.length;
       }
 
-      this.version++;
+      this.favoritenKey++;
     },
     selectItem(item) {
       console.log("Gericht selected "+item.id);
@@ -374,14 +450,25 @@ export default {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
       console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey++;
+    },
     async deleteFromFavorites(){
       if(this.displayGerichte===true)
       {
-        await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+        await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id, this.$store.getters.getLoginData);
       }
       else
       {
-        await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.restaurant_ID)
+        await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.restaurant_ID, this.$store.getters.getLoginData)
       }
 
       this.loadGerichte();
@@ -394,17 +481,19 @@ export default {
         name: this.selectedItem.name,
         thumbnail: this.selectedItem.img,
         quantity: this.gerichtAnzahl,
-        price: this.selectedItem.price
+        price: this.selectedItem.price,
+        restaurant_ID: this.selectedItem.restaurant_ID,
+        num: Math.random() * (999999 - 1) + 1
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
       console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
-    }
+    },
   },
   data: () => ({
     displayGerichte: true,
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: -1,
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
@@ -419,6 +508,7 @@ export default {
     distances: [],
     minimums: [],
     availabilities: [],
+    allergeneGericht: [],
     anzahlBestellungen: [],
     kategorien: [],
     selectedKategorien: [],
@@ -432,6 +522,8 @@ export default {
       v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     btnType: 0,
+    allergeneKey: 0,
+    favoritenKey: 0,
   }),
   computed: {
     items(){

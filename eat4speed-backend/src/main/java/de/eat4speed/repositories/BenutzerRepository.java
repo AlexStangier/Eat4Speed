@@ -8,6 +8,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -34,6 +35,36 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
             return -1;
         }
         return user.getBenutzer_ID();
+    }
+
+    @Transactional
+    public List checkIfBenutzerIsGeloescht(String email)
+    {
+        List restaurantBenutzer;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.geloescht " +
+                        "from Benutzer b " +
+                        "where b.emailAdresse = ?1 "
+        ).setParameter(1, email);
+
+        restaurantBenutzer = query.getResultList();
+        return restaurantBenutzer;
+    }
+
+    @Transactional
+    public List checkIfBenutzerIsBlacklist(String email)
+    {
+        List restaurantBenutzer;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.loeschbegruendung " +
+                        "from Blacklist b " +
+                        "where b.emailAdresse = ?1 "
+        ).setParameter(1, email);
+
+        restaurantBenutzer = query.getResultList();
+        return restaurantBenutzer;
     }
 
     @Transactional
@@ -96,6 +127,27 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
         return restaurant_ID;
     }
 
+    @Transactional
+    public List getFahrernummerByBenutzername(String username) {
+        List restaurant_ID;
+
+        Query query = entityManager.createQuery(
+                "SELECT f.fahrernummer " +
+                        "from Benutzer b, Fahrer f " +
+                        "where b.emailAdresse LIKE ?1 " +
+                        "and f.benutzer_ID = b.benutzer_ID"
+        ).setParameter(1, username);
+
+        restaurant_ID = query.getResultList();
+        return restaurant_ID;
+    }
+
+    @Transactional
+    public void deleteBenutzerByEmail(String email)
+    {
+        update("geloescht = 1 where emailAdresse = ?1", email);
+    }
+
     /**
      * Should only be used in Test cleanup
      *
@@ -114,5 +166,10 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     @Transactional
     public String getRoleById(long id) {
         return find("Benutzer_ID", id).firstResult().getRolle();
+    }
+
+    @Transactional
+    public String getRoleByEmail(String email) {
+        return find("EmailAdresse", email).firstResult().getRolle();
     }
 }
