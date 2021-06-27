@@ -58,18 +58,18 @@
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="salutation" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Anrede"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field
                               v-model="firstName"
                               :rules="[rules.required, rules.lettersAndSpacesOnly]"
                               label="Vorname"
-                              maxlength="20"
+                              maxlength="50"
                               required
                           ></v-text-field>
                         </v-col>
@@ -78,7 +78,7 @@
                               v-model="lastName"
                               :rules="[rules.required, rules.lettersAndSpacesOnly]"
                               label="Nachname"
-                              maxlength="20"
+                              maxlength="50"
                               required
                           ></v-text-field>
                         </v-col>
@@ -87,6 +87,7 @@
                               v-model="email"
                               :rules="emailRules"
                               label="E-Mail"
+                              maxlength="50"
                               required
                           ></v-text-field>
                         </v-col>
@@ -132,6 +133,7 @@
                               label="Führerschein"
                               :rules="[rules.required]"
                               required
+                              maxlength="50"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
@@ -144,6 +146,7 @@
                               hint="Mindestens 8 Zeichen"
                               label="Passwort"
                               name="input-10-1"
+                              maxlength="50"
                               @click:append="show1 = !show1"
                               required
                           ></v-text-field>
@@ -156,6 +159,7 @@
                               :type="show1 ? 'text' : 'password'"
                               block
                               counter
+                              maxlength="50"
                               label="Passwort bestätigen"
                               name="input-10-1"
                               @click:append="show1 = !show1"
@@ -347,7 +351,7 @@ export default {
         geloescht: 0
       };
 
-      const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
+      const responseBenutzer = await axios.post("/Benutzer/register", benutzer);
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
@@ -360,7 +364,7 @@ export default {
         verifiziert: 0
       };
 
-      const responseFahrer = await axios.post("/Fahrer", fahrer, this.$store.getters.getLoginData)
+      const responseFahrer = await axios.post("/Fahrer", fahrer)
 
       this.fahrer_ID = responseFahrer.data.fahrernummer;
       if (this.$refs.registrationForm.validate()) {
@@ -374,7 +378,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug, this.$store.getters.getLoginData);
+      const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
 
       this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_ID;
 
@@ -383,7 +387,7 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
-      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug, this.$store.getters.getLoginData);
+      await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
 
       if (this.$refs.verificationForm.validate()) {
         this.$router.push({name: "FahrerSchichtplan"});

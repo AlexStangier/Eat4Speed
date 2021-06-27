@@ -48,62 +48,62 @@
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="salutation" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Anrede"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field v-model="firstName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Vorname"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="20"
+                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="40"
+                          <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
                           <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer"
-                                        maxlength="20"
+                                        maxlength="15"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="place" :rules="[rules.required]" label="Ort" maxlength="20"
+                          <v-text-field v-model="place" :rules="[rules.required]" label="Ort" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
                           <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl"
-                                        maxlength="20"
+                                        maxlength="7"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
+                          <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required maxlength="50"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
                           <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
-                                        maxlength="20"
+                                        maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="paypal" :rules="emailRules" label="Paypal Email"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength=50 required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1" required></v-text-field>
+                                        @click:append="show1 = !show1" maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'password'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1" required></v-text-field>
+                                        @click:append="show1 = !show1" maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-checkbox
@@ -194,7 +194,7 @@ export default {
   methods: {
 
     async login() {
-      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail, this.$store.getters.getLoginData);
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
       if(responseGeloescht.data[0]===1)
       {
         this.openSnackbar("Dieses Konto wurde gelöscht.");
@@ -226,7 +226,7 @@ export default {
 
       console.log(this.valid);
 
-      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04", this.$store.getters.getLoginData);
+      var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
       console.log(response.data.features[0].geometry.coordinates[0]);
       console.log(response.data.features[0].geometry.coordinates[1]);
@@ -253,12 +253,12 @@ export default {
           geloescht: 0
         };
 
-        const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
+        const responseBenutzer = await axios.post("/Benutzer/register", benutzer);
 
         this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
 
-        var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat", this.$store.getters.getLoginData);
+        var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat");
 
         if (responseRestaurantsLngLat.data.length > 0) {
           for (let i = 0; i < responseRestaurantsLngLat.data.length; i++) {
@@ -316,7 +316,7 @@ export default {
           lat: this.lat
         };
 
-        const responseAdressen = await axios.post("/Adressen", adressen, this.$store.getters.getLoginData);
+        const responseAdressen = await axios.post("/Adressen", adressen);
 
         console.log(responseAdressen);
         console.log(responseAdressen.data);
@@ -332,7 +332,7 @@ export default {
           anschrift: this.adress_ID
         };
 
-        var responseKunde = await axios.post("/Kunde", kunde, this.$store.getters.getLoginData);
+        var responseKunde = await axios.post("/Kunde", kunde);
 
         console.log("somethin something")
 
@@ -350,7 +350,7 @@ export default {
 
           console.log(entfernung);
 
-          await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
+          await axios.post("/EntfernungKundeRestaurant", entfernung);
 
           this.$router.push({name: "Startseite"});
         }

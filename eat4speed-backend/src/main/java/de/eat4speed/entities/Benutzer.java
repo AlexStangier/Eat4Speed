@@ -27,7 +27,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     private String passwort;
     private String rolle;
     private String paypal_Account;
-    private int telefonnummer;
+    private String telefonnummer;
     private byte geloescht;
 
     public Benutzer() {
@@ -44,7 +44,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.telefonnummer = dto.getTelefonnummer();
     }
 
-    public Benutzer(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, int telefonnummer) {
+    public Benutzer(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, String telefonnummer) {
         this.benutzername = benutzername;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -119,7 +119,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.paypal_Account = paypal_Account;
     }
 
-    public int getTelefonnummer() {
+    public String getTelefonnummer() {
         return telefonnummer;
     }
 
@@ -131,7 +131,7 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         Anschrift = anschrift;
     }*/
 
-    public void setTelefonnummer(int telefonnummer) {
+    public void setTelefonnummer(String telefonnummer) {
         this.telefonnummer = telefonnummer;
     }
 
