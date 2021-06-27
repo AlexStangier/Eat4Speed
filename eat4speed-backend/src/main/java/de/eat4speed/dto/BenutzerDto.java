@@ -11,12 +11,12 @@ public class BenutzerDto {
     public String passwort;
     public String rolle;
     public String paypal_Account;
-    public int telefonnummer;
+    public String telefonnummer;
 
     public BenutzerDto() {
     }
 
-    public BenutzerDto(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, int telefonnummer) {
+    public BenutzerDto(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, String telefonnummer) {
         this.benutzername = benutzername;
         this.vorname = vorname;
         this.nachname = nachname;
@@ -83,11 +83,11 @@ public class BenutzerDto {
         this.paypal_Account = paypal_Account;
     }
 
-    public int getTelefonnummer() {
+    public String getTelefonnummer() {
         return telefonnummer;
     }
 
-    public void setTelefonnummer(int telefonnummer) {
+    public void setTelefonnummer(String telefonnummer) {
         this.telefonnummer = telefonnummer;
     }
 }

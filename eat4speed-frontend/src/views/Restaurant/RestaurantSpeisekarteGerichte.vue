@@ -456,7 +456,7 @@ export default {
 
     },
     async loadKategorien() {
-      const ResponseAllKategorien = await axios.get("/Kategorie", this.$store.getters.getLoginData);
+      const ResponseAllKategorien = await axios.get("/Kategorie");
 
       console.log(ResponseAllKategorien);
       let arrayKategorien = [];
@@ -475,7 +475,7 @@ export default {
       console.log(this.valueA);
     },
     async loadAllergene() {
-      const ResponseAllAllegergene = await axios.get("/Allergene", this.$store.getters.getLoginData);
+      const ResponseAllAllegergene = await axios.get("/Allergene");
 
       console.log(ResponseAllAllegergene);
       let arrayAllergene = [];

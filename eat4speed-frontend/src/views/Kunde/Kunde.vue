@@ -925,7 +925,7 @@ export default {
       this.loadAllAllergene();
     },
     async loadAllKategorien() {
-      const responseGetKategorie = await axios.get("Kategorie", this.$store.getters.getLoginData);
+      const responseGetKategorie = await axios.get("Kategorie");
 
       let arrayKategorien = [];
       for(let i = 0; i<responseGetKategorie.data.length;i++)
@@ -936,7 +936,7 @@ export default {
       this.kategorieVersion++;
     },
     async loadAllAllergene() {
-      const responseGetAllergene = await axios.get("Allergene", this.$store.getters.getLoginData);
+      const responseGetAllergene = await axios.get("Allergene");
 
       let arrayAllergene = [];
       for(let i = 0; i<responseGetAllergene.data.length;i++)
