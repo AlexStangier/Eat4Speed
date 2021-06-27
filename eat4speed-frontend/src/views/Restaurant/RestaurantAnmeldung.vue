@@ -105,14 +105,14 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                                        :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'Passwort'"
+                                        :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
                                         @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
-                                        :type="show1 ? 'text' : 'Passwort'" block
+                                        :type="show1 ? 'text' : 'password'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
                                         @click:append="show1 = !show1" required></v-text-field>
                         </v-col>
@@ -125,6 +125,7 @@
                           <v-checkbox
                               label="AGB gelesen und akzeptiert"
                               v-model="agbAccepted"
+                              :rules="[rules.required]"
                           ></v-checkbox>
                         </v-col>
                         <v-col cols="12" class="mt-n8">
