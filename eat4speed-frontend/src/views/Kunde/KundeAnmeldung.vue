@@ -351,9 +351,8 @@ export default {
           console.log(entfernung);
 
           await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
-
-          this.$router.push({name: "Startseite"});
         }
+        this.$router.push({name: "Startseite"});
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
 
