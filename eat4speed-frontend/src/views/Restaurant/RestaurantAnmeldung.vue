@@ -383,7 +383,7 @@ export default {
 
           console.log(responsePictureUpload);
         }
-        this.$router.push({name: "RestaurantControlPanel"});
+        this.$router.push({name: "Startseite"});
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
       }
