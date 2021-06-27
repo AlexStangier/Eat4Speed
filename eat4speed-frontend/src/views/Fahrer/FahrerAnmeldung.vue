@@ -201,6 +201,7 @@
                           <v-checkbox
                               label="AGB gelesen und akzeptiert"
                               v-model="agbAccepted"
+                              :rules="[rules.required]"
                           ></v-checkbox>
                         </v-col>
                         <v-col cols="12" class="mt-n8">
