@@ -1,5 +1,6 @@
 package de.eat4speed.controllers;
 
+import de.eat4speed.dto.BenutzerDto;
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
@@ -25,7 +26,9 @@ public class BenutzerController {
     BenutzerRepository benutzerRepository;
 
     @POST
-    public Response add(Benutzer benutzer) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("register")
+    public Response add(BenutzerDto benutzer) {
         return _benutzer.addBenutzer(benutzer);
     }
 
