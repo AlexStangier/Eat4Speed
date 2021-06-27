@@ -27,7 +27,7 @@ public class BenutzerService implements IBenutzerService {
         try {
             Benutzer user = new Benutzer(benutzer);
             _benutzer.addBenutzer(user);
-            return Response.status(Response.Status.CREATED).entity(benutzer).build();
+            return Response.status(Response.Status.CREATED).entity(user).build();
         } catch (Exception e) {
             System.out.println(e);
         }
