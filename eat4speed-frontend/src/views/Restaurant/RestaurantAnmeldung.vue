@@ -376,7 +376,6 @@ export default {
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
-            this.$router.push({name: "RestaurantControlPanel"});
           })
               .catch(function () {
                 console.log('Picture upload error');
@@ -384,6 +383,7 @@ export default {
 
           console.log(responsePictureUpload);
         }
+        this.$router.push({name: "RestaurantControlPanel"});
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
       }
