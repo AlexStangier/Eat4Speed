@@ -1,5 +1,6 @@
 package de.eat4speed.services;
 
+import de.eat4speed.dto.BenutzerDto;
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
@@ -9,8 +10,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.List;
 
 @ApplicationScoped
@@ -24,31 +23,15 @@ public class BenutzerService implements IBenutzerService {
     }
 
     @Override
-    public Response addBenutzer(Benutzer benutzer) {
-        if (benutzer == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+    public Response addBenutzer(BenutzerDto benutzer) {
+        try {
+            Benutzer user = new Benutzer(benutzer);
+            _benutzer.addBenutzer(user);
+            return Response.status(Response.Status.CREATED).entity(benutzer).build();
+        } catch (Exception e) {
+            System.out.println(e);
         }
-
-        // check if received user contains necessary fields
-        if (isAnyFieldEmpty(benutzer)) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        if (isRoleInvalid(benutzer)) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        // Check if a user with that email address already exists
-        String email = benutzer.getEmailAdresse();
-        Integer userId = _benutzer.getBenutzerIdByEmail(new UserEmailDto(email));
-        if (userId != -1) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-
-        // encode password in base64
-        benutzer.setPasswort(Base64.getEncoder().encodeToString(benutzer.getPasswort().getBytes(StandardCharsets.UTF_8)));
-        _benutzer.addBenutzer(benutzer);
-        return Response.status(Response.Status.CREATED).entity(benutzer).build();
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     @Override
