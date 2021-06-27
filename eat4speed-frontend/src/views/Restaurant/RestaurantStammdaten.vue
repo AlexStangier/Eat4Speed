@@ -88,11 +88,11 @@
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="radius" label="Radius"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="10" :rules="[rules.required]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="mindestbestellwert" label="Mindestbestellwert"
-                              maxlength="50" :rules="[rules.required]"></v-text-field>
+                              maxlength="10" :rules="[rules.required]"></v-text-field>
               </v-col>
               <v-col cols="12" md="6" sm="6">
                 <v-text-field v-model="street" label="Straße"
