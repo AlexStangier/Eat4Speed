@@ -24,6 +24,8 @@ public class RoutingService implements IRoutingService {
 
     @Inject
     FahrerService _fahrer;
+    @Inject
+    AuftragService _auftrag;
 
     /**
      * Aufbau Fahrer_Mode -> fahrzeugart, lng, lat, kapazität
@@ -49,14 +51,14 @@ public class RoutingService implements IRoutingService {
             }
         }
         for (String id : auftrags_ids){
-            _fahrer.accident_report_bestellunng(Long.parseLong(id));
+            _fahrer.accident_report_bestellung(Long.parseLong(id));
             _fahrer.accident_report_fahrer(Long.parseLong(id));
         }
-        System.out.println(auftrags_ids);
     }
 
     @Override
-    public void confirm(String auftrags_beschreibung, String auftraege, String data, String email){
+    public int confirm(String auftrags_beschreibung, String auftraege, String data, String email){
+        int erledigt = 0;
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         if(auftrags_beschreibung.equals("Abholung")){
             for (String s : auftr) {
@@ -68,9 +70,15 @@ public class RoutingService implements IRoutingService {
             for (String s : auftr) {
                 _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(s), email);
                 _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(s));
+
+                if(_fahrer.job_done_comp(Long.parseLong(s)) == 0){
+                    _auftrag.updateAuftragFahrernummer(Integer.parseInt(s), 9999);
+                    _auftrag.setToErledigt(Integer.parseInt(s));
+                    erledigt++;
+                }
             }
         }
-
+        return erledigt;
     }
 
     public JSONObject add_shipment(String id, double src_lng, double src_lat, double dest_lng, double dest_lat, String timewindows) {

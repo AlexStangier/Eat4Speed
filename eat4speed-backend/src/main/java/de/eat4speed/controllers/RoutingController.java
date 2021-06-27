@@ -31,9 +31,9 @@ public class RoutingController {
     @Path("/confirm/{art}")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
-    public void confirm_action(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
+    public int confirm_action(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
 
-        _router.confirm(art, auftraege, data, email);
+        return _router.confirm(art, auftraege, data, email);
 
     }
 
