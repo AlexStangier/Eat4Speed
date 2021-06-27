@@ -45,7 +45,6 @@ public class GerichtBilderController {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/upload")
-    @RolesAllowed("restaurant")
     public Response upload(@MultipartForm MultipartBody data) throws IOException {
 
         if (data == null || !data.fileName.matches("^Bild[0-9]+$")) {
@@ -78,7 +77,6 @@ public class GerichtBilderController {
     @GET
     @Produces("image/png")
     @Path("/getBild/{id}")
-    @PermitAll
     public Response getBildByID(@PathParam("id") int id) throws IOException {
 
         File pictureFile = new File(this.imageDatabasePath + "Bild" + id + ".png");

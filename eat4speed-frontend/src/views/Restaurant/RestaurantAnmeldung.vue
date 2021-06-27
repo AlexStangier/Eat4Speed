@@ -56,26 +56,26 @@
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field v-model="firstName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Vorname"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="20"
+                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field v-model="mindestBestellwert" number :rules="[rules.required]"
-                                        label="Mindestbestellwert" required></v-text-field>
+                                        label="Mindestbestellwert" required maxlength="5"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field v-model="bestellradius" number :rules="[rules.required]" label="Bestellradius"
-                                        required></v-text-field>
+                                        maxlength="10" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="40"
+                          <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
@@ -84,15 +84,15 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="place" :rules="[rules.required]" label="Ort" maxlength="20"
+                          <v-text-field v-model="place" :rules="[rules.required]" label="Ort" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="20"
+                          <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="7"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
+                          <v-text-field v-model="email" :rules="emailRules" label="E-Mail" maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
                           <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
@@ -101,20 +101,20 @@
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="paypal" :rules="emailRules" label="Paypal Email"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1" required></v-text-field>
+                                        @click:append="show1 = !show1" maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
                                         :type="show1 ? 'text' : 'password'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1" required></v-text-field>
+                                        @click:append="show1 = !show1" maxlength="50" required></v-text-field>
                         </v-col>
                         <label>
                           Bild auswählen
@@ -208,13 +208,13 @@ export default {
   },
   methods: {
     async login() {
-      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail, this.$store.getters.getLoginData);
+      const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
       if(responseGeloescht.data[0]===1)
       {
         this.openSnackbar("Dieses Konto wurde gelöscht.");
         return;
       }
-      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail, this.$store.getters.getLoginData);
+      const responseBlacklist = await axios.get("Benutzer/checkIfBenutzerIsBlacklist/"+this.loginEmail);
       if(responseBlacklist.data.length>0)
       {
         this.openSnackbar("Dieses Konto befindet sich auf der Blacklist wegen "+responseBlacklist.data[0]);
@@ -267,12 +267,12 @@ export default {
           geloescht: 0
         };
 
-        const responseBenutzer = await axios.post("/Benutzer", benutzer, this.$store.getters.getLoginData);
+        const responseBenutzer = await axios.post("/Benutzer/register", benutzer);
 
         this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
 
-        var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat", this.$store.getters.getLoginData);
+        var responseKundenLngLat = await axios.get("Adressen/getAllKundeLngLat");
 
         if (responseKundenLngLat.data.length > 0) {
           for (let i = 0; i < responseKundenLngLat.data.length; i++) {
@@ -327,7 +327,7 @@ export default {
           lat: this.lat
         };
 
-        const responseAdressen = await axios.post("/Adressen", adressen, this.$store.getters.getLoginData);
+        const responseAdressen = await axios.post("/Adressen", adressen);
 
         console.log(responseAdressen);
         console.log(responseAdressen.data);
@@ -345,7 +345,7 @@ export default {
           bestellradius: this.bestellradius
         };
 
-        var responseRestaurant = await axios.post("/Restaurant", restaurant, this.$store.getters.getLoginData);
+        var responseRestaurant = await axios.post("/Restaurant", restaurant);
 
         this.restaurant_ID = responseRestaurant.data.restaurant_ID;
 
@@ -358,7 +358,7 @@ export default {
 
           console.log(entfernung);
 
-          await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
+          await axios.post("/EntfernungKundeRestaurant", entfernung);
 
         }
         if (this.restaurantBild !== null) {

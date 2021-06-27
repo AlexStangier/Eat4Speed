@@ -584,7 +584,7 @@ export default {
       this.restaurantMindestbestellwert = restaurantData[3];
       this.restaurantBestellradius = restaurantData[4];
       this.restaurantAddress=restaurantData[5]+" "+restaurantData[6]+" "+ restaurantData[7]+" "+restaurantData[8];
-      this.restaurantPhoneNumber=restaurantData[9]
+      this.restaurantPhoneNumber=restaurantData[9];
 
       const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
       if(ResponseBewertung.data.length>0)

@@ -1,26 +1,20 @@
 package de.eat4speed.entities;
 
+import de.eat4speed.dto.BenutzerDto;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Locale;
 import java.util.Objects;
 
 @Entity
 public class Benutzer extends PanacheEntityBase implements Serializable {
-
-    public enum UserRole {
-        KUNDE,
-        RESTAURANT,
-        ADMIN,
-        FAHRER;
-
-        @Override
-        public String toString() {
-            return this.name().toLowerCase(Locale.ROOT);
-        }
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +27,33 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
     private String passwort;
     private String rolle;
     private String paypal_Account;
-    private int telefonnummer;
+    private String telefonnummer;
     private byte geloescht;
+
+    public Benutzer() {
+    }
+
+    public Benutzer(BenutzerDto dto) {
+        this.benutzername = dto.getBenutzername();
+        this.vorname = dto.getVorname();
+        this.nachname = dto.getNachname();
+        this.emailAdresse = dto.getEmailAdresse();
+        this.passwort = Base64.getEncoder().encodeToString(dto.getPasswort().getBytes(StandardCharsets.UTF_8));
+        this.rolle = dto.getRolle();
+        this.paypal_Account = dto.getPaypal_Account();
+        this.telefonnummer = dto.getTelefonnummer();
+    }
+
+    public Benutzer(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, String telefonnummer) {
+        this.benutzername = benutzername;
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.emailAdresse = emailAdresse;
+        this.passwort = passwort;
+        this.rolle = rolle;
+        this.paypal_Account = paypal_Account;
+        this.telefonnummer = telefonnummer;
+    }
 
     public int getBenutzer_ID() {
         return benutzer_ID;
@@ -100,12 +119,8 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         this.paypal_Account = paypal_Account;
     }
 
-    public int getTelefonnummer() {
+    public String getTelefonnummer() {
         return telefonnummer;
-    }
-
-    public void setTelefonnummer(int telefonnummer) {
-        this.telefonnummer = telefonnummer;
     }
 
     /*public int getAnschrift() {
@@ -116,7 +131,8 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
         Anschrift = anschrift;
     }*/
 
-    public Benutzer() {
+    public void setTelefonnummer(String telefonnummer) {
+        this.telefonnummer = telefonnummer;
     }
 
     /**
@@ -134,17 +150,6 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
 
     public void setGeloescht(byte geloescht) {
         this.geloescht = geloescht;
-    }
-
-    public Benutzer(String benutzername, String vorname, String nachname, String emailAdresse, String passwort, String rolle, String paypal_Account, int telefonnummer) {
-        this.benutzername = benutzername;
-        this.vorname = vorname;
-        this.nachname = nachname;
-        this.emailAdresse = emailAdresse;
-        this.passwort = passwort;
-        this.rolle = rolle;
-        this.paypal_Account = paypal_Account;
-        this.telefonnummer = telefonnummer;
     }
 
     @Override
@@ -174,5 +179,17 @@ public class Benutzer extends PanacheEntityBase implements Serializable {
                 ", telefonnummer=" + telefonnummer +
                 ", geloescht=" + geloescht +
                 '}';
+    }
+
+    public enum UserRole {
+        KUNDE,
+        RESTAURANT,
+        ADMIN,
+        FAHRER;
+
+        @Override
+        public String toString() {
+            return this.name().toLowerCase(Locale.ROOT);
+        }
     }
 }

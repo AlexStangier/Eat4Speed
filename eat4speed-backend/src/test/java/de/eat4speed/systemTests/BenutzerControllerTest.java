@@ -37,7 +37,7 @@ public class BenutzerControllerTest {
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUser() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
-                "Test", Benutzer.UserRole.KUNDE.toString(), "Test", 123);
+                "Test", Benutzer.UserRole.KUNDE.toString(), "Test", "123");
 
         Jsonb jsonb = JsonbBuilder.create();
 
@@ -56,7 +56,7 @@ public class BenutzerControllerTest {
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsRestaurant() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
-                "Test", Benutzer.UserRole.RESTAURANT.toString(), "Test", 123);
+                "Test", Benutzer.UserRole.RESTAURANT.toString(), "Test", "123");
 
         Jsonb jsonb = JsonbBuilder.create();
 
@@ -75,7 +75,7 @@ public class BenutzerControllerTest {
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsAdmin() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
-                "Test", Benutzer.UserRole.ADMIN.toString(), "Test", 123);
+                "Test", Benutzer.UserRole.ADMIN.toString(), "Test", "123");
 
         Jsonb jsonb = JsonbBuilder.create();
 
@@ -94,7 +94,7 @@ public class BenutzerControllerTest {
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWhichAlreadyExists() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
-                "Test", Benutzer.UserRole.KUNDE.toString(), "Test", 123);
+                "Test", Benutzer.UserRole.KUNDE.toString(), "Test", "123");
         mockUser.setPasswort(Base64.getEncoder().encodeToString(mockUser.getPasswort().getBytes(StandardCharsets.UTF_8)));
         _benutzerRepository.addBenutzer(mockUser);
 
@@ -110,7 +110,7 @@ public class BenutzerControllerTest {
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWithIncompleteInfo() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "",
-                "Test", Benutzer.UserRole.KUNDE.toString(), "", 123);
+                "Test", Benutzer.UserRole.KUNDE.toString(), "", "123");
 
         Jsonb jsonb = JsonbBuilder.create();
 
@@ -124,7 +124,7 @@ public class BenutzerControllerTest {
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWithInvalidRole() {
         Benutzer mockUser = new Benutzer(TEST_USER_NAME, "Test", "Test", "Test",
-                "Test", "invalid", "Test", 123);
+                "Test", "invalid", "Test", "123");
 
         Jsonb jsonb = JsonbBuilder.create();
 

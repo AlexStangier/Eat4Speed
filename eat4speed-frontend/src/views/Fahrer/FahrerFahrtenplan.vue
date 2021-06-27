@@ -1,14 +1,14 @@
 <template>
   <v-main>
     <v-card class="mx-5 my-5">
-      <v-data-table
-          :headers="headers"
-          :items="data"
-          :items-per-page="10"
-          :single-select="false"
-          class="elevation-1 pa-6"
-          item-key="name"
-          multi-sort
+      <v-data-table v-if="!show"
+                    :headers="headers"
+                    :items="data"
+                    :items-per-page="10"
+                    :single-select="false"
+                    class="elevation-1 pa-6"
+                    item-key="name"
+                    multi-sort
       >
         <template v-slot:top>
           <v-container fluid>
@@ -32,7 +32,7 @@
             <v-btn
                 class="white--text"
                 color="red"
-                @click="unfall_melden()"
+                @click="unfall_melden(); show= !show"
             >
               Unfall melden
             </v-btn>
@@ -61,7 +61,7 @@
 
         <template v-slot:item.actions="{ item }">
           <v-btn
-              :disabled="item.hideButton"
+              :disabled="item.hideButton || (data.indexOf(item) !== currStation)"
               color="primary"
               depressed
               tile
@@ -166,9 +166,10 @@ export default {
         alert("Auftrag bereits verteilt.");
       } else {
         await axios.put("Auftrag/updateAuftragFahrernummer/" + id + "/" + this.fahrernummer, this.$store.getters.getLoginData);
-        //this.active_auftrags_IDs.push(this.auftrags_IDs[index]);
-        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs.length, this.$store.getters.getLoginData);
+        this.active_auftrags_IDs++;
+        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs, this.$store.getters.getLoginData);
         //this.auftrags_IDs.splice(index,1);
+        this.currStation = 0;
       }
     },
     async checkAuftraegeforFahrernummer() {
@@ -186,26 +187,28 @@ export default {
     },
     async abholungBestätigen(id) {
       Vue.set(id, 'hideButton', true);
+      let abgechlossen = 0;
       if (id.beschreibung === 'Abholung') {
         await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       } else {
-        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData).then(response => abgechlossen=response.data);
       }
+      if(this.active_auftrags_IDs>0){
+        this.active_auftrags_IDs -= abgechlossen;
+      }
+      this.currStation++;
       id.hidebutton = true;
     },
     async unfall_melden() {
-      let auftrags_ids = this.data[0].auftrags_id + ", ";
+      let auftrags_ids = this.data[0].auftrags_id;
       for(let i = 1; i < this.data.length; i++){
-        if(i == this.data.length - 1){
-          auftrags_ids += this.data[i].auftrags_id
-        }
-        else {
-          auftrags_ids += this.data[i].auftrags_id + ", ";
-        }
+
+          auftrags_ids += ", " + this.data[i].auftrags_id;
+
       }
+      console.log(this.active_auftrags_IDs);
       await this.$http.put('/route/accident/?auftraege=' + auftrags_ids, this.$store.getters.getLoginData);
-      console.log(auftrags_ids);
-      this.$forceUpdate();
+
     },
     getTermin() {
       const current = new Date();
@@ -237,11 +240,13 @@ export default {
     return {
       data: [],
       fahrernummer: 0,
+      show:false,
       auftrags_IDs: [],
-      active_auftrags_IDs: [],
+      active_auftrags_IDs: 0,
       auftrags_IDs_index: 0,
       benachrichtigungs_ID: 0,
       polling: null,
+      currStation: 0,
       acceptDialog: false,
       deleteDialog: false,
       dialog: false,

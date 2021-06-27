@@ -46,9 +46,11 @@ public interface IFahrerService {
 
     void set_Fahrer_aktuellePos_Ablieferung(long auftr_id, String email);
 
-    public void set_Bestellung_abgeliefert(int auftr_id);
+    void set_Bestellung_abgeliefert(int auftr_id);
 
-    public void accident_report_bestellunng(long auftrags_id);
+    void accident_report_bestellung(long auftrags_id);
 
-    public void accident_report_fahrer(long auftrags_id);
+    void accident_report_fahrer(long auftrags_id);
+
+    int job_done_comp(long auftr_id);
 }

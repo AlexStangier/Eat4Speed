@@ -30,7 +30,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     @Transactional
     public void setPause(int pause, int fahrernummer)
     {
-            update("ist_in_pause = ?1 where fahrernummer = ?2", pause, fahrernummer);
+        update("ist_in_pause = ?1 where fahrernummer = ?2", pause, fahrernummer);
     }
 
     @Transactional
@@ -71,7 +71,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
         fahrer =  query.getResultList();
         return fahrer;
     }
-  
+
     @Transactional
     public void updateFahrer_anzahl_aktueller_Auftraege(int fahrernummer, int anzahl)
     {
@@ -83,14 +83,14 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     {
         List allFahrerData;
 
-                Query query = entityManager.createQuery(
+        Query query = entityManager.createQuery(
                 "SELECT f.fahrernummer,b.vorname,b.nachname,fz.fahrzeugtyp,f.verifiziert,f.anrede, b.emailAdresse  " +
                         "FROM Fahrer f, Benutzer b, Fahrzeug fz " +
                         "WHERE f.fahrzeug = fz.fahrzeug_ID " +
                         "AND f.benutzer_ID = b.benutzer_ID "
 
         );
-                allFahrerData = query.getResultList();
+        allFahrerData = query.getResultList();
 
         return allFahrerData;
     }
@@ -341,7 +341,7 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
     }
 
     @Transactional
-    public void accident_report_bestellunng(long auftrags_id){
+    public void accident_report_bestellung(long auftrags_id){
         Query query = entityManager.createNativeQuery(
                 "UPDATE Bestellung SET status = 'bezahlt' WHERE auftrags_ID = ?1 AND status = 'abgeholt' "
         ).setParameter(1, auftrags_id);
@@ -354,5 +354,16 @@ public class FahrerRepository implements PanacheRepository<Fahrer> {
                 "UPDATE Auftrag SET fahrernummer = '9999' WHERE auftrags_ID = ?1 "
         ).setParameter(1, auftrags_id);
         query.executeUpdate();
+    }
+
+    @Transactional
+    public int job_done_comp(long auftr_id){
+        Query query = entityManager.createNativeQuery(
+                "SELECT (select count(*) " +
+                        "FROM Bestellung " +
+                        "WHERE auftrags_ID = ?1 AND (status != 'abgeliefert' AND status!='storniert'))"
+        ).setParameter(1, auftr_id);
+
+        return Integer.parseInt(query.getResultList().get(0).toString());
     }
 }
