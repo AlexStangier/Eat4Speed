@@ -1,25 +1,13 @@
 package de.eat4speed.systemTests;
 
 import de.eat4speed.controllers.BenutzerController;
-import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
-import static io.restassured.RestAssured.given;
 
 @QuarkusTest
 public class BenutzerControllerTest {
@@ -33,6 +21,7 @@ public class BenutzerControllerTest {
     @Inject
     BenutzerRepository _benutzerRepository;
 
+    /*
     @Test  // TST001 (1)
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUser() {
@@ -138,6 +127,6 @@ public class BenutzerControllerTest {
     void cleanup() {
         this._benutzerRepository.deleteBenutzerByUsername(TEST_USER_NAME);
     }
-
+*/
     //https://www.baeldung.com/java-quarkus-testing
 }
