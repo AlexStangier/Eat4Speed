@@ -1,6 +1,7 @@
 <template>
   <v-main>
     <v-card class="mx-5 my-5">
+      <v-row v-if="show">Unfall gemeldet</v-row>
       <v-data-table v-if="!show"
                     :headers="headers"
                     :items="data"
