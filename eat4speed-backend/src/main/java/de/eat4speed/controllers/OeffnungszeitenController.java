@@ -47,7 +47,7 @@ public class OeffnungszeitenController {
     }
 
     @GET
-    @RolesAllowed("kunde")
+    @RolesAllowed("kunde","restaurant")
     @Path("/getAllZeitenWochentag/{id}/{wochentag}")
     public List getAllZeitenWochentag(@PathParam("id") int restaurant_id, @PathParam("wochentag") int wochentag) {
 
