@@ -384,7 +384,8 @@ export default {
           name: (responseGericht.data[0][1]),
           thumbnail: imageURL,
           quantity: (anzahl[i]),
-          price: (responseGericht.data[0][3])
+          price: (responseGericht.data[0][3]),
+          restaurant_ID: (responseGericht.data[0][5])
         }
 
         this.$store.commit("addToCartGerichte", cartGericht);
