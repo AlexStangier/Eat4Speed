@@ -154,13 +154,147 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="250"
+              :item-height="heightVS"
               max-height="650"
               :key="restaurantsKey"
           >
             <template v-slot:default="{ item }" v-resize>
 
               <v-card
+                  v-if="$vuetify.breakpoint.xs"
+                  flat
+                  tile
+                  outlined
+              >
+                <v-container fluid>
+                  <v-row
+                      v-for="a in 2"
+                      :key="a"
+                  >
+                    <v-col
+                        v-if="a === 1"
+                        cols="5"
+                        class="mb-0"
+                    >
+                      <v-card
+                          flat
+                          tile
+                          outlined
+                      >
+                        <v-img alt="Bild von Essen" min-height="100" max-height="100" max-width="300"
+                               position="center center" :src="item.img"></v-img>
+                      </v-card>
+                    </v-col>
+                    <v-col
+                        v-if="a === 2"
+                        cols="12"
+                        class="mt-0"
+                    >
+                      <v-card
+                          flat
+                          class="text-left"
+                      >
+                        <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
+                      </v-card>
+                      <v-card
+                          flat
+                          class="text-sm-subtitle-1"
+                      >
+                        Mindestbestellwert: {{ item.mindestbestellwert + ' €' }}
+                      </v-card>
+                      <v-crad
+                          flat
+                          class="text-sm-subtitle-1"
+                      >
+                        Bestellradius: {{ item.bestellradius + ' km' }}
+                      </v-crad>
+                      <v-card
+                          v-if="a === 2"
+                          flat
+                          class="text-right"
+                      >
+                        <v-btn
+                            color="primary"
+                            tile
+                            small
+                            bottom="bottom"
+                            @mouseenter="selectRestaurant(item)"
+                            @click="setStoreSearchOptions"
+                        >
+                          Speisekarte
+                        </v-btn>
+                      </v-card>
+                    </v-col>
+                    <v-col>
+                      <v-row>
+                        <v-col
+                            cols="8"
+                        >
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-sm-h5 text-decoration-underline"
+                          >
+                            {{ item.restaurant }}
+                          </v-card>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-sm-subtitle-1"
+                          >
+                            {{ item.description }}
+                          </v-card>
+                        </v-col>
+                        <v-col>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-right"
+                          >
+                            <div v-if="item.isFav === true">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectRestaurant(item)"  small right
+                                      @mousedown="deleteFromFavorites"
+                                      @mouseup="()=>{this.amountRestaurants=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Hinzugefügt am {{ item.hinzufuegedatum }}</span>
+                              </v-tooltip>
+                            </div>
+                            <div v-else>
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectRestaurant(item)"  small right
+                                      @mousedown="addToFavorites"
+                                      @mouseup="()=>{this.amountRestaurants=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zu Favoriten hinzufügen</span>
+                              </v-tooltip>
+                            </div>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+
+              <v-card
+                  v-else
                   flat
                   tile
                   outlined
@@ -185,7 +319,7 @@
                           :key="a"
                       >
                         <v-col
-                            cols="4"
+                            cols="6"
                         >
                           <v-card
                               v-if="a === 1"
@@ -635,6 +769,17 @@ export default {
           distance: cdistance
         }
       })
+    },
+    heightVS()
+    {
+      if(this.$vuetify.breakpoint.xs)
+      {
+        return 260
+      }
+      else
+      {
+        return 250
+      }
     }
   },
   watch: {
