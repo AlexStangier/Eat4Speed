@@ -255,7 +255,7 @@ public class Algo_FahrerAuswahl {
         {
             URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/id");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("POST");
+            http.setRequestMethod("GET");
             http.setDoOutput(true);
             http.setRequestProperty("Content-Type", "application/json");
 
