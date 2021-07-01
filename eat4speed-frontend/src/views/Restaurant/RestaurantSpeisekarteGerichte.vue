@@ -213,8 +213,7 @@
                                       ></v-textarea>
                                       <label>
                                         Bild auswählen
-                                        <input type="file" ref="file" id="fileChange" accept="image/*"
-                                               v-on:change="selectedPicture()"/>
+                                        <input type="file" ref="file" id="fileUp" accept="image/*" v-on:change="selectedPicture()"/>
                                       </label>
                                       <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
                                                     append-icon="currency-eur" :rules="[rules.required,rules.price]">
@@ -732,6 +731,10 @@ export default {
 
     },
     selectedPicture() {
+      this.gerichtBild = this.$refs.file.files[0];
+    },
+    selectedPictureUp() {
+      console.log(this.$refs.file);
       this.gerichtBild = this.$refs.file.files[0];
     },
     async deleteGericht() {
