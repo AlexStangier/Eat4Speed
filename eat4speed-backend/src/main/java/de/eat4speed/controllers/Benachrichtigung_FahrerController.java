@@ -8,6 +8,7 @@ import de.eat4speed.repositories.FahrzeugRepository;
 import de.eat4speed.services.interfaces.IBenachrichtigung_FahrerService;
 import org.json.JSONObject;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -30,7 +31,7 @@ public class Benachrichtigung_FahrerController {
     IBenachrichtigung_FahrerService benachrichtigung_fahrerService;
 
     @PUT
-    @RolesAllowed("fahrer")
+    @PermitAll
     @Path("/markAsGelesen/{benachrichtigungs_ID}")
     public void markAsGelesen(@PathParam("benachrichtigungs_ID") int benachrichtigungs_ID)
     {
