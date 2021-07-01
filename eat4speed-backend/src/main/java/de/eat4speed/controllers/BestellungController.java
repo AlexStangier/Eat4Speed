@@ -108,7 +108,7 @@ public class BestellungController {
             System.out.println("TEST");
             URL url = new URL("https://eat4speed.xyz/FahrerAuswahl/FahrerAuswahl/start/" + (int)id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("PUT");
+            http.setRequestMethod("POST");
             http.setDoOutput(false);
             http.setReadTimeout(10);
             http.getInputStream();
