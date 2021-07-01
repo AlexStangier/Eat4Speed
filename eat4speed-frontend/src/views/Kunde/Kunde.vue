@@ -263,7 +263,7 @@
                           flat
                           class="subtitle-1"
                       >
-                        {{item.distance+' km'}}
+                        {{item.distance.toFixed(1) +' km'}}
                       </v-card>
                       <v-card
                           v-if="a === 2"
@@ -597,7 +597,7 @@
                               flat
                               class="subtitle-1"
                           >
-                            Entfernung: {{item.distance+' km'}}
+                            Entfernung: {{item.distance.toFixed(1) +' km'}}
                           </v-card>
                           <v-card
                               v-if="a === 2"
