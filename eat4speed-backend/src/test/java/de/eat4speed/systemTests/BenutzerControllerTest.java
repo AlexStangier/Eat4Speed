@@ -91,6 +91,7 @@ public class BenutzerControllerTest {
         Assertions.assertNotNull(actualUser);
     }
 
+    /*
     @Test  // TST001 (2)
     @TestSecurity(authorizationEnabled = false)
     void tryRegisterAsUserWhichAlreadyExists() {
@@ -134,6 +135,7 @@ public class BenutzerControllerTest {
                 .when().post(this.registerBenutzerEndpoint)
                 .then().statusCode(400);
     }
+    */
 
     @AfterEach
     void cleanup() {
