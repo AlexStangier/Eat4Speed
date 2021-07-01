@@ -232,7 +232,7 @@
                                 color="primary"
                                 depressed
                                 tile
-                                :disabled="!valid"
+                                :disabled="!valid || regDisable"
                                 @click="validateRegistration"
                             >Fahrerkonto erstellen
                             </v-btn>
@@ -362,6 +362,8 @@ export default {
         kapazitaet_Gerichte: parseInt(this.capacity)
       };
 
+      this.regDisable = true;
+
       const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
 
       this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_ID;
@@ -448,7 +450,8 @@ export default {
         capacity: (v) => (v>0 && v<10000&&/^[0-9]{1,3}$/.test(v)) || "Diese Zahl wird nicht akzeptiert",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       },
-      dialog: false
+      dialog: false,
+      regDisable: false
     };
   }
   ,
