@@ -257,7 +257,7 @@ export default {
       //das ist so gewollt!
       response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
     } catch (e) {
-      if (e.response.status === 403) {
+      if(e.response.status === 403 || e.response.status === 401){
         window.location.reload();
       }
     }

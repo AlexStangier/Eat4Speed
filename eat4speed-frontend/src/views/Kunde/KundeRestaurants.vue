@@ -206,7 +206,7 @@
                           flat
                           class="text-sm-subtitle-1"
                       >
-                        Bestellradius: {{ item.bestellradius + ' km' }}
+                        Bestellradius: {{ item.bestellradius.toFixed(1) + ' km' }}
                       </v-crad>
                       <v-card
                           v-if="a === 2"
@@ -340,7 +340,7 @@
                               flat
                               class="subtitle-1"
                           >
-                            Bestellradius: {{ item.bestellradius + ' km' }}
+                            Bestellradius: {{ item.bestellradius.toFixed(1) + ' km' }}
                           </v-card>
                         </v-col>
                         <v-col>

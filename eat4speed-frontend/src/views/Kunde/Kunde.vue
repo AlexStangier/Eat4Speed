@@ -201,7 +201,7 @@
                         <v-btn
                             color="error"
                             tile
-                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                            @click="deleteFilters()"
                         >
                           Löschen
                         </v-btn>
@@ -263,7 +263,7 @@
                           flat
                           class="subtitle-1"
                       >
-                        {{item.distance+' km'}}
+                        {{item.distance.toFixed(1) +' km'}}
                       </v-card>
                       <v-card
                           v-if="a === 2"
@@ -597,7 +597,7 @@
                               flat
                               class="subtitle-1"
                           >
-                            Entfernung: {{item.distance+' km'}}
+                            Entfernung: {{item.distance.toFixed(1) +' km'}}
                           </v-card>
                           <v-card
                               v-if="a === 2"
@@ -1016,6 +1016,8 @@ export default {
 
       this.searchOptions = searchOptions;
 
+      this.$store.commit("changeSearchOptions",this.searchOptions);
+
       const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
 
       for (let i = 0; i < responseAlternatives.data.length; i++) {
@@ -1216,6 +1218,18 @@ export default {
       this.loadAllKategorien();
       this.loadAllAllergene();
     },
+    async deleteFilters()
+    {
+      this.mindestbestellwertOptionActive=false;
+      this.kategorieOptionActive=false;
+      this.allergeneOptionActive=false;
+      this.nameOptionActive=true;
+      this.selectedMindestbestellwert=0;
+      this.selectedKategorien=[];
+      this.selectedAllergene=[];
+      this.applyFiltersAndSearch();
+    },
+
     async loadAllKategorien() {
       const responseGetKategorie = await axios.get("Kategorie");
 

@@ -419,7 +419,7 @@ export default {
       }
       catch (e)
       {
-        if(e.response.status === 403)
+        if(e.response.status === 403 || e.response.status === 401)
         {
           window.location.reload();
         }
@@ -731,7 +731,14 @@ export default {
 
     },
     selectedPicture() {
-      this.gerichtBild = this.$refs.file.files[0];
+      if(this.$refs.file.files === undefined)
+      {
+        this.gerichtBild = this.$refs.file[0].files[0];
+      }
+      else
+      {
+        this.gerichtBild = this.$refs.file.files[0];
+      }
     },
     selectedPictureUp() {
       console.log(this.$refs.file);

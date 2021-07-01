@@ -1011,7 +1011,10 @@ export default {
       const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
       if(ResponseBewertung.data.length>0)
       {
-        this.restaurantRating = ResponseBewertung.data[0][0];
+        if(ResponseBewertung.data[0][0]>0)
+        {
+          this.restaurantRating = ResponseBewertung.data[0][0];
+        }
         this.restaurantBewertungCount = ResponseBewertung.data[0][1];
       }
 
