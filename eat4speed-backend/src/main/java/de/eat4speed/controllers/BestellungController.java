@@ -93,7 +93,7 @@ public class BestellungController {
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
 
-    @PUT
+    @POST
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
@@ -106,7 +106,7 @@ public class BestellungController {
         try {
             //Überprüfung ob Fahrerauswahl starten soll
             System.out.println("TEST");
-            URL url = new URL("https://eat4speed.xyz/FahrerAuswahl/FahrerAuswahl/start/" + (int)id);
+            URL url = new URL("https://eat4speed.xyz/FahrerAuswahl/start/" + (int)id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("POST");
             http.setDoOutput(false);
