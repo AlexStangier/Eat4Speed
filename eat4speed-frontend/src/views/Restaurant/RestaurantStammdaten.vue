@@ -289,9 +289,9 @@ export default {
             restaurant_ID: this.restaurant_ID
           }
 
-          const responseBenutzerRestaurantToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
-          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
-          const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant, this.$store.getters.getLoginData);
+          await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
+          await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
+          await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant, this.$store.getters.getLoginData);
 
           // console.log(responseBenutzerRestaurantToAlter);
           // console.log(responseAdresseToAlter);
@@ -308,7 +308,7 @@ export default {
               }
             };
 
-            const responsePictureUpload = await axios.post('/RestaurantBilder/upload',
+            await axios.post('/RestaurantBilder/upload',
                 picturedata, options
             ).then(function () {
               console.log('Picture successfully uploaded');

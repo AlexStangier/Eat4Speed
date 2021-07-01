@@ -372,7 +372,7 @@ export default {
             }
           };
 
-          const responsePictureUpload = await axios.post('/RestaurantBilder/upload',
+          await axios.post('/RestaurantBilder/upload',
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
