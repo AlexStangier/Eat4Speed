@@ -230,7 +230,9 @@ export default {
     },
   },
   async mounted() {
-    await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data, this.$store.getters.getLoginData);
+    await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => {
+      this.data = response.data === "" ? [] : response.data;
+    }, this.$store.getters.getLoginData);
     await this.getLoggedInFahrer();
     this.pollData();
 
