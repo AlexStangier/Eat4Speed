@@ -32,7 +32,7 @@ public class Algo_FahrerAuswalController {
     {
         BestellungRepository bestellungRepository = new BestellungRepository();
         List<Bestellung> bestellungen = bestellungRepository.find("Auftrags_ID", bestellungRepository.getBestellungByID(Bestell_ID).getAuftrags_ID()).list();
-
+        System.out.println(bestellungen);
         int count = 0;
         for (Bestellung b : bestellungen)
         {
@@ -45,7 +45,7 @@ public class Algo_FahrerAuswalController {
         if (count == bestellungen.size())
         {
             try {
-                URL url = new URL("https://eat4speed.xyz/#/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
+                URL url = new URL("https://eat4speed.xyz/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("PUT");
                 http.setDoOutput(false);
