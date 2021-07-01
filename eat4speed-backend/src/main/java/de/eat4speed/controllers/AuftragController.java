@@ -52,7 +52,7 @@ public class AuftragController {
     }
 
     @PUT
-    @RolesAllowed({"fahrer,kunde,restaurant"})
+    @PermitAll
     @Path("updateAuftragFahrernummer/{auftrags_ID}/{fahrernummer}")
     public Response updateAuftragFahrernummer(@PathParam("auftrags_ID") int auftrags_ID, @PathParam("fahrernummer") int fahrernummer)
     {
@@ -67,7 +67,7 @@ public class AuftragController {
     }
 
     @PUT
-    @RolesAllowed({"kunde", "restaurant"})
+    @PermitAll
     @Path("setToErledigt/{auftrags_ID}")
     public Response setToErledigt(@PathParam("auftrags_ID") int auftrags_ID)
     {
