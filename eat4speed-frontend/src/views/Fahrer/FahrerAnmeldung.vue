@@ -301,7 +301,7 @@ export default {
       //}
     },
     async login() {
-      console.log(this.loginEmail)
+      // console.log(this.loginEmail)
       const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
       if(responseGeloescht.data[0]===1)
       {

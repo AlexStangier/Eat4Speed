@@ -293,21 +293,21 @@ export default {
         //console.log(this.date);
         //console.log(moment(this.date,"YYYY/MM/DD"));
         let demandMoment = moment(this.date,"YYYY/MM/DD");
-        console.log(demandMoment);
+        // console.log(demandMoment);
         let demandMomentDate = demandMoment.toDate();
         this.dayOfWeek = demandMomentDate.getDay();
         //console.log(this.dayOfWeek);
 
-        console.log(this.time);
+        // console.log(this.time);
 
         let demandMomentTime = moment(this.time,format);
-        console.log(demandMomentTime);
+        // console.log(demandMomentTime);
         demandMomentDate.setHours(demandMomentTime.hours());
         demandMomentDate.setMinutes(demandMomentTime.minutes());
-        console.log(demandMomentDate);
+        // console.log(demandMomentDate);
 
         let trueDate = moment(demandMomentDate);
-        console.log(trueDate);
+        // console.log(trueDate);
 
         if(trueDate.isBefore(nowFormatted))
         {
@@ -341,7 +341,7 @@ export default {
           if(demandTime.isBetween(anfangTimeTwo,endeTimeTwo))
           {
             resOk = true;
-            console.log("ok "+e);
+            // console.log("ok "+e);
           }
         }
         if(resOk===false)
@@ -354,7 +354,7 @@ export default {
       if(this.problemGerichte.length===0)
       {
         this.oeffnungszeitenOkay = true;
-        console.log("test");
+        // console.log("test");
       }
       else {
         let alertString = "Die folgenden Gerichte können zu der ausgewählten Öffnungszeit nicht bestellt werden: ";
@@ -397,7 +397,7 @@ export default {
 
       const customerId = await this.getCustomerId();
 
-      console.log(customerId);
+      // console.log(customerId);
 
       this.$http.post('/Bestellung/add', {
         items: items,

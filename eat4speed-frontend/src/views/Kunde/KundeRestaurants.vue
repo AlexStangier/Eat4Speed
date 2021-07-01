@@ -324,7 +324,7 @@ export default {
     this.searchString = this.$store.getters.searchString;
     this.searchOptions = this.$store.getters.searchOptionsRestaurant;
 
-    console.log(this.searchString);
+    // console.log(this.searchString);
     await this.checkLoggedInUser();
     await this.getLoggedInKunde();
     await this.getAllEntfernungenAndBewertungen();
@@ -358,7 +358,7 @@ export default {
       }
     },
     selectRestaurant(item) {
-      console.log("Restaurant selected " + item.restaurantid);
+      // console.log("Restaurant selected " + item.restaurantid);
       this.selectedRestaurant = item.restaurantid;
     },
     getStoreSeachString() {
@@ -369,7 +369,7 @@ export default {
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
-      console.log("changed searchString to " + this.$store.getters.searchString);
+      // console.log("changed searchString to " + this.$store.getters.searchString);
     },
     setStoreSearchOptions() {
       this.$store.commit("changeSearchOptionsRestaurant", this.searchOptions);
@@ -388,7 +388,7 @@ export default {
 
         const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
-        console.log(ResponseFavoriten);
+        // console.log(ResponseFavoriten);
         for (let i = 0; i < ResponseFavoriten.data.length; i++) {
           let favData = ResponseFavoriten.data[i];
           this.favoritenlisteRestaurants_IDs[i] = favData[0];
@@ -398,7 +398,7 @@ export default {
 
       const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
 
-      console.log(ResponseRestaurants);
+      // console.log(ResponseRestaurants);
 
       for (let i = 0; i < ResponseRestaurants.data.length; i++) {
         let restaurantData = ResponseRestaurants.data[i];
@@ -444,16 +444,16 @@ export default {
         const config = {responseType: "arraybuffer"};
         const responsePicture = await axios.get("/RestaurantBilder/getBild/" + this.restaurant_IDs[i], config);
 
-        console.log(responsePicture);
+        // console.log(responsePicture);
 
         if (responsePicture.status !== 204) {
-          console.log("received Picture")
-          console.log(responsePicture.data);
+          // console.log("received Picture")
+          // console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
+          // console.log(imageURL);
 
           this.imgs[i] = imageURL;
         } else {

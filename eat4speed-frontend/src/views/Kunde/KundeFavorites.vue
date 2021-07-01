@@ -316,7 +316,7 @@ export default {
       {
         const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
-        console.log(ResponseGerichte);
+        // console.log(ResponseGerichte);
 
         //console.log("Verarbeite ResponseGerichte")
 
@@ -342,7 +342,7 @@ export default {
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
           let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0], this.$store.getters.getLoginData);
-          console.log(ResponseAmount);
+          // console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
           {
@@ -357,17 +357,17 @@ export default {
           const config = { responseType:"arraybuffer" };
           const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-          console.log(responsePicture);
+          // console.log(responsePicture);
 
           if(responsePicture.status !== 204)
           {
-            console.log("received Picture")
-            console.log(responsePicture.data);
+            // console.log("received Picture")
+            // console.log(responsePicture.data);
 
             let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
             let imageURL = URL.createObjectURL(pictureBlob);
-            console.log(imageURL);
+            // console.log(imageURL);
 
             this.imgs[i] = imageURL;
           }
@@ -379,7 +379,7 @@ export default {
         }
 
         //console.log("Verarbeitung abgeschlossen")
-        console.log(this.imgs);
+        // console.log(this.imgs);
         this.amountGerichte = 0;
         this.amountGerichte = ResponseGerichte.data.length;
       }
@@ -396,7 +396,7 @@ export default {
           this.hinzufuegedaten[i] = restaurantData[12];
 
           let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0], this.$store.getters.getLoginData);
-          console.log(ResponseAmount);
+          // console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
           {
@@ -410,17 +410,17 @@ export default {
           const config = { responseType:"arraybuffer" };
           const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.restaurant_IDs[i],config);
 
-          console.log(responsePicture);
+          // console.log(responsePicture);
 
           if(responsePicture.status !== 204)
           {
-            console.log("received Picture")
-            console.log(responsePicture.data);
+            // console.log("received Picture")
+            // console.log(responsePicture.data);
 
             let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
             let imageURL = URL.createObjectURL(pictureBlob);
-            console.log(imageURL);
+            // console.log(imageURL);
 
             this.imgs[i] = imageURL;
           }
@@ -438,17 +438,17 @@ export default {
       this.favoritenKey++;
     },
     selectItem(item) {
-      console.log("Gericht selected "+item.id);
+      // console.log("Gericht selected "+item.id);
       this.selectedItem = item;
     },
     selectGericht(item) {
-      console.log("Gericht selected "+item.id);
+      // console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+      // console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     async fillAllergene(item)
     {
@@ -475,7 +475,7 @@ export default {
     },
     addToCart() {
 
-      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      // console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
@@ -487,7 +487,7 @@ export default {
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+      // console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
   },
   data: () => ({

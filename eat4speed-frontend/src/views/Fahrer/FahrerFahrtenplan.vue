@@ -207,7 +207,7 @@ export default {
           auftrags_ids += ", " + this.data[i].auftrags_id;
 
       }
-      console.log(this.active_auftrags_IDs);
+      // console.log(this.active_auftrags_IDs);
       await this.$http.put('/route/accident/?auftraege=' + auftrags_ids, this.$store.getters.getLoginData);
 
     },

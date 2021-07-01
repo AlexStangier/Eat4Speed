@@ -197,7 +197,7 @@ export default {
 
         var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
-        console.log(response);
+        // console.log(response);
 
         this.lng = response.data.features[0].geometry.coordinates[0];
         this.lat = response.data.features[0].geometry.coordinates[1];
@@ -243,13 +243,13 @@ export default {
 
             var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
 
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
+            // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
+            // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
 
             for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
               this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
             }
-            console.log(this.distances);
+            // console.log(this.distances);
           }
 
           for (let i = 0; i < this.distances.length; i++) {
@@ -259,7 +259,7 @@ export default {
               entfernung: this.distances[i]
             };
 
-            console.log(entfernung);
+            // console.log(entfernung);
 
             await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
           }
@@ -293,9 +293,9 @@ export default {
           const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
           const responseRestaurantToAlter = await axios.put("/Restaurant/updateRestaurantStammdaten", restaurant, this.$store.getters.getLoginData);
 
-          console.log(responseBenutzerRestaurantToAlter);
-          console.log(responseAdresseToAlter);
-          console.log(responseRestaurantToAlter);
+          // console.log(responseBenutzerRestaurantToAlter);
+          // console.log(responseAdresseToAlter);
+          // console.log(responseRestaurantToAlter);
 
           if (this.restaurantBild !== null) {
             const picturedata = new FormData();
@@ -317,7 +317,7 @@ export default {
                   console.log('Picture upload error');
                 });
 
-            console.log(responsePictureUpload);
+            // console.log(responsePictureUpload);
           }
 
         } else {
@@ -328,7 +328,7 @@ export default {
     },
     selectedPicture() {
       this.restaurantBild = this.$refs.file.files[0];
-      console.log(this.restaurantBild);
+      // console.log(this.restaurantBild);
     },
     reset() {
       this.$refs.form.reset();

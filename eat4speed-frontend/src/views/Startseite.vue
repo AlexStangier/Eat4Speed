@@ -161,7 +161,7 @@ export default {
       if(this.isUserLoggedInBoolean)
       {
         const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'));
-        console.log(responseRolle);
+        // console.log(responseRolle);
         if(responseRolle.data==="fahrer")
         {
           this.$router.push({name: "FahrerFahrtenplan"});
@@ -186,12 +186,12 @@ export default {
     },
     async getVorschlaege() {
       const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
-      console.log(responsePreferences);
-      console.log(responsePreferences.data);
-      console.log(responsePreferences.data.data);
-      console.log(responsePreferences.data.data[0]);
-      console.log(responsePreferences.data.data[0].amount);
-      console.log(responsePreferences.data.data[0].categorie);
+      // console.log(responsePreferences);
+      // console.log(responsePreferences.data);
+      // console.log(responsePreferences.data.data);
+      // console.log(responsePreferences.data.data[0]);
+      // console.log(responsePreferences.data.data[0].amount);
+      // console.log(responsePreferences.data.data[0].categorie);
 
       for (let i = 0; i < responsePreferences.data.data.length; i++) {
         this.kategorienAmount.push(responsePreferences.data.data[i])
@@ -207,13 +207,13 @@ export default {
         return 0;
       });
 
-      console.log(this.kategorienAmount);
+      // console.log(this.kategorienAmount);
 
       for (let i = 0; i < this.kategorienAmount.length; i++) {
         this.kategorien[i] = this.kategorienAmount[i].categorie.toString();
       }
 
-      console.log(this.kategorien);
+      // console.log(this.kategorien);
 
       let useHeiss = false;
       let useKalt = false;
@@ -235,7 +235,7 @@ export default {
         this.kategorien.push("kalt");
       }
 
-      console.log(this.kategorien);
+      // console.log(this.kategorien);
 
       this.searchDestination = "Gerichte";
 
@@ -261,7 +261,7 @@ export default {
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
-      console.log("changed searchString to " + this.$store.getters.searchString);
+      // console.log("changed searchString to " + this.$store.getters.searchString);
       if (this.searchDestination === "Gerichte") {
         const searchOptions = {
           gericht_ID: -1,
@@ -297,7 +297,7 @@ export default {
         }
         this.$store.commit("changeSearchOptionsRestaurant", searchOptionsRestaurant)
         this.$store.commit("changeSearchType", "Restaurants");
-        console.log("To Restaurants");
+        // console.log("To Restaurants");
         this.$router.push({path: '/kundeRestaurants'});
       }
     },
@@ -305,7 +305,7 @@ export default {
       this.searchDestination = "Gerichte";
     },
     setDestinationToRestaurants() {
-      console.log("Changed Destination to Restaurants");
+      // console.log("Changed Destination to Restaurants");
       this.searchDestination = "Restaurants";
     },
     gerichtFarbe() {

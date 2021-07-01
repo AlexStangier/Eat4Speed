@@ -224,12 +224,12 @@ export default {
     },
     async validate() {
 
-      console.log(this.valid);
+      // console.log(this.valid);
 
       var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
-      console.log(response.data.features[0].geometry.coordinates[0]);
-      console.log(response.data.features[0].geometry.coordinates[1]);
+      // console.log(response.data.features[0].geometry.coordinates[0]);
+      // console.log(response.data.features[0].geometry.coordinates[1]);
 
       this.lng = response.data.features[0].geometry.coordinates[0];
       this.lat = response.data.features[0].geometry.coordinates[1];
@@ -295,17 +295,17 @@ export default {
 
           var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
 
-          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
+          // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
+          // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
 
           for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
             this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
           }
-          console.log(this.distances);
+          // console.log(this.distances);
         }
 
-        console.log(this.lng);
-        console.log(this.lat);
+        // console.log(this.lng);
+        // console.log(this.lat);
 
         var adressen = {
           strasse: this.street,
@@ -318,9 +318,9 @@ export default {
 
         const responseAdressen = await axios.post("/Adressen", adressen);
 
-        console.log(responseAdressen);
-        console.log(responseAdressen.data);
-        console.log(responseAdressen.data.adress_ID);
+        // console.log(responseAdressen);
+        // console.log(responseAdressen.data);
+        // console.log(responseAdressen.data.adress_ID);
 
         this.adress_ID = responseAdressen.data.adress_ID;
 
@@ -334,13 +334,13 @@ export default {
 
         var responseKunde = await axios.post("/Kunde", kunde);
 
-        console.log("somethin something")
+        // console.log("somethin something")
 
-        console.log(responseKunde.data.kundennummer);
+        // console.log(responseKunde.data.kundennummer);
         this.kundennummer = responseKunde.data.kundennummer;
 
-        console.log(this.kundennummer);
-        console.log(this.restaurant_IDs);
+        // console.log(this.kundennummer);
+        // console.log(this.restaurant_IDs);
         for (let i = 0; i < this.distances.length; i++) {
           var entfernung = {
             kundennummer: this.kundennummer,
@@ -348,7 +348,7 @@ export default {
             entfernung: this.distances[i]
           };
 
-          console.log(entfernung);
+          // console.log(entfernung);
 
           await axios.post("/EntfernungKundeRestaurant", entfernung);
         }
