@@ -361,7 +361,7 @@ export default {
         fuehrerschein: this.driverLicense,
         ist_in_Pause: 0,
         verifiziert: 0,
-        aktueller_Standort: 1
+        aktueller_Standort: 2606
       };
 
       const responseFahrer = await axios.post("/Fahrer", fahrer)
