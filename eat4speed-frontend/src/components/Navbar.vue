@@ -79,7 +79,7 @@
       <v-spacer></v-spacer>
 
       <v-btn
-          v-if="!isUserLoggedIn && !hideKontoBtn"
+          v-if="!isUserLoggedIn && showHomeBtn"
           :to=" {name: 'Startseite' }"
           class="ml-3"
           color="primary"
@@ -255,6 +255,10 @@ export default {
       const path = this.$route.path;
       return path.includes('/admin') || path.includes('/fahrer') || path.includes('/restaurant') || path.includes('/anmeldung');
     },
+    showHomeBtn() {
+      const path = this.$route.path;
+      return path.includes('/fahrer/anmeldung') || path.includes('/') || path.includes('/anmeldung');
+    }
   },
   beforeRouteLeave(to, from, next) {
     this.setStoreSearchString();
