@@ -73,12 +73,12 @@
       <v-layout align-center justify-center>
         <v-flex md6 sm6 xs12>
           <template>
-            <v-card class="px-4">
+
               <v-col>
                 <v-card-title>Lieferzeiten</v-card-title>
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Montag" v-model="enabled"/>
-
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -158,8 +158,9 @@
 
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Dienstag" v-model="enabled1"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -238,8 +239,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Mittwoch" v-model="enabled2"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -318,8 +320,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Donnerstag" v-model="enabled3"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -398,8 +401,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Freitag" v-model="enabled4"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -478,8 +482,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Samstag" v-model="enabled5"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -558,8 +563,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Sonntag" v-model="enabled6"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -661,7 +667,7 @@
                   </v-card>
                 </v-dialog>
               </v-col>
-            </v-card>
+
           </template>
         </v-flex>
       </v-layout>
