@@ -253,7 +253,7 @@
                               color="primary"
                               depressed
                               tile
-                              :disabled="!valid"
+                              :disabled="!valid || regDisable"
                               @click="validateVerification"
                           >Fahrerkonto erstellen
                           </v-btn>
@@ -377,6 +377,8 @@ export default {
         fahrzeugtyp: this.vehicle
       };
 
+      this.regDisable = true;
+
       const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
 
       this.fahrzeug_ID = repsonseFahrzeug.data.fahrzeug_ID;
@@ -461,7 +463,8 @@ export default {
         min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       },
-      dialog: false
+      dialog: false,
+      regDisable: false
     };
   }
   ,
