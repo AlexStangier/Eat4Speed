@@ -105,7 +105,7 @@ public class BestellungController {
 
         try {
             //Überprüfung ob Fahrerauswahl starten soll
-            URL url = new URL("http:/eat4speed.xyz/FahrerAuswahl/start/" + id);
+            URL url = new URL("http:/eat4speed.xyz/#/FahrerAuswahl/start/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);

@@ -45,7 +45,7 @@ public class Algo_FahrerAuswalController {
         if (count == bestellungen.size())
         {
             try {
-                URL url = new URL("http://localhost:1337/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
+                URL url = new URL("http:/eat4speed.xyz/#/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("PUT");
                 http.setDoOutput(false);
