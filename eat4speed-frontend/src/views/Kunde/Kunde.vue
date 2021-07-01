@@ -1016,6 +1016,8 @@ export default {
 
       this.searchOptions = searchOptions;
 
+      this.$store.commit("changeSearchOptions",this.searchOptions);
+
       const responseAlternatives = await axios.post("Gericht/searchGerichte", searchOptions);
 
       for (let i = 0; i < responseAlternatives.data.length; i++) {
