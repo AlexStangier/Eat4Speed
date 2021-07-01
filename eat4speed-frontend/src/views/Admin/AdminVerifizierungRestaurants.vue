@@ -63,6 +63,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
+                    v-if="item.verifiziert === 0"
                     v-bind="attrs"
                     v-on="on"
                     class="mr-2"
