@@ -2,7 +2,8 @@
   <v-main>
     <v-app-bar color="primary"  dark>
       <v-app-bar-nav-icon @click="drawer = true"></v-app-bar-nav-icon>
-      <v-toolbar-title>Offene Bestellungen</v-toolbar-title>
+      <v-toolbar-title>Offene Bestellungen (❌=stornieren, 🟥=bereit, 🟡=in Zubereitung, ✔️=abholbereit)</v-toolbar-title>
+      <p></p>
     </v-app-bar>
     <v-navigation-drawer
         v-model="drawer"
@@ -14,7 +15,6 @@
           dense
       >
         <v-list-item-group
-            v-model="group"
             active-class="deep-purple--text text--accent-4"
         >
           <router-link  to="/restaurant/controlpanel">
@@ -258,7 +258,8 @@ export default {
   data() {
     return {
       drawer: false,
-      bestellstati: ['stornieren', 'Bereit', 'In Zubereitung', 'Abholbereit'],
+      bestellstati: ['❌', '🟥', '🟡', '✔️'],
+      bestellstatiPlain: ['stornieren', 'bereit', 'in Zubereitung', 'abholbereit'],
       bestellstatifarben: ['red', 'yellow', 'green'],
       eingegangeneBestellungen: [],
       dialog: false,
