@@ -201,7 +201,7 @@
                         <v-btn
                             color="error"
                             tile
-                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                            @click="deleteFilters()"
                         >
                           Löschen
                         </v-btn>
@@ -1216,6 +1216,18 @@ export default {
       this.loadAllKategorien();
       this.loadAllAllergene();
     },
+    async deleteFilters()
+    {
+      this.mindestbestellwertOptionActive=false;
+      this.kategorieOptionActive=false;
+      this.allergeneOptionActive=false;
+      this.nameOptionActive=true;
+      this.selectedMindestbestellwert=0;
+      this.selectedKategorien=[];
+      this.selectedAllergene=[];
+      this.applyFiltersAndSearch();
+    },
+
     async loadAllKategorien() {
       const responseGetKategorie = await axios.get("Kategorie");
 
