@@ -264,7 +264,7 @@
                         class="text-right"
                     >
                  <v-card flat>
-                   MBW: {{ restaurantMindestbestellwert +' €'}}
+                   MBW: {{ restaurantMindestbestellwert.toFixed(2) +' €'}}
                  </v-card>
                </span>
                   </v-col>
@@ -528,7 +528,7 @@
                         class="text-right"
                     >
                  <v-card flat>
-                   Mindestbestellwert: {{ restaurantMindestbestellwert +' €'}}
+                   Mindestbestellwert: {{ restaurantMindestbestellwert.toFixed(2) +' €'}}
                  </v-card>
                </span>
                   </v-col>
@@ -616,7 +616,7 @@
                             class="text-right"
                             flat
                         >
-                          {{'Stückpreis: ' + item.price + ' €' }}
+                          {{'Stückpreis: ' + (item.price).toFixed(2) + ' €' }}
                         </v-card>
                       </v-col>
                     </v-row>
@@ -639,6 +639,7 @@
                                 color="primary"
                                 tile
                                 class="ml-1"
+                                @mouseenter="fillAllergene(item)"
                             >
                               Allergene
                             </v-btn>
@@ -793,7 +794,7 @@
                             class="text-right"
                             flat
                         >
-                          {{'Stückpreis: ' + item.price + ' €' }}
+                          {{'Stückpreis: ' + (item.price).toFixed(2) + ' €' }}
                         </v-card>
                         <v-card
                             v-if="d === 4"
@@ -811,6 +812,7 @@
                                   color="primary"
                                   tile
                                   class="ml-1"
+                                  @mouseenter="fillAllergene(item)"
                               >
                                 Allergene
                               </v-btn>
@@ -1250,6 +1252,17 @@ export default {
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
     },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey++;
+    },
   },
   data: () => ({
     selectedRestaurant_ID:"",
@@ -1315,6 +1328,7 @@ export default {
     ],
     btnType: 0,
     user: 0,
+    allergeneGericht: [],
     allergeneKey: 0,
     timeHeaders: [
       {

@@ -364,7 +364,7 @@
                               flat
                               class="text-sm-subtitle-1 text-right"
                           >
-                            Preis: {{ item.price +' €'}}
+                            Preis: {{ (item.price).toFixed(2) +' €'}}
                           </v-card>
                           <v-card
                               v-if="a === 2"
@@ -665,7 +665,7 @@
                               flat
                               class="subtitle-1 text-right"
                           >
-                            Preis: {{ item.price +' €'}}
+                            Preis: {{ (item.price).toFixed(2) +' €'}}
                           </v-card>
                           <v-card
                               v-if="a === 2"
