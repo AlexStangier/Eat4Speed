@@ -157,7 +157,7 @@
                         <v-col class="text-right">
                           <v-btn color="primary"
                                  depressed tile
-                                 :disabled="!isFormValid"
+                                 :disabled="!isFormValid || regDisable"
                                  @click="validate">Registrieren
                           </v-btn>
                         </v-col>
@@ -225,6 +225,7 @@ export default {
     async validate() {
 
       // console.log(this.valid);
+      this.regDisable = true;
 
       var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
@@ -355,7 +356,7 @@ export default {
         this.$router.push({name: "Startseite"});
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
-
+        this.regDisable = false;
       }
 
 
@@ -422,14 +423,16 @@ export default {
       ],
       emailRules: [
         v => !!v || "Required",
-        v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
+        v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein",
+        v => /^[a-zA-Z0-9@.]*$/.test(v) || "E-Mail darf keine Sonderzeichen enthalten"
       ],
       show1: false,
       rules: {
         required: value => !!value || "Required.",
         min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
-      }
+      },
+      regDisable: false
     }
   }
 };

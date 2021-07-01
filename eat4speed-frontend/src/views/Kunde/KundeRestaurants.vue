@@ -206,7 +206,7 @@
                           flat
                           class="text-sm-subtitle-1"
                       >
-                        Bestellradius: {{ item.bestellradius + ' km' }}
+                        Bestellradius: {{ item.bestellradius.toFixed(1) + ' km' }}
                       </v-crad>
                       <v-card
                           v-if="a === 2"
@@ -236,13 +236,6 @@
                               class="text-sm-h5 text-decoration-underline"
                           >
                             {{ item.restaurant }}
-                          </v-card>
-                          <v-card
-                              v-if="a === 1"
-                              flat
-                              class="text-sm-subtitle-1"
-                          >
-                            {{ item.description }}
                           </v-card>
                         </v-col>
                         <v-col>
@@ -347,7 +340,7 @@
                               flat
                               class="subtitle-1"
                           >
-                            Bestellradius: {{ item.bestellradius + ' km' }}
+                            Bestellradius: {{ item.bestellradius.toFixed(1) + ' km' }}
                           </v-card>
                         </v-col>
                         <v-col>
