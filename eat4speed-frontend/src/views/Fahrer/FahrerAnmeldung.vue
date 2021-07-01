@@ -129,15 +129,6 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                              v-model="driverLicense"
-                              label="Führerschein"
-                              :rules="[rules.required]"
-                              required
-                              maxlength="50"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
                               v-model="password"
                               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                               :rules="[rules.required, rules.min]"
@@ -200,6 +191,15 @@
                               required
                           ></v-combobox>
                         </v-col>
+                        <v-text-field
+                            v-model="capacity"
+                            label="Kapazität"
+                            maxlength="10"
+                            type="number"
+                            steps="0"
+                            :rules="[rules.required,rules.capacity]"
+                            required
+                        ></v-text-field>
                         <v-col cols="12">
                           <v-checkbox
                               label="AGB gelesen und akzeptiert"
@@ -360,7 +360,8 @@ export default {
         geburtsdatum: this.date,
         fuehrerschein: this.driverLicense,
         ist_in_Pause: 0,
-        verifiziert: 0
+        verifiziert: 0,
+        aktueller_Standort: 1
       };
 
       const responseFahrer = await axios.post("/Fahrer", fahrer)
@@ -383,7 +384,8 @@ export default {
 
       var createdFahrzeug = {
         fahrzeug_ID: this.fahrzeug_ID,
-        fahrzeugtyp: this.vehicle
+        fahrzeugtyp: this.vehicle,
+        kapazitaet_Gerichte: this.capacity
       };
 
       await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
@@ -459,6 +461,7 @@ export default {
       rules: {
         required: (value) => !!value || "Required.",
         min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        capacity: (v) => (v>0 && v<10000&&/^[0-9]{1,3}$/.test(v)) || "Diese Zahl wird nicht akzeptiert",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       },
       dialog: false
