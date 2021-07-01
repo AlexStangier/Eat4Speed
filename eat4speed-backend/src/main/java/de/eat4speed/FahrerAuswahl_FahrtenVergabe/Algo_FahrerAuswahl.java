@@ -125,7 +125,7 @@ public class Algo_FahrerAuswahl {
     {
         URL url;
         try {
-            url = new URL("https://eat4speed.xyz/FahrerAuswahl/" + startPunktID);
+            url = new URL("https://eat4speed.xyz/#/FahrerAuswahl/" + startPunktID);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
@@ -225,7 +225,7 @@ public class Algo_FahrerAuswahl {
 
         try
         {
-            URL url = new URL("https://eat4speed.xyz/BenachrichtigungFahrerAuftrag/");
+            URL url = new URL("https://eat4speed.xyz/#/BenachrichtigungFahrerAuftrag/");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(true);
@@ -253,7 +253,7 @@ public class Algo_FahrerAuswahl {
 
         try
         {
-            URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/id");
+            URL url = new URL("https://eat4speed.xyz/#/Benachrichtigung_Fahrer/id");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
             http.setDoOutput(true);
@@ -298,7 +298,7 @@ public class Algo_FahrerAuswahl {
         {
             try
             {
-                URL url = new URL("https://eat4speed.xyz/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + i);
+                URL url = new URL("https://eat4speed.xyz/#/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + i);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
                 http.setDoOutput(false);
@@ -311,7 +311,7 @@ public class Algo_FahrerAuswahl {
 
             try
             {
-                URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/" + i);
+                URL url = new URL("https://eat4speed.xyz/#/Benachrichtigung_Fahrer/" + i);
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
                 http.setDoOutput(false);
