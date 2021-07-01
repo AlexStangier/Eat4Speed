@@ -26,7 +26,7 @@ public class Algo_FahrerAuswalController {
         _Fahrer_Auswahl.Fahrtenvergabe(id);
     }
 
-    @PUT
+    @POST
     @Path("start/{Bestell_ID}")
     public void startFahrerAuswahl(@PathParam("Bestell_ID") int Bestell_ID)
     {
