@@ -173,7 +173,7 @@ public class Algo_FahrerAuswahl {
 
         try
         {
-            URL url = new URL("https://eat4speed.xyz/Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id);
+            URL url = new URL("https://eat4speed.xyz/#/Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
             http.setDoOutput(true);
@@ -333,7 +333,7 @@ public class Algo_FahrerAuswahl {
 
         for (int i = 0; i < fahrer.size(); i++)
         {
-            if (istImUrlaub(fahrer.get(i).getFahrernummer()) | fahrer.get(i).getAktueller_Standort() == 0)
+            if (fahrer.get(i).getAktueller_Standort() == 0)
             {
                 fahrer.remove(i);
                 i--;
@@ -380,30 +380,11 @@ public class Algo_FahrerAuswahl {
             Schicht schicht = schichtRepository.getSchichtHeute(fahrer.getFahrernummer());
             Fahrzeug fahrzeug = fahrzeugRepository.findByFahrzeugID(fahrer.getFahrzeug());
 
-            if (new Date().after(schicht.getAnfang()) && schicht.getEnde().after(endeAuftrag) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
+            if ( endeAuftrag.after(schicht.getAnfang()) && schicht.getEnde().after(endeAuftrag) && fahrzeug.getKapazitaet_Gerichte() >= anzahlGerichte)
             {
                 isAvailable = true;
             }
         }
         return isAvailable;
-    }
-
-    private boolean istImUrlaub(int fahrernummer)
-    {
-        boolean heute_im_Urlaub = false;
-
-        try
-        {
-            URL url = new URL("https://eat4speed.xyz/Urlaub/HeuteUrlaub/" + fahrernummer);
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("GET");
-            http.setDoOutput(true);
-
-            heute_im_Urlaub = Boolean.getBoolean(getResponse(http.getInputStream()));
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-        return heute_im_Urlaub;
     }
 }
