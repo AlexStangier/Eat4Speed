@@ -3,6 +3,7 @@ package de.eat4speed.dto;
 public class OrderDto {
     public int[] items;
     public int customerId;
+    public long timestamp;
 
     public OrderDto() {
     }

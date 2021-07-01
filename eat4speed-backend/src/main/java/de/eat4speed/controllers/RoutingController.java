@@ -14,7 +14,7 @@ public class RoutingController {
 
     @GET
     @Path("/calculate/{email}")
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String get_Sorted_Waypoints_test(@PathParam("email") String email) {
 
@@ -29,19 +29,18 @@ public class RoutingController {
 
     @PUT
     @Path("/confirm/{art}")
-    @Consumes(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public void confirm_action(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
+    public int confirm_action(@PathParam("art") String art, @QueryParam("auftraege") String auftraege, @QueryParam("data") String data, @QueryParam("email") String email) {
 
-        _router.confirm(art, auftraege, data, email);
+        return _router.confirm(art, auftraege, data, email);
 
     }
 
     @PUT
-    @Path("/accident/{email}")
-    @Consumes(MediaType.TEXT_PLAIN)
-    @Produces(MediaType.TEXT_PLAIN)
-    public void report_accident(@PathParam("email") String email, @QueryParam("auftraege") String auftraege){
-        _router.accident(email, auftraege);
+    @Path("/accident/")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void report_accident(@QueryParam("auftraege") String auftraege){
+        _router.accident(auftraege);
     }
 }

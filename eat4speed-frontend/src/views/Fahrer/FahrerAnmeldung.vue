@@ -58,18 +58,18 @@
                       <v-row>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="salutation" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Anrede"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field
                               v-model="firstName"
                               :rules="[rules.required, rules.lettersAndSpacesOnly]"
                               label="Vorname"
-                              maxlength="20"
+                              maxlength="50"
                               required
                           ></v-text-field>
                         </v-col>
@@ -78,7 +78,7 @@
                               v-model="lastName"
                               :rules="[rules.required, rules.lettersAndSpacesOnly]"
                               label="Nachname"
-                              maxlength="20"
+                              maxlength="50"
                               required
                           ></v-text-field>
                         </v-col>
@@ -87,6 +87,7 @@
                               v-model="email"
                               :rules="emailRules"
                               label="E-Mail"
+                              maxlength="50"
                               required
                           ></v-text-field>
                         </v-col>
@@ -128,14 +129,6 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                              v-model="driverLicense"
-                              label="Führerschein"
-                              :rules="[rules.required]"
-                              required
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
                               v-model="password"
                               :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                               :rules="[rules.required, rules.min]"
@@ -144,6 +137,7 @@
                               hint="Mindestens 8 Zeichen"
                               label="Passwort"
                               name="input-10-1"
+                              maxlength="50"
                               @click:append="show1 = !show1"
                               required
                           ></v-text-field>
@@ -156,6 +150,7 @@
                               :type="show1 ? 'text' : 'password'"
                               block
                               counter
+                              maxlength="50"
                               label="Passwort bestätigen"
                               name="input-10-1"
                               @click:append="show1 = !show1"
@@ -163,102 +158,93 @@
                           ></v-text-field>
                         </v-col>
                         <v-spacer></v-spacer>
-                        <v-col>
-                          <v-btn
-                              :disabled="!validateRegistration"
-                              color="primary"
-                              depressed
-                              tile
-                              @click="validateRegistration"
-                          >Weiter zur Fahrzeug-Auswahl
-                          </v-btn
-                          >
-                        </v-col>
-                      </v-row>
-                    </v-form>
-                  </v-card-text>
-                </v-card>
-              </v-tab-item>
-              <v-tab-item>
-                <v-card class="px-4">
-                  <v-card-text>
-                    <v-form
-                        ref="verificationForm"
-                        v-model="verificationValid"
-                        lazy-validation
-                    >
-                      <v-row>
-                        <v-col cols="12">
-                          <v-combobox
-                              label="Fahrzeug"
-                              :items="vehicles"
-                              v-model="vehicle"
-                              :rules="[rules.required]"
+
+                          <v-col cols="12">
+                            <v-combobox
+                                label="Fahrzeug"
+                                :items="vehicles"
+                                v-model="vehicle"
+                                :rules="[rules.required]"
+                                required
+                            ></v-combobox>
+                          </v-col>
+                          <v-col cols="12">
+                          <v-text-field
+                              v-model="capacity"
+                              label="Kapazität"
+                              maxlength="10"
+                              type="number"
+                              steps="0"
+                              :rules="[rules.required,rules.capacity]"
                               required
-                          ></v-combobox>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-checkbox
-                              label="AGB gelesen und akzeptiert"
-                              v-model="agbAccepted"
-                          ></v-checkbox>
-                        </v-col>
-                        <v-col cols="12" class="mt-n8">
-                          <v-dialog
-                              v-model="dialog"
-                              scrollable
-                              max-width="500px"
-                          >
-                            <template v-slot:activator="{ on, attrs }">
-                              <v-span
-                                  color="primary"
-                                  dark
-                                  v-bind="attrs"
-                                  v-on="on"
-                              >
-                                Zu den Allgemeinen Geschäftsbedingungen
-                              </v-span>
-                            </template>
-                            <v-card>
-                              <v-card-title>Allgemeine Geschäftsbedingungen</v-card-title>
-                              <v-divider></v-divider>
-                              <v-card-text style="height: 400px;">
-                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-                                Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
-
-                                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
-
-                                Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
-                              </v-card-text>
-                              <v-divider></v-divider>
-                              <v-card-actions>
-                                <v-btn
-                                    color="blue darken-1"
-                                    text
-                                    @click="dialog = false"
+                          ></v-text-field>
+                          </v-col>
+                          <v-col cols="12">
+                            <v-checkbox
+                                label="AGB gelesen und akzeptiert"
+                                v-model="agbAccepted"
+                                :rules="[rules.required]"
+                            ></v-checkbox>
+                          </v-col>
+                          <v-col cols="12" class="mt-n8">
+                            <v-dialog
+                                v-model="dialog"
+                                scrollable
+                                max-width="500px"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-span
+                                    color="primary"
+                                    dark
+                                    v-bind="attrs"
+                                    v-on="on"
                                 >
-                                  Schließen
-                                </v-btn>
-                              </v-card-actions>
-                            </v-card>
-                          </v-dialog>
-                        </v-col>
-                        <v-col class="text-left">
-                          <v-btn
-                              color="primary"
-                              depressed
-                              tile
-                              :disabled="!valid"
-                              @click="validateVerification"
-                          >Fahrerkonto erstellen
-                          </v-btn>
-                        </v-col>
+                                  Zu den Allgemeinen Geschäftsbedingungen
+                                </v-span>
+                              </template>
+                              <v-card>
+                                <v-card-title>Allgemeine Geschäftsbedingungen</v-card-title>
+                                <v-divider></v-divider>
+                                <v-card-text style="height: 400px;">
+                                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+                                  Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+
+                                  Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+
+                                  Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer
+                                </v-card-text>
+                                <v-divider></v-divider>
+                                <v-card-actions>
+                                  <v-btn
+                                      color="blue darken-1"
+                                      text
+                                      @click="dialog = false"
+                                  >
+                                    Schließen
+                                  </v-btn>
+                                </v-card-actions>
+                              </v-card>
+                            </v-dialog>
+                          </v-col>
+                          <v-col class="text-left">
+                            <v-btn
+                                color="primary"
+                                depressed
+                                tile
+                                :disabled="!valid || regDisable"
+                                @click="validateRegistration"
+                            >Fahrerkonto erstellen
+                            </v-btn>
+                          </v-col>
+
+
                       </v-row>
                     </v-form>
                   </v-card-text>
                 </v-card>
               </v-tab-item>
+
             </v-tabs>
           </v-card>
         </v-flex>
@@ -297,6 +283,7 @@ export default {
       //}
     },
     async login() {
+      // console.log(this.loginEmail)
       const responseGeloescht = await axios.get("Benutzer/checkIfBenutzerIsGeloescht/"+this.loginEmail);
       if(responseGeloescht.data[0]===1)
       {
@@ -345,7 +332,7 @@ export default {
         geloescht: 0
       };
 
-      const responseBenutzer = await axios.post("/Benutzer", benutzer);
+      const responseBenutzer = await axios.post("/Benutzer/register", benutzer);
 
       this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
@@ -355,7 +342,8 @@ export default {
         geburtsdatum: this.date,
         fuehrerschein: this.driverLicense,
         ist_in_Pause: 0,
-        verifiziert: 0
+        verifiziert: 0,
+        aktueller_Standort: 2606
       };
 
       const responseFahrer = await axios.post("/Fahrer", fahrer)
@@ -364,13 +352,17 @@ export default {
       if (this.$refs.registrationForm.validate()) {
         this.tab = 2;
       }
+      await this.validateVerification();
     },
 
     async validateVerification() {
 
       var fahrzeug = {
-        fahrzeugtyp: this.vehicle
+        fahrzeugtyp: this.vehicle,
+        kapazitaet_Gerichte: parseInt(this.capacity)
       };
+
+      this.regDisable = true;
 
       const repsonseFahrzeug = await axios.post("/Fahrzeug", fahrzeug);
 
@@ -378,10 +370,14 @@ export default {
 
       var createdFahrzeug = {
         fahrzeug_ID: this.fahrzeug_ID,
-        fahrzeugtyp: this.vehicle
+        fahrzeugtyp: this.vehicle,
+        kapazitaet_Gerichte: parseInt(this.capacity)
       };
+      console.log(createdFahrzeug);
 
       await axios.put("/Fahrer/updateFahrzeugId/" + this.fahrer_ID, createdFahrzeug);
+
+      this.$router.push({name: "Startseite"});
 
       if (this.$refs.verificationForm.validate()) {
         // submit form to server/API here...
@@ -406,7 +402,6 @@ export default {
       tabs: [
         {name: "Login", icon: "mdi-account"},
         {name: "Registrieren", icon: "mdi-account-outline"},
-        {name: "Verifikation", icon: "mdi-license"}, // TODO: Hide tab head
       ],
       // Verification Tab
       // TODO: retrieve valid vehicles from API
@@ -447,14 +442,17 @@ export default {
       emailRules: [
         (v) => !!v || "Required",
         (v) => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein",
+        (v) => /^[a-zA-Z0-9@.]*$/.test(v) || "E-Mail darf keine Sonderzeichen enthalten"
       ],
       show1: false,
       rules: {
         required: (value) => !!value || "Required.",
         min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        capacity: (v) => (v>0 && v<10000&&/^[0-9]{1,3}$/.test(v)) || "Diese Zahl wird nicht akzeptiert",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       },
-      dialog: false
+      dialog: false,
+      regDisable: false
     };
   }
   ,

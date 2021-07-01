@@ -106,12 +106,18 @@ public class Algo_FahrerAuswahl {
             }
             try
             {
+                AnzahlGerichte(auftragID);
                 Thread.sleep(((naheFahrer.size() > 0) ? (maxSekunden / naheFahrer.size()) : 30) * 1000);
             }
             catch (Exception e)
             {
                 e.printStackTrace();
             }
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, (int)start.getAuftrags_ID());
         }
     }
 
@@ -249,7 +255,7 @@ public class Algo_FahrerAuswahl {
         {
             URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/id");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("POST");
+            http.setRequestMethod("GET");
             http.setDoOutput(true);
             http.setRequestProperty("Content-Type", "application/json");
 
@@ -346,7 +352,7 @@ public class Algo_FahrerAuswahl {
 
             List<Integer> da = new ArrayList<>();
 
-            for (int i = 0; i < distances.size() && i < maxFahrer; i++)
+            for (int i = 0; i < distances.size() && naheFahrer.size() < maxFahrer; i++)
             {
                 if (CheckFahrerAvailability(distances.get(i).getFahrer(), distances.get(i).getFahrzeit(), getGeschaetzte_Fahrtzeit))
                 {

@@ -1,5 +1,6 @@
 package de.eat4speed.services.interfaces;
 
+import de.eat4speed.dto.BenutzerDto;
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.entities.Favoritenliste_Restaurants;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public interface IBenutzerService {
 
-    Response addBenutzer(Benutzer obj);
+    Response addBenutzer(BenutzerDto obj);
 
     String listAll();
 

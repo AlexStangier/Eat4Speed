@@ -3,6 +3,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.entities.Favoritenliste_Restaurants;
 import de.eat4speed.services.interfaces.IFavoritenliste_RestaurantsService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,6 +27,7 @@ public class Favoritenliste_RestaurantsController {
 
     @DELETE
     @Path("remove/{kundennummer}/{restaurant_ID}")
+    @RolesAllowed("kunde")
     public Response removeFavoritenliste_Restaurants(@PathParam("restaurant_ID") int restaurant_ID,@PathParam("kundennummer") int kundennummer)
     {
         return favoritenliste_restaurantsService.removeFavoritenliste_Restaurants(restaurant_ID,kundennummer);

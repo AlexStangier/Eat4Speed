@@ -1,5 +1,6 @@
 package de.eat4speed.controllers;
 
+import de.eat4speed.dto.BenutzerDto;
 import de.eat4speed.dto.UserEmailDto;
 import de.eat4speed.entities.Benutzer;
 import de.eat4speed.repositories.BenutzerRepository;
@@ -25,15 +26,10 @@ public class BenutzerController {
     BenutzerRepository benutzerRepository;
 
     @POST
-    public Response add(Benutzer benutzer) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("register")
+    public Response add(BenutzerDto benutzer) {
         return _benutzer.addBenutzer(benutzer);
-    }
-
-    @GET
-    @RolesAllowed("user")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String get() {
-        return _benutzer.listAll();
     }
 
     @POST
@@ -45,18 +41,21 @@ public class BenutzerController {
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("getBenutzerByLogin/{email}")
     public List getBenutzerByLogin(@PathParam("email") String email) {
         return _benutzer.getBenutzerByLogin(email);
     }
 
     @PUT
+    @RolesAllowed({"kunde","restaurant"})
     @Path("updateBenutzerRestaurant")
     public Response updateBenutzerRestaurant(Benutzer benutzer) {
         return _benutzer.updateBenutzerRestaurant(benutzer);
     }
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getBenutzerKundeEinstellungenByLogin/{email}")
     public List getBenutzerKundeEinstellungenByLogin(@PathParam("email") String email) {return _benutzer.getBenutzerKundeEinstellungenByLogin(email);}
 
@@ -68,10 +67,19 @@ public class BenutzerController {
     }
 
     @GET
+    @RolesAllowed({"restaurant","admin"})
     @Path("getRestaurant_IDByBenutzername/{username}")
     public List getRestaurant_IDByBenutzername(@PathParam("username") String username)
     {
         return _benutzer.getRestaurant_IDByBenutzername(username);
+    }
+
+    @GET
+    @RolesAllowed("fahrer")
+    @Path("getFahrernummerByBenutzername/{username}")
+    public List getFahrernummerByBenutzername(@PathParam("username") String username)
+    {
+        return benutzerRepository.getFahrernummerByBenutzername(username);
     }
 
     @GET

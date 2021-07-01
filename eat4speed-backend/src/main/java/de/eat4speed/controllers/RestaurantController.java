@@ -8,6 +8,8 @@ import de.eat4speed.searchOptions.RestaurantSearchOptions;
 import de.eat4speed.services.interfaces.IRestaurantService;
 import org.hibernate.annotations.Parameter;
 
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -37,6 +39,7 @@ public class RestaurantController {
 
     @GET
     @Path("{selection}")
+    @PermitAll
     public List getAllRestaurant(@PathParam("selection") String restaurantSelectionVerifizierung) {
         List restaurantData = null;
 
@@ -58,11 +61,13 @@ public class RestaurantController {
     @POST
     @Path("searchRestaurants")
     public List searchRestaurants(RestaurantSearchOptions options){
+        options.setRestaurantName(options.getRestaurantName().replaceAll("[^A-Za-z0-9öÖäÄüÜß ]",""));
         return _restaurant.searchRestaurants(options);
     }
 
     @GET
     @Path("getRestaurantDataByRestaurantName/{name}")
+    @PermitAll
     public List getRestaurantDataByRestaurantName(@PathParam("name") String restaurantName) {
         return _restaurant.getRestaurantDataByRestaurantName(restaurantName);
     }
@@ -75,6 +80,7 @@ public class RestaurantController {
 
     @GET
     @Path("getRestaurantDataByKundennummer_Favoriten/{kundennummer}")
+    @RolesAllowed("kunde")
     public List getRestaurantDataByKundennummer_Favoriten(@PathParam("kundennummer") int kundennummer)
     {
         return _restaurant.getRestaurantDataByKundennummer_Favoriten(kundennummer);
@@ -82,12 +88,14 @@ public class RestaurantController {
 
     @DELETE
     @Path("{id}")
+    @PermitAll
     public Response deleteRestaurant(@PathParam("id") int id) {
         return _restaurant.deleteRestaurant(id);
     }
 
     @PUT
     @Path("updateRestaurantStammdaten")
+    @RolesAllowed("restaurant")
     public Response updateRestaurantStammdaten(Restaurant restaurant) {
         return _restaurant.updateRestaurantStammdaten(restaurant);
     }

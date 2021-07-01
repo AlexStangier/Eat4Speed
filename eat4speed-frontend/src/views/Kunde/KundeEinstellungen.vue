@@ -15,6 +15,7 @@
                   :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Vorname"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -23,6 +24,7 @@
                   :rules="[rules.required, rules.lettersAndSpacesOnly]"
                   label="Nachname"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -33,6 +35,7 @@
                   :rules="[rules.required]"
                   label="Strasse"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -41,6 +44,7 @@
                   :rules="[rules.required]"
                   label="Hausnummer"
                   required
+                  maxlength="10"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -51,6 +55,7 @@
                   :rules="[rules.required]"
                   label="Ort"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -59,6 +64,7 @@
                   :rules="[rules.required]"
                   label="Postleitzahl"
                   required
+                  maxlength="7"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -70,6 +76,7 @@
                   :rules="emailRules"
                   label="E-mail"
                   required
+                  maxlength="50"
               ></v-text-field>
             </v-col>
             <v-col>
@@ -78,6 +85,7 @@
                   :rules="[rules.required]"
                   label="Telefonnummer"
                   required
+                  maxlength="20"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -161,10 +169,10 @@ export default {
   methods: {
     async loadEinstellungen() {
 
-      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseEinstellungen = await axios.get("Benutzer/getBenutzerKundeEinstellungenByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let EinstellungenData = ResponseEinstellungen.data[0];
 
-      console.log(ResponseEinstellungen);
+      // console.log(ResponseEinstellungen);
 
       this.firstname = EinstellungenData[0];
       this.lastname = EinstellungenData[1];
@@ -191,17 +199,17 @@ export default {
 
         var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
-        console.log(response.data.features[0].geometry.coordinates[0]);
-        console.log(response.data.features[0].geometry.coordinates[1]);
+        // console.log(response.data.features[0].geometry.coordinates[0]);
+        // console.log(response.data.features[0].geometry.coordinates[1]);
 
         this.lng = response.data.features[0].geometry.coordinates[0];
         this.lat = response.data.features[0].geometry.coordinates[1];
 
         if (this.lng > 7.510900 && this.lng < 9.212988 && this.lat > 47.533674 && this.lat < 48.720036) {
 
-          await axios.delete("EntfernungKundeRestaurant/deleteEntfernungByKundennummer/"+this.kundennummer);
+          await axios.delete("EntfernungKundeRestaurant/deleteEntfernungByKundennummer/"+this.kundennummer, this.$store.getters.getLoginData);
 
-          var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat");
+          var responseRestaurantsLngLat = await axios.get("Adressen/getAllRestaurantLngLat", this.$store.getters.getLoginData);
 
           if (responseRestaurantsLngLat.data.length > 0) {
             for (let i = 0; i < responseRestaurantsLngLat.data.length; i++) {
@@ -238,13 +246,13 @@ export default {
 
             var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
 
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-            console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
+            // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
+            // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
 
             for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
               this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
             }
-            console.log(this.distances);
+            // console.log(this.distances);
           }
 
           for (let i = 0; i < this.distances.length; i++) {
@@ -254,9 +262,9 @@ export default {
               entfernung: this.distances[i]
             };
 
-            console.log(entfernung);
+            // console.log(entfernung);
 
-            await axios.post("/EntfernungKundeRestaurant", entfernung);
+            await axios.post("/EntfernungKundeRestaurant", entfernung, this.$store.getters.getLoginData);
           }
 
           let benutzer = {
@@ -283,13 +291,10 @@ export default {
             kundennummer: this.kundennummer
           }
 
-          const responseBenutzerKundeToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer);
-          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse);
-          const responseKundeToAlter = await axios.put("/Kunde/updateKundeEinstellungen", kunde);
+          await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
+          await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
+          await axios.put("/Kunde/updateKundeEinstellungen", kunde, this.$store.getters.getLoginData);
 
-          console.log(responseBenutzerKundeToAlter);
-          console.log(responseAdresseToAlter);
-          console.log(responseKundeToAlter);
         } else {
           this.openSnackbar("Bitte gültige Adresse eingeben!")
 

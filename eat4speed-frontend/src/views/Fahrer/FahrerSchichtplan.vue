@@ -140,18 +140,18 @@ export default {
     },
 
     async setPause(){
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
-      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') }, this.$store.getters.getLoginData);
+      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0]
 
-      await axios.put("Fahrer/setPause/" + fahrer_id[0] + "/" + this.pause)
+      await axios.put("Fahrer/setPause/" + fahrer_id[0] + "/" + this.pause, this.$store.getters.getLoginData)
       await this.loadZeiten()
     },
 
     async setSchicht(tag) {
 
-      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') });
-      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data);
+      const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') }, this.$store.getters.getLoginData);
+      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0]
 
       let anfang;
@@ -204,8 +204,8 @@ export default {
     async calcIfPause(){
       const amountPause = await axios.get("Fahrer/getAmountInPause", this.$store.getters.getLoginData);
       const amountFahrer = await axios.get("Schichten/getAmountActiveSchicht", this.$store.getters.getLoginData);
-      if(((amountFahrer.data - amountPause.data) <= 2) && amountFahrer.data != 1 &&
-          !(amountFahrer.data == 2 && amountPause.data < 2))
+      if(((amountFahrer.data - amountPause.data) <= 2) && amountFahrer.data !== 1 &&
+          !(amountFahrer.data === 2 && amountPause.data < 2))
       {
         return true
       }
@@ -216,11 +216,22 @@ export default {
     async loadZeiten(){
 
       const response = await axios.post("Benutzer/getIdByEmail",{ email: this.$cookies.get('emailAdresse') }, this.$store.getters.getLoginData);
-      const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
+      let fahrer_id_data;
+      try{
+        fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
+      }
+      catch (e)
+      {
+        if(e.response.status === 403)
+        {
+          window.location.reload();
+        }
+      }
+
       const fahrer_id = fahrer_id_data.data[0];
       const schichtdata = await axios.get("/Schichten/getSchicht/" + fahrer_id[0], this.$store.getters.getLoginData);
 
-      if(schichtdata.data.length == 0){
+      if(schichtdata.data.length === 0){
         this.timeInDB = false;
         this.pauseDisabled = true;
         document.getElementById("pause").innerHTML = "Pause nicht verfügbar"
@@ -245,7 +256,7 @@ export default {
             this.pauseColor = "red"
             this.pause = 0
           }
-          if (fahrer_id[1] == 1) {
+          if (fahrer_id[1] === 1) {
             document.getElementById("pause").innerHTML = "Pause beenden..."
             this.pauseColor = "red"
             this.pause = 0

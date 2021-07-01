@@ -13,7 +13,7 @@ public class Adressen extends PanacheEntityBase implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int adress_ID;
     private String strasse;
-    private int hausnummer;
+    private String hausnummer;
     private String ort;
     private int postleitzahl;
     private String lng;
@@ -23,7 +23,7 @@ public class Adressen extends PanacheEntityBase implements Serializable {
 
     }
 
-    public Adressen(String strasse, int hausnummer, String ort, int postleitzahl) {
+    public Adressen(String strasse, String hausnummer, String ort, int postleitzahl) {
         this.strasse = strasse;
         this.hausnummer = hausnummer;
         this.ort = ort;
@@ -46,11 +46,11 @@ public class Adressen extends PanacheEntityBase implements Serializable {
         this.strasse = strasse;
     }
 
-    public int getHausnummer() {
+    public String getHausnummer() {
         return hausnummer;
     }
 
-    public void setHausnummer(int hausnummer) {
+    public void setHausnummer(String hausnummer) {
         this.hausnummer = hausnummer;
     }
 

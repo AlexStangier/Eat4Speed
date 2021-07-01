@@ -12,6 +12,7 @@ import de.eat4speed.repositories.RestaurantRepository;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.common.http.TestHTTPResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -56,10 +57,10 @@ public class OeffnungszeitenControllerTest {
     @BeforeEach
     void setup() {
         Benutzer mockRestaurantOwner = new Benutzer(TEST_USER_NAME, "Eugene", "Krabs",
-                "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "", "", 0);
+                "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "", "", "123");
         this._benutzerRepository.addBenutzer(mockRestaurantOwner);
 
-        Adressen mockAddress = new Adressen("Musterstrasse", 23, "Musterstadt", 11233);
+        Adressen mockAddress = new Adressen("Musterstrasse", Integer.toString(23), "Musterstadt", 11233);
         this._adressenRepository.addAdresse(mockAddress);
 
         this.mockAddressId = mockAddress.getAdress_ID();
@@ -73,6 +74,7 @@ public class OeffnungszeitenControllerTest {
     }
 
     @Test  // TST009 (1)
+    @TestSecurity(authorizationEnabled = false)
     void trySetOpeningHours() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         Timestamp open = new Timestamp(dateFormat.parse("12:00").getTime());
@@ -94,9 +96,12 @@ public class OeffnungszeitenControllerTest {
         // Did the new entry make it into the database
         Oeffnungszeiten actualOpeningHours = this._oeffnungszeitenRepository.getOeffnungszeitenById(openingHoursId);
         Assertions.assertEquals(openingHours, actualOpeningHours);
+
+        this._oeffnungszeitenRepository.deleteOeffnungszeitenById(openingHoursId);
     }
 
     @Test  // TST009 (2)
+    @TestSecurity(authorizationEnabled = false)
     void trySetInvalidOpeningHours() throws ParseException {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm");
         Timestamp open = new Timestamp(dateFormat.parse("20:00").getTime());

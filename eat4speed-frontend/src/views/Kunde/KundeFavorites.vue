@@ -13,6 +13,7 @@
                   :color="btnType === 0 ? 'primary' : 'blue-grey'"
                   class="mt-2 white--text"
                   width="150"
+                  tile
               >
                 Gerichte
               </v-btn>
@@ -21,6 +22,7 @@
                   :color="btnType === 1 ? 'primary' : 'blue-grey'"
                   class="mt-2 ml-2 white--text"
                   width="150"
+                  tile
               >
                 Restaurants
               </v-btn>
@@ -30,11 +32,238 @@
         <v-divider></v-divider>
         <v-virtual-scroll
             :items="items"
-            :item-height="230"
+            :item-height="heightVS"
             max-height="650"
+            :key="favoritenKey"
         >
           <template v-slot:default="{ item }" v-resize>
             <v-card
+                v-if="$vuetify.breakpoint.xs"
+                flat
+                tile
+            >
+              <v-container fluid>
+                <v-row>
+                  <v-col
+                      cols="5"
+                  >
+                    <v-card
+                        flat
+                        tile
+                        class="center"
+                        outlined
+                    >
+                      <v-img alt="Bild von Essen" min-height="100" max-height="100" max-width="300" :src="item.img"></v-img>
+                    </v-card>
+                    <v-card
+                        v-if="displayGerichte===true"
+                        class="text-sm-subtitle-1"
+                        flat
+                    >
+                      <v-icon>mdi-home</v-icon>
+                      {{item.restaurant}}
+                    </v-card>
+                  </v-col>
+                  <v-col>
+                    <v-row
+                        v-for="a in 2"
+                        :key="a"
+                    >
+                      <v-col
+                          cols="8"
+                      >
+                        <v-card
+                            v-if="a === 1 && displayGerichte===true"
+                            class="text-sm-h5 text-decoration-underline"
+                            flat
+                        >
+                          {{ item.name }}
+                        </v-card>
+                        <v-card
+                            v-if="a === 1 && displayGerichte===false"
+                            class="text-sm-h5 text-decoration-underline"
+                            flat
+                        >
+                          {{item.restaurant}}
+                        </v-card>
+                      </v-col>
+                      <v-col class="text-right">
+                        <v-card
+                            v-if="a === 1"
+                            flat
+                        >
+                          <v-btn
+                              small="true"
+                              icon
+                              @mouseenter="selectItem(item)"
+                              @click="deleteFromFavorites"
+                          >
+                            <v-icon>mdi-heart-broken</v-icon>
+                          </v-btn>
+                        </v-card>
+                        <v-card
+                            v-if="a === 2 && displayGerichte===true"
+                            class="text-subtitle-1"
+                            flat
+                        >
+                          Preis: {{ item.price + ' €'}}
+                        </v-card>
+                        <v-card
+                            v-if="a === 2"
+                            flat
+                            class="text-subtitle-1 mt-0"
+                        >
+                          Anzahl Bestellungen: {{item.anzahlBestellungen}}
+                          <v-btn
+                              v-if="displayGerichte===false"
+                              color="primary"
+                              tile
+                              class="ml-1 mt-3"
+                              small="true"
+                              bottom="bottom"
+                              @mouseenter="selectItem(item)"
+                              @click="setStoreRestaurant_ID"
+                          >
+                            Speisekarte
+                          </v-btn>
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col
+                      v-if="displayGerichte"
+                      cols="12"
+                  >
+                    <v-card
+                        flat
+                        class="text-right"
+                    >
+                      <v-dialog
+                          max-width="100%"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                              v-if="displayGerichte"
+                              v-bind="attrs"
+                              v-on="on"
+                              small
+                              color="primary"
+                              class="ml-1 mt-1"
+                              @mouseenter="fillAllergene(item)"
+                              tile
+                          >
+                            Allergene
+                          </v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                          <v-card>
+                            <v-container>
+                              <v-row
+                                  class="pa-2"
+                              >
+                                <v-select
+                                    readonly
+                                    disabled
+                                    :items="allergeneGericht"
+                                    v-model="allergeneGericht"
+                                    chips
+                                    label="Allergene"
+                                    multiple
+                                    :key="allergeneKey"
+                                >
+
+                                </v-select>
+                              </v-row>
+                              <v-row
+                                  class="pa-2"
+                                  justify="end"
+                              >
+                                <v-btn
+                                    class="ml-1 justify-end"
+                                    @click="dialog.value = false"
+                                    color="error"
+                                    tile
+                                >
+                                  Schließen
+                                </v-btn>
+                              </v-row>
+                            </v-container>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+                      <v-btn
+                          v-if="displayGerichte===true"
+                          color="primary"
+                          tile
+                          class="ml-1 mt-1"
+                          small="true"
+                          bottom="bottom"
+                          :to="{name: 'Gericht'}"
+                          @mouseover="selectGericht(item)"
+                      >
+                        Details
+                      </v-btn>
+                      <v-btn
+                          v-if="displayGerichte===true"
+                          color="primary"
+                          tile
+                          class="ml-1 mt-1"
+                          small="true"
+                          bottom="bottom"
+                          @mouseenter="selectItem(item)"
+                          @click="setStoreRestaurant_ID"
+                      >
+                        Speisekarte
+                      </v-btn>
+                      <v-menu
+                          v-if="displayGerichte===true"
+                          bottom
+                          left
+                          offset-y
+                          :close-on-content-click="false"
+                      >
+                        <template v-slot:activator="{ on, attrs}">
+                          <v-btn
+                              color="primary"
+                              tile
+                              class="ml-1 mt-1"
+                              v-bind="attrs"
+                              v-on="on"
+                              small="true"
+                              :disabled="item.available !== 'verfügbar'"
+                              bottom="bottom"
+                              @mouseover="selectItem(item)"
+                              @click="gerichtAnzahl=0"
+                          >
+                            Bestellen
+                          </v-btn>
+                        </template>
+                        <v-list
+                            max-width="200"
+                            min-width="250"
+                            class="text-center"
+                        >
+                          <v-list-item>
+                            <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field>
+                          </v-list-item>
+                          <v-btn
+                              color="primary"
+                              tile
+                              @click="addToCart()"
+                              small="small"
+                          >
+                            Zum Warenkorb hinzufügen
+                          </v-btn>
+                        </v-list>
+                      </v-menu>
+                    </v-card>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card>
+
+            <v-card
+                v-else
                 flat
                 tile
             >
@@ -67,11 +296,20 @@
                           {{ item.name }}
                         </v-card>
                         <v-card
-                            v-if="a === 1 && displayGerichte===true"
+                            v-if="a === 1 && displayGerichte===true && !$vuetify.breakpoint.sm"
                             class="text-subtitle-1"
                             flat
                         >
-                          {{ item.description }}
+                          <span
+                              v-if="item.description.length <= 35"
+                          >
+                              {{ item.description }}
+                          </span>
+                          <span
+                              v-else
+                          >
+                              {{ item.description.substring(0,33)+".." }}
+                          </span>
                         </v-card>
                         <v-card
                             v-if="a === 1 && displayGerichte===false"
@@ -85,6 +323,7 @@
                             class="text-subtitle-1"
                             flat
                         >
+                          <v-icon>mdi-home</v-icon>
                           {{item.restaurant}}
                         </v-card>
                       </v-col>
@@ -126,13 +365,14 @@
                           >
                             <template v-slot:activator="{ on, attrs }">
                               <v-btn
+                                  v-if="displayGerichte"
                                   v-bind="attrs"
                                   v-on="on"
                                   small
                                   color="primary"
+                                  class="ml-1 mt-1"
                                   @mouseenter="fillAllergene(item)"
                                   tile
-                                  class="ml-1"
                               >
                                 Allergene
                               </v-btn>
@@ -140,25 +380,35 @@
                             <template v-slot:default="dialog">
                               <v-card>
                                 <v-container>
-                                  <v-select
-                                      readonly
-                                      disabled
-                                      :items="allergeneGericht"
-                                      v-model="allergeneGericht"
-                                      chips
-                                      label="Allergene"
-                                      multiple
+                                  <v-row
+                                      class="pa-2"
                                   >
+                                    <v-select
+                                        readonly
+                                        disabled
+                                        :items="allergeneGericht"
+                                        v-model="allergeneGericht"
+                                        chips
+                                        label="Allergene"
+                                        multiple
+                                        :key="allergeneKey"
+                                    >
 
-                                  </v-select>
-                                  <v-btn
-                                      class="ml-1 justify-end"
-                                      @click="dialog.value = false"
-                                      color="error"
-                                      tile
+                                    </v-select>
+                                  </v-row>
+                                  <v-row
+                                      class="pa-2"
+                                      justify="end"
                                   >
-                                    Schließen
-                                  </v-btn>
+                                    <v-btn
+                                        class="ml-1 justify-end"
+                                        @click="dialog.value = false"
+                                        color="error"
+                                        tile
+                                    >
+                                      Schließen
+                                    </v-btn>
+                                  </v-row>
                                 </v-container>
                               </v-card>
                             </template>
@@ -167,7 +417,7 @@
                               v-if="displayGerichte===true"
                               color="primary"
                               tile
-                              class="ml-1"
+                              class="ml-1 mt-1"
                               small="true"
                               bottom="bottom"
                               :to="{name: 'Gericht'}"
@@ -178,7 +428,7 @@
                           <v-btn
                               color="primary"
                               tile
-                              class="ml-1"
+                              class="ml-1 mt-1"
                               small="true"
                               bottom="bottom"
                               @mouseenter="selectItem(item)"
@@ -197,7 +447,7 @@
                               <v-btn
                                   color="primary"
                                   tile
-                                  class="ml-1"
+                                  class="ml-1 mt-1"
                                   v-bind="attrs"
                                   v-on="on"
                                   small="true"
@@ -237,6 +487,26 @@
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
+        <v-card
+            v-if="amountGerichte === -1"
+            tile
+        >
+          <v-row justify="center">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                :size="70"
+                :width="7"
+            ></v-progress-circular>
+          </v-row>
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0"
+            tile
+            class="text-center text-h5"
+        >
+          Keine Favoriten gefunden
+        </v-card>
       </v-card>
     </v-container>
 
@@ -260,18 +530,20 @@ export default {
   methods: {
     async getLoggedInKunde()
     {
-      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'))
+      const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
       this.loggedInKunde_ID = response.data[0];
     },
     setDisplayGerichteToTrue() {
       this.btnType = 0
+      this.amountGerichte = -1;
       this.displayGerichte = true;
       this.loadGerichte();
     },
     setDisplayGerichteToFalse() {
       this.btnType = 1;
+      this.amountGerichte = -1;
       this.displayGerichte = false;
-      this.loadGerichte()
+      this.loadGerichte();
     },
     setStoreRestaurant_ID() {
       this.$store.commit("changeSelectedRestaurant_ID",this.selectedItem.restaurant_ID);
@@ -281,9 +553,9 @@ export default {
 
       if(this.displayGerichte === true)
       {
-        const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseGerichte = await axios.get("Gericht/getGerichtDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
-        console.log(ResponseGerichte);
+        // console.log(ResponseGerichte);
 
         //console.log("Verarbeite ResponseGerichte")
 
@@ -308,8 +580,8 @@ export default {
           this.minimums[i] = gerichtData[7];
           this.anzahlBestellungen[i] = gerichtData[6];
           this.hinzufuegedaten[i] = gerichtData[7];
-          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0]);
-          console.log(ResponseAmount);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromCustomerByDishId/"+this.loggedInKunde_ID+"/"+gerichtData[0], this.$store.getters.getLoginData);
+          // console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
           {
@@ -324,17 +596,17 @@ export default {
           const config = { responseType:"arraybuffer" };
           const responsePicture = await axios.get("/GerichtBilder/getBild/"+this.gericht_IDs[i],config);
 
-          console.log(responsePicture);
+          // console.log(responsePicture);
 
           if(responsePicture.status !== 204)
           {
-            console.log("received Picture")
-            console.log(responsePicture.data);
+            // console.log("received Picture")
+            // console.log(responsePicture.data);
 
             let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
             let imageURL = URL.createObjectURL(pictureBlob);
-            console.log(imageURL);
+            // console.log(imageURL);
 
             this.imgs[i] = imageURL;
           }
@@ -346,12 +618,12 @@ export default {
         }
 
         //console.log("Verarbeitung abgeschlossen")
-        console.log(this.imgs);
+        // console.log(this.imgs);
         this.amountGerichte = 0;
         this.amountGerichte = ResponseGerichte.data.length;
       }
       else {
-        const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID);
+        const ResponseRestaurants = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
         for (let i = 0; i < ResponseRestaurants.data.length; i++) {
           let restaurantData = ResponseRestaurants.data[i];
@@ -362,8 +634,8 @@ export default {
           this.anzahlBestellungen[i] = restaurantData[11];
           this.hinzufuegedaten[i] = restaurantData[12];
 
-          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0]);
-          console.log(ResponseAmount);
+          let ResponseAmount = await axios.get("Bestellung/getAllOrdersFromRestaurantId/"+this.loggedInKunde_ID+"/"+restaurantData[0], this.$store.getters.getLoginData);
+          // console.log(ResponseAmount);
 
           if(ResponseAmount.data!==0)
           {
@@ -377,17 +649,17 @@ export default {
           const config = { responseType:"arraybuffer" };
           const responsePicture = await axios.get("/RestaurantBilder/getBild/"+this.restaurant_IDs[i],config);
 
-          console.log(responsePicture);
+          // console.log(responsePicture);
 
           if(responsePicture.status !== 204)
           {
-            console.log("received Picture")
-            console.log(responsePicture.data);
+            // console.log("received Picture")
+            // console.log(responsePicture.data);
 
             let pictureBlob = new Blob([responsePicture.data], { type : responsePicture.headers["content-type"]})
 
             let imageURL = URL.createObjectURL(pictureBlob);
-            console.log(imageURL);
+            // console.log(imageURL);
 
             this.imgs[i] = imageURL;
           }
@@ -402,20 +674,20 @@ export default {
         this.amountGerichte = ResponseRestaurants.data.length;
       }
 
-      this.version++;
+      this.favoritenKey++;
     },
     selectItem(item) {
-      console.log("Gericht selected "+item.id);
+      // console.log("Gericht selected "+item.id);
       this.selectedItem = item;
     },
     selectGericht(item) {
-      console.log("Gericht selected "+item.id);
+      // console.log("Gericht selected "+item.id);
       this.selectedGericht_ID = item.id;
       this.setStoreGericht_ID()
     },
     setStoreGericht_ID() {
       this.$store.commit("changeGericht_ID",this.selectedGericht_ID);
-      console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
+      // console.log("changed gericht_ID to "+this.$store.getters.gericht_ID);
     },
     async fillAllergene(item)
     {
@@ -426,38 +698,41 @@ export default {
       {
         this.allergeneGericht[i] = responseAllergene.data[i];
       }
+      this.allergeneKey++;
     },
     async deleteFromFavorites(){
       if(this.displayGerichte===true)
       {
-        await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id);
+        await axios.delete("Favoritenliste_Gerichte/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.id, this.$store.getters.getLoginData);
       }
       else
       {
-        await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.restaurant_ID)
+        await axios.delete("Favoritenliste_Restaurants/remove/"+this.loggedInKunde_ID+"/"+this.selectedItem.restaurant_ID, this.$store.getters.getLoginData)
       }
 
       this.loadGerichte();
     },
     addToCart() {
 
-      console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
+      // console.log("Selected: "+ this.selectedItem.id+", "+this.selectedItem.name);
       let cartGericht = {
         gericht_ID: this.selectedItem.id,
         name: this.selectedItem.name,
         thumbnail: this.selectedItem.img,
         quantity: this.gerichtAnzahl,
-        price: this.selectedItem.price
+        price: this.selectedItem.price,
+        restaurant_ID: this.selectedItem.restaurant_ID,
+        num: Math.random() * (999999 - 1) + 1
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
-      console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
-    }
+      // console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    },
   },
   data: () => ({
     displayGerichte: true,
     loggedInKunde_ID: 0,
-    amountGerichte: 4,
+    amountGerichte: -1,
     selectedGericht_ID: "",
     selectedItem: "",
     version: 0,
@@ -486,6 +761,8 @@ export default {
       v => (v && v < 50) || "Bestellungen über 50 Stück geht nicht",
     ],
     btnType: 0,
+    allergeneKey: 0,
+    favoritenKey: 0,
   }),
   computed: {
     items(){
@@ -518,6 +795,26 @@ export default {
           anzahlBestellungen: canzahlBestellungen
         }
       })
+    },
+    heightVS() {
+      var temp
+      if(this.$vuetify.breakpoint.xs && this.displayGerichte)
+      {
+        temp = 260
+      }
+      else if(this.$vuetify.breakpoint.xs && !this.displayGerichte)
+      {
+        temp = 190
+      }
+      else if(this.$vuetify.breakpoint.sm)
+      {
+        temp = 240
+      }
+      else
+      {
+        temp = 230
+      }
+      return temp
     }
   }
 }

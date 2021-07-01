@@ -4,6 +4,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.entities.Gericht_Allergene;
 import de.eat4speed.services.interfaces.IGericht_AllergeneService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -33,6 +34,7 @@ public class Gericht_AllergeneController {
     }
 
     @DELETE
+    @RolesAllowed("restaurant")
     @Path("deleteGerichtAllergeneByGerichtID/{id}")
     public Response deleteGerichtAllergeneByGerichtID(@PathParam("id") int id)
     {

@@ -9,11 +9,11 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-                v-if="!isUserLoggedIn"
                 class="ml-2"
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
+                tile
             >Anmelden
             </v-btn>
           </template>
@@ -143,7 +143,7 @@ export default {
     await this.checkLoggedInUser();
     await this.redirectFahrer();
     await this.getLoggedInKunde();
-    this.checkForOrders();
+    await this.checkForOrders();
   },
   computed: {
     isUserLoggedIn() {
@@ -161,7 +161,7 @@ export default {
       if(this.isUserLoggedInBoolean)
       {
         const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'));
-        console.log(responseRolle);
+        // console.log(responseRolle);
         if(responseRolle.data==="fahrer")
         {
           this.$router.push({name: "FahrerFahrtenplan"});
@@ -170,28 +170,38 @@ export default {
     },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async checkForOrders() {
       if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
-        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID);
-        if (responseOrders.data.length === 0) {
-          this.displayVorschlaege = false;
-        } else {
-          this.displayVorschlaege = true;
+        try {
+          const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
+          if (responseOrders.data.length === 0) {
+            this.displayVorschlaege = false;
+          } else {
+            this.displayVorschlaege = true;
+          }
         }
+        catch (e)
+        {
+          if(e.response.status === 403)
+          {
+            window.location.reload();
+          }
+        }
+
       }
     },
     async getVorschlaege() {
-      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID);
-      console.log(responsePreferences);
-      console.log(responsePreferences.data);
-      console.log(responsePreferences.data.data);
-      console.log(responsePreferences.data.data[0]);
-      console.log(responsePreferences.data.data[0].amount);
-      console.log(responsePreferences.data.data[0].categorie);
+      const responsePreferences = await axios.get("Kategorie/getPreferences/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
+      // console.log(responsePreferences);
+      // console.log(responsePreferences.data);
+      // console.log(responsePreferences.data.data);
+      // console.log(responsePreferences.data.data[0]);
+      // console.log(responsePreferences.data.data[0].amount);
+      // console.log(responsePreferences.data.data[0].categorie);
 
       for (let i = 0; i < responsePreferences.data.data.length; i++) {
         this.kategorienAmount.push(responsePreferences.data.data[i])
@@ -207,13 +217,13 @@ export default {
         return 0;
       });
 
-      console.log(this.kategorienAmount);
+      // console.log(this.kategorienAmount);
 
       for (let i = 0; i < this.kategorienAmount.length; i++) {
         this.kategorien[i] = this.kategorienAmount[i].categorie.toString();
       }
 
-      console.log(this.kategorien);
+      // console.log(this.kategorien);
 
       let useHeiss = false;
       let useKalt = false;
@@ -235,7 +245,7 @@ export default {
         this.kategorien.push("kalt");
       }
 
-      console.log(this.kategorien);
+      // console.log(this.kategorien);
 
       this.searchDestination = "Gerichte";
 
@@ -261,7 +271,7 @@ export default {
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
-      console.log("changed searchString to " + this.$store.getters.searchString);
+      // console.log("changed searchString to " + this.$store.getters.searchString);
       if (this.searchDestination === "Gerichte") {
         const searchOptions = {
           gericht_ID: -1,
@@ -297,7 +307,7 @@ export default {
         }
         this.$store.commit("changeSearchOptionsRestaurant", searchOptionsRestaurant)
         this.$store.commit("changeSearchType", "Restaurants");
-        console.log("To Restaurants");
+        // console.log("To Restaurants");
         this.$router.push({path: '/kundeRestaurants'});
       }
     },
@@ -305,7 +315,7 @@ export default {
       this.searchDestination = "Gerichte";
     },
     setDestinationToRestaurants() {
-      console.log("Changed Destination to Restaurants");
+      // console.log("Changed Destination to Restaurants");
       this.searchDestination = "Restaurants";
     },
     gerichtFarbe() {

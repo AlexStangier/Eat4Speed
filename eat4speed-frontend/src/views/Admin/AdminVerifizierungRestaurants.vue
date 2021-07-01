@@ -2,7 +2,12 @@
   <v-app>
     <v-main>
       <h1 class="subheading">Verifizierung Restaurant</h1>
-      <v-card class="mx-5 my-5">
+      <v-card>
+        <v-row class="ma-2">
+          <v-col>
+            <v-btn :to="{ name: 'AdminVerifizierungFahrer'}" width="275px" color="primary" depressed tile>Zur Fahrer Verifizierung</v-btn>
+          </v-col>
+        </v-row>
         <v-data-table
             :headers="headers"
             :items="data"
@@ -58,6 +63,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-icon
+                    v-if="item.verifiziert === 0"
                     v-bind="attrs"
                     v-on="on"
                     class="mr-2"
@@ -140,19 +146,15 @@ export default {
   methods: {
     async reloadRestaurant(){
 
-      console.log(this.select);
-      console.log(this.select.value)
+      // console.log(this.select);
+      // console.log(this.select.value)
 
       if(this.select.value === 1) {
-        const ResponseAllRestaurant = await axios.get("/Restaurant/ALL");
+        const ResponseAllRestaurant = await axios.get("/Restaurant/ALL", this.$store.getters.getLoginData);
 
-        console.log(ResponseAllRestaurant);
-        console.log(ResponseAllRestaurant.data);
-        console.log(ResponseAllRestaurant.data[0])
-
-        var test = ResponseAllRestaurant.data[0];
-
-        console.log(test[0]);
+        // console.log(ResponseAllRestaurant);
+        // console.log(ResponseAllRestaurant.data);
+        // console.log(ResponseAllRestaurant.data[0])
 
         this.allRestaurant = ResponseAllRestaurant;
 
@@ -182,15 +184,15 @@ export default {
 
         this.data = arrayAllRestaurant;
 
-        console.log(arrayAllRestaurant);
+        // console.log(arrayAllRestaurant);
       }
 
       if(this.select.value === 2) {
-        const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED");
+        const ResponseNotVerifiedRestaurant = await axios.get("/Restaurant/NOT_VERIFIED", this.$store.getters.getLoginData);
 
-        console.log(ResponseNotVerifiedRestaurant);
-        console.log(ResponseNotVerifiedRestaurant.data);
-        console.log(ResponseNotVerifiedRestaurant.data[0])
+        // console.log(ResponseNotVerifiedRestaurant);
+        // console.log(ResponseNotVerifiedRestaurant.data);
+        // console.log(ResponseNotVerifiedRestaurant.data[0])
 
         this.allRestaurant = ResponseNotVerifiedRestaurant;
 
@@ -219,15 +221,15 @@ export default {
 
         this.data = arrayNotVerifiedRestaurant;
 
-        console.log(arrayNotVerifiedRestaurant);
+        // console.log(arrayNotVerifiedRestaurant);
       }
 
       if(this.select.value === 3) {
-        const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED");
+        const ResponseVerifiedRestaurant = await axios.get("/Restaurant/VERIFIED", this.$store.getters.getLoginData);
 
-        console.log(ResponseVerifiedRestaurant);
-        console.log(ResponseVerifiedRestaurant.data);
-        console.log(ResponseVerifiedRestaurant.data[0])
+        // console.log(ResponseVerifiedRestaurant);
+        // console.log(ResponseVerifiedRestaurant.data);
+        // console.log(ResponseVerifiedRestaurant.data[0])
 
         this.allRestaurant = ResponseVerifiedRestaurant;
 
@@ -255,15 +257,15 @@ export default {
 
         this.data = arrayVerifiedRestaurant;
 
-        console.log(arrayVerifiedRestaurant);
+        // console.log(arrayVerifiedRestaurant);
       }
 
     },
     setCurrentRowItem(item)
     {
       this.currentRowItem = item;
-      console.log(item);
-      console.log(this.currentRowItem);
+      // console.log(item);
+      // console.log(this.currentRowItem);
     },
     async deleteBewerbung() {
 
@@ -274,14 +276,18 @@ export default {
       await axios.post("Blacklist",deleteBe);
 
       await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email);
+      let response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.currentRowItem.email,this.$store.getters.getLoginData);
+      let id = response.data[0];
+      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+id);
+
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
 
       await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
 
-      console.log(this.currentRowItem);
-      console.log(this.currentRowItem.restaurant_Id);
+      // console.log(this.currentRowItem);
+      // console.log(this.currentRowItem.restaurant_Id);
 
       this.reloadRestaurant();
     }

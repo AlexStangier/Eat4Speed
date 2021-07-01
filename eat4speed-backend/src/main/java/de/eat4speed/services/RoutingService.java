@@ -24,6 +24,8 @@ public class RoutingService implements IRoutingService {
 
     @Inject
     FahrerService _fahrer;
+    @Inject
+    AuftragService _auftrag;
 
     /**
      * Aufbau Fahrer_Mode -> fahrzeugart, lng, lat, kapazität
@@ -40,7 +42,7 @@ public class RoutingService implements IRoutingService {
     }
 
     @Override
-    public void accident(String email, String auftraege){
+    public void accident(String auftraege){
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         ArrayList<String> auftrags_ids = new ArrayList<>();
         for (String element : auftr){
@@ -48,11 +50,15 @@ public class RoutingService implements IRoutingService {
                 auftrags_ids.add(element);
             }
         }
-        System.out.println(auftrags_ids);
+        for (String id : auftrags_ids){
+            _fahrer.accident_report_bestellung(Long.parseLong(id));
+            _fahrer.accident_report_fahrer(Long.parseLong(id));
+        }
     }
 
     @Override
-    public void confirm(String auftrags_beschreibung, String auftraege, String data, String email){
+    public int confirm(String auftrags_beschreibung, String auftraege, String data, String email){
+        int erledigt = 0;
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         if(auftrags_beschreibung.equals("Abholung")){
             for (String s : auftr) {
@@ -64,9 +70,15 @@ public class RoutingService implements IRoutingService {
             for (String s : auftr) {
                 _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(s), email);
                 _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(s));
+
+                if(_fahrer.job_done_comp(Long.parseLong(s)) == 0){
+                    _auftrag.updateAuftragFahrernummer(Integer.parseInt(s), 9999);
+                    _auftrag.setToErledigt(Integer.parseInt(s));
+                    erledigt++;
+                }
             }
         }
-
+        return erledigt;
     }
 
     public JSONObject add_shipment(String id, double src_lng, double src_lat, double dest_lng, double dest_lat, String timewindows) {
@@ -78,18 +90,13 @@ public class RoutingService implements IRoutingService {
                 Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
-                long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
+                //long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
 
                 return new JSONObject()
                         .put("id", id).put("pickup", new JSONObject()
                                 .put("location", new JSONArray()
                                         .put(src_lng).put(src_lat))
                                 .put("duration", 300)
-                                .put("time_windows", new JSONArray()
-                                        .put(new JSONArray()
-                                                .put(pickup_timewindow - 5 * 60).put(delivery_timewindow)
-                                        )
-                                )
                         )
                         .put("delivery", new JSONObject()
                                 .put("location", new JSONArray()

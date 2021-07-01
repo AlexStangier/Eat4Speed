@@ -7,6 +7,7 @@ import de.eat4speed.repositories.RestaurantRepository;
 import de.eat4speed.services.interfaces.IBestellungService;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,7 +27,7 @@ public class BestellungController {
     BestellungRepository bestellungRepository;
 
     @POST
-    @PermitAll
+    @RolesAllowed("kunde")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("add")
     public Response add(OrderDto obj) throws SQLException {
@@ -34,7 +35,7 @@ public class BestellungController {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed("kunde")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("pay")
     public PaymentDto pay(PayDto jobId) throws SQLException {
@@ -42,7 +43,7 @@ public class BestellungController {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed("restaurant")
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("getStatistic")
     public StatisticDtoWrapper getStatistic(StatisticRequestDto req) throws SQLException {
@@ -50,35 +51,61 @@ public class BestellungController {
     }
 
     @GET
-    @PermitAll
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.TEXT_PLAIN)
+    @RolesAllowed("kunde")
     @Path("getAllOrdersFromCustomerByDishId/{customerId}/{dishId}")
     public Integer getAllOrdersFromCustomerByDishId(@PathParam("customerId") int customerId, @PathParam("dishId") int dishId) {
         return _bestellungen.getAmountOrdersByCustomerIdAndGerichtId(customerId, dishId);
     }
 
     @GET
-    @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("kunde")
     @Path("getAllOrdersFromRestaurantId/{customerId}/{restaurantId}")
     public Integer getAllOrdersFromRestaurantId(@PathParam("customerId") int customerId, @PathParam("restaurantId") int restaurantId) {
         return _bestellungen.getAllOrdersForRestaurantIdByCustomerID(restaurantId,customerId);
     }
 
     @GET
+    @RolesAllowed("restaurant")
     @Path("getRestaurantBestellungen/{email}")
     public List getRestaurantBestellungen(@PathParam("email") String email) {return _bestellungen.getRestaurantBestellungen(email);}
 
     @PUT
     @Path("updateBestellungStatus")
-    public Response updateBestellungStatus(Bestellung bestellung) {
+    public Response updateBestellungStatus(Bestellung bestellung)
+    {
+        return _bestellungen.updateBestellungStatus(bestellung);
+    }
 
-        Response response = _bestellungen.updateBestellungStatus(bestellung);
+    @GET
+    @Path("checkForUserOrders/{kundennummer}")
+    @RolesAllowed("kunde")
+    public List checkForUserOrders(@PathParam("kundennummer") int kundennummer)
+    {
+        return bestellungRepository.checkForUserOrders(kundennummer);
+    }
+
+    @GET
+    @RolesAllowed({"kunde","restaurant"})
+    @Path("getProduktUndAnzahl/{id}")
+    public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
+
+    @PUT
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
+    public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
+        BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
+
+        //Response zwischen speichern, da nach Überprüfung erst nach Datenbank zugriff
+        Response response = _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
 
         try {
-            URL url = new URL("http://localhost:1337/FahrerAuswahl/start/" + bestellung.getAuftrags_ID());
+            //Überprüfung ob Fahrerauswahl starten soll
+            URL url = new URL("http://localhost:1337/FahrerAuswahl/start/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
@@ -90,39 +117,23 @@ public class BestellungController {
 
         return response;
     }
-
     @GET
-    @Path("checkForUserOrders/{kundennummer}")
-    public List checkForUserOrders(@PathParam("kundennummer") int kundennummer)
-    {
-        return bestellungRepository.checkForUserOrders(kundennummer);
-    }
-
-    @GET
-    @Path("getProduktUndAnzahl/{id}")
-    public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
-
-    @PUT
-    @PermitAll
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
-    public Response updateBestellungStatus(@PathParam("id") long id, @PathParam("status") String status ){
-        BestellungUpdateDto dto = new BestellungUpdateDto(status, id);
-        return _bestellungen.updateBestellungStatusRestaurantUndKundeDontTouchThis(dto);
-    }
-    @GET
+    @RolesAllowed("kunde")
     @Path("getKundeBestellungen/{status}/{email}")
     public List getKundeBestellungen(@PathParam("status") String status, @PathParam("email") String email) {return _bestellungen.getKundeBestellungen(status, email);}
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getKundeBestellungenAktiv/{email}")
     public List getKundeBestellungenAktiv(@PathParam("email") String email) {return _bestellungen.getKundeBestellungenAktiv(email);}
 
     @GET
+    @RolesAllowed("kunde")
     @Path("getGerichtIds/{id}")
     public List getGerichtIds(@PathParam("id") int id) {return _bestellungen.getGerichtIds(id);}
 
     @GET
+    @RolesAllowed({"kunde","restaurant"})
     @Path("getAnzahlFertigerAuftraege/{id}")
     public List getAnzahlFertigerAuftraege(@PathParam("id") int id) {return _bestellungen.getAnzahlFertigerAuftraege(id);}
 

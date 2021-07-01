@@ -23,7 +23,7 @@
                 <v-list-item-icon>
                   <v-icon>mdi-home</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title>ControlPanel</v-list-item-title>
+                <v-list-item-title>Startseite</v-list-item-title>
               </v-list-item>
             </router-link>
             <router-link to="/restaurant/speisekarteGerichte">
@@ -74,12 +74,13 @@
       <v-container fill-height fluid>
         <v-layout align-center justify-center>
           <v-flex md6 sm6 xs12>
-            <div class="text-h3 mb-10"> Restaurantname</div>
+            <div class="text-h3 mb-10" id="restaurantName"></div>
             <v-col class="d-flex justify-space-between mb-6">
               <v-card-title class="text-h4"> Speisekarte</v-card-title>
               <v-btn
-                  color="red"
+                  :color="selectedButton === 0 ? 'primary' : 'blue-grey'"
                   dark
+                  tile
                   align="right"
                   class="mt-5"
                   @click="changeDisplayGerichte"
@@ -87,8 +88,9 @@
                 Gerichte
               </v-btn>
               <v-btn
-                  color="red"
+                  :color="selectedButton === 1 ? 'primary' : 'blue-grey'"
                   dark
+                  tile
                   align="right"
                   class="mt-5"
                   @click="changeDisplayGetraenke"
@@ -99,134 +101,190 @@
             <v-divider></v-divider>
             <v-virtual-scroll
                 :items="items"
-                :item-height="300"
+                :item-height="175"
                 max-height="500"
             >
               <template v-slot:default="{ item }">
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
-                  </v-list-item-content>
-                  <v-list-item-content>
-                    <v-list-item-group align="left">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <br>
-                    </v-list-item-group>
-                  </v-list-item-content>
-                  <v-list-item-content></v-list-item-content>
-                  <v-list-item-group align="left">
-                    <v-list-item-content>{{ item.price }}</v-list-item-content>
-                    <v-dialog
-                        :retain-focus="false"
-                        v-model="artDialog"
-                        width="500"
-                        persistent
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            color="red"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                            small
-                            bottom
-                            @click="fillDataOfGerichtToAlter(item); currentlyAdding = false"
+
+                <v-card
+                    flat
+                    tile
+                    outlined
+                >
+                  <v-container fluid>
+                    <v-row>
+                      <v-col
+                          cols="4"
+                      >
+                        <v-card
+                            outlined
+                            flat
+                            tile
+                            max-width="300"
+                            max-height="300"
                         >
-                          Bearbeiten
-                        </v-btn>
-                      </template>
-                      <v-card>
-                        <v-form
-                            ref="updateForm"
-                            v-model="valifUpdate"
+                          <v-img alt="Bild von Essen" min-height="150" max-height="150" max-width="300" :src="item.img"></v-img>
+                        </v-card>
+                      </v-col>
+                      <v-col>
+                        <v-row
+                          v-for="a in 2"
+                          :key="a"
                         >
-                          <v-col>
-                            <v-text-field
-                                v-model="gerichtName"
-                                :counter="20"
-                                label="Artikelname"
-                                required
-                                :rules="[rules.required, rules.lettersAndSpacesOnly]"
-                            ></v-text-field>
-                            <v-textarea
-                                v-model="gerichtBeschreibung"
-                                :counter="100"
-                                label="Artikelbeschreibung"
-                                required
-                                :rules="[rules.required]"
-                            ></v-textarea>
-                            <label>
-                              Bild auswählen
-                              <input type="file" ref="file" id="fileChange" accept="image/*"
-                                     v-on:change="selectedPicture()"/>
-                            </label>
-                            <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
-                                          append-icon="currency-eur" :rules="[rules.required]">
-                            </v-text-field>
-                            <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
-                            </v-checkbox>
-                            <v-select
-                                ref="KategorieSelect"
-                                v-model="selectedKategorien"
-                                :items="kategorien"
-                                chips
-                                label="Kategorien"
-                                multiple
-                                outlined
-                                block
-                                @click="loadKategorien"
-                            ></v-select>
-                            <v-spacer class="ma-2"></v-spacer>
-                            <v-select
-                                v-model="selectedAllergene"
-                                :items="allergen"
-                                chips
-                                label="Allergene"
-                                multiple
-                                outlined
-                                block
-                                @click="loadAllergene"
-                            ></v-select>
-                            <v-spacer class="ma-2"></v-spacer>
-                            <v-col>
-                              <v-row>
-                                <v-btn
-                                    @click="changeGericht(); artDialog = false"
-                                    color="red"
-                                    dark
-                                    class="justify-center"
-                                    :disabled="!valifUpdate"
-                                >
-                                  Fertig
-                                </v-btn>
-                                <v-spacer class="mr-2"></v-spacer>
-                                <v-btn
-                                    @click="deleteGericht(); artDialog = false"
-                                    color="red"
-                                    dark
-                                    class="justify-center"
-                                >
-                                  Löschen
-                                </v-btn>
-                                <v-spacer class="mr-2"></v-spacer>
-                                <v-btn
-                                    @click="artDialog = false; test();"
-                                    color="red"
-                                    dark
-                                    justify
-                                >
-                                  Abbruch
-                                </v-btn>
-                              </v-row>
-                            </v-col>
+                          <v-col
+                              cols="8"
+                          >
+                            <v-card
+                                v-if="a === 1"
+                                flat
+                            >
+                              {{ item.name }}
+                            </v-card>
+                            <v-card
+                                v-if="a === 1"
+                                class="v-list-item__subtitle"
+                                flat
+                            >
+                              <span
+                                  v-if="item.description.length <= 40"
+                              >
+                                {{ item.description }}
+                              </span>
+                              <span
+                                  v-else
+                              >
+                                {{ item.description.substring(0,38)+".." }}
+                              </span>
+                            </v-card>
                           </v-col>
-                        </v-form>
-                      </v-card>
-                    </v-dialog>
-                  </v-list-item-group>
-                </v-list-item>
+                          <v-col>
+                            <v-card
+                                v-if="a === 2"
+                                class="text-right"
+                                flat
+                            >{{ item.price + ' €'}}
+                            </v-card>
+                            <v-card
+                                v-if="a === 2"
+                                class="text-right pt-1"
+                                flat
+                            >
+                              <v-dialog
+                                  :retain-focus="false"
+                                  v-model="artDialog"
+                                  width="500"
+                                  persistent
+                              >
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      color="primary"
+                                      tile
+                                      dark
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      small
+                                      bottom
+                                      @click="fillDataOfGerichtToAlter(item); currentlyAdding = false"
+                                  >
+                                    Bearbeiten
+                                  </v-btn>
+                                </template>
+                                <v-card>
+                                  <v-form
+                                      ref="updateForm"
+                                      v-model="valifUpdate"
+                                  >
+                                    <v-col>
+                                      <v-text-field
+                                          v-model="gerichtName"
+                                          :counter="50"
+                                          label="Artikelname"
+                                          required
+                                          :rules="[rules.required, rules.lettersAndSpacesOnly]"
+                                          maxlength="50"
+                                      ></v-text-field>
+                                      <v-textarea
+                                          v-model="gerichtBeschreibung"
+                                          :counter="100"
+                                          label="Artikelbeschreibung"
+                                          required
+                                          :rules="[rules.required]"
+                                          maxlength="100"
+                                      ></v-textarea>
+                                      <label>
+                                        Bild auswählen
+                                        <input type="file" ref="file" id="fileUp" accept="image/*" v-on:change="selectedPicture()"/>
+                                      </label>
+                                      <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
+                                                    append-icon="currency-eur" :rules="[rules.required,rules.price]">
+                                      </v-text-field>
+                                      <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
+                                      </v-checkbox>
+                                      <v-select
+                                          ref="KategorieSelect"
+                                          v-model="selectedKategorien"
+                                          :items="kategorien"
+                                          chips
+                                          label="Kategorien"
+                                          multiple
+                                          outlined
+                                          block
+                                          @click="loadKategorien"
+                                      ></v-select>
+                                      <v-spacer class="ma-2"></v-spacer>
+                                      <v-select
+                                          v-model="selectedAllergene"
+                                          :items="allergen"
+                                          chips
+                                          label="Allergene"
+                                          multiple
+                                          outlined
+                                          block
+                                          @click="loadAllergene"
+                                      ></v-select>
+                                      <v-spacer class="ma-2"></v-spacer>
+                                      <v-col>
+                                        <v-row>
+                                          <v-btn
+                                              @click="changeGericht(); artDialog = false"
+                                              color="primary"
+                                              dark
+                                              class="justify-center"
+                                              :disabled="!valifUpdate"
+                                          >
+                                            Fertig
+                                          </v-btn>
+                                          <v-spacer class="mr-2"></v-spacer>
+                                          <v-btn
+                                              @click="deleteGericht(); artDialog = false"
+                                              color="primary"
+                                              dark
+                                              class="justify-center"
+                                          >
+                                            Löschen
+                                          </v-btn>
+                                          <v-spacer class="mr-2"></v-spacer>
+                                          <v-btn
+                                              @click="artDialog = false; test();"
+                                              color="primary"
+                                              dark
+                                              justify
+                                          >
+                                            Abbruch
+                                          </v-btn>
+                                        </v-row>
+                                      </v-col>
+                                    </v-col>
+                                  </v-form>
+                                </v-card>
+                              </v-dialog>
+                            </v-card>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card>
                 <v-divider></v-divider>
               </template>
             </v-virtual-scroll>
@@ -238,7 +296,7 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                    color="red"
+                    color="primary"
                     dark
                     v-bind="attrs"
                     v-on="on"
@@ -255,9 +313,10 @@
                   <v-col>
                     <v-text-field
                         v-model="gerichtName"
-                        :counter="20"
+                        :counter="50"
                         label="Artikelname"
                         required
+                        maxlength="50"
                         :rules="[rules.required, rules.lettersAndSpacesOnly]"
                     ></v-text-field>
                     <v-textarea
@@ -266,12 +325,13 @@
                         label="Artikelbeschreibung"
                         :rules="[rules.required]"
                         required
+                        maxlength="100"
                     ></v-textarea>
                     <label>
                       Bild auswählen
                       <input type="file" ref="file" id="file" accept="image/*" v-on:change="selectedPicture()"/>
                     </label>
-                    <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur" :rules="[rules.required]">
+                    <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur" maxlength="10" :rules="[rules.required,rules.price]">
                     </v-text-field>
                     <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
                     </v-checkbox>
@@ -302,7 +362,7 @@
                       <v-row>
                         <v-btn
                             @click="addGericht(); artDialog2 = false"
-                            color="red"
+                            color="primary"
                             dark
                             class="justify-center"
                             :disabled="!validAdd"
@@ -312,7 +372,7 @@
                         <v-spacer class="mr-2"></v-spacer>
                         <v-btn
                             @click="artDialog2 = false; test();"
-                            color="red"
+                            color="primary"
                             dark
                             justify
                         >
@@ -342,15 +402,33 @@ export default {
 
     await this.getLoggedInRestaurant();
     await this.checkIfVerified();
-    this.loadGerichte()
+    await this.loadRestaurantName();
+    await this.loadGerichte();
   },
   methods: {
+    selectGerichte(){
+      this.selectedButton = 0;
+    },
+    selectGetraenke(){
+      this.selectedButton = 1;
+    },
     async getLoggedInRestaurant() {
-      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'));
+      let response;
+      try {
+        response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+      }
+      catch (e)
+      {
+        if(e.response.status === 403)
+        {
+          window.location.reload();
+        }
+      }
+
       this.restaurantID = response.data[0];
     },
     async checkIfVerified() {
-      const response = await axios.get("Restaurant/VERIFIED");
+      const response = await axios.get("Restaurant/VERIFIED", this.$store.getters.getLoginData);
       for (let i = 0; i < response.data.length; i++) {
         this.verifiedRestaurants[i] = response.data[i][2];
       }
@@ -360,6 +438,12 @@ export default {
       } else {
         this.isVerified = false;
       }
+    },
+    async loadRestaurantName() {
+      const ResponseRestaurant = await axios.get(
+          "Restaurant/getAllRestaurantDataByRestaurant_ID/" + this.restaurantID, this.$store.getters.getLoginData);
+      const RestaurantData = ResponseRestaurant.data[0];
+      document.getElementById("restaurantName").innerHTML = RestaurantData[1];
     },
     async loadGerichte() {
 
@@ -371,9 +455,7 @@ export default {
         gerichtPath = "Gericht/getAllGetraenkDataRestaurantSpeisekarte/";
       }
 
-      const ResponseGerichte = await axios.get(gerichtPath + this.restaurantID);
-
-      console.log(ResponseGerichte);
+      const ResponseGerichte = await axios.get(gerichtPath + this.restaurantID, this.$store.getters.getLoginData);
 
       for (let i = 0; i < ResponseGerichte.data.length; i++) {
         let gerichtData = ResponseGerichte.data[i];
@@ -388,16 +470,11 @@ export default {
         const config = {responseType: "arraybuffer"};
         const responsePicture = await axios.get("/GerichtBilder/getBild/" + this.gerichtIDs[i], config);
 
-        console.log(responsePicture);
-
         if (responsePicture.status !== 204) {
-          console.log("received Picture")
-          console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
 
           this.imgs[i] = imageURL;
         } else {
@@ -405,12 +482,12 @@ export default {
         }
 
       }
-      console.log(this.imgs);
       this.amountGerichte = 0;
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
     changeDisplayGetraenke() {
+      this.selectGetraenke();
       if (this.displayGetraenke === false) {
         this.displayGetraenke = !this.displayGetraenke;
         this.loadGerichte();
@@ -418,6 +495,7 @@ export default {
 
     },
     changeDisplayGerichte() {
+      this.selectGerichte();
       if (this.displayGetraenke === true) {
         this.displayGetraenke = !this.displayGetraenke;
         this.loadGerichte();
@@ -443,14 +521,10 @@ export default {
         }
         this.computedItems[i] = entry;
       }
-      console.log(this.computedItems);
-      console.log(this.items);
-
     },
     async loadKategorien() {
       const ResponseAllKategorien = await axios.get("/Kategorie");
 
-      console.log(ResponseAllKategorien);
       let arrayKategorien = [];
       let it;
       for (it = 0; it < ResponseAllKategorien.data.length; it++) {
@@ -459,17 +533,15 @@ export default {
         arrayKategorien[it] = kategorie;
 
       }
-      console.log(arrayKategorien);
       this.kategorien = arrayKategorien;
     },
     async test() {
-      console.log(this.value);
-      console.log(this.valueA);
+      //console.log(this.value);
+      //console.log(this.valueA);
     },
     async loadAllergene() {
       const ResponseAllAllegergene = await axios.get("/Allergene");
 
-      console.log(ResponseAllAllegergene);
       let arrayAllergene = [];
       let it;
       for (it = 0; it < ResponseAllAllegergene.data.length; it++) {
@@ -478,13 +550,10 @@ export default {
         arrayAllergene[it] = allergen;
 
       }
-      console.log(arrayAllergene);
       this.allergen = arrayAllergene;
 
     },
     async addGericht() {
-
-      console.log("it's fine");
 
       if (this.isVerified) {
         if (this.gerichtVerfuegbar === true) {
@@ -509,7 +578,7 @@ export default {
           geloescht: 0
         }
 
-        const responseGericht = await axios.post("/Gericht/addGericht", gericht);
+        const responseGericht = await axios.post("/Gericht/addGericht", gericht, this.$store.getters.getLoginData);
 
         this.gericht_ID = responseGericht.data.gericht_ID;
 
@@ -518,7 +587,7 @@ export default {
             gericht_ID: this.gericht_ID,
             kategorie: this.selectedKategorien[i]
           }
-          await axios.post("/Gericht_Kategorie", gericht_Kategorie);
+          await axios.post("/Gericht_Kategorie", gericht_Kategorie, this.$store.getters.getLoginData);
 
         }
         for (let i = 0; i < this.selectedAllergene.length; i++) {
@@ -526,7 +595,7 @@ export default {
             gericht_ID: this.gericht_ID,
             allergen: this.selectedAllergene[i]
           }
-          await axios.post("/Gericht_Allergene", gericht_Allergene);
+          await axios.post("/Gericht_Allergene", gericht_Allergene, this.$store.getters.getLoginData);
 
         }
 
@@ -541,7 +610,7 @@ export default {
             }
           };
 
-          const responsePictureUpload = await axios.post('/GerichtBilder/upload',
+          await axios.post('/GerichtBilder/upload',
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
@@ -550,7 +619,6 @@ export default {
                 console.log('Picture upload error');
               });
 
-          console.log(responsePictureUpload);
         }
         this.loadGerichte();
       } else {
@@ -564,10 +632,10 @@ export default {
       this.gerichtBild = null;
 
       //this.gerichtName = item.id;
-      console.log(item.id);
-      console.log(this.editedItem.id);
+      //console.log(item.id);
+      //console.log(this.editedItem.id);
 
-      const responseGetGericht = await axios.get("/Gericht/" + this.editedItem.id);
+      const responseGetGericht = await axios.get("/Gericht/" + this.editedItem.id, this.$store.getters.getLoginData);
 
       this.gerichtName = responseGetGericht.data.name;
       this.gerichtPreis = responseGetGericht.data.preis;
@@ -590,12 +658,8 @@ export default {
       for (let i = 0; i < responseGetKategorie.data.length; i++) {
         this.selectedKategorien[i] = responseGetKategorie.data[i];
       }
-
-      console.log(responseGetGericht);
     },
     async changeGericht() {
-
-      console.log("fuck this shit")
 
       if (this.gerichtVerfuegbar === true) {
         this.gerichtVerfuegbar = 1;
@@ -619,19 +683,17 @@ export default {
         ist_Getraenk: this.istGetraenk
       }
 
-      const responseGerichtToAlter = await axios.put("/Gericht/updateGerichtAllData", gericht);
+      await axios.put("/Gericht/updateGerichtAllData", gericht, this.$store.getters.getLoginData);
 
-      console.log(responseGerichtToAlter);
-
-      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id);
-      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id);
+      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
+      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
 
       for (let i = 0; i < this.selectedKategorien.length; i++) {
         let gericht_Kategorie = {
           gericht_ID: this.editedItem.id,
           kategorie: this.selectedKategorien[i]
         }
-        await axios.post("/Gericht_Kategorie", gericht_Kategorie);
+        await axios.post("/Gericht_Kategorie", gericht_Kategorie, this.$store.getters.getLoginData);
 
       }
       for (let i = 0; i < this.selectedAllergene.length; i++) {
@@ -639,7 +701,7 @@ export default {
           gericht_ID: this.editedItem.id,
           allergen: this.selectedAllergene[i]
         }
-        await axios.post("/Gericht_Allergene", gericht_Allergene);
+        await axios.post("/Gericht_Allergene", gericht_Allergene, this.$store.getters.getLoginData);
 
       }
 
@@ -654,16 +716,14 @@ export default {
           }
         };
 
-        const responsePictureUpload = await axios.post('/GerichtBilder/upload',
+        await axios.post('/GerichtBilder/upload',
             picturedata, options
         ).then(function () {
-          console.log('Picture successfully uploaded');
+          //console.log('Picture successfully uploaded');
         })
             .catch(function () {
-              console.log('Picture upload error');
+              //console.log('Picture upload error');
             });
-
-        console.log(responsePictureUpload);
       }
 
       this.version++;
@@ -672,11 +732,14 @@ export default {
     },
     selectedPicture() {
       this.gerichtBild = this.$refs.file.files[0];
-      console.log(this.gerichtBild);
+    },
+    selectedPictureUp() {
+      console.log(this.$refs.file);
+      this.gerichtBild = this.$refs.file.files[0];
     },
     async deleteGericht() {
-      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id);
-      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id);
+      await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
+      await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
       await axios.put("Gericht/deleteGerichtByGericht_ID/"+this.editedItem.id);
       this.loadGerichte();
     }
@@ -715,9 +778,11 @@ export default {
     istGetraenk: "",
     displayGetraenke: false,
     currentlyAdding: false,
+    selectedButton: 0, //0 = Gerichte; 1 = Getränke
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+      price: (v) => (v>0 && v<10000&&/^^[0-9]{1,3}((,|\.){1}[0-9]{1,2}){0,1}$/.test(v)) || "Dieser Preis wird nicht akzeptiert",
       lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
     },
   }),
@@ -725,7 +790,6 @@ export default {
   computed: {
     items() {
       let i = 0
-      console.log("compute");
       return Array.from({length: this.amountGerichte}, () => {
         const cname = this.names[i]
         const cdescription = this.descriptions[i]

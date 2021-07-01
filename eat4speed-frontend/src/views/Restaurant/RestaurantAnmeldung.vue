@@ -56,26 +56,26 @@
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
                           <v-text-field v-model="firstName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Vorname"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="20"
+                          <v-text-field v-model="lastName" :rules="[rules.required, rules.lettersAndSpacesOnly]" label="Nachname" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="mindestBestellwert" number :rules="[rules.required]"
-                                        label="Mindestbestellwert" required></v-text-field>
+                          <v-text-field v-model="mindestBestellwert" type="number" :rules="[rules.required,rules.price]"
+                                        label="Mindestbestellwert" required maxlength="5"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="bestellradius" number :rules="[rules.required]" label="Bestellradius"
-                                        required></v-text-field>
+                          <v-text-field v-model="bestellradius" type="number" :rules="[rules.required,rules.price]" label="Bestellradius"
+                                        maxlength="10" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="username" :rules="[rules.required]" label="Benutzername"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="40"
+                          <v-text-field v-model="street" :rules="[rules.required]" label="Straße" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
@@ -84,15 +84,15 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="place" :rules="[rules.required]" label="Ort" maxlength="20"
+                          <v-text-field v-model="place" :rules="[rules.required]" label="Ort" maxlength="50"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="20"
+                          <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl" maxlength="7"
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="8" sm="8">
-                          <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required></v-text-field>
+                          <v-text-field v-model="email" :rules="emailRules" label="E-Mail" maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
                           <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
@@ -101,20 +101,20 @@
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
                           <v-text-field v-model="paypal" :rules="emailRules" label="Paypal Email"
-                                        maxlength="20" required></v-text-field>
+                                        maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                                        :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'Passwort'"
+                                        :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'"
                                         counter hint="Mindestens 8 Zeichen" label="Passwort" name="input-10-1"
-                                        @click:append="show1 = !show1" required></v-text-field>
+                                        @click:append="show1 = !show1" maxlength="50" required></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field v-model="verify" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                                         :rules="[rules.required, passwordMatch]"
-                                        :type="show1 ? 'text' : 'Passwort'" block
+                                        :type="show1 ? 'text' : 'password'" block
                                         counter label="Passwort bestätigen" name="input-10-1"
-                                        @click:append="show1 = !show1" required></v-text-field>
+                                        @click:append="show1 = !show1" maxlength="50" required></v-text-field>
                         </v-col>
                         <label>
                           Bild auswählen
@@ -125,6 +125,7 @@
                           <v-checkbox
                               label="AGB gelesen und akzeptiert"
                               v-model="agbAccepted"
+                              :rules="[rules.required]"
                           ></v-checkbox>
                         </v-col>
                         <v-col cols="12" class="mt-n8">
@@ -170,7 +171,7 @@
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-col class="text-right">
-                          <v-btn :disabled="!valid"
+                          <v-btn :disabled="!valid || regDisable"
                                  color="primary"
                                  depressed tile
                                  @click="validate">Registrieren
@@ -243,10 +244,12 @@ export default {
     },
     selectedPicture() {
       this.restaurantBild = this.$refs.file.files[0];
-      console.log(this.restaurantBild);
+      // console.log(this.restaurantBild);
     },
     async validate() {
       // if (this.$refs.loginForm.validate()) {
+      this.regDisable = true;
+
       var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
       this.lng = response.data.features[0].geometry.coordinates[0];
@@ -266,7 +269,7 @@ export default {
           geloescht: 0
         };
 
-        const responseBenutzer = await axios.post("/Benutzer", benutzer);
+        const responseBenutzer = await axios.post("/Benutzer/register", benutzer);
 
         this.benutzer_ID = responseBenutzer.data.benutzer_ID;
 
@@ -308,13 +311,13 @@ export default {
 
           var responseEntfernungen = await axios.post("https://api.geoapify.com/v1/routematrix?apiKey=e15f70e37a39423cbe921dc88a1ded04", data, config);
 
-          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
-          console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
+          // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance)
+          // console.log(responseEntfernungen.data.sources_to_targets[0][0].distance / 1000)
 
           for (let i = 0; i < responseEntfernungen.data.sources_to_targets[0].length; i++) {
             this.distances[i] = responseEntfernungen.data.sources_to_targets[0][i].distance / 1000
           }
-          console.log(this.distances);
+          // console.log(this.distances);
         }
 
         var adressen = {
@@ -328,9 +331,9 @@ export default {
 
         const responseAdressen = await axios.post("/Adressen", adressen);
 
-        console.log(responseAdressen);
-        console.log(responseAdressen.data);
-        console.log(responseAdressen.data.adress_ID);
+        // console.log(responseAdressen);
+        // console.log(responseAdressen.data);
+        // console.log(responseAdressen.data.adress_ID);
 
         this.adress_ID = responseAdressen.data.adress_ID;
 
@@ -355,7 +358,7 @@ export default {
             entfernung: this.distances[i]
           };
 
-          console.log(entfernung);
+          // console.log(entfernung);
 
           await axios.post("/EntfernungKundeRestaurant", entfernung);
 
@@ -371,7 +374,7 @@ export default {
             }
           };
 
-          const responsePictureUpload = await axios.post('/RestaurantBilder/upload',
+          await axios.post('/RestaurantBilder/upload',
               picturedata, options
           ).then(function () {
             console.log('Picture successfully uploaded');
@@ -380,10 +383,12 @@ export default {
                 console.log('Picture upload error');
               });
 
-          console.log(responsePictureUpload);
+          // console.log(responsePictureUpload);
         }
+        this.$router.push({name: "Startseite"});
       } else {
         this.openSnackbar("Bitte gültige Adresse eingeben!")
+        this.regDisable = false;
       }
 
 
@@ -410,6 +415,7 @@ export default {
       ],
       valid: true,
       agbAccepted: false,
+      dialog: false,
       paypal: "",
       restaurantBild: "",
       restaurant_name: "",
@@ -451,14 +457,17 @@ export default {
       ],
       emailRules: [
         v => !!v || "Required",
-        v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein"
+        v => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein",
+        v => /^[a-zA-Z0-9@.]*$/.test(v) || "E-Mail darf keine Sonderzeichen enthalten"
       ],
       show1: false,
       rules: {
         required: value => !!value || "Required.",
         min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        price: (v) => (v>0 && v<10000&&/^^[0-9]{1,3}((,|\.){1}[0-9]{1,2}){0,1}$/.test(v)) || "Diese Zahl wird nicht akzeptiert",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
-      }
+      },
+      regDisable: false
     }
   }
 };

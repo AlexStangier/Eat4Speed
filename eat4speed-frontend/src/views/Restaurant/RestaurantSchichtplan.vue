@@ -23,7 +23,7 @@
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>ControlPanel</v-list-item-title>
+            <v-list-item-title>Startseite</v-list-item-title>
           </v-list-item>
           </router-link>
           <router-link  to="/restaurant/speisekarteGerichte"><v-list-item>
@@ -73,12 +73,12 @@
       <v-layout align-center justify-center>
         <v-flex md6 sm6 xs12>
           <template>
-            <v-card class="px-4">
+
               <v-col>
                 <v-card-title>Lieferzeiten</v-card-title>
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Montag" v-model="enabled"/>
-
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -158,8 +158,9 @@
 
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Dienstag" v-model="enabled1"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -238,8 +239,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Mittwoch" v-model="enabled2"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -318,8 +320,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Donnerstag" v-model="enabled3"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -398,8 +401,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Freitag" v-model="enabled4"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -478,8 +482,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Samstag" v-model="enabled5"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -558,8 +563,9 @@
                   </v-col>
                 </v-row>
 
-                <v-row>
+                <v-row align="center">
                   <v-checkbox label="Sonntag" v-model="enabled6"/>
+                  <v-spacer></v-spacer>
                   <v-col
                       cols="11"
                       sm="5"
@@ -637,18 +643,31 @@
                     </v-dialog>
                   </v-col>
                 </v-row>
-                <v-btn
-                    @click="executeAll"
-                    class = "mb-2"
-                    color="red"
-                    dark
-                    small
-                    bottom
+
+                <v-dialog
+                    v-model="ok"
+                    persistent
+                    min-height="100"
+                    max-width="240"
                 >
-                  Änderungen speichern
-                </v-btn>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                        @click="executeAll"
+                        class = "mb-2"
+                        color="primary"
+                        v-bind="attrs"
+                        v-on="on"
+                    >
+                      Änderungen speichern
+                    </v-btn>
+                  </template>
+                  <v-card class="pa-2" align="center">
+                    <h3>Schicht festgelegt</h3>
+                    <v-btn color="primary mt-2" @click="ok = false">Ok</v-btn>
+                  </v-card>
+                </v-dialog>
               </v-col>
-            </v-card>
+
           </template>
         </v-flex>
       </v-layout>
@@ -690,6 +709,7 @@ export default {
     enabled5: false,
     enabled6: false,
     enabledException: false,
+    ok: false,
 
     updated: [false, false, false, false, false, false, false]
   }),
@@ -718,10 +738,10 @@ export default {
     },
     async loadZeiten() {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
-      const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12]);
+      const ResponseZeiten = await axios.get("Oeffnungszeiten/getAllZeiten/" + StammdatenData[12], this.$store.getters.getLoginData);
 
       for (let i = 0; i < ResponseZeiten.data.length; i++) {
         let zeitData = ResponseZeiten.data[i];
@@ -770,7 +790,7 @@ export default {
     },
     async setArbeitstag(pos, tag) {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
       let time = {
@@ -781,11 +801,11 @@ export default {
         restaurant_ID: StammdatenData[12]
       }
 
-      await axios.post("/Oeffnungszeiten/setArbeitstag", time);
+      await axios.post("/Oeffnungszeiten/setArbeitstag", time, this.$store.getters.getLoginData);
     },
     async updateArbeitstag(pos, tag) {
 
-      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'));
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
       let time = {
@@ -796,7 +816,7 @@ export default {
         restaurant_ID: StammdatenData[12]
       }
 
-      await axios.put("/Oeffnungszeiten/updateArbeitstag", time);
+      await axios.put("/Oeffnungszeiten/updateArbeitstag", time, this.$store.getters.getLoginData);
 
     },
 

@@ -1,14 +1,15 @@
 <template>
   <v-main>
     <v-card class="mx-5 my-5">
-      <v-data-table
-          :headers="headers"
-          :items="data"
-          :items-per-page="10"
-          :single-select="false"
-          class="elevation-1 pa-6"
-          item-key="name"
-          multi-sort
+      <v-row v-if="show">Unfall gemeldet</v-row>
+      <v-data-table v-if="!show"
+                    :headers="headers"
+                    :items="data"
+                    :items-per-page="10"
+                    :single-select="false"
+                    class="elevation-1 pa-6"
+                    item-key="name"
+                    multi-sort
       >
         <template v-slot:top>
           <v-container fluid>
@@ -21,7 +22,7 @@
 
             <v-col cols="6">
               <v-row>
-                Liefertermin: {{ getTermin() }}
+                Datum: {{ getTermin() }}
               </v-row>
               <v-row>
                 restliche Stationen: {{ getStationen() }}
@@ -32,7 +33,7 @@
             <v-btn
                 class="white--text"
                 color="red"
-                @click="unfall_melden()"
+                @click="unfall_melden(); show= !show"
             >
               Unfall melden
             </v-btn>
@@ -61,7 +62,7 @@
 
         <template v-slot:item.actions="{ item }">
           <v-btn
-              :disabled="item.hideButton"
+              :disabled="item.hideButton || (data.indexOf(item) !== currStation)"
               color="primary"
               depressed
               tile
@@ -144,14 +145,14 @@ export default {
       }, 3000);
     },
     async getBenachrichtigung() {
-      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/" + this.fahrernummer);
+      const responseBenachrichtigung = await axios.get("Benachrichtigung_Fahrer/getAllBenachrichtigungFahrerUngelesen/" + this.fahrernummer, this.$store.getters.getLoginData);
 
       for (let i = 0; i < responseBenachrichtigung.data.length; i++) {
         let benachrichtigungs_ID = responseBenachrichtigung.data[i][0];
 
         this.auftrags_IDs.push({id: responseBenachrichtigung.data[i][1]});
 
-        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/" + benachrichtigungs_ID);
+        await axios.put("Benachrichtigung_Fahrer/markAsGelesen/" + benachrichtigungs_ID, this.$store.getters.getLoginData);
       }
 
       if (responseBenachrichtigung.data.length > 0) {
@@ -160,15 +161,17 @@ export default {
 
     },
     async setAuftragFahrernummer(id) {
-      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id)
+      const response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id, this.$store.getters.getLoginData)
 
       if (response.data[0] !== 9999 && response.data[0] !== null) {
         alert("Auftrag bereits verteilt.");
       } else {
-        await axios.put("Auftrag/updateAuftragFahrernummer/" + id + "/" + this.fahrernummer);
-        //this.active_auftrags_IDs.push(this.auftrags_IDs[index]);
-        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs.length);
+        await axios.put("Auftrag/updateAuftragFahrernummer/" + id + "/" + this.fahrernummer, this.$store.getters.getLoginData);
+        this.active_auftrags_IDs++;
+        await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs, this.$store.getters.getLoginData);
         //this.auftrags_IDs.splice(index,1);
+        this.currStation = 0;
+        await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data, this.$store.getters.getLoginData);
       }
     },
     async checkAuftraegeforFahrernummer() {
@@ -178,7 +181,7 @@ export default {
       }
 
       for (let i = 0; i < this.auftrags_IDs.length; i++) {
-        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + this.auftrags_IDs[i].id)
+        let response = await axios.get("Auftrag/getAuftragFahrernummerByAuftrags_ID/" + this.auftrags_IDs[i].id, this.$store.getters.getLoginData)
         if (response.data[0] !== 9999 && response.data[0] !== null) {
           this.auftrags_IDs.splice(i, 1);
         }
@@ -186,28 +189,33 @@ export default {
     },
     async abholungBestätigen(id) {
       Vue.set(id, 'hideButton', true);
+      let abgechlossen = 0;
       if (id.beschreibung === 'Abholung') {
-        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$cookies.get('emailAdresse'));
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&data=' + id.restaurantname + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       } else {
-        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$cookies.get('emailAdresse'));
+        await this.$http.put('/route/confirm/' + id.beschreibung + '?auftraege=' + id.auftrags_id + '&email=' + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData).then(response => abgechlossen=response.data);
       }
+      if(this.active_auftrags_IDs>0){
+        this.active_auftrags_IDs -= abgechlossen;
+      }
+      this.currStation++;
       id.hidebutton = true;
     },
     async unfall_melden() {
-      let auftrags_ids = this.data[0].auftrags_id + ", ";
+      let auftrags_ids = this.data[0].auftrags_id;
       for(let i = 1; i < this.data.length; i++){
-        if(i == this.data.length - 1){
-          auftrags_ids += this.data[i].auftrags_id
-        }
-        else {
-          auftrags_ids += this.data[i].auftrags_id + ", ";
-        }
+
+          auftrags_ids += ", " + this.data[i].auftrags_id;
+
       }
-      await this.$http.put('/route/accident/' + this.$cookies.get('emailAdresse') + '?auftraege=' + auftrags_ids);
-      console.log(auftrags_ids);
+      // console.log(this.active_auftrags_IDs);
+      await this.$http.put('/route/accident/?auftraege=' + auftrags_ids, this.$store.getters.getLoginData);
+
     },
     getTermin() {
-      return '12.12.2021';
+      const current = new Date();
+      const date = `${current.getDate()}.${current.getMonth()+1}.${current.getFullYear()}`;
+      return date;
     },
     getStationen() {
       return this.data.length;
@@ -215,11 +223,19 @@ export default {
     convertToKM(meters) {
       return meters / 1000;
     },
+    async getLoggedInFahrer()
+    {
+      const response = await axios.get("Benutzer/getFahrernummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
+      this.fahrernummer = response.data[0];
+    },
   },
   async mounted() {
-    await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data);
+    await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => {
+      this.data = response.data === "" ? [] : response.data;
+    }, this.$store.getters.getLoginData);
+    await this.getLoggedInFahrer();
     this.pollData();
-    //todo this fahrernummer = aktuelle Fahrernummer
+
   },
   beforeDestroy() {
     clearInterval(this.polling);
@@ -227,12 +243,14 @@ export default {
   data() {
     return {
       data: [],
-      fahrernummer: 12,
+      fahrernummer: 0,
+      show:false,
       auftrags_IDs: [],
-      active_auftrags_IDs: [],
+      active_auftrags_IDs: 0,
       auftrags_IDs_index: 0,
       benachrichtigungs_ID: 0,
       polling: null,
+      currStation: 0,
       acceptDialog: false,
       deleteDialog: false,
       dialog: false,

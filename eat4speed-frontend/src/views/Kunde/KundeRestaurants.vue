@@ -53,43 +53,241 @@
                 flat
                 class="text-right"
             >
-              <v-btn
-                  disabled
-                  color="primary"
+              <v-menu
+                  bottom
+                  left
+                  offset-y
                   tile
+                  :close-on-content-click="false"
+                  max-width="400"
+                  min-width="400"
+                  max-height="400"
               >
-                Fliter
-              </v-btn>
+                <template v-slot:activator="{ on, attrs}">
+                  <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      color="primary"
+                      tile
+                  >
+                    Filter
+                  </v-btn>
+                </template>
+                <v-list>
+                  <v-list-item>
+                    <h2
+                        class="text-uppercase"
+                    >
+                      Filter
+                    </h2>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Suchbegriff benutzen"
+                          v-model="nameOptionActive"
+                      ></v-checkbox>
+                    </v-container>
+                  </v-list-item>
+                  <v-subheader
+                      class="text-uppercase"
+                  >
+                    Mindestbestellwert
+                  </v-subheader>
+                  <v-list-item>
+                    <v-container fluid>
+                      <v-checkbox
+                          label="Mindestbestellwert benutzen"
+                          v-model="mindestbestellwertOptionActive"
+                      ></v-checkbox>
+                      <v-slider
+                          v-model="selectedMindestbestellwert"
+                          min="5"
+                          max="100"
+                          step="5"
+                          thumb-label
+                          prepend-icon="mdi-cash"
+                          append-icon="mdi-cash-multiple"
+                          v-if="mindestbestellwertOptionActive"
+                      >
+                        <template v-slot:thumb-label="{ value }">
+                          {{value}} {{"€"}}
+                        </template>
+                      </v-slider>
+                    </v-container>
+                  </v-list-item>
+                  <v-container>
+                    <v-row>
+                      <v-col
+                          class="justify-start"
+                      >
+                        <v-btn
+                            color="error"
+                            tile
+                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                        >
+                          Filter löschen
+                        </v-btn>
+                      </v-col>
+                      <v-col
+                          class="justify-end"
+                      >
+                        <v-btn
+                            color="primary"
+                            tile
+                            @click="applyFiltersAndSearch"
+                        >
+                          Filter anwenden
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-list>
+              </v-menu>
             </v-card>
           </v-col>
         </v-row>
       </v-container>
       <v-container>
         <v-card class="mx-auto">
-          <v-card-title> Gerichte</v-card-title>
+          <v-card-title> Restaurants</v-card-title>
           <v-divider></v-divider>
-          <v-card
-              v-if="amountRestaurants === -1"
-              tile
-              class="text-center text-h5"
-          >
-            Ladet
-          </v-card>
-          <v-card
-              v-if="amountRestaurants === 0"
-              tile
-              class="text-center text-h5"
-          >
-            Es wurden keine Restaurants gefunden
-          </v-card>
           <v-virtual-scroll
               :items="items"
-              :item-height="250"
+              :item-height="heightVS"
               max-height="650"
+              :key="restaurantsKey"
           >
             <template v-slot:default="{ item }" v-resize>
 
               <v-card
+                  v-if="$vuetify.breakpoint.xs"
+                  flat
+                  tile
+                  outlined
+              >
+                <v-container fluid>
+                  <v-row
+                      v-for="a in 2"
+                      :key="a"
+                  >
+                    <v-col
+                        v-if="a === 1"
+                        cols="5"
+                        class="mb-0"
+                    >
+                      <v-card
+                          flat
+                          tile
+                          outlined
+                      >
+                        <v-img alt="Bild von Essen" min-height="100" max-height="100" max-width="300"
+                               position="center center" :src="item.img"></v-img>
+                      </v-card>
+                    </v-col>
+                    <v-col
+                        v-if="a === 2"
+                        cols="12"
+                        class="mt-0"
+                    >
+                      <v-card
+                          flat
+                          class="text-left"
+                      >
+                        <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
+                      </v-card>
+                      <v-card
+                          flat
+                          class="text-sm-subtitle-1"
+                      >
+                        Mindestbestellwert: {{ item.mindestbestellwert + ' €' }}
+                      </v-card>
+                      <v-crad
+                          flat
+                          class="text-sm-subtitle-1"
+                      >
+                        Bestellradius: {{ item.bestellradius + ' km' }}
+                      </v-crad>
+                      <v-card
+                          v-if="a === 2"
+                          flat
+                          class="text-right"
+                      >
+                        <v-btn
+                            color="primary"
+                            tile
+                            small
+                            bottom="bottom"
+                            @mouseenter="selectRestaurant(item)"
+                            @click="setStoreSearchOptions"
+                        >
+                          Speisekarte
+                        </v-btn>
+                      </v-card>
+                    </v-col>
+                    <v-col>
+                      <v-row>
+                        <v-col
+                            cols="8"
+                        >
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-sm-h5 text-decoration-underline"
+                          >
+                            {{ item.restaurant }}
+                          </v-card>
+                        </v-col>
+                        <v-col>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-right"
+                          >
+                            <div v-if="item.isFav === true">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectRestaurant(item)"  small right
+                                      @mousedown="deleteFromFavorites"
+                                      @mouseup="()=>{this.amountRestaurants=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Hinzugefügt am {{ item.hinzufuegedatum }}</span>
+                              </v-tooltip>
+                            </div>
+                            <div v-else>
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectRestaurant(item)"  small right
+                                      @mousedown="addToFavorites"
+                                      @mouseup="()=>{this.amountRestaurants=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zu Favoriten hinzufügen</span>
+                              </v-tooltip>
+                            </div>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+
+              <v-card
+                  v-else
                   flat
                   tile
                   outlined
@@ -114,7 +312,7 @@
                           :key="a"
                       >
                         <v-col
-                            cols="4"
+                            cols="6"
                         >
                           <v-card
                               v-if="a === 1"
@@ -137,13 +335,13 @@
                           >
                             Mindestbestellwert: {{ item.mindestbestellwert + ' €' }}
                           </v-card>
-                          <v-crad
+                          <v-card
                               v-if="a === 2"
                               flat
                               class="subtitle-1"
                           >
                             Bestellradius: {{ item.bestellradius + ' km' }}
-                          </v-crad>
+                          </v-card>
                         </v-col>
                         <v-col>
                           <v-card
@@ -218,6 +416,26 @@
               <v-divider></v-divider>
             </template>
           </v-virtual-scroll>
+          <v-card
+              v-if="amountRestaurants === -1"
+              tile
+          >
+            <v-row justify="center">
+              <v-progress-circular
+                  indeterminate
+                  color="primary"
+                  :size="70"
+                  :width="7"
+              ></v-progress-circular>
+            </v-row>
+          </v-card>
+          <v-card
+              v-if="amountRestaurants === 0"
+              tile
+              class="text-center text-h5"
+          >
+            Es wurden keine Restaurants gefunden
+          </v-card>
         </v-card>
       </v-container>
     </v-container>
@@ -233,7 +451,7 @@ export default {
     this.searchString = this.$store.getters.searchString;
     this.searchOptions = this.$store.getters.searchOptionsRestaurant;
 
-    console.log(this.searchString);
+    // console.log(this.searchString);
     await this.checkLoggedInUser();
     await this.getLoggedInKunde();
     await this.getAllEntfernungenAndBewertungen();
@@ -247,13 +465,13 @@ export default {
     },
     async getLoggedInKunde() {
       if (this.isUserLoggedInBoolean) {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'))
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData)
         this.loggedInKunde_ID = response.data[0];
       }
     },
     async getAllEntfernungenAndBewertungen() {
       if (this.isUserLoggedInBoolean) {
-        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/" + this.loggedInKunde_ID);
+        const responseEntfernungen = await axios.get("EntfernungKundeRestaurant/getEntfernungByKundennummer/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
         for (let i = 0; i < responseEntfernungen.data.length; i++) {
           this.distanceRestaurant_IDs[i] = responseEntfernungen.data[i][0];
           this.distancesUnassigned[i] = responseEntfernungen.data[i][1];
@@ -267,8 +485,9 @@ export default {
       }
     },
     selectRestaurant(item) {
-      console.log("Restaurant selected " + item.restaurantid);
+      // console.log("Restaurant selected " + item.restaurantid);
       this.selectedRestaurant = item.restaurantid;
+      this.selectedItem = item;
     },
     getStoreSeachString() {
       this.searchString = this.$store.getters.searchString;
@@ -278,7 +497,7 @@ export default {
     },
     setStoreSearchString() {
       this.$store.commit("changeSearchString", this.searchString);
-      console.log("changed searchString to " + this.$store.getters.searchString);
+      // console.log("changed searchString to " + this.$store.getters.searchString);
     },
     setStoreSearchOptions() {
       this.$store.commit("changeSearchOptionsRestaurant", this.searchOptions);
@@ -295,9 +514,9 @@ export default {
         this.favoritenlisteRestaurants_IDs = [];
         this.hinzufuegedaten = [];
 
-        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/" + this.loggedInKunde_ID);
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
 
-        console.log(ResponseFavoriten);
+        // console.log(ResponseFavoriten);
         for (let i = 0; i < ResponseFavoriten.data.length; i++) {
           let favData = ResponseFavoriten.data[i];
           this.favoritenlisteRestaurants_IDs[i] = favData[0];
@@ -307,7 +526,7 @@ export default {
 
       const ResponseRestaurants = await axios.post("Restaurant/searchRestaurants", this.searchOptions);
 
-      console.log(ResponseRestaurants);
+      // console.log(ResponseRestaurants);
 
       for (let i = 0; i < ResponseRestaurants.data.length; i++) {
         let restaurantData = ResponseRestaurants.data[i];
@@ -353,16 +572,16 @@ export default {
         const config = {responseType: "arraybuffer"};
         const responsePicture = await axios.get("/RestaurantBilder/getBild/" + this.restaurant_IDs[i], config);
 
-        console.log(responsePicture);
+        // console.log(responsePicture);
 
         if (responsePicture.status !== 204) {
-          console.log("received Picture")
-          console.log(responsePicture.data);
+          // console.log("received Picture")
+          // console.log(responsePicture.data);
 
           let pictureBlob = new Blob([responsePicture.data], {type: responsePicture.headers["content-type"]})
 
           let imageURL = URL.createObjectURL(pictureBlob);
-          console.log(imageURL);
+          // console.log(imageURL);
 
           this.imgs[i] = imageURL;
         } else {
@@ -373,6 +592,7 @@ export default {
       this.amountRestaurants = 0;
       this.amountRestaurants = ResponseRestaurants.data.length;
       this.version++;
+      this.restaurantsKey++;
     },
     async applyBewertungFilterAndSearch() {
 
@@ -464,11 +684,11 @@ export default {
         anzahl_Bestellungen: 0
       }
 
-      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite, this.$store.getters.getLoginData);
       this.loadRestaurants();
     },
     async deleteFromFavorites() {
-      await axios.delete("Favoritenliste_Restaurants/remove/" + this.loggedInKunde_ID + "/" + this.selectedRestaurant);
+      await axios.delete("Favoritenliste_Restaurants/remove/" + this.loggedInKunde_ID + "/" + this.selectedRestaurant, this.$store.getters.getLoginData);
       this.loadRestaurants();
     },
 
@@ -479,6 +699,7 @@ export default {
     loggedInKunde_ID: 0,
     amountRestaurants: -1,
     selectedRestaurant: "",
+    selectedItem: "",
     isUserLoggedInBoolean: false,
     version: 0,
     descriptions: [],
@@ -507,7 +728,8 @@ export default {
     nameOptionActive: true,
     mindestbestellwertOptionActive: false,
     bewertungOptionActive: false,
-    entfernungOptionActive: false
+    entfernungOptionActive: false,
+    restaurantsKey: 0,
   }),
   computed: {
     items() {
@@ -542,6 +764,17 @@ export default {
           distance: cdistance
         }
       })
+    },
+    heightVS()
+    {
+      if(this.$vuetify.breakpoint.xs)
+      {
+        return 260
+      }
+      else
+      {
+        return 250
+      }
     }
   },
   watch: {

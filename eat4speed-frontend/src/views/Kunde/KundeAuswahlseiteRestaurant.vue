@@ -7,50 +7,36 @@
           class="mx-auto"
           tile
       >
-        <v-row no-gutters>
-          <v-col
-              cols="4"
+        <v-container fluid>
+          <v-row
+              v-if="$vuetify.breakpoint.xs"
+              no-gutters
           >
-            <v-container>
-              <v-img alt="Bild von Restaurant" max-width="600" :src="this.img"></v-img>
-            </v-container>
-          </v-col>
-          <v-col>
-            <v-container
-                fluid
+            <v-col
+                cols="10"
             >
-              <v-row
-                  no-gutters
-                  v-for="b in 5"
-                  :key="b"
+              <v-card
+                  outlined
+                  flat
+                  min-width="250"
               >
-                <v-col
-                    v-for="c in 2"
-                    :key="c"
-                    class="pa-2"
-                >
-                  <v-card
-                      v-if="b === 1 && c === 1"
-                      class="text-sm-h4"
-                      flat
-                  >
-                    {{restaurantName}}
-                  </v-card>
-
-                  <v-card
-                      v-if="b === 1 && c === 2"
-                      class="text-right"
-                      flat
-                  >
-                    <div v-if="restaurantIsFav === true">
+                <v-img alt="Bild von Restaurant" min-height="200" max-width="250" :src="this.img"></v-img>
+              </v-card>
+            </v-col>
+            <v-col>
+              <v-card
+                  class="text-right"
+                  flat
+              >
+                <div v-if="restaurantIsFav === true">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                         class="html-editor-align-right" small right
-                         @mousedown="deleteFromFavorites"
-                         v-bind="attrs"
-                         v-on="on"
-                         icon
+                          class="html-editor-align-right" small right
+                          @mousedown="deleteFromFavorites"
+                          v-bind="attrs"
+                          v-on="on"
+                          icon
                       >
                         <v-icon>mdi-heart</v-icon>
                       </v-btn>
@@ -74,144 +60,483 @@
                     <span>Zu Favoriten hinzufügen</span>
                   </v-tooltip>
                 </div>
-                  </v-card>
-
-                  <v-card
-                      v-if="b === 2 && c === 1"
-                      flat
+              </v-card>
+            </v-col>
+            <v-row>
+              <v-container
+                  fluid
+              >
+                <v-row
+                    no-gutters
+                    v-for="b in 5"
+                    :key="b"
+                >
+                  <v-col
+                      v-for="c in 2"
+                      :key="c"
+                      class="pa-2"
                   >
-                    <v-row
-                        no-gutters
+                    <v-card
+                        v-if="b === 1 && c === 1"
+                        class="text-h5 text-decoration-underline"
+                        flat
                     >
-                      <v-rating
-                          readonly
-                          length="5"
-                          half-icon="$ratingHalf"
-                          half-increments
-                          hover="true"
-                          dense
-                          small
-                          :value="restaurantRating"
-                      ></v-rating>
-                      <span
-                          class="ml-1"
+                      {{restaurantName}}
+                    </v-card>
+
+                    <v-card
+                        v-if="b === 2 && c === 1"
+                        flat
+                    >
+                      <v-row
+                          no-gutters
                       >
-                     {{restaurantRating}}
-                   </span>
-                    </v-row>
-                  </v-card>
-
-                  <v-card
-                      v-if="b === 2 && c === 2"
-                      class="text-right"
-                      flat
-                  >
-                    <!--ToDO-->
-                    <v-dialog
-                        max-width="50%"
-                    >
-                      <template v-slot:activator="{ on, attrs}">
-                        <v-btn
-                            v-bind="attrs"
-                            v-on="on"
-                            color="primary"
-                            tile
+                        <v-rating
+                            readonly
+                            length="5"
+                            half-icon="$ratingHalf"
+                            half-increments
+                            hover="true"
+                            dense
+                            small
+                            :value="restaurantRating"
+                        ></v-rating>
+                        <span
+                            class="ml-1"
                         >
-                          Bewertungen ({{ restaurantBewertungCount }})
-                        </v-btn>
-                      </template>
-                      <template v-slot:default="dialog">
-                        <v-card>
-                          <v-toolbar class="text-h4">Bewertungen</v-toolbar>
+                     {{parseFloat(restaurantRating).toFixed(2)}}
+                   </span>
+                      </v-row>
+                    </v-card>
 
-                          <v-data-table
-                              :headers="headers"
-                              :items="test123"
-                              :items-per-page="5"
-                              class="elevation-1"
+                    <v-card
+                        v-if="b === 2 && c === 2"
+                        class="text-right"
+                        flat
+                    >
+                      <v-dialog
+                          max-width="100%"
+                      >
+                        <template v-slot:activator="{ on, attrs}">
+                          <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              color="primary"
+                              tile
+                              small
                           >
-                            <template v-slot:item.reviewRating="{ item }">
+                            Bewertungen ({{ restaurantBewertungCount }})
+                          </v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                          <v-card>
+                            <v-toolbar class="text-h4">Bewertungen</v-toolbar>
+
+                            <v-data-table
+                                :headers="headers"
+                                :items="test123"
+                                :items-per-page="5"
+                                class="elevation-1"
+                            >
+                              <template v-slot:item.reviewRating="{ item }">
+                                <v-rating
+                                    readonly
+                                    :value="item.reviewRating"
+                                >
+                                </v-rating>
+                              </template>
+                            </v-data-table>
+
+                            <v-divider></v-divider>
+                            <v-card-actions
+                                v-if="isUserLoggedIn"
+                            >
                               <v-rating
-                                  readonly
-                                  :value="item.reviewRating"
+                                  x-large
+                                  v-model="userRating"
+                                  hover
                               >
                               </v-rating>
-                            </template>
-                          </v-data-table>
-
-                          <v-divider></v-divider>
-                          <v-card-actions
-                              v-if="isUserLoggedIn"
-                          >
-                            <v-rating
-                                x-large
-                                v-model="userRating"
-                                hover
-                            >
-                            </v-rating>
-                          </v-card-actions>
-                          <v-card-actions
-                              v-if="isUserLoggedIn"
-                          >
-                            <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
-                          </v-card-actions>
-                          <v-card-actions class="justify-end">
-                            <v-btn
+                            </v-card-actions>
+                            <v-card-actions
                                 v-if="isUserLoggedIn"
-                                @click="addBewertung"
-                                @mouseup="dialog.value = false"
-                                color="primary"
-                                tile
                             >
-                              Bewerten
-                            </v-btn>
-                            <v-btn
-                                @click="dialog.value = false"
-                                color="error"
-                                tile
-                                class="ml-2"
+                              <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
+                            </v-card-actions>
+                            <v-card-actions class="justify-end">
+                              <v-btn
+                                  v-if="isUserLoggedIn"
+                                  @click="addBewertung"
+                                  @mouseup="dialog.value = false"
+                                  color="primary"
+                                  tile
+                              >
+                                Bewerten
+                              </v-btn>
+                              <v-btn
+                                  @click="dialog.value = false"
+                                  color="error"
+                                  tile
+                                  class="ml-2"
+                              >
+                                Schließen
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+                    </v-card>
+                    <v-card
+                        v-if="b === 3 && c === 2"
+                        class="text-right"
+                        flat
+                    >
+                      <v-dialog
+                          max-width="100%"
+                      >
+                        <template v-slot:activator="{ on, attrs}">
+                          <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              color="primary"
+                              tile
+                              small
+                          >
+                            Öffnungszeiten
+                          </v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                          <v-card>
+                            <v-toolbar class="text-h4">Öffnungszeiten</v-toolbar>
+
+                            <v-data-table
+                                :headers="timeHeaders"
+                                :items="timeItems"
+                                :items-per-page="7"
+                                class="elevation-1"
                             >
-                              Schließen
-                            </v-btn>
-                          </v-card-actions>
-                        </v-card>
-                      </template>
-                    </v-dialog>
-                  </v-card>
+                              <template v-slot:item.reviewRating="{ item }">
+                                <v-rating
+                                    readonly
+                                    :value="item.reviewRating"
+                                >
+                                </v-rating>
+                              </template>
+                            </v-data-table>
+
+                            <v-card-actions class="justify-end">
+                              <v-btn
+                                  @click="dialog.value = false"
+                                  color="error"
+                                  tile
+                                  class="ml-2"
+                              >
+                                Schließen
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+                    </v-card>
 
 
-                  <!--Beschreibung und Addresse-->
-                  <v-card
-                      v-if="b === 3 && c === 1"
-                      flat
-                  >
-                    {{ restaurantDescription }}
-                  </v-card>
+                    <!--Beschreibung und Addresse-->
+                    <v-card
+                        v-if="b === 3 && c === 1"
+                        flat
+                    >
+                      {{ restaurantDescription }}
+                    </v-card>
 
-                  <v-card
-                      v-if="b === 4 && c === 1"
-                      flat
-                  >
-                    {{ restaurantAddress}}
-                  </v-card>
-                  <span
-                      v-if="b === 5 && c === 1"
-                  >
+                    <v-card
+                        v-if="b === 4 && c === 1"
+                        flat
+                    >
+                      {{ restaurantAddress}}
+                    </v-card>
+                    <span
+                        v-if="b === 5 && c === 1"
+                    >
                  Telefon: {{ restaurantPhoneNumber}}
                </span>
-                  <span
-                      v-if="b === 5 && c === 2"
-                      class="text-right"
-                  >
+                    <span
+                        v-if="b === 5 && c === 2"
+                        class="text-right"
+                    >
                  <v-card flat>
-                   Mindestbestellwert: {{ restaurantMindestbestellwert +' €'}}
+                   MBW: {{ restaurantMindestbestellwert.toFixed(2) +' €'}}
                  </v-card>
                </span>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-row>
+          </v-row>
+
+          <v-row
+              v-else
+              no-gutters
+          >
+            <v-col
+                cols="4"
+            >
+              <v-container>
+                <v-card
+                    outlined
+                    flat
+                >
+                  <v-img alt="Bild von Restaurant" min-height="300" max-width="600" :src="this.img"></v-img>
+                </v-card>
+              </v-container>
+            </v-col>
+            <v-col>
+              <v-container
+                  fluid
+              >
+                <v-row
+                    no-gutters
+                    v-for="b in 5"
+                    :key="b"
+                >
+                  <v-col
+                      v-for="c in 2"
+                      :key="c"
+                      class="pa-2"
+                  >
+                    <v-card
+                        v-if="b === 1 && c === 1"
+                        class="text-sm-h4"
+                        flat
+                    >
+                      {{restaurantName}}
+                    </v-card>
+
+                    <v-card
+                        v-if="b === 1 && c === 2"
+                        class="text-right"
+                        flat
+                    >
+                      <div v-if="restaurantIsFav === true">
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                class="html-editor-align-right" small right
+                                @mousedown="deleteFromFavorites"
+                                v-bind="attrs"
+                                v-on="on"
+                                icon
+                            >
+                              <v-icon>mdi-heart</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Aus Favoriten entfernen</span>
+                        </v-tooltip>
+                      </div>
+                      <div v-else>
+                        <v-tooltip bottom>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                small right
+                                @mousedown="addToFavorites"
+                                v-bind="attrs"
+                                v-on="on"
+                                icon
+                            >
+                              <v-icon>mdi-heart-outline</v-icon>
+                            </v-btn>
+                          </template>
+                          <span>Zu Favoriten hinzufügen</span>
+                        </v-tooltip>
+                      </div>
+                    </v-card>
+
+                    <v-card
+                        v-if="b === 2 && c === 1"
+                        flat
+                    >
+                      <v-row
+                          no-gutters
+                      >
+                        <v-rating
+                            readonly
+                            length="5"
+                            half-icon="$ratingHalf"
+                            half-increments
+                            hover="true"
+                            dense
+                            small
+                            :value="restaurantRating"
+                        ></v-rating>
+                        <span
+                            class="ml-1"
+                        >
+                     {{parseFloat(restaurantRating).toFixed(2)}}
+                   </span>
+                      </v-row>
+                    </v-card>
+
+                    <v-card
+                        v-if="b === 2 && c === 2"
+                        class="text-right"
+                        flat
+                    >
+                      <v-dialog
+                          max-width="50%"
+                      >
+                        <template v-slot:activator="{ on, attrs}">
+                          <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              color="primary"
+                              tile
+                          >
+                            Bewertungen ({{ restaurantBewertungCount }})
+                          </v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                          <v-card>
+                            <v-toolbar class="text-h4">Bewertungen</v-toolbar>
+
+                            <v-data-table
+                                :headers="headers"
+                                :items="test123"
+                                :items-per-page="5"
+                                class="elevation-1"
+                            >
+                              <template v-slot:item.reviewRating="{ item }">
+                                <v-rating
+                                    readonly
+                                    :value="item.reviewRating"
+                                >
+                                </v-rating>
+                              </template>
+                            </v-data-table>
+
+                            <v-divider></v-divider>
+                            <v-card-actions
+                                v-if="isUserLoggedIn"
+                            >
+                              <v-rating
+                                  x-large
+                                  v-model="userRating"
+                                  hover
+                              >
+                              </v-rating>
+                            </v-card-actions>
+                            <v-card-actions
+                                v-if="isUserLoggedIn"
+                            >
+                              <v-textarea label="Kommentar" no-resize="true" clearable="true" rows="1" v-model="userComment"></v-textarea>
+                            </v-card-actions>
+                            <v-card-actions class="justify-end">
+                              <v-btn
+                                  v-if="isUserLoggedIn"
+                                  @click="addBewertung"
+                                  @mouseup="dialog.value = false"
+                                  color="primary"
+                                  tile
+                              >
+                                Bewerten
+                              </v-btn>
+                              <v-btn
+                                  @click="dialog.value = false"
+                                  color="error"
+                                  tile
+                                  class="ml-2"
+                              >
+                                Schließen
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+                    </v-card>
+                    <v-card
+                        v-if="b === 3 && c === 2"
+                        class="text-right"
+                        flat
+                    >
+                      <v-dialog
+                          max-width="50%"
+                      >
+                        <template v-slot:activator="{ on, attrs}">
+                          <v-btn
+                              v-bind="attrs"
+                              v-on="on"
+                              color="primary"
+                              tile
+                          >
+                            Öffnungszeiten
+                          </v-btn>
+                        </template>
+                        <template v-slot:default="dialog">
+                          <v-card>
+                            <v-toolbar class="text-h4">Öffnungszeiten</v-toolbar>
+
+                            <v-data-table
+                                :headers="timeHeaders"
+                                :items="timeItems"
+                                :items-per-page="7"
+                                class="elevation-1"
+                            >
+                              <template v-slot:item.reviewRating="{ item }">
+                                <v-rating
+                                    readonly
+                                    :value="item.reviewRating"
+                                >
+                                </v-rating>
+                              </template>
+                            </v-data-table>
+
+                            <v-card-actions class="justify-end">
+                              <v-btn
+                                  @click="dialog.value = false"
+                                  color="error"
+                                  tile
+                                  class="ml-2"
+                              >
+                                Schließen
+                              </v-btn>
+                            </v-card-actions>
+                          </v-card>
+                        </template>
+                      </v-dialog>
+                    </v-card>
+
+
+                    <!--Beschreibung und Addresse-->
+                    <v-card
+                        v-if="b === 3 && c === 1"
+                        flat
+                    >
+                      {{ restaurantDescription }}
+                    </v-card>
+
+                    <v-card
+                        v-if="b === 4 && c === 1"
+                        flat
+                    >
+                      {{ restaurantAddress}}
+                    </v-card>
+                    <span
+                        v-if="b === 5 && c === 1"
+                    >
+                 Telefon: {{ restaurantPhoneNumber}}
+               </span>
+                    <span
+                        v-if="b === 5 && c === 2"
+                        class="text-right"
+                    >
+                 <v-card flat>
+                   Mindestbestellwert: {{ restaurantMindestbestellwert.toFixed(2) +' €'}}
+                 </v-card>
+               </span>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-col>
+          </v-row>
+        </v-container>
       </v-card>
       <v-card
           class="mx-auto"
@@ -247,32 +572,176 @@
           </v-col>
         </v-card-title>
         <v-divider></v-divider>
-
-        <v-card
-            v-if="amountGerichte === 0 && !displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Gericht gefunden
-        </v-card>
-        <v-card
-            v-if="amountGerichte === 0 && displayGetraenke"
-            flat
-            tile
-            class="text-center text-h5"
-        >
-          Es wurden keine Getränke gefunden
-        </v-card>
-
         <v-virtual-scroll
             :items="items"
-            :item-height="210"
+            :item-height="heightVS"
             max-height="450"
             :key="version"
         >
           <template v-slot:default="{ item }">
             <v-card
+                v-if="$vuetify.breakpoint.xs"
+                flat
+                tile
+            >
+              <v-container>
+                <v-row>
+                  <v-col
+                      cols="4"
+                  >
+                    <v-card
+                        flat
+                        tile
+                        class="center"
+                        outlined
+                    >
+                      <v-img alt="Bild von Essen" min-height="100" max-height="100" max-width="400" :src="item.img"></v-img>
+                    </v-card>
+                  </v-col>
+                  <v-col>
+                    <v-row
+                        v-for="d in 2"
+                        :key="d"
+                    >
+                      <v-col>
+                        <v-card
+                            v-if="d === 1"
+                            class="text-h5 text-decoration-underline"
+                            flat
+                        >
+                          {{ item.name }}
+                        </v-card>
+                        <v-card
+                            v-if="d === 2"
+                            class="text-right"
+                            flat
+                        >
+                          {{'Stückpreis: ' + (item.price).toFixed(2) + ' €' }}
+                        </v-card>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                  <v-row no-gutters>
+                    <v-container>
+                      <v-card
+                          class="text-right"
+                          flat
+                          width="100%"
+                      >
+                        <v-dialog
+                            max-width="100%"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                v-bind="attrs"
+                                v-on="on"
+                                small
+                                color="primary"
+                                tile
+                                class="ml-1"
+                                @mouseenter="fillAllergene(item)"
+                            >
+                              Allergene
+                            </v-btn>
+                          </template>
+                          <template v-slot:default="dialog">
+                            <v-card>
+                              <v-container>
+                                <v-row
+                                    class="pa-2"
+                                >
+                                  <v-select
+                                      readonly
+                                      disabled
+                                      :items="allergeneGericht"
+                                      v-model="allergeneGericht"
+                                      chips
+                                      label="Allergene"
+                                      multiple
+                                      :key="allergeneKey"
+                                  >
+
+                                  </v-select>
+                                </v-row>
+                                <v-row
+                                    class="pa-2"
+                                    justify="end"
+                                >
+                                  <v-btn
+                                      class="ml-1 justify-end"
+                                      @click="dialog.value = false"
+                                      color="error"
+                                      tile
+                                  >
+                                    Schließen
+                                  </v-btn>
+                                </v-row>
+                              </v-container>
+                            </v-card>
+                          </template>
+                        </v-dialog>
+                        <v-btn
+                            small
+                            bottom="bottom"
+                            color="primary"
+                            tile
+                            :to="{name: 'Gericht'}"
+                            @mouseover="selectGericht(item)"
+                            class="ml-1"
+                        >
+                          Details
+                        </v-btn>
+
+                        <v-menu
+                            bottom
+                            left
+                            offset-y
+                            :close-on-content-click="false"
+                        >
+                          <template v-slot:activator="{ on, attrs}">
+                            <v-btn
+                                v-bind="attrs"
+                                v-on="on"
+                                small
+                                bottom="bottom"
+                                class="ml-1"
+                                color="primary"
+                                :disabled="item.available !== 'verfügbar'"
+                                tile
+                                @mouseover="selectItem(item)"
+                                @click="gerichtAnzahl=1"
+                            >
+                              Bestellen
+                            </v-btn>
+                          </template>
+                          <v-list
+                              max-width="200"
+                              min-width="250"
+                              class="text-center"
+                          >
+                            <v-list-item>
+                              <v-text-field label="Anzahl" v-model="gerichtAnzahl" type="number" :rules="countMinMaxRule"></v-text-field> <!--TODO-->
+                            </v-list-item>
+                            <v-btn
+                                :disabled="gerichtAnzahl < 1 || gerichtAnzahl > 50"
+                                @click="addToCart()"
+                                small
+                                color="primary"
+                                tile
+                            >
+                              Zum Warenkorb hinzufügen
+                            </v-btn>
+                          </v-list>
+                        </v-menu>
+                      </v-card>
+                    </v-container>
+                  </v-row>
+                </v-row>
+              </v-container>
+            </v-card>
+
+            <v-card
+                v-else
                 flat
                 tile
             >
@@ -307,7 +776,16 @@
                             class="text-subtitle-1"
                             flat
                         >
-                          {{ item.description }}
+                          <span
+                              v-if="item.description.length <= 40"
+                          >
+                              {{ item.description }}
+                            </span>
+                          <span
+                              v-else
+                          >
+                              {{ item.description.substring(0,38)+".." }}
+                            </span>
                         </v-card>
                       </v-col>
                       <v-col>
@@ -316,7 +794,7 @@
                             class="text-right"
                             flat
                         >
-                          {{'Stückpreis: ' + item.price + ' €' }}
+                          {{'Stückpreis: ' + (item.price).toFixed(2) + ' €' }}
                         </v-card>
                         <v-card
                             v-if="d === 4"
@@ -333,8 +811,8 @@
                                   small
                                   color="primary"
                                   tile
-                                  @mouseenter="fillAllergene(item)"
                                   class="ml-1"
+                                  @mouseenter="fillAllergene(item)"
                               >
                                 Allergene
                               </v-btn>
@@ -342,25 +820,35 @@
                             <template v-slot:default="dialog">
                               <v-card>
                                 <v-container>
-                                  <v-select
-                                      readonly
-                                      disabled
-                                      :items="allergeneGericht"
-                                      v-model="allergeneGericht"
-                                      chips
-                                      label="Allergene"
-                                      multiple
+                                  <v-row
+                                      class="pa-2"
                                   >
+                                    <v-select
+                                        readonly
+                                        disabled
+                                        :items="allergeneGericht"
+                                        v-model="allergeneGericht"
+                                        chips
+                                        label="Allergene"
+                                        multiple
+                                        :key="allergeneKey"
+                                    >
 
-                                  </v-select>
-                                  <v-btn
-                                      class="ml-1 justify-end"
-                                      @click="dialog.value = false"
-                                      color="error"
-                                      tile
+                                    </v-select>
+                                  </v-row>
+                                  <v-row
+                                      class="pa-2"
+                                      justify="end"
                                   >
-                                    Schließen
-                                  </v-btn>
+                                    <v-btn
+                                        class="ml-1 justify-end"
+                                        @click="dialog.value = false"
+                                        color="error"
+                                        tile
+                                    >
+                                      Schließen
+                                    </v-btn>
+                                  </v-row>
                                 </v-container>
                               </v-card>
                             </template>
@@ -428,7 +916,36 @@
             <v-divider></v-divider>
           </template>
         </v-virtual-scroll>
-
+        <v-card
+            v-if="amountGerichte === -1"
+            flat
+            tile
+        >
+          <v-row justify="center">
+            <v-progress-circular
+                indeterminate
+                color="primary"
+                :size="70"
+                :width="7"
+            ></v-progress-circular>
+          </v-row>
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && !displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Gerichte gefunden
+        </v-card>
+        <v-card
+            v-if="amountGerichte === 0 && displayGetraenke"
+            flat
+            tile
+            class="text-center text-h5"
+        >
+          Es wurden keine Getränke gefunden
+        </v-card>
       </v-card>
     </v-container>
   </v-main>
@@ -436,6 +953,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment";
 
 export default {
   name: "KundeAuswahlseiteRestaurant",
@@ -447,6 +965,7 @@ export default {
     this.displayGetraenke = false;
     this.loadGerichte();
     this.loadBewertungen();
+    this.loadOeffnungszeiten();
     this.user = this.$cookies.get('emailAdresse');
   },
   methods: {
@@ -459,7 +978,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'));
+        const response = await axios.get("Benutzer/getKundennummerByBenutzername/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
         this.currentKunde_ID = response.data[0];
       }
     },
@@ -469,7 +988,7 @@ export default {
 
       if(this.isUserLoggedInBoolean)
       {
-        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID);
+        const ResponseFavoriten = await axios.get("Restaurant/getRestaurantDataByKundennummer_Favoriten/"+this.currentKunde_ID, this.$store.getters.getLoginData);
         for(let i = 0; i < ResponseFavoriten.data.length; i++)
         {
           let favData = ResponseFavoriten.data[i];
@@ -487,7 +1006,7 @@ export default {
       this.restaurantMindestbestellwert = restaurantData[3];
       this.restaurantBestellradius = restaurantData[4];
       this.restaurantAddress=restaurantData[5]+" "+restaurantData[6]+" "+ restaurantData[7]+" "+restaurantData[8];
-      this.restaurantPhoneNumber=restaurantData[9]
+      this.restaurantPhoneNumber=restaurantData[9];
 
       const ResponseBewertung = await axios.get("Bewertung/getAverageBewertungAndCountBewertungByRestaurant_ID/"+this.selectedRestaurant_ID);
       if(ResponseBewertung.data.length>0)
@@ -498,7 +1017,7 @@ export default {
 
       if(this.isUserLoggedInBoolean)
       {
-        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+        const ResponseEntfernung = await axios.get("/EntfernungKundeRestaurant/getEntfernungByKundennummerRestaurant_ID/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
         if(ResponseEntfernung.data.length>0)
         {
           this.entfernung = ResponseEntfernung.data[0];
@@ -591,16 +1110,6 @@ export default {
       this.amountGerichte = ResponseGerichte.data.length;
       this.version++;
     },
-    async fillAllergene(item)
-    {
-      this.selectedItem = item;
-      this.allergeneGericht = [];
-      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
-      for(let i = 0; i<responseAllergene.data.length; i++)
-      {
-        this.allergeneGericht[i] = responseAllergene.data[i];
-      }
-    },
     async loadBewertungen() {
       this.test123 = [];
 
@@ -630,6 +1139,17 @@ export default {
       this.amountReviews = responseBewertungen.data.length;
       this.versionreview++;
     },
+    async loadOeffnungszeiten()
+    {
+      this.timeItems = [];
+
+      const responseOeffnungszeiten = await axios.get("Oeffnungszeiten/getAllZeitenRestaurant_ID/"+this.selectedRestaurant_ID);
+      for(let i = 0; i<responseOeffnungszeiten.data.length;i++)
+      {
+        let zeitData = responseOeffnungszeiten.data[i];
+        this.timeItems.push({weekDay: zeitData[0] , von: moment(zeitData[1].substring(0, 19)+"+00:00").format("HH:mm"), bis: moment(zeitData[2].substring(0, 19)+"+00:00").format("HH:mm")})
+      }
+    },
     async addBewertung(){
       if(!this.isUserLoggedInBoolean)
       {
@@ -647,7 +1167,7 @@ export default {
         datum: today
       }
 
-      await axios.put("Bewertung",bewertung);
+      await axios.put("Bewertung",bewertung, this.$store.getters.getLoginData);
 
       this.loadBewertungen();
     },
@@ -701,11 +1221,11 @@ export default {
         anzahl_Bestellungen: 0
       }
 
-      await axios.post("Favoritenliste_Restaurants", restaurantFavorite);
+      await axios.post("Favoritenliste_Restaurants", restaurantFavorite, this.$store.getters.getLoginData);
       this.loadRestaurant();
     },
     async deleteFromFavorites(){
-      await axios.delete("Favoritenliste_Restaurants/remove/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID);
+      await axios.delete("Favoritenliste_Restaurants/remove/"+this.currentKunde_ID+"/"+this.selectedRestaurant_ID, this.$store.getters.getLoginData);
       this.loadRestaurant();
     },
     addToCart() {
@@ -724,11 +1244,24 @@ export default {
         name: this.selectedItem.name,
         thumbnail: this.selectedItem.img,
         quantity: this.gerichtAnzahl,
-        price: this.selectedItem.price
+        price: this.selectedItem.price,
+        restaurant_ID: this.selectedRestaurant_ID,
+        num: Math.random() * (999999 - 1) + 1
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
       //console.log("Current Cart: "+this.$store.getters.getCartGerichte[0]);
+    },
+    async fillAllergene(item)
+    {
+      this.selectedItem = item;
+      this.allergeneGericht = [];
+      const responseAllergene = await axios.get("Gericht_Allergene/getGericht_AllergeneByGericht_ID/"+this.selectedItem.id);
+      for(let i = 0; i<responseAllergene.data.length; i++)
+      {
+        this.allergeneGericht[i] = responseAllergene.data[i];
+      }
+      this.allergeneKey++;
     },
   },
   data: () => ({
@@ -751,7 +1284,7 @@ export default {
     minimums: [],
     ratings: [],
     availabilities: [],
-    amountGerichte:4,
+    amountGerichte: -1,
     amountReviews:4,
     version:0,
     version2:0,
@@ -765,7 +1298,6 @@ export default {
     restaurantBestellradius:"",
     bewertung_ID:"",
     entfernung: "",
-    allergeneGericht: [],
     userRating:0,
     userComment:"",
     reviewUsername: [],
@@ -796,6 +1328,29 @@ export default {
     ],
     btnType: 0,
     user: 0,
+    allergeneGericht: [],
+    allergeneKey: 0,
+    timeHeaders: [
+      {
+        text: 'Tag',
+        align: 'start',
+        sortable: false,
+        value: 'weekDay'
+      },
+      {
+        text: 'Von',
+        sortable: false,
+        value: 'von'
+      },
+      {
+        text: 'Bis',
+        sortable: false,
+        value: 'bis'
+      }
+    ],
+    weekDay: [],
+    timeOpen: [],
+    timeItems: [],
   }),
 
 
@@ -827,6 +1382,19 @@ export default {
     isUserLoggedIn() {
       return this.user !== undefined;
     },
+    heightVS()
+    {
+      var temp
+      if(this.$vuetify.breakpoint.xs)
+      {
+        temp = 180
+      }
+      else
+      {
+        temp = 210
+      }
+      return temp
+    }
   }
 }
 </script>

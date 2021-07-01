@@ -3,6 +3,7 @@ package de.eat4speed.controllers;
 import de.eat4speed.entities.Schicht;
 import de.eat4speed.services.interfaces.ISchichtService;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -18,14 +19,15 @@ public class SchichtController {
 
     @POST
     @Path("/setSchicht")
+    @RolesAllowed("fahrer")
     public Response add(Schicht zeit){
         schichtplanService.setSchicht(zeit);
-
         return Response.status(Response.Status.CREATED).entity(zeit).build();
     };
 
     @PUT
     @Path("/updateSchicht")
+    @RolesAllowed("fahrer")
     public Response updateSchicht(Schicht zeit)
     {
         return schichtplanService.updateSchicht(zeit);
@@ -33,6 +35,7 @@ public class SchichtController {
 
     @GET
     @Path("getAmountActiveSchicht")
+    @RolesAllowed("fahrer")
     public Object getAmountActiveSchicht()
     {
         return schichtplanService.getAmountActiveSchicht();
@@ -40,6 +43,7 @@ public class SchichtController {
 
     @GET
     @Path("/getSchicht/{id}")
+    @RolesAllowed("fahrer")
     public List getAllZeiten(@PathParam("id") int schicht_id){
 
         return schichtplanService.getSchicht(schicht_id);

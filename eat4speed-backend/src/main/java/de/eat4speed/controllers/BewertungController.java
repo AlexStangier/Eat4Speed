@@ -4,6 +4,7 @@ import de.eat4speed.entities.Bewertung;
 import de.eat4speed.repositories.BewertungRepository;
 import de.eat4speed.services.interfaces.IBewertungService;
 
+import javax.annotation.security.PermitAll;
 import javax.inject.Inject;
 import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
