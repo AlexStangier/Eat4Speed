@@ -70,7 +70,7 @@ public class GerichtControllerTest {
                 "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "restaurant", "", "123");
         this._benutzerRepository.addBenutzer(dummyRestaurantOwner);
 
-        Adressen dummyAddress = new Adressen("Musterstrasse", 23, "Musterstadt", 11233);
+        Adressen dummyAddress = new Adressen("Musterstrasse", Integer.toString(23), "Musterstadt", 11233);
         this._adressenRepository.addAdresse(dummyAddress);
 
         this.dummyAddressId = dummyAddress.getAdress_ID();

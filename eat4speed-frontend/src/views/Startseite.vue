@@ -160,7 +160,7 @@ export default {
     {
       if(this.isUserLoggedInBoolean)
       {
-        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+        const responseRolle = await axios.get("Benutzer/getRoleByEmail/"+this.$cookies.get('emailAdresse'));
         console.log(responseRolle);
         if(responseRolle.data==="fahrer")
         {

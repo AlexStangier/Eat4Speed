@@ -75,7 +75,7 @@ public class Benachrichtigung_FahrerController {
         return Response.ok().build();
     }
 
-    @POST
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/id")
@@ -105,7 +105,6 @@ public class Benachrichtigung_FahrerController {
     }
 
     @DELETE
-    @RolesAllowed("fahrer")
     @Path("/{Benachrichtigungs_ID}")
     public Response delete(@PathParam("Benachrichtigungs_ID") int benachrichtigungs_ID) {
 

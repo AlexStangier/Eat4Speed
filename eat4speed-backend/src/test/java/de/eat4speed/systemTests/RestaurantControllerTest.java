@@ -51,7 +51,7 @@ public class RestaurantControllerTest {
                 "eugene.krabs@krusty-krab.com", "9Qb0ebci0", "", "", "123");
         this._benutzerRepository.addBenutzer(mockRestaurantOwner);
 
-        Adressen mockAddress = new Adressen("Musterstrasse", 23, "Musterstadt", 11233);
+        Adressen mockAddress = new Adressen("Musterstrasse", Integer.toString(23), "Musterstadt", 11233);
         this._adressenRepository.addAdresse(mockAddress);
 
         this.mockAddressId = mockAddress.getAdress_ID();

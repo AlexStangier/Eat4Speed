@@ -129,8 +129,8 @@ public class GerichtController {
     }
 
     @PUT
-    @RolesAllowed("restaurant")
     @Path("deleteGerichtByRestaurant_ID/{restaurant_ID}")
+    @RolesAllowed("restaurant")
     public Response deleteGerichtByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
     {
         gerichtRepository.deleteGerichtByRestaurant_ID(restaurant_ID);

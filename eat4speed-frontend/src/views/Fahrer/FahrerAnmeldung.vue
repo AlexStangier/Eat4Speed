@@ -189,7 +189,6 @@
                     <v-form
                         ref="verificationForm"
                         v-model="verificationValid"
-                        lazy-validation
                     >
                       <v-row>
                         <v-col cols="12">
