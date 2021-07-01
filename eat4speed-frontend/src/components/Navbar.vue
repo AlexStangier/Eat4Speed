@@ -257,7 +257,7 @@ export default {
     },
     showHomeBtn() {
       const path = this.$route.path;
-      return path.includes('/fahrer/anmeldung') || path.includes('/') || path.includes('/anmeldung');
+      return path.includes('/fahrer/anmeldung') || path.includes('/anmeldung') || path !== '/';
     }
   },
   beforeRouteLeave(to, from, next) {
