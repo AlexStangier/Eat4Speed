@@ -221,7 +221,8 @@ export default {
 
     },
     async changeBestellungStatus(bestellID, zustand) {
-      if (zustand === 'stornieren') {
+
+      if (zustand === '❌') {
         if (!this.accepted) {
           this.dialog = true;
           this.bestellungStatus = {bestellID: bestellID, zustand: zustand};
@@ -229,13 +230,13 @@ export default {
         }
         zustand = 'storniert';
       }
-      if (zustand === 'Bereit') {
+      if (zustand === '🟥') {
         zustand = 'bezahlt';
       }
-      if (zustand === 'In Zubereitung') {
+      if (zustand === '🟡') {
         zustand = 'bearbeitung';
       }
-      if (zustand === 'Abholbereit') {
+      if (zustand === '✔️') {
         zustand = 'abholbereit';
       }
 
