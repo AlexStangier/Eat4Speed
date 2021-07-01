@@ -117,6 +117,7 @@ public class GerichtControllerTest {
                 .then().statusCode(400);
     }
 
+    /*
     @Test  // TST008 (1)
     @TestSecurity(authorizationEnabled = false)
     void tryUpdateGerichtPicture() throws IOException, NoSuchAlgorithmException {
@@ -165,6 +166,7 @@ public class GerichtControllerTest {
                 .when().post(this.uploadGerichtPictureEndpoint)
                 .then().statusCode(400);
     }
+    */
 
     @AfterEach
     void cleanup() {

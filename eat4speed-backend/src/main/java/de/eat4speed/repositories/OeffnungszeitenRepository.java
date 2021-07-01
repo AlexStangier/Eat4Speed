@@ -81,4 +81,9 @@ public class OeffnungszeitenRepository implements PanacheRepository<Oeffnungszei
     public Oeffnungszeiten getOeffnungszeitenById(int openingHoursId) {
         return find("Oeffnungszeiten_ID", openingHoursId).firstResult();
     }
+
+    @Transactional
+    public void deleteOeffnungszeitenById(int openingHoursId) {
+        delete("Oeffnungszeiten_ID", openingHoursId);
+    }
 }
