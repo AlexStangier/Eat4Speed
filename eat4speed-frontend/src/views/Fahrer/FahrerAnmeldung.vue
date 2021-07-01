@@ -442,6 +442,7 @@ export default {
       emailRules: [
         (v) => !!v || "Required",
         (v) => /.+@.+\..+/.test(v) || "E-Mail muss gültig sein",
+        (v) => /^[a-zA-Z0-9@.]*$/.test(v) || "E-Mail darf keine Sonderzeichen enthalten"
       ],
       show1: false,
       rules: {

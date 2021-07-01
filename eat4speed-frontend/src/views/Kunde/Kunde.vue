@@ -1465,7 +1465,7 @@ export default {
     heightVS() {
       if(this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm)
       {
-        return 290
+        return 320
       }
       else
       {

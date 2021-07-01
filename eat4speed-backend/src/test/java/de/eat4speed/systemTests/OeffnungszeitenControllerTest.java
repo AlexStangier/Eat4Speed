@@ -97,7 +97,7 @@ public class OeffnungszeitenControllerTest {
         Oeffnungszeiten actualOpeningHours = this._oeffnungszeitenRepository.getOeffnungszeitenById(openingHoursId);
         Assertions.assertEquals(openingHours, actualOpeningHours);
 
-        this._oeffnungszeitenRepository.delete(openingHours);
+        this._oeffnungszeitenRepository.deleteOeffnungszeitenById(openingHoursId);
     }
 
     @Test  // TST009 (2)
