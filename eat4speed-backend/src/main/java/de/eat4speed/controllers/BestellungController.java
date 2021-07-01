@@ -93,7 +93,7 @@ public class BestellungController {
     @Path("getProduktUndAnzahl/{id}")
     public List getProduktUndAnzahl(@PathParam("id") int id) {return _bestellungen.getProduktUndAnzahl(id);}
 
-    @POST
+    @PUT
     @PermitAll
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("updateBestellungStatusRestaurantUndKundeDontTouchThis/{id}/{status}")
