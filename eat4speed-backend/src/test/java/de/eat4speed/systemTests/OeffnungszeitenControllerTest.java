@@ -96,6 +96,8 @@ public class OeffnungszeitenControllerTest {
         // Did the new entry make it into the database
         Oeffnungszeiten actualOpeningHours = this._oeffnungszeitenRepository.getOeffnungszeitenById(openingHoursId);
         Assertions.assertEquals(openingHours, actualOpeningHours);
+
+        this._oeffnungszeitenRepository.delete(openingHours);
     }
 
     @Test  // TST009 (2)
