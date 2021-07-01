@@ -197,7 +197,7 @@
                                     <v-col>
                                       <v-text-field
                                           v-model="gerichtName"
-                                          :counter="20"
+                                          :counter="50"
                                           label="Artikelname"
                                           required
                                           :rules="[rules.required, rules.lettersAndSpacesOnly]"
@@ -217,7 +217,7 @@
                                                v-on:change="selectedPicture()"/>
                                       </label>
                                       <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
-                                                    append-icon="currency-eur" :rules="[rules.required]">
+                                                    append-icon="currency-eur" :rules="[rules.required,rules.price]">
                                       </v-text-field>
                                       <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
                                       </v-checkbox>
@@ -332,7 +332,7 @@
                       Bild auswählen
                       <input type="file" ref="file" id="file" accept="image/*" v-on:change="selectedPicture()"/>
                     </label>
-                    <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur" :rules="[rules.required]">
+                    <v-text-field label="Preis in €" v-model="gerichtPreis" type="number" append-icon="currency-eur" maxlength="10" :rules="[rules.required,rules.price]">
                     </v-text-field>
                     <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
                     </v-checkbox>
@@ -414,7 +414,18 @@ export default {
       this.selectedButton = 1;
     },
     async getLoggedInRestaurant() {
-      const response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+      let response;
+      try {
+        response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+      }
+      catch (e)
+      {
+        if(e.response.status === 403)
+        {
+          window.location.reload();
+        }
+      }
+
       this.restaurantID = response.data[0];
     },
     async checkIfVerified() {
@@ -726,7 +737,7 @@ export default {
     async deleteGericht() {
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
       await axios.delete("Gericht_Kategorie/deleteGerichtKategorieByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
-      await axios.put("Gericht/deleteGerichtByGericht_ID/"+this.editedItem.id, this.$store.getters.getLoginData);
+      await axios.put("Gericht/deleteGerichtByGericht_ID/"+this.editedItem.id);
       this.loadGerichte();
     }
   },
@@ -768,6 +779,7 @@ export default {
     rules: {
       required: (value) => !!value || "Required.",
       min: (v) => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+      price: (v) => (v>0 && v<10000&&/^^[0-9]{1,3}((,|\.){1}[0-9]{1,2}){0,1}$/.test(v)) || "Dieser Preis wird nicht akzeptiert",
       lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
     },
   }),

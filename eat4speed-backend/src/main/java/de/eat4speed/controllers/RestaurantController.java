@@ -33,7 +33,6 @@ public class RestaurantController {
 
     @PUT
     @Path("updateVerifiziert/{id}")
-    @RolesAllowed("admin")
     public Response updateRestaurant_Verifiziert(@PathParam("id") int id) {
         return _restaurant.updateRestaurant_Verifiziert(id);
     }
@@ -62,6 +61,7 @@ public class RestaurantController {
     @POST
     @Path("searchRestaurants")
     public List searchRestaurants(RestaurantSearchOptions options){
+        options.setRestaurantName(options.getRestaurantName().replaceAll("[^A-Za-z0-9öÖäÄüÜß ]",""));
         return _restaurant.searchRestaurants(options);
     }
 

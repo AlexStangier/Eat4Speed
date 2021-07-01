@@ -50,7 +50,6 @@ public class FahrerController {
 
     @PUT
     @Path("updateVerifiziert/{id}")
-    @RolesAllowed("admin")
     public Response updateFahrer_Verifiziert(@PathParam("id") int id) {
         return _fahrer.updateFahrer_Verifiziert(id);
     }

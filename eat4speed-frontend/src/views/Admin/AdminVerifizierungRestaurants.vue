@@ -155,10 +155,6 @@ export default {
         // console.log(ResponseAllRestaurant.data);
         // console.log(ResponseAllRestaurant.data[0])
 
-        var test = ResponseAllRestaurant.data[0];
-
-        // console.log(test[0]);
-
         this.allRestaurant = ResponseAllRestaurant;
 
         var arrayAllRestaurant = [];
@@ -276,14 +272,18 @@ export default {
         emailAdresse: this.currentRowItem.email,
         loeschbegruendung: this.deleteReason
       }
-      await axios.post("Blacklist",deleteBe, this.$store.getters.getLoginData);
+      await axios.post("Blacklist",deleteBe);
 
-      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email, this.$store.getters.getLoginData);
+      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email);
+      let response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/"+this.currentRowItem.email,this.$store.getters.getLoginData);
+      let id = response.data[0];
+      axios.put("Gericht/deleteGerichtByRestaurant_ID/"+id);
+
       this.reloadRestaurant();
     },
     async verifyBewerbung() {
 
-      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id, this.$store.getters.getLoginData);
+      await axios.put("Restaurant/updateVerifiziert/"+this.currentRowItem.restaurant_Id);
 
       // console.log(this.currentRowItem);
       // console.log(this.currentRowItem.restaurant_Id);

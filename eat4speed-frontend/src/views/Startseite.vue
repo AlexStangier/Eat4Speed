@@ -176,12 +176,22 @@ export default {
     },
     async checkForOrders() {
       if (this.isUserLoggedInBoolean && this.loggedInKunde_ID) {
-        const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
-        if (responseOrders.data.length === 0) {
-          this.displayVorschlaege = false;
-        } else {
-          this.displayVorschlaege = true;
+        try {
+          const responseOrders = await axios.get("Bestellung/checkForUserOrders/" + this.loggedInKunde_ID, this.$store.getters.getLoginData);
+          if (responseOrders.data.length === 0) {
+            this.displayVorschlaege = false;
+          } else {
+            this.displayVorschlaege = true;
+          }
         }
+        catch (e)
+        {
+          if(e.response.status === 403)
+          {
+            window.location.reload();
+          }
+        }
+
       }
     },
     async getVorschlaege() {

@@ -183,10 +183,27 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
+  async mounted() {
+    let response;
+    try {
+      response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+    }
+    catch (e)
+    {
+      if(e.response.status === 403)
+      {
+        window.location.reload();
+      }
+    }
+    this.id = response.data[0];
+  },
   data: () => ({
     drawer: false,
     group: null,
+    id: 0,
     switch1: true,
     selectedItem: 1,
     items: [

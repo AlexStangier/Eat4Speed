@@ -108,6 +108,7 @@ public class GerichtController {
     @Path("/searchGerichte")
     public List searchGerichte(DishSearchOptions options)
     {
+        options.setGerichtName(options.getGerichtName().replaceAll("[^A-Za-z0-9öÖäÄüÜß ]",""));
         return gerichtService.searchGerichte(options);
     }
 
@@ -121,7 +122,6 @@ public class GerichtController {
 
     @PUT
     @Path("deleteGerichtByGericht_ID/{gericht_ID}")
-    @RolesAllowed("restaurant")
     public Response deleteGerichtByGericht_ID(@PathParam("gericht_ID") int gericht_ID)
     {
         gerichtRepository.deleteGerichtByGericht_ID(gericht_ID);
@@ -130,7 +130,6 @@ public class GerichtController {
 
     @PUT
     @Path("deleteGerichtByRestaurant_ID/{restaurant_ID}")
-    @RolesAllowed("restaurant")
     public Response deleteGerichtByRestaurant_ID(@PathParam("restaurant_ID") int restaurant_ID)
     {
         gerichtRepository.deleteGerichtByRestaurant_ID(restaurant_ID);

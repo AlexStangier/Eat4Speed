@@ -67,7 +67,7 @@ public class BenutzerController {
     }
 
     @GET
-    @RolesAllowed("restaurant")
+    @RolesAllowed({"restaurant","admin"})
     @Path("getRestaurant_IDByBenutzername/{username}")
     public List getRestaurant_IDByBenutzername(@PathParam("username") String username)
     {
@@ -95,7 +95,6 @@ public class BenutzerController {
     }
 
     @PUT
-    @RolesAllowed({"kunde","admin","restaurant"})
     @Path("deleteBenutzerByEmail/{email}")
     public Response deleteBenutzerByEmail(@PathParam("email") String email)
     {

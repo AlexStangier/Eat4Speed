@@ -63,11 +63,11 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="mindestBestellwert" number :rules="[rules.required]"
+                          <v-text-field v-model="mindestBestellwert" type="number" :rules="[rules.required,rules.price]"
                                         label="Mindestbestellwert" required maxlength="5"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="6" sm="6">
-                          <v-text-field v-model="bestellradius" number :rules="[rules.required]" label="Bestellradius"
+                          <v-text-field v-model="bestellradius" type="number" :rules="[rules.required,rules.price]" label="Bestellradius"
                                         maxlength="10" required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="12" sm="12">
@@ -460,6 +460,7 @@ export default {
       rules: {
         required: value => !!value || "Required.",
         min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
+        price: (v) => (v>0 && v<10000&&/^^[0-9]{1,3}((,|\.){1}[0-9]{1,2}){0,1}$/.test(v)) || "Diese Zahl wird nicht akzeptiert",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
       }
     }

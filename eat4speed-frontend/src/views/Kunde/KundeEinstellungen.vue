@@ -291,13 +291,10 @@ export default {
             kundennummer: this.kundennummer
           }
 
-          const responseBenutzerKundeToAlter = await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
-          const responseAdresseToAlter = await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
-          const responseKundeToAlter = await axios.put("/Kunde/updateKundeEinstellungen", kunde, this.$store.getters.getLoginData);
+          await axios.put("/Benutzer/updateBenutzerRestaurant", benutzer, this.$store.getters.getLoginData);
+          await axios.put("/Adressen/updateAdresse", adresse, this.$store.getters.getLoginData);
+          await axios.put("/Kunde/updateKundeEinstellungen", kunde, this.$store.getters.getLoginData);
 
-          // console.log(responseBenutzerKundeToAlter);
-          // console.log(responseAdresseToAlter);
-          // console.log(responseKundeToAlter);
         } else {
           this.openSnackbar("Bitte gültige Adresse eingeben!")
 
@@ -310,7 +307,7 @@ export default {
     },
     deleteKunde()
     {
-      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email, this.$store.getters.getLoginData);
+      axios.put("Benutzer/deleteBenutzerByEmail/"+this.email);
     },
     closeDialog: function () {
       this.dialog = false;

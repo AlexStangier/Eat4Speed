@@ -4,7 +4,9 @@
     <v-card>
       <v-row class="ma-2">
         <v-col>
-          <v-btn :to="{ name: 'AdminVerifizierungRestaurants'}" width="275px" color="primary" depressed tile>Zur Restaurant Verifizierung</v-btn>
+          <v-btn :to="{ name: 'AdminVerifizierungRestaurants'}" width="275px" color="primary" depressed tile>Zur
+            Restaurant Verifizierung
+          </v-btn>
         </v-col>
       </v-row>
       <v-data-table
@@ -82,7 +84,9 @@
                       </v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn class="white--text" color="red" depressed tile width="200" @click="acceptDialog = false">Abbrechen</v-btn>
+                      <v-btn class="white--text" color="red" depressed tile width="200" @click="acceptDialog = false">
+                        Abbrechen
+                      </v-btn>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -110,16 +114,24 @@
                 <v-container>
                   <v-row>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unseriös'" @click="deleteDialog = false; deleteBewerbung();">Unseriös</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unseriös'"
+                             @click="deleteDialog = false; deleteBewerbung();">Unseriös
+                      </v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Spam'" @click="deleteDialog = false; deleteBewerbung();">Spam</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Spam'"
+                             @click="deleteDialog = false; deleteBewerbung();">Spam
+                      </v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unvollständig'" @click="deleteDialog = false; deleteBewerbung();">Unvollständig</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Unvollständig'"
+                             @click="deleteDialog = false; deleteBewerbung();">Unvollständig
+                      </v-btn>
                     </v-col>
                     <v-col align="center" justify="center">
-                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Keine Angabe'" @click="deleteDialog = false; deleteBewerbung();">Keine Angabe</v-btn>
+                      <v-btn color="primary" depressed tile width="200" @mousedown="deleteReason='Keine Angabe'"
+                             @click="deleteDialog = false; deleteBewerbung();">Keine Angabe
+                      </v-btn>
                     </v-col>
                     <v-col cols="12"></v-col>
                     <v-col align="center" justify="center">
@@ -142,7 +154,7 @@ import axios from "axios";
 export default {
   name: "AdminVerifizierungFahrer",
   methods: {
-    async reloadFahrer(){
+    async reloadFahrer() {
       if (this.select.value === 1) {
         const ResponseAllFahrer = await axios.get("/Fahrer/ALL", this.$store.getters.getLoginData);
 
@@ -194,7 +206,7 @@ export default {
         this.data = arrayNotVerifiedFahrer;
       }
 
-      if(this.select.value === 3) {
+      if (this.select.value === 3) {
         const ResponseVerifiedFahrer = await axios.get("/Fahrer/VERIFIED", this.$store.getters.getLoginData);
 
         this.allFahrer = ResponseVerifiedFahrer;
@@ -220,8 +232,7 @@ export default {
         this.data = arrayVerifiedFahrer;
       }
     },
-    setCurrentRowItem(item)
-    {
+    setCurrentRowItem(item) {
       this.currentRowItem = item;
     },
     async deleteBewerbung() {
@@ -229,17 +240,30 @@ export default {
         emailAdresse: this.currentRowItem.email,
         loeschbegruendung: this.deleteReason
       }
-      await axios.post("Blacklist",deleteBe, this.$store.getters.getLoginData);
+      await axios.post("Blacklist", deleteBe, this.$store.getters.getLoginData);
 
-      await axios.put("Benutzer/deleteBenutzerByEmail/"+this.currentRowItem.email, this.$store.getters.getLoginData);
+      await axios.put("Benutzer/deleteBenutzerByEmail/" + this.currentRowItem.email);
       this.reloadFahrer();
     },
     async verifyBewerbung() {
-      await this.$http.put("Fahrer/updateVerifiziert/"+this.currentRowItem.fahrernummer, this.$store.getters.getLoginData);
+      await axios.put("Fahrer/updateVerifiziert/" + this.currentRowItem.fahrernummer);
       this.reloadFahrer();
     }
   },
-  mounted() {
+  async mounted() {
+
+    let response;
+    try {
+      //das ist so gewollt!
+      response = await axios.get("Benutzer/getRestaurant_IDByBenutzername/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+    } catch (e) {
+      if (e.response.status === 403) {
+        window.location.reload();
+      }
+    }
+    //nicht entfernen!
+    console.log(response);
+
     this.reloadFahrer();
   },
   data() {

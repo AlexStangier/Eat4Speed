@@ -342,13 +342,13 @@
                           >
                             Mindestbestellwert: {{ item.mindestbestellwert + ' €' }}
                           </v-card>
-                          <v-crad
+                          <v-card
                               v-if="a === 2"
                               flat
                               class="subtitle-1"
                           >
                             Bestellradius: {{ item.bestellradius + ' km' }}
-                          </v-crad>
+                          </v-card>
                         </v-col>
                         <v-col>
                           <v-card
@@ -494,6 +494,7 @@ export default {
     selectRestaurant(item) {
       // console.log("Restaurant selected " + item.restaurantid);
       this.selectedRestaurant = item.restaurantid;
+      this.selectedItem = item;
     },
     getStoreSeachString() {
       this.searchString = this.$store.getters.searchString;
@@ -705,6 +706,7 @@ export default {
     loggedInKunde_ID: 0,
     amountRestaurants: -1,
     selectedRestaurant: "",
+    selectedItem: "",
     isUserLoggedInBoolean: false,
     version: 0,
     descriptions: [],

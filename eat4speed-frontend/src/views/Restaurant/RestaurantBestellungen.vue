@@ -168,9 +168,18 @@ export default {
       this.bestellungStatus = {};
     },
     async loadBestellungen() {
+      let ResponseBestellungen;
 
-      const ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
-
+      try{
+        ResponseBestellungen = await axios.get("Bestellung/getRestaurantBestellungen/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+      }
+      catch (e)
+      {
+        if(e.request.status === 403)
+        {
+          window.location.reload();
+        }
+      }
 
       let anzahl = ResponseBestellungen.data.length.toString();
 

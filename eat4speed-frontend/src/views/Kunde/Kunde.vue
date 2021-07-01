@@ -93,7 +93,7 @@
                   <v-subheader
                       class="text-uppercase"
                   >
-                    Mindestbestellwert
+                    nach Mindestbestellwert filtern
                   </v-subheader>
                   <v-list-item>
                     <v-container fluid>
@@ -120,7 +120,7 @@
                   <v-subheader
                       class="text-uppercase"
                   >
-                    Kategorien
+                    nach Kategorien suchen
                   </v-subheader>
                   <v-list-item>
                     <v-container fluid>
@@ -158,7 +158,7 @@
                   <v-subheader
                       class="text-uppercase"
                   >
-                    Allergene
+                    Allergene ausblenden
                   </v-subheader>
                   <v-list-item>
                     <v-container fluid>
