@@ -60,7 +60,7 @@
                   tile
                   :close-on-content-click="false"
                   max-width="400"
-                  min-width="400"
+                  min-width="300"
                   max-height="400"
               >
                 <template v-slot:activator="{ on, attrs}">
@@ -203,7 +203,7 @@
                             tile
                             @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
                         >
-                          Filter löschen
+                          Löschen
                         </v-btn>
                       </v-col>
                       <v-col
@@ -214,7 +214,7 @@
                             tile
                             @click="applyFiltersAndSearch"
                         >
-                          Filter anwenden
+                          Anwenden
                         </v-btn>
                       </v-col>
                     </v-row>
@@ -231,13 +231,304 @@
           <v-divider></v-divider>
           <v-virtual-scroll
               :items="items"
-              :item-height="270"
+              :item-height="heightVS"
               max-height="650"
               :key="gerichteKey"
           >
             <template v-slot:default="{ item }" v-resize>
 
               <v-card
+                  v-if="$vuetify.breakpoint.xs"
+                  flat
+                  tile
+              >
+                <v-container fluid>
+                  <v-row
+                      v-for="a in 2"
+                      :key="a"
+                  >
+                    <v-col
+                        cols="5"
+                    >
+                      <v-card
+                          v-if="a === 1"
+                          flat
+                          tile
+                          outlined
+                      >
+                        <v-img alt="Bild von Essen" min-height="100" max-height="100" max-width="300" position="center center" :src="item.img"></v-img>
+                      </v-card>
+                      <v-card
+                          v-if="a === 2 && isUserLoggedInBoolean"
+                          flat
+                          class="subtitle-1"
+                      >
+                        {{item.distance+' km'}}
+                      </v-card>
+                      <v-card
+                          v-if="a === 2"
+                          flat
+                          class="text-sm-subtitle-1"
+                      >
+                            <span>
+                              Verfügbar
+                              <v-icon v-if="item.available == 'verfügbar'" color="green">
+                                mdi-check
+                              </v-icon>
+                              <v-icon v-if="item.available != 'verfügbar'" color="red">
+                                mdi-close
+                              </v-icon>
+                            </span>
+                      </v-card>
+                    </v-col>
+                    <v-col>
+                      <v-row>
+                        <v-col
+                            cols="8"
+                        >
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-sm-h5 text-decoration-underline text-left"
+                          >
+                            {{ item.name }}
+                          </v-card>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-sm-subtitle-1 text-left"
+                          >
+                            <v-icon>mdi-home</v-icon>
+                          </v-card>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-sm-subtitle-1 text-left"
+                          >
+                            {{item.restaurant}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              class="text-left"
+                          >
+                            <v-rating readonly length="5" half-icon="$ratingHalf" half-increments dense small :value="item.rating"></v-rating>
+                          </v-card>
+                        </v-col>
+                        <v-col>
+                          <v-card
+                              v-if="a === 1"
+                              flat
+                              :key="version"
+                              class="text-right ml-0"
+                          >
+                            <div v-if="item.isFav === true">
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectItem(item)"
+                                      small
+                                      right
+                                      @mousedown="deleteFromFavorites"
+                                      @mouseup="()=>{this.amountGerichte=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Aus Favoriten entfernen</span>
+                              </v-tooltip>
+                            </div>
+                            <div v-else>
+                              <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      @mouseenter="selectItem(item)"  small right
+                                      @mousedown="addToFavorites"
+                                      @mouseup="()=>{this.amountGerichte=0;version++}"
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      icon
+                                  >
+                                    <v-icon>mdi-heart-outline</v-icon>
+                                  </v-btn>
+                                </template>
+                                <span>Zu Favoriten hinzufügen</span>
+                              </v-tooltip>
+                            </div>
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="text-sm-subtitle-1 text-right"
+                          >
+                            Preis: {{ (item.price).toFixed(2) +' €'}}
+                          </v-card>
+                          <v-card
+                              v-if="a === 2"
+                              flat
+                              class="text-right"
+                          >
+                            <v-dialog
+                                max-width="100%"
+                            >
+                              <template v-slot:activator="{ on, attrs }">
+                                <v-btn
+                                    v-bind="attrs"
+                                    v-on="on"
+                                    small
+                                    color="primary"
+                                    tile
+                                    @mouseenter="fillAllergene(item)"
+                                >
+                                  Allergene
+                                </v-btn>
+                              </template>
+                              <template v-slot:default="dialog">
+                                <v-card>
+                                  <v-container>
+                                    <v-row
+                                        class="pa-2"
+                                    >
+                                      <v-select
+                                          readonly
+                                          disabled
+                                          :items="allergeneGericht"
+                                          v-model="allergeneGericht"
+                                          chips
+                                          label="Allergene"
+                                          multiple
+                                          :key="allergeneKey"
+                                      >
+
+                                      </v-select>
+                                    </v-row>
+                                    <v-row
+                                        class="pa-2"
+                                        justify="end"
+                                    >
+                                      <v-btn
+                                          class="ml-1 justify-end"
+                                          @click="dialog.value = false"
+                                          color="error"
+                                          tile
+                                      >
+                                        Schließen
+                                      </v-btn>
+                                    </v-row>
+                                  </v-container>
+                                </v-card>
+                              </template>
+                            </v-dialog>
+                          </v-card>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                  <v-row no-gutters>
+                    <v-col>
+                      <v-card
+                          flat
+                          class="text-right"
+                      >
+                        <v-btn
+                            small
+                            class="ml-1"
+                            color="primary"
+                            tile
+                            @mouseenter="selectItem(item)"
+                            @click="setStoreRestaurant_ID"
+                        >
+                          Speisekarte
+                        </v-btn>
+                        <v-dialog
+                            max-width="100%"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                                v-bind="attrs"
+                                v-on="on"
+                                small
+                                class="ml-1"
+                                color="primary"
+                                tile
+                                @mouseenter="selectItem(item)"
+                                @mousedown="loadKategorien"
+                                @click="nameOptionActive=false; kategorieOptionActive=false"
+                            >
+                              Alternativen
+                            </v-btn>
+                          </template>
+                          <template v-slot:default="dialog">
+                            <v-card>
+                              <v-toolbar>Alternativen</v-toolbar>
+                              <v-container>
+                                <v-row no-gutters>
+                                  <v-checkbox
+                                      label="Name"
+                                      v-model="nameOptionActive"
+                                      :disabled="kategorieOptionActive"
+                                  >
+                                  </v-checkbox>
+                                  <v-checkbox
+                                      class="ml-2"
+                                      label="Kategorien"
+                                      v-model="kategorieOptionActive"
+                                      :disabled="nameOptionActive"
+                                  >
+                                  </v-checkbox>
+                                </v-row>
+                                <v-row>
+                                  <v-container>
+                                    <v-select
+                                        ref="KategorieSelect"
+                                        v-model="selectedKategorien"
+                                        :items="kategorien"
+                                        chips
+                                        label="Kategorien"
+                                        multiple
+                                        outlined
+                                        block
+                                        :key="kategorieVersion"
+                                        v-if="kategorieOptionActive"
+                                    >
+                                    </v-select>
+                                  </v-container>
+                                </v-row>
+                                <v-row no-gutters class="justify-end">
+                                  <v-btn
+                                      class="ml-1"
+                                      @mousedown="findAlternatives"
+                                      @click="dialog.value = false"
+                                      color="primary"
+                                      tile
+                                      :disabled="(!kategorieOptionActive) && (!nameOptionActive)"
+                                  >
+                                    Suchen
+                                  </v-btn>
+                                  <v-btn
+                                      class="ml-1"
+                                      @click="dialog.value = false"
+                                      color="error"
+                                      tile
+                                  >
+                                    Schließen
+                                  </v-btn>
+                                </v-row>
+                              </v-container>
+                            </v-card>
+                          </template>
+                        </v-dialog>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card>
+
+              <v-card
+                  v-else
                   flat
                   tile
               >
@@ -260,7 +551,7 @@
                           :key="a"
                       >
                         <v-col
-                            cols="5"
+                            sm="6" xl="5" lg="5" md="5"
                         >
                           <v-card
                               v-if="a === 1"
@@ -276,14 +567,14 @@
                               class="subtitle-1"
                           >
                             <span
-                                v-if="item.description.length <= 40"
+                                v-if="item.description.length <= 35"
                             >
                               {{ item.description }}
                             </span>
                             <span
                                 v-else
                             >
-                              {{ item.description.substring(0,38)+".." }}
+                              {{ item.description.substring(0,33)+".." }}
                             </span>
                           </v-card>
                           <v-card
@@ -374,7 +665,7 @@
                               flat
                               class="subtitle-1 text-right"
                           >
-                            Preis: {{ item.price +' €'}}
+                            Preis: {{ (item.price).toFixed(2) +' €'}}
                           </v-card>
                           <v-card
                               v-if="a === 2"
@@ -393,6 +684,7 @@
                             >
                               <template v-slot:activator="{ on, attrs }">
                                 <v-btn
+                                    class="mb-0"
                                     v-bind="attrs"
                                     v-on="on"
                                     small
@@ -449,7 +741,7 @@
                                   small
                                   color="primary"
                                   tile
-                                  class="ml-1"
+                                  class="ml-1 mt-1"
                                   :to="{name: 'Gericht'}"
                                   @mouseover="selectGericht(item)"
                               >
@@ -457,13 +749,13 @@
                               </v-btn>
                               <v-btn
                                   small
-                                  class="ml-1"
+                                  class="ml-1 mt-1"
                                   color="primary"
                                   tile
                                   @mouseenter="selectItem(item)"
                                   @click="setStoreRestaurant_ID"
                               >
-                                Zur Speisekarte
+                                Speisekarte
                               </v-btn>
                             <v-dialog
                                 max-width="50%"
@@ -473,7 +765,7 @@
                                     v-bind="attrs"
                                     v-on="on"
                                     small
-                                    class="ml-1"
+                                    class="ml-1 mt-1"
                                     color="primary"
                                     tile
                                     @mouseenter="selectItem(item)"
@@ -554,7 +846,7 @@
                                     v-bind="attrs"
                                     v-on="on"
                                     small
-                                    class="ml-1"
+                                    class="ml-1 mt-1"
                                     color="primary"
                                     :disabled="item.available !== 'verfügbar'"
                                     tile
@@ -1169,6 +1461,26 @@ export default {
           rating: cbewertung
         }
       })
+    },
+    heightVS() {
+      if(this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.sm)
+      {
+        return 290
+      }
+      else
+      {
+        return 270
+      }
+    },
+    sizeDialog() {
+      if(this.$vuetify.breakpoint.xs)
+      {
+        return '100%'
+      }
+      else
+      {
+        return '50%'
+      }
     }
   },
   watch:{

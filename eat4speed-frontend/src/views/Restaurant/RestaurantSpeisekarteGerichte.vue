@@ -80,6 +80,7 @@
               <v-btn
                   :color="selectedButton === 0 ? 'primary' : 'blue-grey'"
                   dark
+                  tile
                   align="right"
                   class="mt-5"
                   @click="changeDisplayGerichte"
@@ -89,6 +90,7 @@
               <v-btn
                   :color="selectedButton === 1 ? 'primary' : 'blue-grey'"
                   dark
+                  tile
                   align="right"
                   class="mt-5"
                   @click="changeDisplayGetraenke"
@@ -99,136 +101,191 @@
             <v-divider></v-divider>
             <v-virtual-scroll
                 :items="items"
-                :item-height="300"
+                :item-height="175"
                 max-height="500"
             >
               <template v-slot:default="{ item }">
-                <v-list-item>
-                  <v-list-item-content>
-                    <v-img alt="Bild von Essen" max-height="300" max-width="300" :src="item.img"></v-img>
-                  </v-list-item-content>
-                  <v-list-item-content>
-                    <v-list-item-group align="left" class="ml-5">
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                      <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
-                      <br>
-                      <br>
-                    </v-list-item-group>
-                  </v-list-item-content>
-                  <v-list-item-content></v-list-item-content>
-                  <v-list-item-group align="left">
-                    <v-list-item-content>{{ item.price }}</v-list-item-content>
-                    <v-dialog
-                        :retain-focus="false"
-                        v-model="artDialog"
-                        width="500"
-                        persistent
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-btn
-                            color="primary"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                            small
-                            bottom
-                            @click="fillDataOfGerichtToAlter(item); currentlyAdding = false"
+
+                <v-card
+                    flat
+                    tile
+                    outlined
+                >
+                  <v-container fluid>
+                    <v-row>
+                      <v-col
+                          cols="4"
+                      >
+                        <v-card
+                            outlined
+                            flat
+                            tile
+                            max-width="300"
+                            max-height="300"
                         >
-                          Bearbeiten
-                        </v-btn>
-                      </template>
-                      <v-card>
-                        <v-form
-                            ref="updateForm"
-                            v-model="valifUpdate"
+                          <v-img alt="Bild von Essen" min-height="150" max-height="150" max-width="300" :src="item.img"></v-img>
+                        </v-card>
+                      </v-col>
+                      <v-col>
+                        <v-row
+                          v-for="a in 2"
+                          :key="a"
                         >
-                          <v-col>
-                            <v-text-field
-                                v-model="gerichtName"
-                                :counter="20"
-                                label="Artikelname"
-                                required
-                                :rules="[rules.required, rules.lettersAndSpacesOnly]"
-                                maxlength="50"
-                            ></v-text-field>
-                            <v-textarea
-                                v-model="gerichtBeschreibung"
-                                :counter="100"
-                                label="Artikelbeschreibung"
-                                required
-                                :rules="[rules.required]"
-                                maxlength="100"
-                            ></v-textarea>
-                            <label>
-                              Bild auswählen
-                              <input type="file" ref="file" id="fileChange" accept="image/*"
-                                     v-on:change="selectedPicture()"/>
-                            </label>
-                            <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
-                                          append-icon="currency-eur" :rules="[rules.required]">
-                            </v-text-field>
-                            <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
-                            </v-checkbox>
-                            <v-select
-                                ref="KategorieSelect"
-                                v-model="selectedKategorien"
-                                :items="kategorien"
-                                chips
-                                label="Kategorien"
-                                multiple
-                                outlined
-                                block
-                                @click="loadKategorien"
-                            ></v-select>
-                            <v-spacer class="ma-2"></v-spacer>
-                            <v-select
-                                v-model="selectedAllergene"
-                                :items="allergen"
-                                chips
-                                label="Allergene"
-                                multiple
-                                outlined
-                                block
-                                @click="loadAllergene"
-                            ></v-select>
-                            <v-spacer class="ma-2"></v-spacer>
-                            <v-col>
-                              <v-row>
-                                <v-btn
-                                    @click="changeGericht(); artDialog = false"
-                                    color="primary"
-                                    dark
-                                    class="justify-center"
-                                    :disabled="!valifUpdate"
-                                >
-                                  Fertig
-                                </v-btn>
-                                <v-spacer class="mr-2"></v-spacer>
-                                <v-btn
-                                    @click="deleteGericht(); artDialog = false"
-                                    color="primary"
-                                    dark
-                                    class="justify-center"
-                                >
-                                  Löschen
-                                </v-btn>
-                                <v-spacer class="mr-2"></v-spacer>
-                                <v-btn
-                                    @click="artDialog = false; test();"
-                                    color="primary"
-                                    dark
-                                    justify
-                                >
-                                  Abbruch
-                                </v-btn>
-                              </v-row>
-                            </v-col>
+                          <v-col
+                              cols="8"
+                          >
+                            <v-card
+                                v-if="a === 1"
+                                flat
+                            >
+                              {{ item.name }}
+                            </v-card>
+                            <v-card
+                                v-if="a === 1"
+                                class="v-list-item__subtitle"
+                                flat
+                            >
+                              <span
+                                  v-if="item.description.length <= 40"
+                              >
+                                {{ item.description }}
+                              </span>
+                              <span
+                                  v-else
+                              >
+                                {{ item.description.substring(0,38)+".." }}
+                              </span>
+                            </v-card>
                           </v-col>
-                        </v-form>
-                      </v-card>
-                    </v-dialog>
-                  </v-list-item-group>
-                </v-list-item>
+                          <v-col>
+                            <v-card
+                                v-if="a === 2"
+                                class="text-right"
+                                flat
+                            >{{ item.price + ' €'}}
+                            </v-card>
+                            <v-card
+                                v-if="a === 2"
+                                class="text-right pt-1"
+                                flat
+                            >
+                              <v-dialog
+                                  :retain-focus="false"
+                                  v-model="artDialog"
+                                  width="500"
+                                  persistent
+                              >
+                                <template v-slot:activator="{ on, attrs }">
+                                  <v-btn
+                                      color="primary"
+                                      tile
+                                      dark
+                                      v-bind="attrs"
+                                      v-on="on"
+                                      small
+                                      bottom
+                                      @click="fillDataOfGerichtToAlter(item); currentlyAdding = false"
+                                  >
+                                    Bearbeiten
+                                  </v-btn>
+                                </template>
+                                <v-card>
+                                  <v-form
+                                      ref="updateForm"
+                                      v-model="valifUpdate"
+                                  >
+                                    <v-col>
+                                      <v-text-field
+                                          v-model="gerichtName"
+                                          :counter="20"
+                                          label="Artikelname"
+                                          required
+                                          :rules="[rules.required, rules.lettersAndSpacesOnly]"
+                                          maxlength="50"
+                                      ></v-text-field>
+                                      <v-textarea
+                                          v-model="gerichtBeschreibung"
+                                          :counter="100"
+                                          label="Artikelbeschreibung"
+                                          required
+                                          :rules="[rules.required]"
+                                          maxlength="100"
+                                      ></v-textarea>
+                                      <label>
+                                        Bild auswählen
+                                        <input type="file" ref="file" id="fileChange" accept="image/*"
+                                               v-on:change="selectedPicture()"/>
+                                      </label>
+                                      <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
+                                                    append-icon="currency-eur" :rules="[rules.required]">
+                                      </v-text-field>
+                                      <v-checkbox label="Artikel verfügbar?" v-model="gerichtVerfuegbar">
+                                      </v-checkbox>
+                                      <v-select
+                                          ref="KategorieSelect"
+                                          v-model="selectedKategorien"
+                                          :items="kategorien"
+                                          chips
+                                          label="Kategorien"
+                                          multiple
+                                          outlined
+                                          block
+                                          @click="loadKategorien"
+                                      ></v-select>
+                                      <v-spacer class="ma-2"></v-spacer>
+                                      <v-select
+                                          v-model="selectedAllergene"
+                                          :items="allergen"
+                                          chips
+                                          label="Allergene"
+                                          multiple
+                                          outlined
+                                          block
+                                          @click="loadAllergene"
+                                      ></v-select>
+                                      <v-spacer class="ma-2"></v-spacer>
+                                      <v-col>
+                                        <v-row>
+                                          <v-btn
+                                              @click="changeGericht(); artDialog = false"
+                                              color="primary"
+                                              dark
+                                              class="justify-center"
+                                              :disabled="!valifUpdate"
+                                          >
+                                            Fertig
+                                          </v-btn>
+                                          <v-spacer class="mr-2"></v-spacer>
+                                          <v-btn
+                                              @click="deleteGericht(); artDialog = false"
+                                              color="primary"
+                                              dark
+                                              class="justify-center"
+                                          >
+                                            Löschen
+                                          </v-btn>
+                                          <v-spacer class="mr-2"></v-spacer>
+                                          <v-btn
+                                              @click="artDialog = false; test();"
+                                              color="primary"
+                                              dark
+                                              justify
+                                          >
+                                            Abbruch
+                                          </v-btn>
+                                        </v-row>
+                                      </v-col>
+                                    </v-col>
+                                  </v-form>
+                                </v-card>
+                              </v-dialog>
+                            </v-card>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card>
                 <v-divider></v-divider>
               </template>
             </v-virtual-scroll>
