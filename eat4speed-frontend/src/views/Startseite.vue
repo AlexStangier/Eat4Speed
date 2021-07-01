@@ -143,7 +143,7 @@ export default {
     await this.checkLoggedInUser();
     await this.redirectFahrer();
     await this.getLoggedInKunde();
-    this.checkForOrders();
+    await this.checkForOrders();
   },
   computed: {
     isUserLoggedIn() {
