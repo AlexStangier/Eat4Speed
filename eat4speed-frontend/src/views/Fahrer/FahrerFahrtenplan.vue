@@ -171,6 +171,7 @@ export default {
         await axios.put("Fahrer/updateFahrer_anzahl_aktueller_Auftraege/" + this.fahrernummer + "/" + this.active_auftrags_IDs, this.$store.getters.getLoginData);
         //this.auftrags_IDs.splice(index,1);
         this.currStation = 0;
+        await this.$http.get('/route/calculate/' + this.$cookies.get('emailAdresse')).then(response => this.data = response.data, this.$store.getters.getLoginData);
       }
     },
     async checkAuftraegeforFahrernummer() {
