@@ -161,7 +161,7 @@ export default {
         end: 1922463867000
       },
       value: [],
-      dates: [moment().subtract(7, 'days').format("YYYY-MM-DD"), moment().add(1, 'days').format("YYYY-MM-DD")],
+      dates: [moment().subtract(7, 'days').format("YYYY-MM-DD"), moment().format("YYYY-MM-DD")],
       iteratedDates: {},
       iteratedDatesTable: [],
       componentKey: 0,
@@ -185,7 +185,7 @@ export default {
     },
     async loadZeiten() {
       this.info.start = moment(this.dates[0]).unix() * 1000;
-      this.info.end = moment(this.dates[1]).unix() * 1000;
+      this.info.end = moment(this.dates[1]).add(1, 'days').unix() * 1000;
 
       const ResponseUmsatz = await axios.post("Bestellung/getStatistic/", this.info, this.$store.getters.getLoginData);
       let formattedData = {};
