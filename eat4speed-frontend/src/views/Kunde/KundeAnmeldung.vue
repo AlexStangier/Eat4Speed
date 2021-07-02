@@ -67,7 +67,7 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="houseNumber" :rules="[rules.required]" label="Hausnummer"
+                          <v-text-field v-model="houseNumber" :rules="[rules.required,rules.houseNumber]" label="Hausnummer"
                                         maxlength="15"
                                         required></v-text-field>
                         </v-col>
@@ -76,7 +76,7 @@
                                         required></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="postCode" :rules="[rules.required]" label="Postleitzahl"
+                          <v-text-field v-model="postCode" :rules="[rules.required,rules.postleitzahl]" type="number" label="Postleitzahl"
                                         maxlength="7"
                                         required></v-text-field>
                         </v-col>
@@ -84,7 +84,7 @@
                           <v-text-field v-model="email" :rules="emailRules" label="E-Mail" required maxlength="50"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4" sm="4">
-                          <v-text-field v-model="phoneNumber" :rules="[rules.required]" label="Telefonnummer"
+                          <v-text-field v-model="phoneNumber" :rules="[rules.required,rules.phone]" type="number" label="Telefonnummer"
                                         maxlength="50"
                                         required></v-text-field>
                         </v-col>
@@ -431,6 +431,9 @@ export default {
         required: value => !!value || "Required.",
         min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
         lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
+        houseNumber: (v) => /^[a-zA-Z0-9]+$/.test(v) || "Nur Buchstaben und Zahlen sind erlaubt",
+        postleitzahl: (v) => /^[0-9]{5}$/.test(v) || "Nur Zahlen sind erlaubt",
+        phone: (v) => /^[0-9]{1,20}$/.test(v) || "Nur Zahlen sind erlaubt",
       },
       regDisable: false
     }
