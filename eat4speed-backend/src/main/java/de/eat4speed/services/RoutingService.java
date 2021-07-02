@@ -187,10 +187,10 @@ public class RoutingService implements IRoutingService {
                 kunden_list_pointer++;
             }
             if (restaurants.get(restaurant_list_pointer * 6 + 4).equals("abholbereit")) {
-                shipments.put(add_shipment(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) + "]", Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 1)), Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 2)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), restaurants.get(restaurant_list_pointer * 6 + 5)));
+                shipments.put(add_shipment(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) +"?" +StringUtils.substringBefore(StringUtils.substringAfter(restaurants.get(restaurant_list_pointer * 6 + 5), " "), ".") + "]", Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 1)), Double.parseDouble(restaurants.get(restaurant_list_pointer * 6 + 2)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), restaurants.get(restaurant_list_pointer * 6 + 5)));
 
             } else if (restaurants.get(restaurant_list_pointer * 6 + 4).equals("abgeholt")) {
-                jobs.put(add_jobs(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) + "]", Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), restaurants.get(restaurant_list_pointer * 6 + 5)));
+                jobs.put(add_jobs(restaurants.get(restaurant_list_pointer * 6) + "[" + restaurants.get(restaurant_list_pointer * 6 + 3) + "|" + kunden.get(kunden_list_pointer * 7 + 3) + " " + kunden.get(kunden_list_pointer * 7 + 4) + ", " + kunden.get(kunden_list_pointer * 7 + 5) + " " + kunden.get(kunden_list_pointer * 7 + 6) +"?" +StringUtils.substringBefore(StringUtils.substringAfter(restaurants.get(restaurant_list_pointer * 6 + 5), " "), ".") + "]", Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 1)), Double.parseDouble(kunden.get(kunden_list_pointer * 7 + 2)), restaurants.get(restaurant_list_pointer * 6 + 5)));
             }
         }
         JSONObject ret_object = new JSONObject()
@@ -230,7 +230,7 @@ public class RoutingService implements IRoutingService {
         try {//"arturs@arturs.de"
             String data = create_Request(email).toString();
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
-
+            System.out.println(data);
             OutputStream stream = http.getOutputStream();
             stream.write(out);
         } catch (Exception e) {
@@ -280,26 +280,28 @@ public class RoutingService implements IRoutingService {
             if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("delivery") || waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("job")) {
                 single_beschreibung = "Lieferung";
                 try {
-                    single_kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("shipment_id").toString(), "|", "]"));
+                    single_kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("shipment_id").toString(), "|", "?"));
                     single_restaurant.append("--- ");
                 } catch (Exception e) {
-                    single_kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("job_id").toString(), "|", "]"));
+                    single_kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("job_id").toString(), "|", "?"));
                     single_restaurant.append("--- ");
                 }
 
-            } else if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("pickup")) {
+            } else if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("type").equals("pickup")) {
                 single_beschreibung = "Abholung";
                 single_restaurant.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(1).get("shipment_id").toString(), "[", "|"));
                 single_kunde.append("--- ");
             } else {
                 single_beschreibung = "No Data";
             }
+
             list_waypoints.put(new JSONObject()
                     .put("auftrags_id", single_auftrags_id_string.toString())
                     .put("station", 0)
                     .put("beschreibung", single_beschreibung)
                     .put("restaurantname", single_restaurant)
                     .put("kunde", single_kunde)
+                    .put("zeit", "")
                     .put("entfernung", (Double.parseDouble(legs.getJSONObject(0).get("distance").toString()) / 1000.0) + "km")
                     .put("start", new JSONObject().put("lat", waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("original_location").get(1))
                             .put("lng", waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("original_location").get(0)))
@@ -331,6 +333,7 @@ public class RoutingService implements IRoutingService {
 
 
             }
+            String zeit2 = "";
             for (int auftrags_id_counter = 0; auftrags_id_counter < auftrags_id.size(); auftrags_id_counter++) {
 
                 if (auftrags_id_counter == (auftrags_id.size() - 1)) {
@@ -342,11 +345,23 @@ public class RoutingService implements IRoutingService {
             if (waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("delivery") || waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("job")) {
                 beschreibung = "Lieferung";
                 try {
-                    kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("shipment_id").toString(), "|", "]"));
+                    kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("shipment_id").toString(), "|", "?"));
                     restaurant.append("--- ");
                 } catch (Exception e) {
-                    kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("job_id").toString(), "|", "]"));
+                    kunde.append(StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("job_id").toString(), "|", "?"));
                     restaurant.append("--- ");
+                }
+
+                try{
+                    zeit2 =StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("shipment_id").toString(), "?", "]");
+                    System.out.println(zeit2);
+                }catch(Exception e){
+
+                }
+                try{
+                    zeit2 =StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("job_id").toString(), "?", "]");
+                }catch (Exception e){
+
                 }
 
             } else if (waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("type").equals("pickup")) {
@@ -356,11 +371,15 @@ public class RoutingService implements IRoutingService {
             } else {
                 beschreibung = "No Data";
             }
+
+
+
             // Add one leg to data list
             list_waypoints.put(new JSONObject()
                     .put("count_stations", waypoints.length())
                     .put("auftrags_id", auftrags_id_string.toString())
                     .put("station", i + 1)
+                    .put("zeit", zeit2)
                     .put("beschreibung", beschreibung)
                     .put("restaurantname", restaurant)
                     .put("kunde", kunde)
