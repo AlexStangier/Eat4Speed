@@ -6,7 +6,6 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.transaction.Transactional;
 
 @ApplicationScoped
@@ -16,20 +15,24 @@ public class BenachrichtigungFahrerAuftragRepository implements PanacheRepositor
     EntityManager entityManager;
 
     @Transactional
-    public void addBenachrichtigungFahrerAuftrag(BenachrichtigungFahrerAuftrag benachrichtigung)
-    {
-        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-        entityManager.createNativeQuery("Insert INto eatforspeed.BenachrichtigungFahrerAuftrag\n" +
-                "Values(" + benachrichtigung.getAuftrags_ID() + "," + benachrichtigung.getBenachrichtigungs_ID() +")").executeUpdate();
-        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
-
+    public void addBenachrichtigungFahrerAuftrag(BenachrichtigungFahrerAuftrag benachrichtigung) {
+        if (benachrichtigung != null) {
+            try {
+                entityManager.persist(benachrichtigung);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        /**entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
+         entityManager.createNativeQuery("Insert INto eatforspeed.BenachrichtigungFahrerAuftrag\n" +
+         "Values(" + benachrichtigung.getAuftrags_ID() + "," + benachrichtigung.getBenachrichtigungs_ID() + ")").executeUpdate();
+         entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();**/
     }
 
     @Transactional
-    public int deleteBenachrichtigungFahrerAuftrag(int Auftrags_ID, int Benachrichtigungs_ID)
-    {
+    public int deleteBenachrichtigungFahrerAuftrag(int Auftrags_ID, int Benachrichtigungs_ID) {
         entityManager.createNativeQuery("Delete from BenachrichtigungFahrerAuftrag where " +
-                " auftrags_ID = "  + Auftrags_ID + " And Benachrichtigungs_ID = " + Benachrichtigungs_ID ).executeUpdate();
+                " auftrags_ID = " + Auftrags_ID + " And Benachrichtigungs_ID = " + Benachrichtigungs_ID).executeUpdate();
 
         return Auftrags_ID;
     }
