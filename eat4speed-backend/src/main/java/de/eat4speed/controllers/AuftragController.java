@@ -60,6 +60,7 @@ public class AuftragController {
     }
 
     @GET
+    @PermitAll
     @Path("getAuftragFahrernummerByAuftrags_ID/{auftrags_ID}")
     public List getAuftragFahrernummerByAuftrags_ID(@PathParam("auftrags_ID") int auftrags_ID)
     {
