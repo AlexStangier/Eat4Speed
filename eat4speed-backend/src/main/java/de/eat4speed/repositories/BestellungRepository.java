@@ -67,7 +67,7 @@ public class BestellungRepository implements PanacheRepository<Bestellung> {
                         "AND b.Gericht_IDs IS NOT NULL " +
                         "AND b.Auftrags_ID = a.Auftrags_ID " +
                         "AND a.Kundennummer = k.Kundennummer " +
-                        "AND TIMESTAMPDIFF(SECOND, b.Timestamp, CURRENT_TIMESTAMP()) > 7500 " +
+                        "AND TIMESTAMPDIFF(SECOND, b.Timestamp, CURRENT_TIMESTAMP()) > 300 " +
                         "order by  FIELD(b.Status, 'bezahlt', 'bearbeitung', 'abholbereit'), b.Bestell_ID").setParameter(1, email);
         restaurantBestellungen = query.getResultList();
         return restaurantBestellungen;
