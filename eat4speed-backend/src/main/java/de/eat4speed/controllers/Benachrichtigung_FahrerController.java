@@ -72,7 +72,7 @@ public class Benachrichtigung_FahrerController {
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/id")
+    @Path("id")
     public Response getBenachrichtigung_FahrerID(@Context HttpHeaders headers, InputStream requestBody) {
 
         int id = 0;
