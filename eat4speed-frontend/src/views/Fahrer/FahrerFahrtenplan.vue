@@ -277,6 +277,11 @@ export default {
           sortable: false
         },
         {
+          text: 'Bestellt auf:',
+          value: 'zeit',
+          sortable: false
+        },
+        {
           text: 'Kundenanschrift',
           value: 'kunde',
           sortable: false
