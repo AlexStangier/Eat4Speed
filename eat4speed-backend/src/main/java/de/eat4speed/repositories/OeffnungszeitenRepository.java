@@ -50,7 +50,7 @@ public class OeffnungszeitenRepository implements PanacheRepository<Oeffnungszei
         List allZeiten;
 
         Query query = entityManager.createQuery(
-                "SELECT t.anfang, t.ende " +
+                "SELECT t.anfang, t.ende, t.oeffnungszeiten_ID " +
                         "FROM Oeffnungszeiten t " +
                         "WHERE t.restaurant_ID = ?1 " +
                         "AND t.wochentag LIKE ?2"

@@ -8,11 +8,7 @@ import de.eat4speed.services.interfaces.IOeffnungszeitenService;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
@@ -87,5 +83,14 @@ public class OeffnungszeitenController {
     {
         return oeffnungszeitenRepository.getAllZeitenRestaurant_ID(restaurant_ID);
     }
+
+    @DELETE
+    @RolesAllowed("restaurant")
+    @Path("deleteZeitenOeffnungszeiten_ID/{id}")
+    public void deleteZeitenOeffnungszeiten_ID(@PathParam("id") int zeit_ID)
+    {
+        oeffnungszeitenRepository.deleteOeffnungszeitenById(zeit_ID);
+    }
+
 
 }

@@ -41,7 +41,7 @@
             <v-col>
               <v-text-field
                   v-model="houseNumber"
-                  :rules="[rules.required]"
+                  :rules="[rules.required,rules.houseNumber]"
                   label="Hausnummer"
                   required
                   maxlength="10"
@@ -61,8 +61,9 @@
             <v-col>
               <v-text-field
                   v-model="zip"
-                  :rules="[rules.required]"
+                  :rules="[rules.required,rules.postleitzahl]"
                   label="Postleitzahl"
+                  type="number"
                   required
                   maxlength="7"
               ></v-text-field>
@@ -82,8 +83,9 @@
             <v-col>
               <v-text-field
                   v-model="phone"
-                  :rules="[rules.required]"
+                  :rules="[rules.required,rules.phone]"
                   label="Telefonnummer"
+                  type="number"
                   required
                   maxlength="20"
               ></v-text-field>
@@ -354,6 +356,9 @@ export default {
       required: value => !!value || "Required.",
       min: v => (v && v.length >= 8) || "Mindestens 8 Zeichen",
       lettersAndSpacesOnly: (v) => /^[a-zA-ZöäüÖÄÜß ]+$/.test(v) || "Nur Buchstaben und Leerzeichen sind erlaubt",
+      houseNumber: (v) => /^[a-zA-Z0-9]+$/.test(v) || "Nur Buchstaben und Zahlen sind erlaubt",
+      postleitzahl: (v) => /^[0-9]{5}$/.test(v) || "Nur Zahlen sind erlaubt",
+      phone: (v) => /^[0-9]{1,20}$/.test(v) || "Nur Zahlen sind erlaubt",
     },
     place: '',
     zip: '',

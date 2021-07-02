@@ -75,7 +75,9 @@
           <template>
 
               <v-col>
+                <v-form v-model="valid">
                 <v-card-title>Lieferzeiten</v-card-title>
+
                 <v-row align="center">
                   <v-checkbox label="Montag" v-model="enabled"/>
                   <v-spacer></v-spacer>
@@ -99,6 +101,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -137,6 +140,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -181,6 +185,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -219,6 +224,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -262,6 +268,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -300,6 +307,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -343,6 +351,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -381,6 +390,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -424,6 +434,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -462,6 +473,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -505,6 +517,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -543,6 +556,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -586,6 +600,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required, enabled6]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -624,6 +639,7 @@
                             readonly
                             v-bind="attrs"
                             v-on="on"
+                            :rules="[rules.required, enabled6]"
                         ></v-text-field>
                       </template>
                       <v-time-picker
@@ -653,6 +669,7 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                         @click="executeAll"
+                        :disabled="enableSet"
                         class = "mb-2"
                         color="primary"
                         v-bind="attrs"
@@ -666,6 +683,7 @@
                     <v-btn color="primary mt-2" @click="ok = false">Ok</v-btn>
                   </v-card>
                 </v-dialog>
+                </v-form>
               </v-col>
 
           </template>
@@ -711,32 +729,55 @@ export default {
     enabledException: false,
     ok: false,
 
-    updated: [false, false, false, false, false, false, false]
+    updated: [false, false, false, false, false, false, false],
+    enableSet: false,
+    valid: false,
+
+    rules: {
+       required: (value) => !!value || "Required.",
+    },
   }),
   mounted() {
     this.loadZeiten()
+  },
+  computed: {
   },
   methods: {
 
 
     executeAll(){
+      this.enableSet = true;
 
       if(this.enabled && !this.updated[0]) this.setArbeitstag(0, "Montag")
       else if(this.enabled) this.updateArbeitstag(0, "Montag")
+      if(!this.enabled && this.times.timesStart[0]!= null) this.deleteZeit(1)
+
       if(this.enabled1 && !this.updated[1]) this.setArbeitstag(1, "Dienstag")
       else if(this.enabled1) this.updateArbeitstag(1, "Dienstag")
+      if(!this.enabled1 && this.times.timesStart[1]!= null) this.deleteZeit(2)
+
       if(this.enabled2 && !this.updated[2]) this.setArbeitstag(2, "Mittwoch")
       else if(this.enabled2) this.updateArbeitstag(2, "Mittwoch")
+      if(!this.enabled2 && this.times.timesStart[2]!= null) this.deleteZeit(3)
+
       if(this.enabled3 && !this.updated[3]) this.setArbeitstag(3, "Donnerstag")
       else if(this.enabled3) this.updateArbeitstag(3, "Donnerstag")
+      if(!this.enabled3 && this.times.timesStart[3]!= null) this.deleteZeit(4)
+
       if(this.enabled4 && !this.updated[4]) this.setArbeitstag(4, "Freitag")
       else if(this.enabled4) this.updateArbeitstag(4, "Freitag")
+      if(!this.enabled4 && this.times.timesStart[4]!= null) this.deleteZeit(5)
+
       if(this.enabled5 && !this.updated[5]) this.setArbeitstag(5, "Samstag")
       else if(this.enabled5) this.updateArbeitstag(5, "Samstag")
+      if(!this.enabled5 && this.times.timesStart[5]!= null) this.deleteZeit(6)
+
       if(this.enabled6 && !this.updated[6]) this.setArbeitstag(6, "Sonntag")
       else if(this.enabled6) this.updateArbeitstag(6, "Sonntag")
+      if(!this.enabled6 && this.times.timesStart[6]!= null) this.deleteZeit(0)
     },
     async loadZeiten() {
+    this.enableSet = false;
 
       const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
@@ -785,10 +826,39 @@ export default {
                   break;
         }
       }
-
       this.version++;
     },
     async setArbeitstag(pos, tag) {
+      if(this.enabled && pos == 0 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled1 && pos == 1 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled2 && pos == 2 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled3 && pos == 3 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled4 && pos == 4 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled5 && pos == 5 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled6 && pos == 6 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+
+
 
       const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
@@ -804,21 +874,57 @@ export default {
       await axios.post("/Oeffnungszeiten/setArbeitstag", time, this.$store.getters.getLoginData);
     },
     async updateArbeitstag(pos, tag) {
+      if(this.enabled && pos == 0 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled1 && pos == 1 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled2 && pos == 2 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled3 && pos == 3 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled4 && pos == 4 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled5 && pos == 5 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
+      if(this.enabled6 && pos == 6 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
+        alert("Bitte Werte eingeben!");
+        return;
+      }
 
       const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
       let StammdatenData = ResponseStammdaten.data[0];
 
-      let time = {
 
-        anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
-        ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
-        wochentag: tag,
-        restaurant_ID: StammdatenData[12]
-      }
-
-      await axios.put("/Oeffnungszeiten/updateArbeitstag", time, this.$store.getters.getLoginData);
-
+        let time = {
+          anfang: new Date('January 1, 2000 ' + this.times.timesStart[pos] + ':00'),
+          ende: new Date('January 1, 2000 ' + this.times.timesEnd[pos] + ':00'),
+          wochentag: tag,
+          restaurant_ID: StammdatenData[12]
+        }
+        await axios.put("/Oeffnungszeiten/updateArbeitstag", time, this.$store.getters.getLoginData);
     },
+
+    async deleteZeit(pos){
+      const ResponseStammdaten = await axios.get("Benutzer/getBenutzerByLogin/" + this.$cookies.get('emailAdresse'), this.$store.getters.getLoginData);
+      let StammdatenData = ResponseStammdaten.data[0];
+
+      const Oeffnungszeiten = await axios.get("/Oeffnungszeiten/getAllZeitenWochentag/" + StammdatenData[12] + "/" + pos, this.$store.getters.getLoginData);
+      let OeffnungszeitenData = Oeffnungszeiten.data[0];
+
+      await axios.delete("/Oeffnungszeiten/deleteZeitenOeffnungszeiten_ID/" + OeffnungszeitenData[2], this.$store.getters.getLoginData);
+    }
 
 
   }
