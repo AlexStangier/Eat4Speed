@@ -2,13 +2,9 @@ package de.eat4speed.controllers;
 
 
 import de.eat4speed.entities.Benachrichtigung_Fahrer;
-import de.eat4speed.entities.Gericht;
-import de.eat4speed.repositories.Benachrichtigung_FahrerRepository;
-import de.eat4speed.repositories.FahrzeugRepository;
 import de.eat4speed.services.interfaces.IBenachrichtigung_FahrerService;
 import org.json.JSONObject;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -32,22 +28,20 @@ public class Benachrichtigung_FahrerController {
 
     @PUT
     @Path("/markAsGelesen/{benachrichtigungs_ID}")
-    public void markAsGelesen(@PathParam("benachrichtigungs_ID") int benachrichtigungs_ID)
-    {
+    public void markAsGelesen(@PathParam("benachrichtigungs_ID") int benachrichtigungs_ID) {
         benachrichtigung_fahrerService.markAsGelesen(benachrichtigungs_ID);
     }
 
     @GET
     @RolesAllowed("fahrer")
     @Path("/getAllBenachrichtigungFahrerUngelesen/{fahrernummer}")
-    public List getAllBenachrichtigung_Fahrer_ungelesen(@PathParam("fahrernummer") int fahrernummer)
-    {
+    public List getAllBenachrichtigung_Fahrer_ungelesen(@PathParam("fahrernummer") int fahrernummer) {
         return benachrichtigung_fahrerService.getAllBenachrichtigung_Fahrer_ungelesen(fahrernummer);
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String get(){
+    public String get() {
         return benachrichtigung_fahrerService.listAll().toString();
     }
 
@@ -55,7 +49,7 @@ public class Benachrichtigung_FahrerController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addBenachrichtigung_Fahrer(@Context HttpHeaders headers, InputStream requestBody) {
 
-        try{
+        try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(requestBody));
             StringBuilder out = new StringBuilder();
             String line;
@@ -83,7 +77,7 @@ public class Benachrichtigung_FahrerController {
 
         int id = 0;
 
-        try{
+        try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(requestBody));
             StringBuilder out = new StringBuilder();
             String line;
