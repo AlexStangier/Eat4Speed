@@ -199,7 +199,7 @@ public class Algo_FahrerAuswahl {
         {
             URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setRequestMethod("POST");
+            http.setRequestMethod("PUT");
             http.setDoOutput(true);
             http.setRequestProperty("Content-Type", "application/json");
 
