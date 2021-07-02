@@ -124,9 +124,9 @@
                         <v-btn
                             color="error"
                             tile
-                            @click="()=>{this.mindestbestellwertOptionActive=false;this.kategorieOptionActive=false;this.allergeneOptionActive=false;this.nameOptionActive=true;this.selectedMindestbestellwert=0;this.selectedKategorien=[];this.selectedAllergene=[];}"
+                            @click="deleteFilters()"
                         >
-                          Filter löschen
+                          Löschen
                         </v-btn>
                       </v-col>
                       <v-col
@@ -137,7 +137,7 @@
                             tile
                             @click="applyFiltersAndSearch"
                         >
-                          Filter anwenden
+                          Anwenden
                         </v-btn>
                       </v-col>
                     </v-row>
@@ -690,6 +690,17 @@ export default {
     async deleteFromFavorites() {
       await axios.delete("Favoritenliste_Restaurants/remove/" + this.loggedInKunde_ID + "/" + this.selectedRestaurant, this.$store.getters.getLoginData);
       this.loadRestaurants();
+    },
+    async deleteFilters()
+    {
+      this.mindestbestellwertOptionActive=false;
+      this.kategorieOptionActive=false;
+      this.allergeneOptionActive=false;
+      this.nameOptionActive=true;
+      this.selectedMindestbestellwert=0;
+      this.selectedKategorien=[];
+      this.selectedAllergene=[];
+      this.applyFiltersAndSearch();
     },
 
   },
