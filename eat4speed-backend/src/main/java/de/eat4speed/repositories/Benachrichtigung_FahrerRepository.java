@@ -29,8 +29,8 @@ public class Benachrichtigung_FahrerRepository implements PanacheRepository<Bena
         List allBenachrichtigungData;
 
         Query query = entityManager.createQuery(
-                "SELECT bf.benachrichtigungs_ID, a.Auftrags_ID " +
-                        "FROM BenachrichtigungFahrerAuftrag a, Benachrichtigung_Fahrer bf " +
+                "SELECT bf.benachrichtigungs_ID, bf.auftrags_ID " +
+                        "FROM Benachrichtigung_Fahrer bf " +
                         "WHERE bf.fahrernummer = ?1 " +
                         "AND bf.gelesen = 0 "
 
@@ -65,6 +65,14 @@ public class Benachrichtigung_FahrerRepository implements PanacheRepository<Bena
         delete("Benachrichtigungs_ID", Benachrichtigungs_ID);
 
         return Benachrichtigungs_ID;
+    }
+
+    @Transactional
+    public int deleteBenachrichtigungFahrerAuftrag(int Fahrernummer, int Auftrags_ID)
+    {
+        delete("Fahrernummer = ?1 And Auftrags_ID = ?2", Fahrernummer, Auftrags_ID);
+
+        return Fahrernummer;
     }
 
 }

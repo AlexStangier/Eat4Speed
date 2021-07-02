@@ -385,7 +385,8 @@ export default {
           thumbnail: imageURL,
           quantity: (anzahl[i]),
           price: (responseGericht.data[0][3]),
-          restaurant_ID: (responseGericht.data[0][5])
+          restaurant_ID: (responseGericht.data[0][5]),
+          num: Math.random() * (999999 - 1) + 1
         }
 
         this.$store.commit("addToCartGerichte", cartGericht);

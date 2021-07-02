@@ -264,6 +264,51 @@ export default {
 
 
     },
+    async checkMindestbestellwert()
+    {
+      this.minOk = [];
+      this.mindestbestellwerte = [];
+      this.restaurant_IDs = [];
+      var cartItems = this.$store.getters.getCartGerichte;
+
+      for(let i = 0; i<cartItems.length; i++)
+      {
+        if(!this.restaurant_IDs.includes(cartItems[i].restaurant_ID))
+        {
+          this.restaurant_IDs[i] = cartItems[i].restaurant_ID;
+        }
+      }
+      for(let i = 0; i<this.restaurant_IDs.length;i++)
+      {
+        let mindestbestellwertResponse = await axios.get("Restaurant/getAllRestaurantDataByRestaurant_ID/"+this.restaurant_IDs[i]);
+        if(mindestbestellwertResponse.data.length>0)
+        {
+          this.mindestbestellwerte[i] = mindestbestellwertResponse.data[0][3];
+        }
+        let sum = 0;
+        for(let e = 0;e<cartItems.length;e++)
+        {
+          if(cartItems[e].restaurant_ID === this.restaurant_IDs[i])
+          {
+            sum = sum + cartItems[e].price * cartItems[e].quantity;
+          }
+        }
+        if(sum<this.mindestbestellwerte[i])
+        {
+          this.minOk[i] = false;
+
+        }
+
+      }
+      this.mindestbestellwertOkay = true;
+      for(let o = 0; o<this.minOk.length;o++)
+      {
+        if(this.minOk[o] === false)
+        {
+          this.mindestbestellwertOkay = false;
+        }
+      }
+    },
     async checkOeffnungszeiten()
     {
       //let demandDay = this.timestampCustomerDemand.getDay();
@@ -278,7 +323,7 @@ export default {
         //console.log(this.timestampCustomerDemand);
         this.timestampCustomerDemand = moment(this.timestampCustomerDemand,format);
         //console.log(this.timestampCustomerDemand);
-        this.timestampCustomerDemandDatabase = this.timestampCustomerDemand;
+        this.timestampCustomerDemandDatabase = 0;
 
         let dateTimespamp = this.timestampCustomerDemand.toDate();
         //console.log(dateTimespamp.getDay());
@@ -380,7 +425,14 @@ export default {
     },
     async paypalRequest() {
 
+      await this.checkMindestbestellwert();
       await this.checkOeffnungszeiten();
+
+      if(this.mindestbestellwertOkay === false)
+      {
+        alert("Bitte die Mindestbestellwerte beachten.")
+        return;
+      }
 
       if(this.oeffnungszeitenOkay === false)
       {
@@ -440,10 +492,14 @@ export default {
       hour: "",
       minute: "",
       dayOfWeek:"",
+      restaurant_IDs:[],
+      mindestbestellwerte:[],
+      minOk: [],
       problemGerichte: [],
       timestampCustomerDemand: "",
       timestampCustomerDemandDatabase: "",
       oeffnungszeitenOkay: false,
+      mindestbestellwertOkay: true
     };
   },
 }

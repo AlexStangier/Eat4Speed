@@ -166,6 +166,10 @@ export default {
         {
           this.$router.push({name: "FahrerFahrtenplan"});
         }
+        if(responseRolle.data==="restaurant")
+        {
+          this.$router.push({name: "RestaurantControlPanel"});
+        }
       }
     },
     async getLoggedInKunde() {
