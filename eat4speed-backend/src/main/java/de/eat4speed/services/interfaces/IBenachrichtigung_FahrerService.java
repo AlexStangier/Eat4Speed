@@ -24,4 +24,6 @@ public interface IBenachrichtigung_FahrerService {
 
     void deleteBenachrichtigungFahrer(int benachrichtigungs_ID);
 
+    void deleteBenachrichtigungFahrerAuftrag(int Fahrernummer, int Auftrags_ID);
+
 }

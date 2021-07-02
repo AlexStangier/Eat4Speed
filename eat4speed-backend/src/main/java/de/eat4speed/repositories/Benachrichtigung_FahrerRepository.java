@@ -67,4 +67,12 @@ public class Benachrichtigung_FahrerRepository implements PanacheRepository<Bena
         return Benachrichtigungs_ID;
     }
 
+    @Transactional
+    public int deleteBenachrichtigungFahrerAuftrag(int Fahrernummer, int Auftrags_ID)
+    {
+        delete("Fahrernummer = ?1 And Auftrags_ID = ?2", Fahrernummer, Auftrags_ID);
+
+        return Fahrernummer;
+    }
+
 }
