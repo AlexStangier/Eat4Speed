@@ -278,7 +278,7 @@ export default {
         //console.log(this.timestampCustomerDemand);
         this.timestampCustomerDemand = moment(this.timestampCustomerDemand,format);
         //console.log(this.timestampCustomerDemand);
-        this.timestampCustomerDemandDatabase = this.timestampCustomerDemand;
+        this.timestampCustomerDemandDatabase = 0;
 
         let dateTimespamp = this.timestampCustomerDemand.toDate();
         //console.log(dateTimespamp.getDay());

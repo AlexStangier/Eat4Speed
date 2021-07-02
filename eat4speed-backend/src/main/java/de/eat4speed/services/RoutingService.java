@@ -42,36 +42,35 @@ public class RoutingService implements IRoutingService {
     }
 
     @Override
-    public void accident(String auftraege){
+    public void accident(String auftraege) {
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
         ArrayList<String> auftrags_ids = new ArrayList<>();
-        for (String element : auftr){
-            if(!auftrags_ids.contains(element)){
+        for (String element : auftr) {
+            if (!auftrags_ids.contains(element)) {
                 auftrags_ids.add(element);
             }
         }
-        for (String id : auftrags_ids){
+        for (String id : auftrags_ids) {
             _fahrer.accident_report_bestellung(Long.parseLong(id));
             _fahrer.accident_report_fahrer(Long.parseLong(id));
         }
     }
 
     @Override
-    public int confirm(String auftrags_beschreibung, String auftraege, String data, String email){
+    public int confirm(String auftrags_beschreibung, String auftraege, String data, String email) {
         int erledigt = 0;
         ArrayList<String> auftr = new ArrayList<>(Arrays.asList(auftraege.split(", ")));
-        if(auftrags_beschreibung.equals("Abholung")){
+        if (auftrags_beschreibung.equals("Abholung")) {
             for (String s : auftr) {
                 _fahrer.set_Bestellung_abgeholt(data, Integer.parseInt(s));
                 _fahrer.set_Fahrer_aktuellePos_Abholung(data, email);
             }
-        }
-        else{
+        } else {
             for (String s : auftr) {
                 _fahrer.set_Fahrer_aktuellePos_Ablieferung(Integer.parseInt(s), email);
                 _fahrer.set_Bestellung_abgeliefert(Integer.parseInt(s));
 
-                if(_fahrer.job_done_comp(Long.parseLong(s)) == 0){
+                if (_fahrer.job_done_comp(Long.parseLong(s)) == 0) {
                     _auftrag.updateAuftragFahrernummer(Integer.parseInt(s), 9999);
                     _auftrag.setToErledigt(Integer.parseInt(s));
                     erledigt++;
@@ -85,29 +84,33 @@ public class RoutingService implements IRoutingService {
 
         if (!timewindows.equals("null")) {
             try {
+
+
                 Date date_now = new Date();
                 long _now = date_now.getTime();
                 Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
                 //long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
+                if (((delivery_date - _now)/1000) > 3200) {
+                    return new JSONObject()
+                            .put("id", id).put("pickup", new JSONObject()
+                                    .put("location", new JSONArray()
+                                            .put(src_lng).put(src_lat))
+                                    .put("duration", 300)
+                            )
+                            .put("delivery", new JSONObject()
+                                    .put("location", new JSONArray()
+                                            .put(dest_lng).put(dest_lat))
+                                    .put("duration", 300)
+                                    .put("time_windows", new JSONArray()
+                                            .put(new JSONArray()
+                                                    .put(delivery_timewindow - 5 * 60).put(delivery_timewindow + 5 * 60)
+                                            )
+                                    )
+                            );
+                }
 
-                return new JSONObject()
-                        .put("id", id).put("pickup", new JSONObject()
-                                .put("location", new JSONArray()
-                                        .put(src_lng).put(src_lat))
-                                .put("duration", 300)
-                        )
-                        .put("delivery", new JSONObject()
-                                .put("location", new JSONArray()
-                                        .put(dest_lng).put(dest_lat))
-                                .put("duration", 300)
-                                .put("time_windows", new JSONArray()
-                                        .put(new JSONArray()
-                                                .put(delivery_timewindow - 5 * 60).put(delivery_timewindow + 5 * 60)
-                                        )
-                                )
-                        );
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -135,14 +138,18 @@ public class RoutingService implements IRoutingService {
                 Date date1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS").parse(timewindows);
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
-                return new JSONObject()
-                        .put("id", id).put("location", new JSONArray()
-                                .put(lng).put(lat))
-                        .put("time_windows", new JSONArray()
-                                .put(new JSONArray()
-                                        .put(delivery_timewindow - 5 * 60).put(delivery_timewindow + 5 * 60)
-                                )
-                        );
+
+                if (((delivery_date - _now)/1000) > 3200) {
+                    return new JSONObject()
+                            .put("id", id).put("location", new JSONArray()
+                                    .put(lng).put(lat))
+                            .put("time_windows", new JSONArray()
+                                    .put(new JSONArray()
+                                            .put(delivery_timewindow - 5 * 60).put(delivery_timewindow + 5 * 60)
+                                    )
+                            );
+                }
+
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -251,13 +258,13 @@ public class RoutingService implements IRoutingService {
         JSONArray legs = props.getJSONArray("legs");
         //JSONArray actions = props.getJSONArray("actions");
         JSONArray list_waypoints = new JSONArray();
-        if(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length() > 1){
+        if (waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length() > 1) {
             String single_beschreibung;
             StringBuilder single_restaurant = new StringBuilder();
             StringBuilder single_kunde = new StringBuilder();
             StringBuilder single_auftrags_id_string = new StringBuilder();
             ArrayList<String> single_auftrags_id = new ArrayList<>();
-            for(int k = 1; k < waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length(); k++){
+            for (int k = 1; k < waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").length(); k++) {
                 if (!single_auftrags_id.contains(StringUtils.substringBefore(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(k).getString("shipment_id"), "["))) {
                     single_auftrags_id.add(StringUtils.substringBefore(waypoints.getJSONObject(legs.getJSONObject(0).getInt("from_waypoint_index")).getJSONArray("actions").getJSONObject(k).getString("shipment_id"), "["));
                 }
