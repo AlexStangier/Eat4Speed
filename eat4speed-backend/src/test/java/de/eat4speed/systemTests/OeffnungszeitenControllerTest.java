@@ -54,6 +54,7 @@ public class OeffnungszeitenControllerTest {
     @Inject
     OeffnungszeitenRepository _oeffnungszeitenRepository;
 
+    /*
     @BeforeEach
     void setup() {
         Benutzer mockRestaurantOwner = new Benutzer(TEST_USER_NAME, "Eugene", "Krabs",
@@ -124,4 +125,5 @@ public class OeffnungszeitenControllerTest {
         this._adressenRepository.deleteAdresse(this.mockAddressId);
         this._benutzerRepository.deleteBenutzerByUsername(TEST_USER_NAME);
     }
+    */
 }

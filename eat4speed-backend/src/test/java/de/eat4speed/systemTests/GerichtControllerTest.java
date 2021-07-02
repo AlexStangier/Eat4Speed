@@ -64,6 +64,7 @@ public class GerichtControllerTest {
     @Inject
     GerichtRepository _gerichtRepository;
 
+    /*
     @BeforeEach
     void setup() {
         Benutzer dummyRestaurantOwner = new Benutzer(TEST_USER_NAME, "Eugene", "Krabs",
@@ -117,7 +118,6 @@ public class GerichtControllerTest {
                 .then().statusCode(400);
     }
 
-    /*
     @Test  // TST008 (1)
     @TestSecurity(authorizationEnabled = false)
     void tryUpdateGerichtPicture() throws IOException, NoSuchAlgorithmException {
