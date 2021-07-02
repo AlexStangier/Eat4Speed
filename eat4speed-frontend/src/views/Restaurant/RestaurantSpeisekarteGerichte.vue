@@ -213,7 +213,7 @@
                                       ></v-textarea>
                                       <label>
                                         Bild auswählen
-                                        <input type="file" ref="file" id="fileUp" accept="image/*" v-on:change="selectedPicture()"/>
+                                        <input type="file" ref="fileUp" id="fileUp" accept="image/*" v-on:change="selectedPictureUp()"/>
                                       </label>
                                       <v-text-field label="Preis in €" v-model="gerichtPreis" type="number"
                                                     append-icon="currency-eur" :rules="[rules.required,rules.price]">
@@ -731,9 +731,16 @@ export default {
 
     },
     selectedPicture() {
+      console.log(this.$refs)
       if(this.$refs.file.files === undefined)
       {
-        this.gerichtBild = this.$refs.file[0].files[0];
+        for(let i = 0;i<this.$refs.file.length;i++)
+        {
+          if(this.$refs.file[i].files[0] !== undefined)
+          {
+            this.gerichtBild = this.$refs.file[i].files[0];
+          }
+        }
       }
       else
       {
@@ -741,8 +748,21 @@ export default {
       }
     },
     selectedPictureUp() {
-      console.log(this.$refs.file);
-      this.gerichtBild = this.$refs.file.files[0];
+      console.log(this.$refs);
+      if(this.$refs.fileUp.files === undefined)
+      {
+        for(let i = 0;i<this.$refs.fileUp.length;i++)
+        {
+          if(this.$refs.fileUp[i].files[0] !== undefined)
+          {
+            this.gerichtBild = this.$refs.fileUp[i].files[0];
+          }
+        }
+      }
+      else
+      {
+        this.gerichtBild = this.$refs.fileUp.files[0];
+      }
     },
     async deleteGericht() {
       await axios.delete("Gericht_Allergene/deleteGerichtAllergeneByGerichtID/" + this.editedItem.id, this.$store.getters.getLoginData);
