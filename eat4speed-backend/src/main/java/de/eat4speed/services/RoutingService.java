@@ -92,7 +92,7 @@ public class RoutingService implements IRoutingService {
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
                 //long pickup_timewindow = ((delivery_date - (40 * 60) * 1000) - _now) / 1000;
-                if (((delivery_date - _now)/1000) > 300) {
+                if (((delivery_date - _now)/1000) > 3200) {
                     return new JSONObject()
                             .put("id", id).put("pickup", new JSONObject()
                                     .put("location", new JSONArray()
@@ -139,7 +139,7 @@ public class RoutingService implements IRoutingService {
                 long delivery_date = date1.getTime();
                 long delivery_timewindow = (delivery_date - _now) / 1000;
 
-                if (((delivery_date - _now)/1000) > 300) {
+                if (((delivery_date - _now)/1000) > 3200) {
                     return new JSONObject()
                             .put("id", id).put("location", new JSONArray()
                                     .put(lng).put(lat))
