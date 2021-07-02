@@ -41,15 +41,15 @@ public class Algo_FahrerAuswalController {
                 count++;
             }
         }
-
         if (count == bestellungen.size())
         {
             try {
-                URL url = new URL("https://eat4speed.xyz/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
+                URL url = new URL("http://localhost:1337/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
+                //URL url = new URL("https://eat4speed.xyz/FahrerAuswahl/" + bestellungen.get(0).getAuftrags_ID());
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("PUT");
                 http.setDoOutput(false);
-                http.setReadTimeout(10);
+                http.setReadTimeout(200);
                 http.getInputStream();
                 http.disconnect();
             } catch (Exception e) {

@@ -45,7 +45,8 @@ public class Algo_FahrerAuswahl {
         anzahlGerichte = AnzahlGerichte(auftragID);
 
         List<Fahrer_Distanz> naheFahrer = new ArrayList<>();
-        List<Integer> BenachrichtigungsIDs = new ArrayList<>();
+        //List<Integer> BenachrichtigungsIDs = new ArrayList<>();
+        ArrayList<Benachrichtigung_Fahrer_dto> Benachrichtigungen = new ArrayList<>();
 
         while (nichtStorniert) {
 
@@ -54,7 +55,7 @@ public class Algo_FahrerAuswahl {
                 // eventuelle Anfragen entfernen
                 for (int i = 0; i < count; i++)
                 {
-                    entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, (int)start.getAuftrags_ID());
+                    entferne_Auftrag_von_Fahrer(Benachrichtigungen);
                 }
                 System.out.println("Auftrag wurde angenommen");
                 break;
@@ -70,7 +71,7 @@ public class Algo_FahrerAuswahl {
             if (restart)
             {
                 // anfragen entfernen und neustart
-                entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, (int)start.getAuftrags_ID());
+                entferne_Auftrag_von_Fahrer(Benachrichtigungen);
 
                 restart(auftragID);
 
@@ -85,8 +86,8 @@ public class Algo_FahrerAuswahl {
                     System.out.println(count + " Schicke an Fahrer mit ID: " + naheFahrer.get(count).getFahrer().getFahrernummer()
                         + " "  + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME));
 
-                    BenachrichtigungsIDs.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer().getFahrernummer(),
-                        (int)start.getAuftrags_ID(), naheFahrer.get(count).getRestaurant_ID()));
+                    Benachrichtigungen.add(sende_Auftrag_an_Fahrer(naheFahrer.get(count).getFahrer().getFahrernummer(),
+                            (int)start.getAuftrags_ID(), naheFahrer.get(count).getRestaurant_ID()));
 
                     count++;
                 }
@@ -117,7 +118,7 @@ public class Algo_FahrerAuswahl {
 
         for (int i = 0; i < count; i++)
         {
-            entferne_Auftrag_von_Fahrer(BenachrichtigungsIDs, (int)start.getAuftrags_ID());
+            entferne_Auftrag_von_Fahrer(Benachrichtigungen);
         }
     }
 
@@ -125,11 +126,12 @@ public class Algo_FahrerAuswahl {
     {
         URL url;
         try {
+            //url = new URL("http://localhost:1337/FahrerAuswahl/" + startPunktID);
             url = new URL("https://eat4speed.xyz/FahrerAuswahl/" + startPunktID);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("PUT");
             http.setDoOutput(false);
-            http.setReadTimeout(10);
+            http.setReadTimeout(200);
             http.getInputStream();
 
             http.disconnect();
@@ -157,7 +159,7 @@ public class Algo_FahrerAuswahl {
 
         if (nichtStorniert)
         {
-            System.out.println("Gerichte: " + count);
+            //System.out.println("Gerichte: " + count);
         }
         else
         {
@@ -173,6 +175,7 @@ public class Algo_FahrerAuswahl {
 
         try
         {
+            //URL url = new URL("http://localhost:1337/Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id);
             URL url = new URL("https://eat4speed.xyz/Auftrag/getAuftragFahrernummerByAuftrags_ID/" + id);
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
@@ -189,14 +192,17 @@ public class Algo_FahrerAuswahl {
         return retVal;
     }
 
-    private int sende_Auftrag_an_Fahrer(int fahrerID, int auftragID, int restaurantID)
+    private Benachrichtigung_Fahrer_dto sende_Auftrag_an_Fahrer(int fahrerID, int auftragID, int restaurantID)
     {
         String benachrichtigung = "Auftrag Anfrage " + auftragID;
         Benachrichtigung_Fahrer benachrichtigung_fahrer = new Benachrichtigung_Fahrer(0, fahrerID,
-                benachrichtigung, restaurantID, new Timestamp(new Date().getTime()), (byte)0);
+                benachrichtigung, restaurantID, new Timestamp(new Date().getTime()), (byte)0, auftragID);
+
+        Benachrichtigung_Fahrer_dto obj = new Benachrichtigung_Fahrer_dto(fahrerID, benachrichtigung, auftragID);
 
         try
         {
+            //URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer");
             URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("POST");
@@ -216,7 +222,7 @@ public class Algo_FahrerAuswahl {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        /*
         int id = getBenachrichtigungID(benachrichtigung, fahrerID);
 
         BenachrichtigungFahrerAuftrag anfrage = new BenachrichtigungFahrerAuftrag();
@@ -242,9 +248,9 @@ public class Algo_FahrerAuswahl {
 
             http.disconnect();
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return id;
+            //e.printStackTrace();
+        }*/
+        return obj;
     }
 
     private int getBenachrichtigungID(String benachrichtigung, int fahrernummer)
@@ -253,6 +259,7 @@ public class Algo_FahrerAuswahl {
 
         try
         {
+            //URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/id");
             URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/id");
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("GET");
@@ -292,10 +299,11 @@ public class Algo_FahrerAuswahl {
         return textBuilder.toString();
     }
 
-    private void entferne_Auftrag_von_Fahrer(List<Integer> BenachrichtigungsIDs, int auftragID)
+    private void entferne_Auftrag_von_Fahrer(ArrayList<Benachrichtigung_Fahrer_dto> benachrictigungen)
     {
-        for (int i : BenachrichtigungsIDs)
+        for (Benachrichtigung_Fahrer_dto b : benachrictigungen)
         {
+            /*
             try
             {
                 URL url = new URL("https://eat4speed.xyz/BenachrichtigungFahrerAuftrag/" + auftragID + "/" + i);
@@ -308,10 +316,11 @@ public class Algo_FahrerAuswahl {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+            */
             try
             {
-                URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/" + i);
+                //URL url = new URL("http://localhost:1337/Benachrichtigung_Fahrer/" + b.getFahrernummer() + "/" + b.getAuftrags_ID());
+                URL url = new URL("https://eat4speed.xyz/Benachrichtigung_Fahrer/" + b.getFahrernummer() + "/" + b.getAuftrags_ID());
                 HttpURLConnection http = (HttpURLConnection) url.openConnection();
                 http.setRequestMethod("DELETE");
                 http.setDoOutput(false);

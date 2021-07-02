@@ -112,4 +112,12 @@ public class Benachrichtigung_FahrerController {
         return Response.ok().build();
     }
 
+    @DELETE
+    @Path("/{Fahrernummer}/{Auftrags_ID}")
+    public Response deleteBenachrichtigung(@PathParam("Fahrernummer") int Fahrernummer, @PathParam("Auftrags_ID") int Auftrags_ID) {
+
+        benachrichtigung_fahrerService.deleteBenachrichtigungFahrerAuftrag(Fahrernummer, Auftrags_ID);
+        return Response.ok().build();
+    }
+
 }

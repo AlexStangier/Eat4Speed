@@ -47,4 +47,9 @@ public class Benachrichtigung_FahrerService implements IBenachrichtigung_FahrerS
     public void deleteBenachrichtigungFahrer(int benachrichtigungs_ID) {
         benachrichtigung_fahrerRepository.deleteBenachrichtigungFahrer(benachrichtigungs_ID);
     }
+
+    @Override
+    public void deleteBenachrichtigungFahrerAuftrag(int Fahrernummer, int Auftrags_ID) {
+        benachrichtigung_fahrerRepository.deleteBenachrichtigungFahrerAuftrag(Fahrernummer, Auftrags_ID);
+    }
 }
