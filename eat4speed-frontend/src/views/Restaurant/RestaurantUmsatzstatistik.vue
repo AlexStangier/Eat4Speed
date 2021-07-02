@@ -123,6 +123,8 @@
               :key="componentKey"
               :headers="headers"
               :items="iteratedDatesTable"
+              :sort-by="['time']"
+              :sort-desc="[false]"
               class="elevation-1"
               dense
               item-key="name"
@@ -183,24 +185,40 @@ export default {
     },
     async loadZeiten() {
       this.info.start = moment(this.dates[0]).unix() * 1000;
-      this.info.end = moment(this.dates[1]).unix() * 1000;
+      this.info.end = moment(this.dates[1]).add(1, 'days').unix() * 1000;
 
       const ResponseUmsatz = await axios.post("Bestellung/getStatistic/", this.info, this.$store.getters.getLoginData);
       let formattedData = {};
       let formattedDataTable = [];
+      let found = false;
 
       ResponseUmsatz.data.data.forEach(data => {
         const date = moment(data.timestamp).format("YYYY-MM-DD");
-        formattedData[date] = parseFloat(data.value).toFixed(2);
+
+        Object.entries(formattedData).forEach(([key]) => {
+          if (key === date) {
+            formattedData[key] = this.roundToTwo(parseFloat(data.value) + parseFloat(formattedData[key]));
+            found = true;
+          }
+        });
+
+        if (!found) {
+          formattedData[date] = parseFloat(data.value).toFixed(2);
+        }
 
         formattedDataTable.push({
           time: moment(data.timestamp).format("LL"),
           value: parseFloat(data.value).toFixed(2)
         });
+
+        found = false;
       });
 
       this.iteratedDates = formattedData;
       this.iteratedDatesTable = formattedDataTable;
+    },
+    roundToTwo(num) {
+      return (Math.round(num + "e+2")  + "e-2");
     },
   },
   computed: {
