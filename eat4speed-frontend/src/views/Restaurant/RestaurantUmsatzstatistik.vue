@@ -203,7 +203,7 @@ export default {
         });
 
         if (!found) {
-          formattedData[date] = parseFloat(data.value).toFixed(2);
+          formattedData[date] = this.roundToTwo(parseFloat(data.value));
         }
 
         formattedDataTable.push({
