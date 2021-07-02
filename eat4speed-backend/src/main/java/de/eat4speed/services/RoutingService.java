@@ -230,7 +230,6 @@ public class RoutingService implements IRoutingService {
         try {//"arturs@arturs.de"
             String data = create_Request(email).toString();
             byte[] out = data.getBytes(StandardCharsets.UTF_8);
-            System.out.println(data);
             OutputStream stream = http.getOutputStream();
             stream.write(out);
         } catch (Exception e) {
@@ -354,7 +353,6 @@ public class RoutingService implements IRoutingService {
 
                 try{
                     zeit2 =StringUtils.substringBetween(waypoints.getJSONObject(legs.getJSONObject(i).getInt("to_waypoint_index")).getJSONArray("actions").getJSONObject(0).get("shipment_id").toString(), "?", "]");
-                    System.out.println(zeit2);
                 }catch(Exception e){
 
                 }
