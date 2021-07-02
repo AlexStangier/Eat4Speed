@@ -395,7 +395,9 @@ export default {
         name: this.gerichtName,
         thumbnail: this.gerichtBild,
         quantity: this.gerichtAnzahl,
-        price: this.gerichtPreis
+        price: this.gerichtPreis,
+        restaurant_ID: this.restaurant_ID,
+        num: Math.random() * (999999 - 1) + 1
       }
 
       this.$store.commit("addToCartGerichte", cartGericht);
