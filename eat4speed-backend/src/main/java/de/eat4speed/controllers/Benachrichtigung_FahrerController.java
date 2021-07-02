@@ -31,7 +31,6 @@ public class Benachrichtigung_FahrerController {
     IBenachrichtigung_FahrerService benachrichtigung_fahrerService;
 
     @PUT
-    @PermitAll
     @Path("/markAsGelesen/{benachrichtigungs_ID}")
     public void markAsGelesen(@PathParam("benachrichtigungs_ID") int benachrichtigungs_ID)
     {
