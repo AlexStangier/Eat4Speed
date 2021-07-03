@@ -830,31 +830,31 @@ export default {
     },
     async setArbeitstag(pos, tag) {
       if(this.enabled && pos == 0 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled1 && pos == 1 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled2 && pos == 2 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled3 && pos == 3 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled4 && pos == 4 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled5 && pos == 5 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled6 && pos == 6 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
 
@@ -875,31 +875,31 @@ export default {
     },
     async updateArbeitstag(pos, tag) {
       if(this.enabled && pos == 0 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled1 && pos == 1 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled2 && pos == 2 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled3 && pos == 3 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled4 && pos == 4 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled5 && pos == 5 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
       if(this.enabled6 && pos == 6 && (this.times.timesStart[pos]==null || this.times.timesEnd[pos]==null)){
-        alert("Bitte Werte eingeben!");
+        alert("Bitte Werte eingeben! Laden Sie die Seite neu.");
         return;
       }
 

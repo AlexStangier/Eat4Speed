@@ -30,7 +30,6 @@ public class FahrerController {
 
     @PUT
     @Path("setPause/{id}/{pause}")
-    @RolesAllowed("fahrer")
     public Response setPause(@PathParam("id") int id, @PathParam("pause") int pause) {
         return _fahrer.setPause(pause, id);
     }
@@ -77,7 +76,6 @@ public class FahrerController {
 
     @GET
     @Path("{selection}")
-    @PermitAll
     public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung) {
         List fahrerData = null;
 
