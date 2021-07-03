@@ -76,6 +76,7 @@ public class FahrerController {
 
     @GET
     @Path("{selection}")
+    @PermitAll
     public List getAllFahrer(@PathParam("selection") String fahrerSelectionVerifizierung) {
         List fahrerData = null;
 
