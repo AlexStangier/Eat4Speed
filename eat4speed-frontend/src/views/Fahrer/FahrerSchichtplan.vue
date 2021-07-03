@@ -144,7 +144,7 @@ export default {
       const fahrer_id_data = await axios.get("Fahrer/get/" + response.data, this.$store.getters.getLoginData);
       const fahrer_id = fahrer_id_data.data[0]
 
-      await axios.put("Fahrer/setPause/" + fahrer_id[0] + "/" + this.pause, this.$store.getters.getLoginData)
+      await axios.put("Fahrer/setPause/" + fahrer_id[0] + "/" + this.pause)
       await this.loadZeiten()
     },
 
