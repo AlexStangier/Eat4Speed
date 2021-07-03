@@ -198,6 +198,19 @@ export default {
     async validate() {
       //if (this.$refs.form.validate()) {
 
+      let dataAvailable = true;
+      const responseEmail = await axios.get("Benutzer/getBenutzer_IDByEmail/"+this.email);
+      if(responseEmail.data.length>0)
+      {
+        alert("E-Mail bereits vergeben.")
+        dataAvailable = false;
+      }
+
+      if(!dataAvailable)
+      {
+        return
+      }
+
       var response = await axios.get("https://api.geoapify.com/v1/geocode/search?text=" + this.houseNumber + "%20" + this.street + "%2C%20" + this.place + "%20" + this.postCode + "%2C%20Germany&apiKey=e15f70e37a39423cbe921dc88a1ded04");
 
         // console.log(response);
