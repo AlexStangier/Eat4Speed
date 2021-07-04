@@ -115,4 +115,18 @@ public class BenutzerController {
     {
         return benutzerRepository.checkIfBenutzerIsBlacklist(email);
     }
+
+    @GET
+    @Path("getBenutzer_IDByBenutzername/{benutzername}")
+    public List getBenutzer_IDByBenutzername(@PathParam("benutzername") String benutzername)
+    {
+        return benutzerRepository.getBenutzer_IDByBenutzername(benutzername);
+    }
+
+    @GET
+    @Path("getBenutzer_IDByEmail/{email}")
+    public List getBenutzer_IDByEmail(@PathParam("email") String email)
+    {
+        return benutzerRepository.getBenutzer_IDByEmail(email);
+    }
 }

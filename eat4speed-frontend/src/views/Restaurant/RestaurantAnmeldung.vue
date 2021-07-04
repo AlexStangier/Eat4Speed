@@ -247,6 +247,28 @@ export default {
       // console.log(this.restaurantBild);
     },
     async validate() {
+
+      let dataAvailable = true;
+      const responseEmail = await axios.get("Benutzer/getBenutzer_IDByEmail/"+this.email);
+      if(responseEmail.data.length>0)
+      {
+        alert("E-Mail bereits vergeben.")
+        dataAvailable = false;
+      }
+
+      const responseBenutzername  = await axios.get("Benutzer/getBenutzer_IDByBenutzername/"+this.username);
+
+      if(responseBenutzername.data.length>0)
+      {
+        alert("Benutzername bereits vergeben.")
+        dataAvailable = false;
+      }
+
+      if(!dataAvailable)
+      {
+        return
+      }
+
       // if (this.$refs.loginForm.validate()) {
       this.regDisable = true;
 

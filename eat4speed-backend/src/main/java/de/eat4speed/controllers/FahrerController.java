@@ -30,7 +30,6 @@ public class FahrerController {
 
     @PUT
     @Path("setPause/{id}/{pause}")
-    @RolesAllowed("fahrer")
     public Response setPause(@PathParam("id") int id, @PathParam("pause") int pause) {
         return _fahrer.setPause(pause, id);
     }

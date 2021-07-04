@@ -143,6 +143,36 @@ public class BenutzerRepository implements PanacheRepository<Benutzer> {
     }
 
     @Transactional
+    public List getBenutzer_IDByBenutzername(String benutzername)
+    {
+        List benutzer_ID;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.benutzer_ID " +
+                        "from Benutzer b " +
+                        "where b.benutzername LIKE ?1 "
+        ).setParameter(1, benutzername);
+
+        benutzer_ID = query.getResultList();
+        return benutzer_ID;
+    }
+
+    @Transactional
+    public List getBenutzer_IDByEmail(String email)
+    {
+        List benutzer_ID;
+
+        Query query = entityManager.createQuery(
+                "SELECT b.benutzer_ID " +
+                        "from Benutzer b " +
+                        "where b.emailAdresse LIKE ?1 "
+        ).setParameter(1, email);
+
+        benutzer_ID = query.getResultList();
+        return benutzer_ID;
+    }
+
+    @Transactional
     public void deleteBenutzerByEmail(String email)
     {
         update("geloescht = 1 where emailAdresse = ?1", email);
